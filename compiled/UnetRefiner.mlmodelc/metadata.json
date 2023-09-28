@@ -1,0 +1,123 @@
+[
+  {
+    "shortDescription" : "Stable Diffusion generates images conditioned on text or other images as input through the diffusion process. Please refer to https:\/\/arxiv.org\/abs\/2112.10752 for details.",
+    "metadataOutputVersion" : "3.0",
+    "outputSchema" : [
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float32",
+        "formattedType" : "MultiArray (Float32 2 × 4 × 128 × 128)",
+        "shortDescription" : "Same shape and dtype as the `sample` input. The predicted noise to facilitate the reverse diffusion (denoising) process",
+        "shape" : "[2, 4, 128, 128]",
+        "name" : "noise_pred",
+        "type" : "MultiArray"
+      }
+    ],
+    "version" : "stabilityai\/stable-diffusion-xl-refiner-1.0",
+    "modelParameters" : [
+
+    ],
+    "author" : "Please refer to the Model Card available at huggingface.co\/stabilityai\/stable-diffusion-xl-base-1.0",
+    "specificationVersion" : 7,
+    "storagePrecision" : "Float16",
+    "license" : "OpenRAIL++-M (https:\/\/huggingface.co\/stabilityai\/stable-diffusion-xl-base-1.0\/blob\/main\/LICENSE.md)",
+    "mlProgramOperationTypeHistogram" : {
+      "UpsampleNearestNeighbor" : 3,
+      "Ios16.reduceMean" : 376,
+      "Ios16.sin" : 2,
+      "Ios16.softmax" : 88,
+      "Split" : 44,
+      "Ios16.add" : 508,
+      "Concat" : 17,
+      "Ios16.realDiv" : 56,
+      "Ios16.square" : 56,
+      "ExpandDims" : 6,
+      "Ios16.sub" : 188,
+      "Ios16.cast" : 1,
+      "Ios16.conv" : 554,
+      "Ios16.gelu" : 44,
+      "Ios16.matmul" : 176,
+      "Ios16.reshape" : 488,
+      "Ios16.batchNorm" : 56,
+      "Ios16.rsqrt" : 132,
+      "Ios16.silu" : 48,
+      "Ios16.sqrt" : 56,
+      "SliceByIndex" : 4,
+      "Ios16.mul" : 530,
+      "Ios16.cos" : 2
+    },
+    "computePrecision" : "Mixed (Float16, Float32, Int32)",
+    "isUpdatable" : "0",
+    "availability" : {
+      "macOS" : "13.0",
+      "tvOS" : "16.0",
+      "visionOS" : "1.0",
+      "watchOS" : "9.0",
+      "iOS" : "16.0",
+      "macCatalyst" : "16.0"
+    },
+    "modelType" : {
+      "name" : "MLModelType_mlProgram"
+    },
+    "inputSchema" : [
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 2 × 4 × 128 × 128)",
+        "shortDescription" : "The low resolution latent feature maps being denoised through reverse diffusion",
+        "shape" : "[2, 4, 128, 128]",
+        "name" : "sample",
+        "type" : "MultiArray"
+      },
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 2)",
+        "shortDescription" : "A value emitted by the associated scheduler object to condition the model on a given noise schedule",
+        "shape" : "[2]",
+        "name" : "timestep",
+        "type" : "MultiArray"
+      },
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 2 × 1280 × 1 × 77)",
+        "shortDescription" : "Output embeddings from the associated text_encoder model to condition to generated image on text. A maximum of 77 tokens (~40 words) are allowed. Longer text is truncated. Shorter text does not reduce computation.",
+        "shape" : "[2, 1280, 1, 77]",
+        "name" : "encoder_hidden_states",
+        "type" : "MultiArray"
+      },
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 2 × 5)",
+        "shortDescription" : "Additional embeddings that if specified are added to the embeddings that are passed along to the UNet blocks.",
+        "shape" : "[2, 5]",
+        "name" : "time_ids",
+        "type" : "MultiArray"
+      },
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 2 × 1280)",
+        "shortDescription" : "Additional embeddings from text_encoder_2 that if specified are added to the embeddings that are passed along to the UNet blocks.",
+        "shape" : "[2, 1280]",
+        "name" : "text_embeds",
+        "type" : "MultiArray"
+      }
+    ],
+    "userDefinedMetadata" : {
+      "com.github.apple.coremltools.version" : "7.0",
+      "com.github.apple.coremltools.source" : "torch==2.0.1",
+      "com.github.apple.ml-stable-diffusion.version" : "1.0.0"
+    },
+    "generatedClassName" : "Stable_Diffusion_version_stabilityai_stable_diffusion_xl_base_1_0_refiner",
+    "method" : "predict"
+  }
+]

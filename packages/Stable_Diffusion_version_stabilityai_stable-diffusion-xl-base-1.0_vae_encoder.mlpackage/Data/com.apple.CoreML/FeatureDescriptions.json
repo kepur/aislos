@@ -1,0 +1,15 @@
+{
+  "Outputs" : {
+    "latent" : {
+      "MLFeatureShortDescription" : "The latent embeddings from the unet model from the input image."
+    }
+  },
+  "Inputs" : {
+    "z" : {
+      "MLFeatureShortDescription" : "The input image to base the initial latents on normalized to range [-1, 1]"
+    }
+  },
+  "TrainingInputs" : {
+
+  }
+}

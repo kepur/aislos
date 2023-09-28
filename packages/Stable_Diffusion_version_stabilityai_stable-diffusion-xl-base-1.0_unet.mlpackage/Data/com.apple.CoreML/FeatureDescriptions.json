@@ -1,0 +1,27 @@
+{
+  "Outputs" : {
+    "noise_pred" : {
+      "MLFeatureShortDescription" : "Same shape and dtype as the `sample` input. The predicted noise to facilitate the reverse diffusion (denoising) process"
+    }
+  },
+  "Inputs" : {
+    "encoder_hidden_states" : {
+      "MLFeatureShortDescription" : "Output embeddings from the associated text_encoder model to condition to generated image on text. A maximum of 77 tokens (~40 words) are allowed. Longer text is truncated. Shorter text does not reduce computation."
+    },
+    "sample" : {
+      "MLFeatureShortDescription" : "The low resolution latent feature maps being denoised through reverse diffusion"
+    },
+    "timestep" : {
+      "MLFeatureShortDescription" : "A value emitted by the associated scheduler object to condition the model on a given noise schedule"
+    },
+    "time_ids" : {
+      "MLFeatureShortDescription" : ""
+    },
+    "text_embeds" : {
+      "MLFeatureShortDescription" : ""
+    }
+  },
+  "TrainingInputs" : {
+
+  }
+}

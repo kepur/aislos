@@ -1,0 +1,122 @@
+[
+  {
+    "shortDescription" : "Stable Diffusion generates images conditioned on text or other images as input through the diffusion process. Please refer to https:\/\/arxiv.org\/abs\/2112.10752 for details.",
+    "metadataOutputVersion" : "3.0",
+    "outputSchema" : [
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float32",
+        "formattedType" : "MultiArray (Float32)",
+        "shortDescription" : "Same shape and dtype as the `sample` input. The predicted noise to facilitate the reverse diffusion (denoising) process",
+        "shape" : "[]",
+        "name" : "noise_pred",
+        "type" : "MultiArray"
+      }
+    ],
+    "version" : "diffusers\/stable-diffusion-xl-base-1.0",
+    "modelParameters" : [
+
+    ],
+    "author" : "Please refer to the Model Card available at huggingface.co\/diffusers\/stable-diffusion-xl-base-1.0",
+    "specificationVersion" : 7,
+    "storagePrecision" : "Float16",
+    "license" : "OpenRAIL (https:\/\/huggingface.co\/spaces\/CompVis\/stable-diffusion-license)",
+    "mlProgramOperationTypeHistogram" : {
+      "UpsampleNearestNeighbor" : 2,
+      "Ios16.reduceMean" : 512,
+      "Ios16.sin" : 2,
+      "Ios16.softmax" : 140,
+      "Split" : 70,
+      "Ios16.add" : 722,
+      "Concat" : 14,
+      "Ios16.realDiv" : 46,
+      "Ios16.square" : 46,
+      "ExpandDims" : 6,
+      "Ios16.sub" : 256,
+      "Ios16.cast" : 1,
+      "Ios16.conv" : 794,
+      "Ios16.gelu" : 70,
+      "Ios16.matmul" : 280,
+      "Ios16.reshape" : 675,
+      "Ios16.batchNorm" : 46,
+      "Ios16.rsqrt" : 210,
+      "Ios16.silu" : 38,
+      "Ios16.sqrt" : 46,
+      "SliceByIndex" : 4,
+      "Ios16.mul" : 842,
+      "Ios16.cos" : 2
+    },
+    "computePrecision" : "Mixed (Float16, Float32, Int32)",
+    "isUpdatable" : "0",
+    "availability" : {
+      "macOS" : "13.0",
+      "tvOS" : "16.0",
+      "watchOS" : "9.0",
+      "iOS" : "16.0",
+      "macCatalyst" : "16.0"
+    },
+    "modelType" : {
+      "name" : "MLModelType_mlProgram"
+    },
+    "inputSchema" : [
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 2 × 4 × 128 × 128)",
+        "shortDescription" : "The low resolution latent feature maps being denoised through reverse diffusion",
+        "shape" : "[2, 4, 128, 128]",
+        "name" : "sample",
+        "type" : "MultiArray"
+      },
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 2)",
+        "shortDescription" : "A value emitted by the associated scheduler object to condition the model on a given noise schedule",
+        "shape" : "[2]",
+        "name" : "timestep",
+        "type" : "MultiArray"
+      },
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 2 × 2048 × 1 × 77)",
+        "shortDescription" : "Output embeddings from the associated text_encoder model to condition to generated image on text. A maximum of 77 tokens (~40 words) are allowed. Longer text is truncated. Shorter text does not reduce computation.",
+        "shape" : "[2, 2048, 1, 77]",
+        "name" : "encoder_hidden_states",
+        "type" : "MultiArray"
+      },
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 12)",
+        "shortDescription" : "",
+        "shape" : "[12]",
+        "name" : "time_ids",
+        "type" : "MultiArray"
+      },
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float16",
+        "formattedType" : "MultiArray (Float16 2 × 1280)",
+        "shortDescription" : "",
+        "shape" : "[2, 1280]",
+        "name" : "text_embeds",
+        "type" : "MultiArray"
+      }
+    ],
+    "userDefinedMetadata" : {
+      "com.github.apple.coremltools.version" : "7.0b1",
+      "com.github.apple.coremltools.source" : "torch==2.0.1+cu117",
+      "com.github.apple.ml-stable-diffusion.version" : "1.0.0"
+    },
+    "generatedClassName" : "Stable_Diffusion_version_diffusers_stable_diffusion_xl_base_1_0_unet",
+    "method" : "predict"
+  }
+]

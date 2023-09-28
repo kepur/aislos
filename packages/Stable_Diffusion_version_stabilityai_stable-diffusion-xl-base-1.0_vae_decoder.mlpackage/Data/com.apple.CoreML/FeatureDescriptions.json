@@ -1,0 +1,15 @@
+{
+  "Outputs" : {
+    "image" : {
+      "MLFeatureShortDescription" : "Generated image normalized to range [-1, 1]"
+    }
+  },
+  "Inputs" : {
+    "z" : {
+      "MLFeatureShortDescription" : "The denoised latent embeddings from the unet model after the last step of reverse diffusion"
+    }
+  },
+  "TrainingInputs" : {
+
+  }
+}
