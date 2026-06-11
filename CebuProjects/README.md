@@ -1,4 +1,22 @@
-# ProcurePing Local Workspace
+# ProcurePing / Cebu Legacy Workspace
+
+> **Monorepo 位置**：`/Users/mac/Code_Start/Aislos/CebuProjects`  
+> **角色**：迁移来源；新业务写入 **Ainerwise Core**，不长期保留独立后端。  
+> **共享中间件（SP02）**：使用 `../Ainerwise` 的 PostgreSQL / Redis / MinIO，Cebu 使用独立 database `cebu`。
+
+### 共享平台启动（推荐）
+
+```bash
+cd ../Ainerwise
+./scripts/shared-platform/up-legacy-cebu.sh    # 中间件 + legacy API :8100
+./scripts/shared-platform/init-cebu-legacy-db.sh  # 首次在已有 postgres 卷上建库
+```
+
+环境模板：`backend/.env.legacy-shared.example`（勿提交真实 `.env`）。
+
+---
+
+## 原 ProcurePing 说明
 
 ProcurePing 是一个反向采购 + Marketplace 平台：买家可发布需求、浏览商品瀑布流、匹配供应商、收报价、下单、托管和交付确认；供应商可维护目录、接收匹配需求、报价和履约；后台独立管理运营、风控、支付、地图、KYC 和全局设置。
 

@@ -330,8 +330,8 @@ correlation_id
 |---|---|---|---|---|
 | `[x]` | SP00 | 共享中间件边界冻结 | `VERIFIED` | 无 |
 | `[x]` | SP01 | 资源、Owner、Namespace 与凭据清单 | `VERIFIED` | SP00 |
-| `[ ]` | SP02 | 本地共享 Infrastructure Profile | `READY` | SP01 |
-| `[ ]` | SP03 | Legacy API Bridge 与事件边界 | `LOCKED` | SP02 |
+| `[x]` | SP02 | 本地共享 Infrastructure Profile | `VERIFIED` | SP01 |
+| `[ ]` | SP03 | Legacy API Bridge 与事件边界 | `READY` | SP02 |
 | `[ ]` | SP04 | Cebu 文件与身份迁移方案 | `LOCKED` | SP03 |
 | `[ ]` | SP05 | 采购域迁移与 Legacy 中间件退役 | `LOCKED` | SP04 |
 | `[ ]` | SP06 | 生产配额、监控、备份与恢复闸门 | `LOCKED` | SP05 |
@@ -461,6 +461,50 @@ correlation_id
 
 当前唯一可领取 Shared Platform 任务：
 
-> `SP01 资源、Owner、Namespace 与凭据清单`
+> `SP03 Legacy API Bridge 与事件边界`（`READY`）
 
-SP01 只写清单，不改运行环境，因此可以与 Procurement 和 Marketing 的非重叠工作并行。
+---
+
+# SP02 本地共享 Infrastructure Profile
+
+状态：`VERIFIED`
+
+## 目标
+
+提取共享 PostgreSQL / Redis / MinIO compose profile；修复 canonical bind mount 漂移；为 Cebu legacy 提供独立 database/role/端口，不合并 migration 链。
+
+## 交付物
+
+- `docker-compose.infrastructure.yml` — 共享中间件
+- `docker-compose.yml` — `include` 中间件 + 全栈应用
+- `docker-compose.legacy-cebu.yml` — 可选 Cebu legacy（`:8100`）
+- `docker/postgres/init/02-cebu-legacy-database.sh`
+- `scripts/shared-platform/*.sh`
+- `docs/shared-platform/LOCAL_DEV_PROFILES.md`
+- `CebuProjects/backend/.env.legacy-shared.example`
+- Celery Redis prefix `ainerwise:celery:`
+- Monorepo `README.md`
+
+## 交付记录
+
+```text
+实现 Agent：Cursor Agent（合并 + SP02）
+实现日期：2026-06-11
+自测：
+  - docker compose config OK（infrastructure + legacy overlay）
+  - init-cebu-legacy-db.sh + rebind-canonical.sh 可执行
+已知限制：
+  - 已有 postgres 卷需手动运行 init-cebu-legacy-db.sh（init 脚本仅首次建卷）
+  - EVENT_STREAM_KEY 仍为 stream:events（前缀迁移留 SP03）
+  - Cebu legacy 容器需 --profile legacy-cebu，默认不全栈启动
+
+验证 Agent：Cursor Agent（SP02 验证）
+验证日期：2026-06-11
+验证结果：
+  - docker compose config OK
+  - init-cebu-legacy-db.sh → database cebu + role cebu_app
+  - rebind-canonical.sh → frontend-pc bind /Users/mac/Code_Start/Aislos/Ainerwise/frontend-pc
+  - :4099/procurement 显示采购工作台（非 Nuxt 默认页）
+  - procurement E2E 8 passed
+结论：VERIFIED
+```

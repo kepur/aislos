@@ -1,0 +1,63 @@
+# SP02 — Shared platform middleware (PostgreSQL, Redis, MinIO).
+# Start alone for legacy Cebu联调 or as the base layer for the full stack:
+#   docker compose -f docker-compose.infrastructure.yml up -d
+name: ainerwise
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ainerwise}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ainerwise_dev_2024}
+      POSTGRES_DB: ${POSTGRES_DB:-ainerwise}
+      # Used by docker/postgres/init/02-cebu-legacy-database.sql
+      CEBU_LEGACY_DB_PASSWORD: ${CEBU_LEGACY_DB_PASSWORD:-cebu_legacy_dev}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ainerwise}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-ainerwise_redis_dev}
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-ainerwise_redis_dev}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-ainerwise}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-ainerwise_minio_dev}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pg_data:
+  redis_data:
+  minio_data:

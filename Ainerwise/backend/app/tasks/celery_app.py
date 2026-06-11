@@ -9,6 +9,8 @@ celery_app = Celery(
     backend=settings.REDIS_URL,
 )
 
+_REDIS_PREFIX = "ainerwise:celery:"
+
 celery_app.conf.update(
     task_serializer="json",
     accept_content=["json"],
@@ -18,6 +20,8 @@ celery_app.conf.update(
     task_track_started=True,
     task_acks_late=True,
     worker_prefetch_multiplier=1,
+    broker_transport_options={"global_keyprefix": _REDIS_PREFIX},
+    result_backend_transport_options={"global_keyprefix": _REDIS_PREFIX},
     imports=(
         "app.tasks.notification_tasks",
         "app.tasks.event_tasks",

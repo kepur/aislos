@@ -1,0 +1,24 @@
+# SP02 — Optional Cebu legacy backend on shared middleware (migration source only).
+#   docker compose -f docker-compose.infrastructure.yml -f docker-compose.legacy-cebu.yml --profile legacy-cebu up -d
+name: ainerwise
+
+services:
+  cebu-backend:
+    profiles: ["legacy-cebu"]
+    build:
+      context: ../CebuProjects/backend
+      dockerfile: Dockerfile
+    env_file:
+      - ../CebuProjects/backend/.env.legacy-shared.example
+    ports:
+      - "8100:8000"
+    volumes:
+      - ../CebuProjects/backend:/app
+      - cebu_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  cebu_uploads:

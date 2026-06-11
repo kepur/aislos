@@ -28,8 +28,11 @@ reviewed third-party listings). Real business → data → agents → platform �
 
 ```bash
 cp .env.example .env
-docker compose up -d
+./scripts/shared-platform/up-core.sh
+# 或：docker compose up -d
 ```
+
+共享中间件与 Cebu legacy profile：见 [docs/shared-platform/LOCAL_DEV_PROFILES.md](docs/shared-platform/LOCAL_DEV_PROFILES.md)。
 
 | Service | URL |
 |---------|-----|

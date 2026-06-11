@@ -31,7 +31,8 @@ checkout_drift_risk:
     - ai-orchestrator
     - channel-gateway
     - nginx
-  remediation: SP02 — docker compose up -d per service from canonical cwd (user-approved window)
+  remediation: SP02 — scripts/shared-platform/rebind-canonical.sh from canonical cwd
+  status_after_sp02: remediation_script_available
 
 services:
   - name: postgres
@@ -67,7 +68,7 @@ postgresql:
       schema: public
       app_role: ainerwise
       migration_owner: ainerwise/backend/alembic
-      current_head: "028"
+      current_head: "032"
       single_head_required: true
     - name: cebu-legacy
       database: cebu
@@ -81,7 +82,7 @@ postgresql:
 redis:
   auth: env REDIS_PASSWORD
   namespaces:
-    - prefix: "celery:"
+    - prefix: "ainerwise:celery:"
       owner: ainerwise-core
       queues: [default, ai_ingestion, automation]
     - prefix: "stream:"
@@ -89,9 +90,10 @@ redis:
       streams:
         - key: stream:events
           consumer_groups: [domain-consumers]
-    - prefix: "cebu:"
+    - prefix: "cebu-legacy:"
       owner: cebu-legacy
-      status: planned_sp02
+      status: active_sp02
+      note: legacy celery/cache when cebu-backend profile enabled
 
 minio:
   endpoint: minio:9000
