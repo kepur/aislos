@@ -25,6 +25,7 @@ from app.api.v1.endpoints import (
     integrations,
     knowledge,
     leads,
+    legacy_bridge,
     payments,
     partner_portal,
     rfqs,
@@ -87,6 +88,7 @@ api_router.include_router(media_integration.router)
 api_router.include_router(media_integration.admin_router)
 api_router.include_router(portal.router)
 api_router.include_router(procurement.router)
+api_router.include_router(legacy_bridge.router)
 api_router.include_router(notifications.router)
 api_router.include_router(telegram.router)
 api_router.include_router(integrations.router)

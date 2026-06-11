@@ -56,3 +56,6 @@ uploads/
 # Logs
 *.log
 logs/
+
+# SP06 local backups
+Ainerwise/backups/

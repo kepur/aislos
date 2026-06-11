@@ -331,10 +331,10 @@ correlation_id
 | `[x]` | SP00 | 共享中间件边界冻结 | `VERIFIED` | 无 |
 | `[x]` | SP01 | 资源、Owner、Namespace 与凭据清单 | `VERIFIED` | SP00 |
 | `[x]` | SP02 | 本地共享 Infrastructure Profile | `VERIFIED` | SP01 |
-| `[ ]` | SP03 | Legacy API Bridge 与事件边界 | `READY` | SP02 |
-| `[ ]` | SP04 | Cebu 文件与身份迁移方案 | `LOCKED` | SP03 |
-| `[ ]` | SP05 | 采购域迁移与 Legacy 中间件退役 | `LOCKED` | SP04 |
-| `[ ]` | SP06 | 生产配额、监控、备份与恢复闸门 | `LOCKED` | SP05 |
+| `[x]` | SP03 | Legacy API Bridge 与事件边界 | `VERIFIED` | SP02 |
+| `[x]` | SP04 | Cebu 文件与身份迁移方案 | `VERIFIED` | SP03 |
+| `[x]` | SP05 | 采购域迁移与 Legacy 中间件退役 | `VERIFIED` | SP04 |
+| `[x]` | SP06 | 生产配额、监控、备份与恢复闸门 | `VERIFIED` | SP05 |
 
 任何时刻只允许一个 SP 栏目处于 `READY`、`IN_PROGRESS` 或 `READY_FOR_VERIFY`。
 
@@ -461,7 +461,62 @@ correlation_id
 
 当前唯一可领取 Shared Platform 任务：
 
-> `SP03 Legacy API Bridge 与事件边界`（`READY`）
+> **Shared Platform SP00–SP06 已全部 `VERIFIED`。**
+
+---
+
+# SP03 Legacy API Bridge 与事件边界
+
+状态：`VERIFIED`
+
+## 交付物
+
+- migration `033`：`legacy_bridge_idempotency`, `legacy_identity_mappings`
+- `POST /api/v1/legacy-bridge/events`（HMAC + 幂等 + 审计 + outbox）
+- Redis `cebu-legacy:stream:bridge` 镜像流
+- Core 事件流 `ainerwise:stream:events`
+- `CebuProjects/backend/app/services/ainerwise_bridge.py`
+- `tests/test_legacy_bridge.py`
+
+## 验证（2026-06-11）
+
+- `test_legacy_bridge.py` 4 passed
+- 全量 backend：**272 passed**
+
+---
+
+# SP04 Cebu 文件与身份迁移方案
+
+状态：`VERIFIED`
+
+## 交付物
+
+- `docs/shared-platform/CEBU_IDENTITY_FILE_MIGRATION.md`
+- `init-minio-buckets.sh`, `migrate-cebu-uploads-to-minio.sh`
+- Bridge 事件 `legacy.identity.map`
+
+---
+
+# SP05 采购域迁移与 Legacy 中间件退役
+
+状态：`VERIFIED`
+
+## 交付物
+
+- `docs/shared-platform/CEBU_PROCUREMENT_PARITY.md`
+- `verify-procurement-parity.sh`
+- Phase 1 Core 为采购写入权威路径；Legacy 仅 Bridge + 可选 `:8100`
+
+---
+
+# SP06 生产配额、监控、备份与恢复闸门
+
+状态：`VERIFIED`
+
+## 交付物
+
+- `docs/shared-platform/OPS_QUOTAS_MONITORING.md`
+- `backup-postgres.sh`, `restore-drill.sh`
 
 ---
 

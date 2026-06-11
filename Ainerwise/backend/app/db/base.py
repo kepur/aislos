@@ -14,6 +14,7 @@ from app.models.file import FileAsset  # noqa: F401
 from app.models.certification import CertificationRecord, WarrantyPolicy  # noqa: F401
 from app.models.region import Region  # noqa: F401
 from app.models.audit import AuditLog  # noqa: F401
+from app.models.legacy_bridge import LegacyBridgeIdempotency, LegacyIdentityMapping  # noqa: F401
 from app.models.portal_policy import PortalPolicy  # noqa: F401
 from app.models.procurement import (  # noqa: F401
     BoqItem,

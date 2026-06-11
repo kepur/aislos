@@ -68,7 +68,7 @@ postgresql:
       schema: public
       app_role: ainerwise
       migration_owner: ainerwise/backend/alembic
-      current_head: "032"
+      current_head: "033"
       single_head_required: true
     - name: cebu-legacy
       database: cebu
@@ -88,7 +88,7 @@ redis:
     - prefix: "stream:"
       owner: ainerwise-core
       streams:
-        - key: stream:events
+        - key: ainerwise:stream:events
           consumer_groups: [domain-consumers]
     - prefix: "cebu-legacy:"
       owner: cebu-legacy

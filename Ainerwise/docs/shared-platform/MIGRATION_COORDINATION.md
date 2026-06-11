@@ -16,7 +16,7 @@
 
 | 链 | 路径 | 当前 head | 单一 head |
 |---|---|---|:---:|
-| Ainerwise Core | `Ainerwise/backend/alembic/versions/` | `028` | ✅ |
+| Ainerwise Core | `Ainerwise/backend/alembic/versions/` | `033` | ✅ |
 | Cebu Legacy | （独立仓库/链，未并入） | — | 独立 |
 
 ### 近期 revision 归属
@@ -26,6 +26,8 @@
 | 024 | Procurement C01 | portal_policies |
 | 025–027 | Marketing MI01–MI04 | creative briefs / media requests |
 | 028 | Procurement C02 | audit_logs 扩展 |
+| 029–032 | Procurement C03–C07 | projects / boq / packages / RFQ |
+| 033 | Shared Platform SP03/SP04 | legacy bridge + identity mappings |
 
 ## 3. 领取 migration 写锁流程
 

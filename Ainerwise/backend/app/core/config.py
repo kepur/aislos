@@ -81,6 +81,11 @@ class Settings(BaseSettings):
     SIGN_BASE_URL: str = "http://localhost:4099"
     SERVICE_TOKEN: str = "ainerwise_service_dev"
 
+    # SP03 — Cebu legacy bridge (separate from user JWT and SERVICE_TOKEN)
+    LEGACY_BRIDGE_CLIENT_ID: str = "cebu-legacy"
+    LEGACY_BRIDGE_SECRET: str = "cebu_legacy_bridge_dev_change_me"
+    LEGACY_BRIDGE_MAX_SKEW_SECONDS: int = 300
+
     class Config:
         env_file = ".env"
         case_sensitive = True

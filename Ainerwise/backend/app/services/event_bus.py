@@ -20,7 +20,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.models.integration import IntegrationEvent
 
-EVENT_STREAM_KEY = "stream:events"
+EVENT_STREAM_KEY = "ainerwise:stream:events"
 EVENT_STREAM_MAXLEN = 10_000
 RELAY_BATCH_SIZE = 100
 

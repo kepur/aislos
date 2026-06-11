@@ -39,6 +39,21 @@ cp .env.example .env
 
 C01–C09 已全部 `VERIFIED`。运行手册：`Ainerwise/docs/procurement_phase1_runbook.md`。
 
+## Shared Platform
+
+SP00–SP06 已全部 `VERIFIED`。Legacy → Core 通过签名 Bridge：
+
+```bash
+# Cebu 发布采购需求到 Core（示例）
+AINERWISE_CORE_URL=http://localhost:8000 LEGACY_BRIDGE_SECRET=... python -c "
+import asyncio
+from app.services.ainerwise_bridge import post_legacy_event
+asyncio.run(post_legacy_event(event_type='procurement.request.created', payload={'legacy_request_id':'x','contact_email':'a@b.c'}))
+"
+```
+
+详见 `SHARED_PLATFORM_MIDDLEWARE_PLAN.md`。
+
 ## 禁止
 
 - 在 `/Users/mac/Code_Start/Ainerwise` 等旧 checkout 继续开发

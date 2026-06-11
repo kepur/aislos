@@ -31,7 +31,9 @@ docker compose -f docker-compose.infrastructure.yml -f docker-compose.legacy-ceb
 | 资源 | Ainerwise Core | Cebu Legacy |
 |------|----------------|-------------|
 | PostgreSQL | database `ainerwise` | database `cebu` / role `cebu_app` |
-| Redis Celery | prefix `ainerwise:celery:` | 独立进程时使用 `cebu-legacy:`（SP03 bridge） |
+| Redis Celery | prefix `ainerwise:celery:` | 独立进程时使用 `cebu-legacy:` |
+| Legacy Bridge | `POST /api/v1/legacy-bridge/events` | HMAC 签名 + 幂等键 |
+| Event streams | `ainerwise:stream:events` / `cebu-legacy:stream:bridge` | Core / Legacy 隔离 |
 | MinIO | 业务 buckets | `cebu-import`（SP04 规划） |
 | API 端口 | `8000` | `8100` |
 

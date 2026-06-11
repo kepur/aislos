@@ -13,6 +13,7 @@ from app.models.file import FileAsset
 from app.models.certification import CertificationRecord, WarrantyPolicy
 from app.models.region import Region
 from app.models.audit import AuditLog
+from app.models.legacy_bridge import LegacyBridgeIdempotency, LegacyIdentityMapping
 from app.models.portal_policy import PortalPolicy
 from app.models.procurement import (
     BoqItem,
@@ -97,6 +98,7 @@ __all__ = [
     "CertificationRecord", "WarrantyPolicy",
     "Region",
     "AuditLog",
+    "LegacyBridgeIdempotency", "LegacyIdentityMapping",
     "PortalPolicy",
     "ProcurementProject", "ProcurementProjectFact", "ProcurementTemplate",
     "BoqVersion", "BoqItem", "BoqItemOption", "SolutionPlan",
