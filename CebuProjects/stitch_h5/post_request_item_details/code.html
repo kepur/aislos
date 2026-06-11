@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Post Request Step 2 - Item Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#4d5a9c",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "on-background": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "surface-container": "#e5eeff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-surface-variant": "#454652",
+                        "on-secondary-container": "#394687",
+                        "primary": "#24389c",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-low": "#eff4ff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#dee1ff",
+                        "on-surface": "#0b1c30",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#00105c",
+                        "primary-fixed": "#dee0ff",
+                        "on-tertiary-fixed": "#301400",
+                        "secondary-container": "#abb7ff",
+                        "outline": "#757684",
+                        "on-primary-container": "#cacfff",
+                        "inverse-surface": "#213145",
+                        "background": "#f8f9ff",
+                        "tertiary-container": "#8f4700",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-primary": "#bac3ff",
+                        "surface-tint": "#4355b9",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#6c3400",
+                        "error": "#ba1a1a",
+                        "primary-container": "#3f51b5",
+                        "surface-dim": "#cbdbf5",
+                        "surface": "#f8f9ff",
+                        "primary-fixed-dim": "#bac3ff"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    fontFamily: {
+                        "h2": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"]
+                    },
+                    fontSize: {
+                        "h2": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "h3": ["18px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "600" }],
+                        "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0", fontWeight: "400" }],
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+                        "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "400" }],
+                        "h1": ["24px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Base styles to handle safe areas and scrolling */
+        html, body {
+            height: 100%;
+            overscroll-behavior-y: none;
+        }
+        body {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .pb-safe {
+            padding-bottom: calc(max(1rem, env(safe-area-inset-bottom)));
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #c5c5d4;
+            border-radius: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-hidden flex flex-col h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between px-4 h-14 w-full max-w-screen-md mx-auto">
+<button class="w-10 h-10 flex items-center justify-center rounded-full active:opacity-70 transition-opacity tap-highlight-transparent cursor-pointer text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex flex-col items-center">
+<h1 class="font-['Inter'] text-sm font-medium tracking-tight text-indigo-600 dark:text-indigo-400 font-bold">Item Details</h1>
+<span class="font-label-sm text-label-sm text-outline">Step 2 of 3</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full active:opacity-70 transition-opacity tap-highlight-transparent cursor-pointer text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-1 bg-surface-variant">
+<div class="h-full bg-primary" style="width: 66%;"></div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto w-full max-w-screen-md mx-auto pt-[60px] pb-[96px] px-margin-mobile">
+<div class="py-md space-y-xl">
+<!-- Section: Primary Details -->
+<section class="space-y-md">
+<h2 class="font-h3 text-h3 text-on-surface">Basic Information</h2>
+<div class="space-y-sm">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="request-title">Request Title <span class="text-error">*</span></label>
+<input class="w-full h-[52px] px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow placeholder-outline" id="request-title" placeholder="e.g., iPhone 13 Pro Max 256GB" required="" type="text"/>
+</div>
+<div class="space-y-sm">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="category">Category <span class="text-error">*</span></label>
+<div class="relative">
+<select class="w-full h-[52px] pl-4 pr-10 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow appearance-none" id="category" required="">
+<option disabled="" selected="" value="">Select a category</option>
+<option value="electronics">Electronics</option>
+<option value="vehicles">Vehicles</option>
+<option value="industrial">Industrial Equipment</option>
+<option value="other">Other</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-gutter-mobile">
+<div class="space-y-sm">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="brand">Brand</label>
+<input class="w-full h-[52px] px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow placeholder-outline" id="brand" placeholder="e.g., Apple" type="text"/>
+</div>
+<div class="space-y-sm">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="model">Model</label>
+<input class="w-full h-[52px] px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow placeholder-outline" id="model" placeholder="e.g., 13 Pro Max" type="text"/>
+</div>
+</div>
+</section>
+<hr class="border-t border-surface-variant"/>
+<!-- Section: Condition & Requirements -->
+<section class="space-y-md">
+<h2 class="font-h3 text-h3 text-on-surface">Requirements</h2>
+<div class="space-y-sm">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="condition">Minimum Condition <span class="text-error">*</span></label>
+<div class="relative">
+<select class="w-full h-[52px] pl-4 pr-10 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow appearance-none" id="condition" required="">
+<option disabled="" selected="" value="">Select condition</option>
+<option value="new">Brand New</option>
+<option value="like-new">Like New / Refurbished</option>
+<option value="used-good">Used - Good</option>
+<option value="any">Any Condition</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-gutter-mobile">
+<div class="space-y-sm">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="quantity">Quantity <span class="text-error">*</span></label>
+<input class="w-full h-[52px] px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow placeholder-outline" id="quantity" min="1" placeholder="1" required="" type="number"/>
+</div>
+<div class="space-y-sm">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="unit">Unit</label>
+<div class="relative">
+<select class="w-full h-[52px] pl-4 pr-10 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow appearance-none" id="unit">
+<option value="items">Items</option>
+<option value="pallets">Pallets</option>
+<option value="kg">Kg</option>
+<option value="tons">Tons</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Accept Alternatives Toggle -->
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg border border-surface-variant">
+<div class="flex-1 pr-4">
+<p class="font-label-md text-label-md text-on-surface">Accept Alternatives</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Allow sellers to offer similar items if exact match isn't available.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</section>
+<hr class="border-t border-surface-variant"/>
+<!-- Section: Budget -->
+<section class="space-y-md">
+<h2 class="font-h3 text-h3 text-on-surface">Budget</h2>
+<div class="flex space-x-gutter-mobile">
+<div class="space-y-sm flex-1">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="currency">Currency</label>
+<div class="relative">
+<select class="w-full h-[52px] pl-4 pr-10 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow appearance-none" id="currency">
+<option value="USD">USD ($)</option>
+<option value="EUR">EUR (€)</option>
+<option value="GBP">GBP (£)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="space-y-sm flex-[2]">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="max-budget">Max Budget (Total) <span class="text-error">*</span></label>
+<input class="w-full h-[52px] px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow placeholder-outline" id="max-budget" placeholder="0.00" required="" type="number"/>
+</div>
+</div>
+</section>
+<hr class="border-t border-surface-variant"/>
+<!-- Section: Details & Attachments -->
+<section class="space-y-md">
+<h2 class="font-h3 text-h3 text-on-surface">Additional Details</h2>
+<div class="space-y-sm">
+<label class="block font-label-sm text-label-sm text-on-surface-variant" for="notes">Notes / Specifications</label>
+<textarea class="w-full p-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow placeholder-outline resize-none" id="notes" placeholder="Describe specific requirements, acceptable color variations, or required certifications..." rows="4"></textarea>
+</div>
+<div class="space-y-sm">
+<label class="block font-label-sm text-label-sm text-on-surface-variant">Photos / Attachments</label>
+<div class="w-full h-32 border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center bg-surface-container-lowest hover:bg-surface-container-low transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-outline text-3xl mb-2">upload_file</span>
+<p class="font-label-md text-label-md text-on-surface">Tap to upload files</p>
+<p class="font-label-sm text-label-sm text-outline mt-1">PNG, JPG, PDF up to 10MB</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Sticky Bottom Actions -->
+<div class="fixed bottom-0 w-full z-50 bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)] pb-safe">
+<div class="flex items-center justify-between w-full max-w-screen-md mx-auto p-4 space-x-4">
+<button class="flex-1 h-[56px] rounded-lg border border-outline-variant text-on-surface font-label-md text-label-md flex items-center justify-center active:bg-surface-variant transition-colors">
+                Save Draft
+            </button>
+<button class="flex-1 h-[56px] rounded-lg bg-primary text-on-primary font-label-md text-label-md flex items-center justify-center active:bg-primary-container transition-colors shadow-sm">
+                Next Step
+                <span class="material-symbols-outlined ml-2 text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

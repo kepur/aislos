@@ -1,0 +1,26 @@
+{
+  "name": "ainerwise-admin",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --port 4097",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@css-render/vue3-ssr": "^0.15.14",
+    "@nuxtjs/i18n": "^9.0.0",
+    "@pinia/nuxt": "^0.9.0",
+    "@vueuse/nuxt": "^12.0.0",
+    "naive-ui": "^2.40.0",
+    "nuxt": "^3.21.8",
+    "pinia": "^2.3.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
+}

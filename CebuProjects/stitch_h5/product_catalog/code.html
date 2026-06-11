@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Supplier Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#354282",
+                        "tertiary-container": "#8f4700",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#24389c",
+                        "surface-container-high": "#dce9ff",
+                        "surface-dim": "#cbdbf5",
+                        "surface-container-highest": "#d3e4fe",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-primary": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "on-tertiary-container": "#ffc7a2",
+                        "error": "#ba1a1a",
+                        "secondary": "#4d5a9c",
+                        "primary-container": "#3f51b5",
+                        "surface-tint": "#4355b9",
+                        "background": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "surface-bright": "#f8f9ff",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary": "#6c3400",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "on-secondary-fixed": "#021355",
+                        "on-primary-fixed": "#00105c",
+                        "surface": "#f8f9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "secondary-container": "#abb7ff",
+                        "outline": "#757684",
+                        "outline-variant": "#c5c5d4",
+                        "on-secondary-container": "#394687",
+                        "on-surface": "#0b1c30",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed": "#dee1ff",
+                        "on-primary-container": "#cacfff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#dee0ff",
+                        "on-surface-variant": "#454652",
+                        "inverse-primary": "#bac3ff",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "gutter-mobile": "12px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #f8f9ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen pb-24 md:pb-0 md:pl-[280px]">
+<!-- TopAppBar (Mobile & Web Header) -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 shadow-sm md:w-[calc(100%-280px)] md:left-[280px]">
+<div class="flex items-center justify-between px-4 h-16 w-full font-['Inter'] antialiased">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors p-2 rounded-full active:scale-95 duration-150 md:hidden" data-icon="swap_horizontal_circle">swap_horizontal_circle</span>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Catalog</h1>
+</div>
+<!-- Search & Filter Container -->
+<div class="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-2 w-96 border border-outline-variant/30">
+<span class="material-symbols-outlined text-outline mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none outline-none focus:ring-0 text-body-md text-on-surface w-full placeholder-outline" placeholder="Search catalog..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button aria-label="Search" class="md:hidden text-primary p-2 rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button aria-label="Filter" class="text-primary p-2 rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors p-2 rounded-full active:scale-95 duration-150" data-icon="notifications">notifications</span>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Web Sidebar) -->
+<aside class="hidden md:flex flex-col py-6 bg-white dark:bg-slate-900 h-full w-[280px] rounded-r-2xl divide-y divide-slate-100 dark:divide-slate-800 shadow-2xl fixed left-0 top-0 z-40">
+<div class="px-6 pb-6 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold font-h3">
+                A
+            </div>
+<div>
+<div class="text-lg font-black text-primary">Admin Console</div>
+<div class="text-sm font-medium font-['Inter'] text-outline">System Oversight</div>
+</div>
+</div>
+<nav class="flex-1 py-4 flex flex-col gap-1 px-4 text-sm font-medium font-['Inter']">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-r-4 border-primary transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined filled" data-icon="inventory_2">inventory_2</span>
+                Catalog
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+                Verifications
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+                Disputes
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+                Risk
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:opacity-80 mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-20 px-margin-mobile md:px-lg max-w-7xl mx-auto space-y-sm">
+<!-- Category Filter Chips (Scrollable) -->
+<div class="flex overflow-x-auto hide-scrollbar gap-sm pb-2">
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-primary text-on-primary font-label-md shadow-sm transition-transform active:scale-95">All Items</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-high text-on-surface font-label-md hover:bg-surface-variant transition-colors border border-outline-variant/20">Electronics</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-high text-on-surface font-label-md hover:bg-surface-variant transition-colors border border-outline-variant/20">Industrial</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-high text-on-surface font-label-md hover:bg-surface-variant transition-colors border border-outline-variant/20">Apparel</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-high text-on-surface font-label-md hover:bg-surface-variant transition-colors border border-outline-variant/20">Medical</button>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md mt-4">
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/10 flex flex-col gap-sm relative overflow-hidden group">
+<div class="absolute top-4 right-4 z-10 flex gap-2">
+<span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm bg-opacity-90">Active</span>
+</div>
+<div class="flex gap-4">
+<div class="w-24 h-24 rounded-lg bg-surface-container-low flex-shrink-0 overflow-hidden relative">
+<img alt="Dell XPS Laptop" class="w-full h-full object-cover" data-alt="A sleek, modern high-end laptop positioned diagonally on a clean, bright white studio surface. The lighting is soft and diffused, creating a premium, minimalist corporate aesthetic with deep blacks contrasting against the pristine background. The mood is professional and technologically advanced, suitable for a B2B marketplace catalog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHphs9vvSF2M7U1IZWRxV5q0Hk9Wqwh4UasBgh2MrLUAWagh8GB5HrbNYuWCXL_iFJOBvxjjwiXayLYUT4Yp641l4Vsb7WDORyWWucN9X0u_H3GU3fsnCsCgzKYz-3x9B4wWjK-G5wodq-ufu2wuPM7L0EcpTBw7lSPz3udak2UNcd1xriMdFbrSOxYkjd4oZn_qvvV17qsf6V7aEO9tkDLo-h6FjF3VysEWWhxbSxfl5qWdBKI-sAFE595WY6Ak1pyMx9uapCok8"/>
+</div>
+<div class="flex flex-col justify-between py-1 flex-1">
+<div>
+<h3 class="font-h3 text-on-surface line-clamp-2">Dell Latitude 7420 Business Laptop</h3>
+<p class="font-body-md text-outline mt-1">Electronics</p>
+</div>
+<div class="flex justify-between items-end mt-2">
+<span class="font-h2 text-primary">$1,249.00</span>
+<span class="font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="inventory_2">inventory_2</span>
+                                42 in stock
+                            </span>
+</div>
+</div>
+</div>
+<div class="h-px w-full bg-outline-variant/20 my-2"></div>
+<div class="flex justify-between items-center">
+<label class="flex items-center cursor-pointer gap-2">
+<div class="relative">
+<input checked="" class="sr-only" type="checkbox"/>
+<div class="block bg-primary w-10 h-6 rounded-full transition"></div>
+<div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform translate-x-4"></div>
+</div>
+<span class="font-label-sm text-on-surface-variant">Active Status</span>
+</label>
+<button aria-label="Edit Item" class="text-primary hover:bg-primary-container/10 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/10 flex flex-col gap-sm relative overflow-hidden group">
+<div class="absolute top-4 right-4 z-10 flex gap-2">
+<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm bg-opacity-90">Low Stock</span>
+</div>
+<div class="flex gap-4">
+<div class="w-24 h-24 rounded-lg bg-surface-container-low flex-shrink-0 overflow-hidden relative">
+<img alt="Professional Headphones" class="w-full h-full object-cover" data-alt="A pair of premium over-ear professional studio headphones resting on a minimalist grey surface. The lighting is dramatic but clean, highlighting the matte black finish and brushed metal details of the device. The composition is structured and corporate, evoking high-fidelity audio equipment in a modern B2B catalog setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIdsrhtcVTy_gjP4BUcawollhB5WBDRARuGjafApJ5DgE78uZFvjqlxIfPb6RYiEgTN1vPUs3EFCF4EQbJXkNta9i7rY2MxapvCj4Aik5j5iuiiMXve1W2b9r0aoeoyfERWI-BBqyNuLhQ2XQZ4TkTkQCfYSPUmeuQvDiJYjkDWNDVj4bTuzt7u2BNn9ds9x0IcrVxy0n2wxDZVWD5-7uqPUM2kDR-YGN94NuZXiA8FI4z6uiwufCNMs0sG9-ZoTxOS60i9eVZ02Y"/>
+</div>
+<div class="flex flex-col justify-between py-1 flex-1">
+<div>
+<h3 class="font-h3 text-on-surface line-clamp-2">Sony WH-1000XM4 Noise Canceling</h3>
+<p class="font-body-md text-outline mt-1">Electronics</p>
+</div>
+<div class="flex justify-between items-end mt-2">
+<span class="font-h2 text-primary">$348.00</span>
+<span class="font-label-sm text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="warning">warning</span>
+                                3 in stock
+                            </span>
+</div>
+</div>
+</div>
+<div class="h-px w-full bg-outline-variant/20 my-2"></div>
+<div class="flex justify-between items-center">
+<label class="flex items-center cursor-pointer gap-2">
+<div class="relative">
+<input checked="" class="sr-only" type="checkbox"/>
+<div class="block bg-primary w-10 h-6 rounded-full transition"></div>
+<div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform translate-x-4"></div>
+</div>
+<span class="font-label-sm text-on-surface-variant">Active Status</span>
+</label>
+<button aria-label="Edit Item" class="text-primary hover:bg-primary-container/10 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+<!-- Product Card 3 (Inactive) -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/10 flex flex-col gap-sm relative overflow-hidden group opacity-75">
+<div class="absolute top-4 right-4 z-10 flex gap-2">
+<span class="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm bg-opacity-90">Inactive</span>
+</div>
+<div class="flex gap-4">
+<div class="w-24 h-24 rounded-lg bg-surface-container-low flex-shrink-0 overflow-hidden relative">
+<div class="w-full h-full bg-slate-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-3xl" data-icon="image">image</span>
+</div>
+</div>
+<div class="flex flex-col justify-between py-1 flex-1">
+<div>
+<h3 class="font-h3 text-on-surface line-clamp-2">Cisco Meraki MR46 Access Point</h3>
+<p class="font-body-md text-outline mt-1">Networking</p>
+</div>
+<div class="flex justify-between items-end mt-2">
+<span class="font-h2 text-outline">$899.00</span>
+<span class="font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="inventory_2">inventory_2</span>
+                                0 in stock
+                            </span>
+</div>
+</div>
+</div>
+<div class="h-px w-full bg-outline-variant/20 my-2"></div>
+<div class="flex justify-between items-center">
+<label class="flex items-center cursor-pointer gap-2">
+<div class="relative">
+<input class="sr-only" type="checkbox"/>
+<div class="block bg-slate-300 w-10 h-6 rounded-full transition"></div>
+<div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition"></div>
+</div>
+<span class="font-label-sm text-on-surface-variant">Active Status</span>
+</label>
+<button aria-label="Edit Item" class="text-primary hover:bg-primary-container/10 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (Mobile Only) -->
+<button class="md:hidden fixed bottom-20 right-4 w-14 h-14 bg-primary text-on-primary rounded-2xl shadow-lg flex items-center justify-center z-40 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar (Mobile Shell) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 pb-safe bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<div class="flex justify-around items-center h-16 px-2 w-full">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-medium font-['Inter'] mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="text-[10px] font-medium font-['Inter'] mt-1">Post</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="local_offer">local_offer</span>
+<span class="text-[10px] font-medium font-['Inter'] mt-1">Offers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl py-1 px-3 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined filled" data-icon="inventory_2">inventory_2</span>
+<span class="text-[10px] font-medium font-['Inter'] mt-1">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-medium font-['Inter'] mt-1">Account</span>
+</a>
+</div>
+</nav>
+<!-- Custom Checkbox Styling Helper -->
+<style>
+        input:checked ~ .block { background-color: theme('colors.primary'); }
+        input:checked ~ .dot { transform: translateX(100%); }
+    </style>
+</body></html>

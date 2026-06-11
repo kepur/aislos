@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Platform Settings - Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#ba1a1f",
+                        "on-surface": "#1a1c1c",
+                        "tertiary": "#615c41",
+                        "primary": "#b6171d",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "tertiary-container": "#7a7558",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3f4",
+                        "background": "#f9f9f9",
+                        "secondary-container": "#8fe3ff",
+                        "on-primary-fixed-variant": "#93000f",
+                        "outline": "#8f6f6c",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "on-tertiary-container": "#fffbff",
+                        "surface": "#f9f9f9",
+                        "surface-variant": "#e2e2e2",
+                        "on-primary-fixed": "#410003",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f9f9f9",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#001f27",
+                        "on-primary-container": "#fffbff",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "primary-fixed": "#ffdad6",
+                        "tertiary-fixed": "#ebe3c0",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "primary-container": "#da3432",
+                        "on-error": "#ffffff",
+                        "secondary": "#00677d",
+                        "on-background": "#1a1c1c",
+                        "surface-dim": "#dadada",
+                        "surface-container": "#eeeeee",
+                        "on-surface-variant": "#5b403d",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#b4ebff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#00667c",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "surface-container-highest": "#e2e2e2",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e8e8e8",
+                        "outline-variant": "#e4beba",
+                        "inverse-primary": "#ffb3ac"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "container-max": "1280px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "base": "4px",
+                        "md": "24px",
+                        "xl": "64px",
+                        "sm": "16px"
+                    },
+                    "fontFamily": {
+                        "display": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9f9; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+        /* Custom scrollbar for inner panes */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e2e2; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #dadada; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased flex h-screen overflow-hidden">
+<!-- Shared Component: SideNavBar -->
+<nav class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full py-8 z-40 hidden md:flex">
+<!-- Header -->
+<div class="px-6 mb-10 flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant">corporate_fare</span>
+</div>
+<div>
+<h2 class="font-black text-slate-900 dark:text-white font-h3 text-h3 tracking-tight">Global Admin</h2>
+<p class="font-label-caps text-label-caps text-slate-500 uppercase tracking-widest mt-1">Enterprise Tier</p>
+</div>
+</div>
+<!-- Main Nav Links -->
+<div class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:icon-fill transition-all">dashboard</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:icon-fill transition-all">group</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:icon-fill transition-all">verified_user</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Verification</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:icon-fill transition-all">storefront</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Marketplace</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:icon-fill transition-all">account_balance</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Escrow</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:icon-fill transition-all">gavel</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Disputes</span>
+</a>
+</div>
+<!-- Footer Nav Links -->
+<div class="px-4 mt-auto space-y-1">
+<!-- ACTIVE STATE -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 text-[#FF4F49] border-r-4 border-[#FF4F49] duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined icon-fill">settings</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:icon-fill transition-all">help</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-0 md:ml-64 flex flex-col h-screen overflow-hidden bg-background">
+<!-- Sticky Page Header -->
+<header class="bg-surface-container-lowest border-b border-surface-variant px-lg py-md flex justify-between items-center z-10 shrink-0">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface">Platform Settings</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Configure global application parameters, localization, and security policies.</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2.5 rounded border border-outline font-label-caps text-label-caps text-on-surface hover:bg-surface-container transition-colors">
+                    Discard Changes
+                </button>
+<button class="px-6 py-2.5 rounded bg-primary font-label-caps text-label-caps text-on-primary hover:bg-on-primary-fixed-variant transition-colors shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">save</span>
+                    Save Configuration
+                </button>
+</div>
+</header>
+<!-- Scrollable Settings Layout -->
+<div class="flex-1 overflow-y-auto p-lg flex justify-center">
+<div class="max-w-container-max w-full flex gap-gutter">
+<!-- Internal Settings Sidebar (Desktop only for this layout) -->
+<aside class="w-64 shrink-0 hidden lg:block">
+<div class="sticky top-0 space-y-1">
+<a class="block px-4 py-3 rounded-lg bg-surface-container-high text-on-surface font-body-sm text-body-sm font-medium border border-outline-variant" href="#general">
+                            General &amp; Locale
+                        </a>
+<a class="block px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container font-body-sm text-body-sm transition-colors" href="#financial">
+                            Financial Engine
+                        </a>
+<a class="block px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container font-body-sm text-body-sm transition-colors" href="#disputes">
+                            Disputes &amp; SLA
+                        </a>
+<a class="block px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container font-body-sm text-body-sm transition-colors" href="#security">
+                            System &amp; Security
+                        </a>
+</div>
+</aside>
+<!-- Settings Forms Area -->
+<div class="flex-1 space-y-lg pb-xl">
+<!-- Section: General & Localization (Bento Grid Style) -->
+<section class="scroll-mt-lg" id="general">
+<h2 class="font-h3 text-h3 text-on-surface mb-md">General &amp; Locale</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Identity Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm col-span-1 md:col-span-2">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-sm border-b border-surface-variant pb-2">Platform Identity</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md mt-4">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface mb-2">Platform Name</label>
+<input class="w-full bg-surface border border-outline-variant rounded px-4 py-2 font-data-mono text-data-mono text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="text" value="{{APP_NAME}}"/>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface mb-2">Primary Domain</label>
+<input class="w-full bg-surface border border-outline-variant rounded px-4 py-2 font-data-mono text-data-mono text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="text" value="{{APP_DOMAIN}}"/>
+</div>
+</div>
+<div class="mt-6 flex items-center justify-between p-4 bg-surface-container-low border border-surface-variant rounded">
+<div>
+<p class="font-body-md text-body-md text-on-surface font-medium">Regional Operation Mode</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Toggle between Global deployment or Localized sandbox environments.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<!-- Languages Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-sm border-b border-surface-variant pb-2">Supported Languages</h3>
+<div class="mt-4 flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-primary-fixed text-on-primary-fixed font-data-mono text-data-mono rounded flex items-center gap-1 border border-primary-fixed-dim cursor-pointer">
+                                        EN <span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="px-3 py-1.5 bg-surface text-on-surface font-data-mono text-data-mono rounded flex items-center gap-1 border border-outline-variant hover:bg-surface-container cursor-pointer">
+                                        FR
+                                    </span>
+<span class="px-3 py-1.5 bg-surface text-on-surface font-data-mono text-data-mono rounded flex items-center gap-1 border border-outline-variant hover:bg-surface-container cursor-pointer">
+                                        DE
+                                    </span>
+<span class="px-3 py-1.5 bg-primary-fixed text-on-primary-fixed font-data-mono text-data-mono rounded flex items-center gap-1 border border-primary-fixed-dim cursor-pointer">
+                                        ES <span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<button class="px-3 py-1.5 bg-surface text-on-surface font-data-mono text-data-mono rounded flex items-center gap-1 border border-dashed border-outline hover:border-primary hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[14px]">add</span> Add
+                                    </button>
+</div>
+</div>
+<!-- Currencies Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-sm border-b border-surface-variant pb-2">Supported Currencies</h3>
+<div class="mt-4 flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-primary-fixed text-on-primary-fixed font-data-mono text-data-mono rounded flex items-center gap-1 border border-primary-fixed-dim cursor-pointer">
+                                        USD <span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="px-3 py-1.5 bg-primary-fixed text-on-primary-fixed font-data-mono text-data-mono rounded flex items-center gap-1 border border-primary-fixed-dim cursor-pointer">
+                                        EUR <span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="px-3 py-1.5 bg-surface text-on-surface font-data-mono text-data-mono rounded flex items-center gap-1 border border-outline-variant hover:bg-surface-container cursor-pointer">
+                                        GBP
+                                    </span>
+<span class="px-3 py-1.5 bg-surface text-on-surface font-data-mono text-data-mono rounded flex items-center gap-1 border border-outline-variant hover:bg-surface-container cursor-pointer">
+                                        JPY
+                                    </span>
+<button class="px-3 py-1.5 bg-surface text-on-surface font-data-mono text-data-mono rounded flex items-center gap-1 border border-dashed border-outline hover:border-primary hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[14px]">add</span> Add
+                                    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Financial Engine -->
+<section class="scroll-mt-lg" id="financial">
+<h2 class="font-h3 text-h3 text-on-surface mb-md">Financial Engine</h2>
+<!-- Payment Providers Bento -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm mb-md">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-4 flex justify-between items-center">
+                                Payment Providers
+                                <span class="material-symbols-outlined text-[16px]">account_balance_wallet</span>
+</h3>
+<div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+<!-- Provider Card -->
+<div class="border border-primary bg-primary-fixed rounded p-4 flex flex-col items-center justify-center gap-2 cursor-pointer relative overflow-hidden">
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary"></div>
+<span class="material-symbols-outlined text-[32px] text-on-surface">credit_card</span>
+<span class="font-label-caps text-label-caps text-on-surface">Stripe</span>
+</div>
+<div class="border border-outline-variant bg-surface rounded p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-outline transition-colors grayscale opacity-60">
+<span class="material-symbols-outlined text-[32px] text-on-surface">account_balance</span>
+<span class="font-label-caps text-label-caps text-on-surface">Bank Transfer</span>
+</div>
+<div class="border border-primary bg-primary-fixed rounded p-4 flex flex-col items-center justify-center gap-2 cursor-pointer relative overflow-hidden">
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary"></div>
+<span class="material-symbols-outlined text-[32px] text-on-surface">payments</span>
+<span class="font-label-caps text-label-caps text-on-surface">Payoneer</span>
+</div>
+<div class="border border-primary bg-primary-fixed rounded p-4 flex flex-col items-center justify-center gap-2 cursor-pointer relative overflow-hidden">
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary"></div>
+<span class="material-symbols-outlined text-[32px] text-on-surface">currency_bitcoin</span>
+<span class="font-label-caps text-label-caps text-on-surface">USDT</span>
+</div>
+<div class="border border-outline-variant border-dashed bg-surface-container-lowest rounded p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary hover:text-primary transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-[24px]">add</span>
+<span class="font-label-caps text-label-caps">Add Provider</span>
+</div>
+</div>
+</div>
+<!-- Escrow Rules Form -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex flex-col md:flex-row gap-lg">
+<div class="flex-1">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-4">Escrow Logistics</h3>
+<div class="space-y-4">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface mb-2">Auto-Release Timer (Days)</label>
+<div class="flex items-center">
+<input class="w-24 bg-surface border border-outline-variant rounded-l px-4 py-2 font-data-mono text-data-mono text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none" type="number" value="14"/>
+<span class="bg-surface-container px-4 py-2 border border-l-0 border-outline-variant rounded-r font-body-sm text-body-sm text-on-surface-variant">Days after delivery</span>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface mb-2">Standard Escrow Fee (%)</label>
+<div class="flex items-center">
+<input class="w-24 bg-surface border border-outline-variant rounded-l px-4 py-2 font-data-mono text-data-mono text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none" type="text" value="2.5"/>
+<span class="bg-surface-container px-4 py-2 border border-l-0 border-outline-variant rounded-r font-body-sm text-body-sm text-on-surface-variant">%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="w-px bg-surface-variant hidden md:block"></div>
+<div class="flex-1 bg-surface-container-low p-4 rounded border border-surface-variant">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5">info</span>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface font-medium">Escrow Policy Notice</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">Changes to auto-release timers will only affect newly created contracts. Existing active contracts will honor the SLA defined at the time of their inception.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+</body></html>

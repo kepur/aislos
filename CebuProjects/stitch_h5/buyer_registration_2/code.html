@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Buyer Registration - {{APP_NAME}}</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#293ca0",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#213145",
+                        "surface-tint": "#4355b9",
+                        "primary-fixed-dim": "#bac3ff",
+                        "on-primary-fixed": "#00105c",
+                        "primary-fixed": "#dee0ff",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-dim": "#cbdbf5",
+                        "surface-container-high": "#dce9ff",
+                        "on-surface": "#0b1c30",
+                        "inverse-primary": "#bac3ff",
+                        "background": "#f8f9ff",
+                        "surface-bright": "#f8f9ff",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-secondary-fixed": "#021355",
+                        "outline": "#757684",
+                        "secondary-fixed": "#dee1ff",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary": "#6c3400",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-variant": "#d3e4fe",
+                        "secondary": "#4d5a9c",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-secondary-container": "#394687",
+                        "on-primary-container": "#cacfff",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary-container": "#8f4700",
+                        "secondary-container": "#abb7ff",
+                        "primary-container": "#3f51b5",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "surface-container-highest": "#d3e4fe",
+                        "primary": "#24389c",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-surface-variant": "#454652"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+        
+        /* Form Specific Styles */
+        input:focus, select:focus { outline: none; border-color: #24389c; box-shadow: 0 0 0 1px #24389c; }
+        .form-floating { position: relative; }
+        .form-floating input, .form-floating select { height: 52px; padding: 20px 12px 4px; border: 1px solid #c5c5d4; border-radius: 0.5rem; width: 100%; background-color: #ffffff; color: #0b1c30; }
+        .form-floating label { position: absolute; top: 0; left: 0; height: 100%; padding: 16px 12px; pointer-events: none; border: 1px solid transparent; transform-origin: 0 0; transition: opacity .1s ease-in-out,transform .1s ease-in-out; color: #757684; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; }
+        .form-floating input:focus ~ label, .form-floating input:not(:placeholder-shown) ~ label,
+        .form-floating select:focus ~ label, .form-floating select:not([value=""]) ~ label { opacity: .65; transform: scale(.85) translateY(-0.5rem) translateX(0.15rem); color: #24389c; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased font-body-md h-screen flex flex-col overflow-x-hidden pt-safe">
+<!-- Top Navigation for Linear Flow -->
+<header class="bg-surface-container-lowest flex items-center justify-between px-md h-16 w-full shadow-sm sticky top-0 z-50">
+<button class="text-primary p-2 -ml-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<div class="text-on-surface font-h3 text-h3 flex-1 text-center">Register as Buyer</div>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto pb-32">
+<div class="p-margin-mobile flex flex-col gap-lg max-w-lg mx-auto">
+<!-- Header Section -->
+<div class="text-center mt-md mb-sm">
+<h1 class="font-h1 text-h1 text-on-background mb-sm">Create Your Account</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Join {{APP_NAME}} to access premium reverse e-commerce transactions securely.</p>
+</div>
+<!-- Registration Form inside a Card -->
+<form class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md flex flex-col gap-md border border-outline-variant/30">
+<h2 class="font-h3 text-h3 text-on-surface mb-xs border-b border-surface-container pb-sm">Personal Information</h2>
+<!-- Full Name -->
+<div class="form-floating">
+<input class="font-body-md text-body-md" id="fullName" placeholder=" " required="" type="text"/>
+<label for="fullName">Full Name</label>
+</div>
+<!-- Email -->
+<div class="form-floating">
+<input class="font-body-md text-body-md" id="email" placeholder=" " required="" type="email"/>
+<label for="email">Email Address</label>
+</div>
+<!-- Phone -->
+<div class="form-floating">
+<input class="font-body-md text-body-md" id="phone" placeholder=" " required="" type="tel"/>
+<label for="phone">Phone Number</label>
+</div>
+<!-- Password -->
+<div class="form-floating relative">
+<input class="font-body-md text-body-md pr-12" id="password" placeholder=" " required="" type="password"/>
+<label for="password">Password</label>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="visibility_off">visibility_off</span>
+</button>
+</div>
+<h2 class="font-h3 text-h3 text-on-surface mt-sm mb-xs border-b border-surface-container pb-sm">Location &amp; Preferences</h2>
+<!-- Country -->
+<div class="form-floating">
+<select class="font-body-md text-body-md appearance-none" id="country" required="">
+<option disabled="" hidden="" selected="" value=""></option>
+<option value="us">United States</option>
+<option value="uk">United Kingdom</option>
+<option value="ca">Canada</option>
+<option value="au">Australia</option>
+</select>
+<label for="country">Country</label>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-outline">
+<span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- City -->
+<div class="form-floating">
+<input class="font-body-md text-body-md" id="city" placeholder=" " required="" type="text"/>
+<label for="city">City</label>
+</div>
+<!-- Currency -->
+<div class="form-floating mb-sm">
+<select class="font-body-md text-body-md appearance-none" id="currency" required="">
+<option disabled="" hidden="" selected="" value=""></option>
+<option value="usd">USD ($)</option>
+<option value="gbp">GBP (£)</option>
+<option value="eur">EUR (€)</option>
+</select>
+<label for="currency">Preferred Currency</label>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-outline">
+<span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Terms Checkbox -->
+<div class="flex items-start gap-3 mt-xs bg-surface-container-low p-3 rounded-lg border border-surface-container-highest">
+<div class="flex items-center h-5">
+<input class="w-5 h-5 text-primary border-outline-variant rounded focus:ring-primary focus:ring-2 bg-surface-container-lowest" id="terms" required="" type="checkbox"/>
+</div>
+<div class="text-sm">
+<label class="font-body-md text-body-md text-on-surface-variant" for="terms">
+                            I agree to the <a class="text-primary font-medium hover:underline" href="#">Terms of Service</a> and <a class="text-primary font-medium hover:underline" href="#">Privacy Policy</a>.
+                        </label>
+</div>
+</div>
+</form>
+<!-- Security Indicator -->
+<div class="flex items-center justify-center gap-xs text-on-surface-variant py-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-label-sm text-label-sm">256-bit Secure Encrypted Connection</span>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Action Button -->
+<div class="fixed bottom-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-md border-t border-surface-container p-margin-mobile pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] active:bg-on-primary-fixed-variant transition-all shadow-sm" type="submit">
+<span>Create Account</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</body></html>

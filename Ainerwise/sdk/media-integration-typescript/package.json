@@ -1,0 +1,13 @@
+{
+  "name": "@aislos/media-integration",
+  "version": "1.0.0",
+  "description": "AISLOS Media Integration TypeScript SDK (V1)",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "files": ["dist", "src"],
+  "license": "UNLICENSED"
+}

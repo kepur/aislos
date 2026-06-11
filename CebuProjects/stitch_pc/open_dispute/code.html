@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Open Dispute - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-container": "#8fe3ff",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-tint": "#ba1a1f",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "surface-variant": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "outline": "#8f6f6c",
+                        "on-primary-fixed": "#410003",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#615c41",
+                        "surface-container-low": "#f3f3f4",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "on-secondary-fixed": "#001f27",
+                        "surface": "#f9f9f9",
+                        "outline-variant": "#e4beba",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-secondary-container": "#00667c",
+                        "primary": "#b6171d",
+                        "on-surface-variant": "#5b403d",
+                        "primary-fixed": "#ffdad6",
+                        "primary-container": "#da3432",
+                        "on-surface": "#1a1c1c",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed": "#b4ebff",
+                        "inverse-surface": "#2f3131",
+                        "tertiary-container": "#7a7558",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ebe3c0",
+                        "on-primary-fixed-variant": "#93000f",
+                        "surface-dim": "#dadada",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "on-primary-container": "#fffbff",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f9f9f9",
+                        "on-background": "#1a1c1c",
+                        "inverse-on-surface": "#f0f1f1",
+                        "inverse-primary": "#ffb3ac",
+                        "secondary": "#00677d",
+                        "background": "#f9f9f9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "16px",
+                        "xl": "64px",
+                        "xs": "8px",
+                        "lg": "40px",
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "md": "24px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background antialiased flex w-full min-h-screen">
+<!-- Shared Component: SideNavBar -->
+<nav class="fixed h-full w-64 left-0 top-0 z-40 border-r border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col h-full py-8 px-4 font-inter text-[13px] font-medium">
+<div class="mb-10 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-rose-500 flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined" style="font-size: 20px;">account_balance</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-slate-900 dark:text-white leading-tight">ProcurePing</h1>
+<p class="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Enterprise Portal</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2 flex-1">
+<!-- Inactive Tab -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">storefront</span>
+                Marketplace
+            </a>
+<!-- Inactive Tab -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">gavel</span>
+                Active Bids
+            </a>
+<!-- Inactive Tab -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">groups</span>
+                Suppliers
+            </a>
+<!-- Active Tab (Contracts matches the context of opening a dispute) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-400 font-bold border-r-4 border-rose-500 ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+                Contracts
+            </a>
+<!-- Inactive Tab -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</div>
+<div class="mt-auto flex flex-col gap-2 pt-8 border-t border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+                Help Center
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-1 ml-64 p-lg pb-xl">
+<!-- Header -->
+<header class="mb-lg">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-caps text-label-caps mb-xs uppercase">
+<span>Contracts</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>ORD-2983-X</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary">Dispute Resolution</span>
+</div>
+<h1 class="font-h1 text-h1 text-on-surface">Open Dispute</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 max-w-2xl">
+                Initiate a formal dispute process for this contract. The supplier will be notified immediately, and escrow funds will remain locked until a resolution is reached.
+            </p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Main Form Area (8 cols) -->
+<div class="lg:col-span-8 space-y-md">
+<form class="bg-surface-container-lowest border border-surface-container-high rounded-xl p-md shadow-sm">
+<h2 class="font-h3 text-h3 text-on-surface border-b border-surface-variant pb-sm mb-sm">Dispute Details</h2>
+<!-- Dispute Reason Dropdown -->
+<div class="mb-sm">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-xs" for="disputeReason">
+                            Dispute Reason
+                        </label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface border border-outline text-on-surface rounded-lg px-sm py-3 font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="disputeReason" name="disputeReason">
+<option disabled="" selected="" value="">Select primary reason for dispute...</option>
+<option value="quality">Substandard Material Quality</option>
+<option value="delivery">Severe Delivery Delay</option>
+<option value="quantity">Short Quantity Delivered</option>
+<option value="specs">Failure to Meet Technical Specs</option>
+<option value="other">Other (Explain below)</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-sm text-on-surface-variant">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Detailed Description Textarea -->
+<div class="mb-md">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-xs" for="detailedDescription">
+                            Detailed Description
+                        </label>
+<textarea class="w-full bg-surface border border-outline text-on-surface rounded-lg p-sm font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-y" id="detailedDescription" name="detailedDescription" placeholder="Provide a comprehensive account of the issue. Include dates, specific discrepancies, and any communication attempts made prior to opening this dispute." rows="5"></textarea>
+</div>
+<h2 class="font-h3 text-h3 text-on-surface border-b border-surface-variant pb-sm mb-sm mt-lg">Requested Resolution</h2>
+<!-- Requested Resolution Pills/Radio -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm mb-md">
+<label class="relative cursor-pointer">
+<input class="peer sr-only" name="resolution" type="radio" value="full_refund"/>
+<div class="p-sm rounded-lg border border-outline bg-surface peer-checked:bg-error-container peer-checked:border-error transition-colors flex items-start gap-sm">
+<span class="material-symbols-outlined text-outline peer-checked:text-error mt-0.5">currency_exchange</span>
+<div>
+<div class="font-h3 text-body-lg text-on-surface peer-checked:text-on-error-container font-semibold">Full Refund</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant peer-checked:text-on-error-container/80 mt-1">Cancel contract and return all escrowed funds.</div>
+</div>
+</div>
+</label>
+<label class="relative cursor-pointer">
+<input class="peer sr-only" name="resolution" type="radio" value="partial_refund"/>
+<div class="p-sm rounded-lg border border-outline bg-surface peer-checked:bg-error-container peer-checked:border-error transition-colors flex items-start gap-sm">
+<span class="material-symbols-outlined text-outline peer-checked:text-error mt-0.5">percent</span>
+<div>
+<div class="font-h3 text-body-lg text-on-surface peer-checked:text-on-error-container font-semibold">Partial Refund</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant peer-checked:text-on-error-container/80 mt-1">Keep goods but negotiate a reduced price.</div>
+</div>
+</div>
+</label>
+<label class="relative cursor-pointer">
+<input class="peer sr-only" name="resolution" type="radio" value="replacement"/>
+<div class="p-sm rounded-lg border border-outline bg-surface peer-checked:bg-error-container peer-checked:border-error transition-colors flex items-start gap-sm">
+<span class="material-symbols-outlined text-outline peer-checked:text-error mt-0.5">swap_horiz</span>
+<div>
+<div class="font-h3 text-body-lg text-on-surface peer-checked:text-on-error-container font-semibold">Replacement</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant peer-checked:text-on-error-container/80 mt-1">Supplier ships new compliant materials.</div>
+</div>
+</div>
+</label>
+<label class="relative cursor-pointer">
+<input class="peer sr-only" name="resolution" type="radio" value="correction"/>
+<div class="p-sm rounded-lg border border-outline bg-surface peer-checked:bg-error-container peer-checked:border-error transition-colors flex items-start gap-sm">
+<span class="material-symbols-outlined text-outline peer-checked:text-error mt-0.5">build</span>
+<div>
+<div class="font-h3 text-body-lg text-on-surface peer-checked:text-on-error-container font-semibold">Supplier Correction</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant peer-checked:text-on-error-container/80 mt-1">Supplier fixes the issue on-site or post-delivery.</div>
+</div>
+</div>
+</label>
+</div>
+<!-- Evidence Upload Area -->
+<h2 class="font-h3 text-h3 text-on-surface border-b border-surface-variant pb-sm mb-sm mt-lg">Supporting Evidence</h2>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center text-center bg-surface hover:bg-surface-container-low transition-colors cursor-pointer mb-lg">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-sm text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 32px;">upload_file</span>
+</div>
+<h4 class="font-h3 text-h3 text-on-surface mb-xs">Drag &amp; drop files here</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">or click to browse from your computer</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Accepted: PDF, JPG, PNG, DOCX (Max 25MB total)</p>
+</div>
+<!-- Submit Action -->
+<div class="flex justify-end pt-sm border-t border-surface-variant">
+<button class="bg-surface text-on-surface border border-outline font-body-md text-body-md px-lg py-3 rounded-lg mr-sm hover:bg-surface-container-high transition-colors font-semibold" type="button">
+                            Cancel
+                        </button>
+<button class="bg-error text-on-error font-body-md text-body-md px-lg py-3 rounded-lg shadow-sm flex items-center gap-2 hover:bg-surface-tint transition-colors font-bold" type="submit">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
+                            Submit Formal Dispute
+                        </button>
+</div>
+</form>
+</div>
+<!-- Sidebar Info Area (4 cols) -->
+<div class="lg:col-span-4 space-y-md">
+<!-- Escrow Status Card -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-xl p-md shadow-sm">
+<div class="flex items-center gap-3 mb-sm">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase">Escrow Status</h3>
+<div class="font-h3 text-h3 text-on-surface">Funds Secured</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">
+                        Opening a dispute will immediately halt the automatic release schedule for these funds.
+                    </p>
+<div class="bg-surface rounded-lg p-sm border border-surface-container-high">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Locked Amount</span>
+<span class="font-data-mono text-data-mono text-on-surface font-bold text-lg">$245,000.00 USD</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2">
+<div class="bg-error h-2 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</div>
+<!-- Order Summary Card -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-xl p-md shadow-sm">
+<h3 class="font-h3 text-h3 text-on-surface border-b border-surface-variant pb-sm mb-sm">Contract Summary</h3>
+<div class="space-y-sm">
+<div class="flex justify-between items-start border-b border-surface-variant pb-sm">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Contract ID</span>
+<span class="font-data-mono text-data-mono text-on-surface font-medium">ORD-2983-X</span>
+</div>
+<div class="flex justify-between items-start border-b border-surface-variant pb-sm">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Supplier</span>
+<div class="text-right">
+<span class="font-body-sm text-body-sm text-on-surface font-semibold block">GlobalTech Manufacturing Inc.</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-1 flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[12px] text-tertiary">verified</span>
+                                    Verified Supplier
+                                </span>
+</div>
+</div>
+<div class="flex justify-between items-start border-b border-surface-variant pb-sm">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Fulfillment Date</span>
+<span class="font-data-mono text-data-mono text-on-surface">Oct 24, 2023</span>
+</div>
+<div class="flex justify-between items-start border-b border-surface-variant pb-sm">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Items</span>
+<div class="text-right">
+<span class="font-body-sm text-body-sm text-on-surface block">Industrial Grade Servers (Rack X)</span>
+<span class="font-data-mono text-data-mono text-on-surface-variant block mt-1">Qty: 50 Units</span>
+</div>
+</div>
+<div class="flex justify-between items-center pt-xs">
+<span class="font-body-md text-body-md text-on-surface font-semibold">Total Value</span>
+<span class="font-data-mono text-data-mono text-on-surface font-bold text-xl">$245,000.00</span>
+</div>
+</div>
+</div>
+<!-- Support Info -->
+<div class="bg-surface border border-outline-variant rounded-xl p-md">
+<div class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">info</span>
+<div>
+<h4 class="font-body-sm text-body-sm text-on-surface font-semibold mb-1">Dispute Resolution Process</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[13px] leading-relaxed">
+                                Once submitted, ProcurePing arbitration officers typically review standard disputes within 48-72 business hours. Both parties will be required to submit all relevant communications via the portal.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

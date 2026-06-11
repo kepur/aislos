@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Categories - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"tertiary-fixed": "#ebe3c0", "surface-container": "#eeeeee", "tertiary-container": "#7a7558", error: "#ba1a1a", "surface-container-highest": "#e2e2e2", "primary-container": "#da3432", "surface-container-lowest": "#ffffff", "surface-container-high": "#e8e8e8", background: "#f9f9f9", "on-primary-container": "#fffbff", "inverse-on-surface": "#f0f1f1", "on-primary-fixed-variant": "#93000f", "on-tertiary": "#ffffff", "on-surface-variant": "#5b403d", surface: "#f9f9f9", "surface-container-low": "#f3f3f4", "on-background": "#1a1c1c", "inverse-surface": "#2f3131", "on-error": "#ffffff", "on-secondary-fixed": "#001f27", "inverse-primary": "#ffb3ac", "primary-fixed-dim": "#ffb3ac", "on-surface": "#1a1c1c", "on-secondary": "#ffffff", "on-secondary-fixed-variant": "#004e5f", "tertiary-fixed-dim": "#cec7a5", "on-primary": "#ffffff", "primary-fixed": "#ffdad6", primary: "#b6171d", "on-tertiary-container": "#fffbff", "secondary-fixed-dim": "#7dd2ee", "surface-bright": "#f9f9f9", "surface-dim": "#dadada", secondary: "#00677d", "on-error-container": "#93000a", tertiary: "#615c41", "secondary-container": "#8fe3ff", "surface-variant": "#e2e2e2", "on-primary-fixed": "#410003", "secondary-fixed": "#b4ebff", "on-tertiary-fixed": "#1f1c06", outline: "#8f6f6c", "surface-tint": "#ba1a1f", "on-secondary-container": "#00667c", "on-tertiary-fixed-variant": "#4b472d", "outline-variant": "#e4beba", "error-container": "#ffdad6"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}, spacing: {md: "24px", lg: "40px", "container-max": "1280px", xs: "8px", sm: "16px", base: "4px", xl: "64px", gutter: "24px"}, fontFamily: {"label-caps": ["Inter"], "body-sm": ["Inter"], display: ["Inter"], "data-mono": ["Inter"], h3: ["Inter"], h2: ["Inter"], h1: ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"], headline: ["Inter"], body: ["Inter"], label: ["Inter"]}, fontSize: {"label-caps": ["12px", {lineHeight: "1", letterSpacing: "0.05em", fontWeight: "700"}], "body-sm": ["14px", {lineHeight: "1.5", fontWeight: "400"}], display: ["48px", {lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "700"}], "data-mono": ["14px", {lineHeight: "1", fontWeight: "500"}], h3: ["20px", {lineHeight: "1.4", fontWeight: "600"}], h2: ["24px", {lineHeight: "1.3", fontWeight: "600"}], h1: ["32px", {lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "600"}], "body-md": ["16px", {lineHeight: "1.6", fontWeight: "400"}], "body-lg": ["18px", {lineHeight: "1.6", fontWeight: "400"}]}}}};</script>
+<style>
+        body {
+            background-color: #fbf8ff; /* background */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
+<div class="flex items-center justify-between px-10 py-4 max-w-[1440px] mx-auto w-full">
+<!-- Brand Logo -->
+<a class="text-2xl font-black tracking-tighter text-blue-700 dark:text-blue-500 font-h2" href="#">ProcurePing</a>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-sm font-sans antialiased text-sm font-medium tracking-tight">
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300 font-body-sm" href="#">How it Works</a>
+<a class="text-blue-700 dark:text-blue-400 border-b-2 border-blue-700 pb-1 font-body-sm" href="#">Categories</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300 font-body-sm" href="#">Solutions</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-sm">
+<button class="hidden lg:flex items-center gap-xs px-sm py-xs text-blue-600 dark:text-blue-400 font-label-caps border border-slate-200 rounded hover:bg-slate-50 transition-colors">Become a Supplier</button>
+<button class="flex items-center gap-xs px-sm py-xs bg-primary text-on-primary font-label-caps rounded hover:bg-primary-fixed-variant transition-colors active:scale-95 duration-150">Post a Request</button>
+<div class="hidden md:flex items-center gap-xs ml-xs text-slate-600">
+<span class="material-symbols-outlined hover:text-blue-700 cursor-pointer transition-colors" data-icon="language">language</span>
+<span class="material-symbols-outlined hover:text-blue-700 cursor-pointer transition-colors" data-icon="payments">payments</span>
+<span class="material-symbols-outlined hover:text-blue-700 cursor-pointer transition-colors" data-icon="public">public</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow pt-32 pb-xl px-lg max-w-container-max mx-auto w-full">
+<!-- Header Section -->
+<div class="mb-xl flex flex-col md:flex-row justify-between items-end gap-md">
+<div class="max-w-2xl">
+<h1 class="font-display text-display text-on-background mb-xs">Procurement Categories</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Browse our comprehensive global marketplace categories. Find verified suppliers for exact specifications across major industries.</p>
+</div>
+<!-- Search Bar -->
+<div class="w-full md:w-96 relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-xl pr-sm py-sm bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-surface-tint focus:ring-1 focus:ring-surface-tint font-body-md text-on-surface transition-colors shadow-sm" placeholder="Search categories, items, or specs..." type="text"/>
+</div>
+</div>
+<!-- Categories Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Construction -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+<div class="flex items-start justify-between mb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="architecture">architecture</span>
+</div>
+<h2 class="font-h3 text-h3 text-on-surface">Construction</h2>
+</div>
+</div>
+<div class="mb-md flex-grow">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Example Attributes</h3>
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Specs</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Grade</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Delivery Radius</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Volume</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-sm rounded-lg border border-surface-variant">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-base">Sample Request</h3>
+<p class="font-body-sm text-body-sm text-on-surface italic">"10,000 tons of Grade A steel rebar, delivery within 50 miles of Berlin site by Q3."</p>
+</div>
+</div>
+<!-- Marine -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+<div class="flex items-start justify-between mb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="directions_boat">directions_boat</span>
+</div>
+<h2 class="font-h3 text-h3 text-on-surface">Marine</h2>
+</div>
+</div>
+<div class="mb-md flex-grow">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Example Attributes</h3>
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Vessel Type</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Tonnage</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Certification</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Port</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-sm rounded-lg border border-surface-variant">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-base">Sample Request</h3>
+<p class="font-body-sm text-body-sm text-on-surface italic">"Dry bulk carrier charter for 50k MT grain, US Gulf to Japan, laycan next month."</p>
+</div>
+</div>
+<!-- Auto -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+<div class="flex items-start justify-between mb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="directions_car">directions_car</span>
+</div>
+<h2 class="font-h3 text-h3 text-on-surface">Auto</h2>
+</div>
+</div>
+<div class="mb-md flex-grow">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Example Attributes</h3>
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Part Number</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">OEM/Aftermarket</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Quantity</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-sm rounded-lg border border-surface-variant">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-base">Sample Request</h3>
+<p class="font-body-sm text-body-sm text-on-surface italic">"5,000 units of OEM brake pads (Part #BP-2094), ISO 9001 certified supplier required."</p>
+</div>
+</div>
+<!-- IT / Office -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+<div class="flex items-start justify-between mb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="computer">computer</span>
+</div>
+<h2 class="font-h3 text-h3 text-on-surface">IT / Office</h2>
+</div>
+</div>
+<div class="mb-md flex-grow">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Example Attributes</h3>
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Hardware/Software</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Licensing</span>
+<span class="px-2 py-1 bg-surface-container-low text-on-surface-variant rounded font-body-sm text-xs">Support SLA</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-sm rounded-lg border border-surface-variant">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-base">Sample Request</h3>
+<p class="font-body-sm text-body-sm text-on-surface italic">"Enterprise procurement of 200 high-performance workstations with 3-year on-site support."</p>
+</div>
+</div>
+</div>
+<!-- Custom Request CTA -->
+<div class="mt-xl bg-primary-container rounded-xl p-lg flex flex-col md:flex-row items-center justify-between gap-md border border-outline-variant shadow-sm">
+<div>
+<h2 class="font-h2 text-h2 text-on-primary-container mb-xs">Can't find what you need?</h2>
+<p class="font-body-md text-body-md text-on-primary-container/80">Submit a custom request. Our network covers niche markets and specialized requirements.</p>
+</div>
+<button class="whitespace-nowrap px-lg py-sm bg-surface-container-lowest text-primary font-label-caps rounded-lg hover:bg-surface-container-low transition-colors shadow-sm active:scale-95 duration-150 flex items-center gap-xs">
+                Create Custom Request
+                <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-blue-600 dark:text-blue-400 font-sans text-xs uppercase tracking-widest font-semibold mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-10 py-20 max-w-[1440px] mx-auto">
+<div class="flex flex-col gap-sm">
+<span class="text-xl font-bold text-slate-900 dark:text-white">ProcurePing</span>
+<p class="text-slate-500 dark:text-slate-500 normal-case tracking-normal">© 2024 ProcurePing. Global Procurement Excellence.</p>
+</div>
+<div class="flex flex-col gap-sm">
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">How it Works</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Categories</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Solutions</a>
+</div>
+<div class="flex flex-col gap-sm">
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Language</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Currency</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Region</a>
+</div>
+<div class="flex flex-col gap-sm">
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>

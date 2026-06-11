@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post Request: Image Upload Search - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#8fe3ff",
+                        "background": "#f9f9f9",
+                        "on-primary-fixed": "#410003",
+                        "inverse-surface": "#2f3131",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f9f9f9",
+                        "surface-dim": "#dadada",
+                        "outline-variant": "#e4beba",
+                        "tertiary-container": "#7a7558",
+                        "secondary": "#00677d",
+                        "surface-bright": "#f9f9f9",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ebe3c0",
+                        "surface-container-low": "#f3f3f4",
+                        "on-secondary-fixed": "#001f27",
+                        "inverse-primary": "#ffb3ac",
+                        "surface-variant": "#e2e2e2",
+                        "primary": "#b6171d",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "surface-tint": "#ba1a1f",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed": "#b4ebff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-secondary-container": "#00667c",
+                        "tertiary": "#615c41",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-container-high": "#e8e8e8",
+                        "outline": "#8f6f6c",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-fixed-variant": "#93000f",
+                        "on-background": "#1a1c1c",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-surface-variant": "#5b403d",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#da3432",
+                        "on-primary-container": "#fffbff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffdad6",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "8px",
+                        "md": "24px",
+                        "lg": "40px",
+                        "container-max": "1280px",
+                        "xl": "64px",
+                        "sm": "16px",
+                        "gutter": "24px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- TopNavBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between px-10 py-4 w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-black tracking-tight text-slate-900 dark:text-white text-[#FF4F49]">ProcurePing</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors active:scale-95 duration-150" href="#">Marketplace</a>
+<a class="text-slate-900 dark:text-white border-b-2 border-[#FF4F49] pb-1 hover:text-[#FF4F49] transition-colors active:scale-95 duration-150" href="#">Bids</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors active:scale-95 duration-150" href="#">Analytics</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors active:scale-95 duration-150" href="#">Contracts</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3 text-slate-500">
+<button class="hover:text-[#FF4F49] transition-colors active:scale-95 duration-150"><span class="material-symbols-outlined" data-icon="language">language</span></button>
+<button class="hover:text-[#FF4F49] transition-colors active:scale-95 duration-150"><span class="material-symbols-outlined" data-icon="payments">payments</span></button>
+<button class="hover:text-[#FF4F49] transition-colors active:scale-95 duration-150"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+</div>
+<div class="hidden md:flex items-center gap-3">
+<button class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors active:scale-95 duration-150">Login</button>
+<button class="bg-[#FF4F49] text-white px-4 py-2 rounded-DEFAULT font-medium hover:bg-primary-container transition-colors active:scale-95 duration-150">Create RFP</button>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="bg-white dark:bg-slate-900 h-screen w-64 border-r fixed left-0 top-0 border-r border-slate-100 dark:border-slate-800 flat no shadows flex flex-col h-full p-4 gap-2 hidden lg:flex mt-[73px] z-40">
+<div class="px-4 py-6 border-b border-surface-variant mb-4">
+<div class="flex items-center gap-3">
+<img alt="Organization Logo" class="w-10 h-10 rounded-full object-cover border border-surface-variant" data-alt="A modern, abstract geometric logo featuring interlocking blue and grey shapes, representing a global procurement and logistics company. The design is sleek, professional, and corporate, set against a pristine white background with sharp, clear lighting. The overall mood is reliable and efficient." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfwqGKpS0gGpf-4SjdoOhf0A8Tamvu795F3NhvjwFrkoHk_EhGA3X_h08CBsBePmyB_fNT8N4cASYC8PyAgFssnLrkbbahhwTtXMI_Ps7HY6wfrBqA3ph_WBXRvllpv642uv5coejuRQUkhjKsOhXNTfKlUTG04PRv7e9bsgbi2_ta5NWj95NiBN4nnB-eYhEeMTlzDhijJvUa7sbKcSKXw9Dc8edA7g3XBr0mjPg4OWP9Rozwh4xnfMe4ggOZruTqNDDr-UFJzY7a"/>
+<div>
+<h2 class="font-bold text-slate-900 dark:text-white font-h3 text-h3 leading-tight">Supplier Portal</h2>
+<p class="text-on-surface-variant font-body-sm text-body-sm">Global Procurement</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-slate-50 dark:bg-slate-800 text-[#FF4F49] font-semibold rounded-lg hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49]" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span class="font-['Inter'] text-sm">Active Bids</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-['Inter'] text-sm">Suppliers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-['Inter'] text-sm">KYB Status</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-['Inter'] text-sm">Documents</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Inter'] text-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-surface-variant pt-4 pb-2">
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-['Inter'] text-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-['Inter'] text-sm">Sign Out</span>
+</a>
+<button class="w-full mt-4 bg-surface-container text-on-surface py-2 rounded-DEFAULT font-medium hover:bg-surface-container-high transition-colors focus:ring-2 focus:ring-[#FF4F49] text-sm border border-surface-variant">Upgrade Account</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-64 p-lg bg-background w-full max-w-container-max mx-auto overflow-y-auto">
+<div class="mb-lg">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm mb-4">
+<a class="hover:text-primary transition-colors" href="#">Bids</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Create RFP</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface font-medium">Image Search</span>
+</div>
+<h1 class="font-h1 text-h1 text-on-surface mb-2">Identify Item via AI</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Upload an image of the part or equipment you need to procure. Our visual AI will analyze it to suggest categories, specifications, and potential suppliers.</p>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-gutter">
+<!-- Upload & Preview Area -->
+<div class="xl:col-span-7 flex flex-col gap-md">
+<!-- Image Preview Card -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md relative shadow-sm">
+<div class="aspect-video w-full rounded-lg overflow-hidden relative group border border-surface-variant bg-surface-container flex items-center justify-center">
+<img alt="Industrial Pump Upload" class="w-full h-full object-cover" data-alt="A high-resolution photograph of a heavy-duty industrial centrifugal pump painted in a vibrant, slightly weathered teal. The pump is resting on a clean, light grey concrete floor within a brightly lit, modern industrial facility. The lighting is crisp and cool, casting soft, precise shadows that highlight the metallic textures and bolt details of the equipment. The visual style is highly realistic, technical, and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8n2tYflZN_hiaLkJiyi4y5_Yu8A6WpbPfk_bJZgOI_U2zRwa1oG0dv6NNlqtdo7CgMFxiPyNgaGqZlGFjO_6Zzn0atHxiOqgUDcgHZ46mAzYFMU13lVvOVrO4GoavU4HpmYdJfGTzeOBXk5hpK2Czb2I4uRy1VwIk0N4Hqy2-IhUQLAZIo1XRKNgksTJJrjaFugtpUQQJ5ptUiVQ_C3b90vgpm1QdpsVq8rYzQmmyS_26JAwOxvHD7zsBWM-RnbPUt_IrXluXsP31"/>
+<!-- AI Scanning Overlay -->
+<div class="absolute inset-0 bg-secondary/10 backdrop-blur-[2px] border-2 border-secondary/50 pointer-events-none rounded-lg flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="w-full h-1 bg-secondary/50 absolute top-1/4 animate-pulse shadow-[0_0_15px_rgba(0,103,125,0.5)]"></div>
+</div>
+<!-- Bounding Boxes (Simulated AI Focus) -->
+<div class="absolute top-1/4 left-1/4 w-1/3 h-1/3 border border-primary/70 bg-primary/10 rounded pointer-events-none">
+<span class="absolute -top-6 left-0 bg-primary/90 text-white text-[10px] px-2 py-0.5 rounded-sm font-label-caps uppercase tracking-wider">Flange Assy</span>
+</div>
+<div class="absolute bottom-1/4 right-1/3 w-1/4 h-1/4 border border-secondary/70 bg-secondary/10 rounded pointer-events-none">
+<span class="absolute -top-6 left-0 bg-secondary/90 text-white text-[10px] px-2 py-0.5 rounded-sm font-label-caps uppercase tracking-wider">Impeller Hsg</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">image</span>
+<div>
+<p class="font-body-sm text-body-sm font-medium text-on-surface">pump_front_view_v2.jpg</p>
+<p class="font-data-mono text-data-mono text-on-surface-variant text-xs">2.4 MB • 2400x1600px</p>
+</div>
+</div>
+<button class="text-error hover:bg-error-container p-2 rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Alternate Drag & Drop State (Hidden but present for structural context if needed, representing the 'empty' state) -->
+<!-- <div class="border-2 border-dashed border-surface-variant rounded-xl p-xl flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer text-center h-64">
+                        <span class="material-symbols-outlined text-[48px] text-outline mb-4">cloud_upload</span>
+                        <h3 class="font-h3 text-h3 text-on-surface mb-2">Drag & Drop Image Here</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant mb-4">or click to browse from your computer</p>
+                        <p class="font-label-caps text-label-caps text-outline uppercase tracking-widest text-xs">Supports JPG, PNG, WEBP (Max 10MB)</p>
+                    </div> -->
+</div>
+<!-- AI Analysis Panel -->
+<div class="xl:col-span-5 flex flex-col gap-md">
+<!-- Prediction Header -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md shadow-sm">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">memory</span>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Analysis Complete</span>
+</div>
+<h2 class="font-h2 text-h2 text-on-surface mb-1">Centrifugal Water Pump</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">High probability match based on visual geometry and flange configuration.</p>
+<div class="flex gap-2">
+<span class="inline-flex items-center gap-1 bg-surface-container px-3 py-1.5 rounded-full border border-surface-variant font-data-mono text-[12px] text-on-surface">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> High Confidence (94%)
+                            </span>
+</div>
+</div>
+<!-- Categorization -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-0 shadow-sm overflow-hidden">
+<div class="px-md py-4 border-b border-surface-variant bg-surface-container-low">
+<h3 class="font-h3 text-h3 text-on-surface text-base">Suggested Taxonomy</h3>
+</div>
+<div class="p-md flex flex-col gap-4">
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Category Path</span>
+<div class="flex items-center flex-wrap gap-2 font-body-sm text-body-sm text-on-surface">
+<span class="bg-surface-container px-2 py-1 rounded border border-surface-variant">Industrial Equipment</span>
+<span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+<span class="bg-surface-container px-2 py-1 rounded border border-surface-variant">Fluid Handling</span>
+<span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+<span class="bg-secondary/10 text-secondary font-medium px-2 py-1 rounded border border-secondary/20">Centrifugal Pumps</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-4 border-t border-surface-variant">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1">Predicted Brand</span>
+<p class="font-body-sm text-body-sm text-on-surface font-medium flex items-center gap-2">
+                                        FlowServe
+                                        <span class="material-symbols-outlined text-[14px] text-secondary" title="Medium Confidence">info</span>
+</p>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1">Model Family</span>
+<p class="font-body-sm text-body-sm text-on-surface font-medium flex items-center gap-2">
+                                        Mark 3 Standard
+                                        <span class="material-symbols-outlined text-[14px] text-outline" title="Low Confidence">help</span>
+</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Technical Specs Extraction -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-0 shadow-sm overflow-hidden">
+<div class="px-md py-4 border-b border-surface-variant bg-surface-container-low flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-on-surface text-base">Extracted Specifications</h3>
+<button class="text-secondary font-body-sm text-sm hover:underline">Edit Specs</button>
+</div>
+<div class="p-0">
+<table class="w-full text-left border-collapse">
+<tbody>
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-md font-body-sm text-body-sm text-on-surface-variant w-1/2">Material</td>
+<td class="py-3 px-md font-data-mono text-data-mono text-on-surface font-medium flex items-center gap-2">
+                                            Ductile Iron <span class="w-2 h-2 rounded-full bg-secondary" title="High Confidence"></span>
+</td>
+</tr>
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-md font-body-sm text-body-sm text-on-surface-variant">Flange Type</td>
+<td class="py-3 px-md font-data-mono text-data-mono text-on-surface font-medium flex items-center gap-2">
+                                            ANSI Class 150 <span class="w-2 h-2 rounded-full bg-secondary" title="High Confidence"></span>
+</td>
+</tr>
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-md font-body-sm text-body-sm text-on-surface-variant">Inlet Diameter</td>
+<td class="py-3 px-md font-data-mono text-data-mono text-on-surface font-medium flex items-center gap-2">
+                                            ~4.0 in <span class="w-2 h-2 rounded-full bg-tertiary-container" title="Medium Confidence"></span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-md font-body-sm text-body-sm text-on-surface-variant">Condition</td>
+<td class="py-3 px-md font-data-mono text-data-mono text-on-surface font-medium flex items-center gap-2">
+                                            Used / Refurbished <span class="w-2 h-2 rounded-full bg-secondary" title="High Confidence"></span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Action Area -->
+<div class="mt-4 flex flex-col sm:flex-row gap-4 justify-end">
+<button class="px-6 py-3 border border-secondary text-secondary font-body-md text-body-md font-medium rounded-DEFAULT hover:bg-secondary/5 transition-colors focus:ring-2 focus:ring-secondary/50 bg-transparent">Retake Image</button>
+<button class="px-6 py-3 bg-[#FF4F49] text-white font-body-md text-body-md font-medium rounded-DEFAULT hover:bg-primary-container transition-colors focus:ring-2 focus:ring-primary/50 shadow-sm flex items-center justify-center gap-2">
+                            Confirm and Continue <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full border-t border-t border-slate-200 dark:border-slate-800 flat flex flex-col md:flex-row justify-between items-center px-10 py-12 w-full max-w-7xl mx-auto z-10 relative">
+<div class="flex flex-col items-center md:items-start gap-4 mb-8 md:mb-0">
+<span class="font-black text-slate-400 font-['Inter'] text-xs uppercase tracking-widest text-[#FF4F49]">ProcurePing</span>
+<p class="text-slate-500 dark:text-slate-400 font-['Inter'] text-xs uppercase tracking-widest">© 2024 ProcurePing Inc. All rights reserved. Secure Global Procurement.</p>
+</div>
+<nav class="flex flex-wrap justify-center md:justify-end gap-6 font-['Inter'] text-xs uppercase tracking-widest">
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#FF4F49] opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#FF4F49] opacity-80 hover:opacity-100 transition-opacity" href="#">Terms of Service</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#FF4F49] opacity-80 hover:opacity-100 transition-opacity" href="#">Security Compliance</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#FF4F49] opacity-80 hover:opacity-100 transition-opacity" href="#">Global Network</a>
+</nav>
+</footer>
+</body></html>

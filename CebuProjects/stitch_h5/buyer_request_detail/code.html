@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Request Details - 500 bags of Portland Cement</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed": "#dee1ff",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed": "#00105c",
+                      "error": "#ba1a1a",
+                      "surface-bright": "#f8f9ff",
+                      "on-background": "#0b1c30",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "surface-tint": "#4355b9",
+                      "surface-container-lowest": "#ffffff",
+                      "background": "#f8f9ff",
+                      "error-container": "#ffdad6",
+                      "on-error-container": "#93000a",
+                      "inverse-surface": "#213145",
+                      "outline": "#757684",
+                      "surface-container": "#e5eeff",
+                      "surface-container-high": "#dce9ff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "surface-container-low": "#eff4ff",
+                      "on-secondary-fixed-variant": "#354282",
+                      "tertiary": "#6c3400",
+                      "on-tertiary-fixed": "#301400",
+                      "secondary-fixed-dim": "#b9c3ff",
+                      "secondary-container": "#abb7ff",
+                      "surface": "#f8f9ff",
+                      "surface-variant": "#d3e4fe",
+                      "on-primary": "#ffffff",
+                      "inverse-primary": "#bac3ff",
+                      "primary": "#24389c",
+                      "on-tertiary-container": "#ffc7a2",
+                      "on-primary-fixed-variant": "#293ca0",
+                      "surface-dim": "#cbdbf5",
+                      "on-secondary-fixed": "#021355",
+                      "on-surface-variant": "#454652",
+                      "on-secondary-container": "#394687",
+                      "tertiary-container": "#8f4700",
+                      "primary-fixed-dim": "#bac3ff",
+                      "tertiary-fixed-dim": "#ffb784",
+                      "tertiary-fixed": "#ffdcc6",
+                      "outline-variant": "#c5c5d4",
+                      "primary-container": "#3f51b5",
+                      "secondary": "#4d5a9c",
+                      "on-secondary": "#ffffff",
+                      "on-surface": "#0b1c30",
+                      "surface-container-highest": "#d3e4fe",
+                      "primary-fixed": "#dee0ff",
+                      "on-primary-container": "#cacfff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter-mobile": "12px",
+                      "margin-mobile": "16px",
+                      "md": "16px",
+                      "base": "4px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "h3": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "h3": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h2": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h1": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+        .min-h-safe { min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+        
+        /* Level 1 Shadow */
+        .shadow-level-1 {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        /* Level 2 Shadow */
+        .shadow-level-2 {
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen pb-[120px]">
+<!-- Top App Bar (Custom for Detail View - Task Focused, Nav Shell Suppressed per rules) -->
+<header class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-surface-container-high shadow-sm pt-safe flex items-center justify-between px-4 h-14">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-on-surface">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-h3 text-h3 text-on-surface truncate max-w-[200px]">Request Details</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-on-surface">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</header>
+<main class="pt-[72px] px-margin-mobile pb-safe max-w-screen-md mx-auto space-y-md">
+<!-- Header & Status Card -->
+<section class="bg-surface-container-lowest rounded-xl shadow-level-1 p-md flex flex-col gap-sm">
+<div class="flex justify-between items-start gap-4">
+<div>
+<span class="inline-flex items-center gap-1 bg-surface-container text-on-surface font-label-sm text-label-sm px-2 py-1 rounded-md mb-2">
+<span class="material-symbols-outlined text-[14px]">category</span>
+                        Construction Materials
+                    </span>
+<h2 class="font-h1 text-h1 text-on-surface">500 bags of Portland Cement</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Req ID: #RC-9842A</p>
+</div>
+<div class="flex flex-col items-end">
+<span class="bg-[#e6f4ea] text-[#137333] font-label-sm text-label-sm px-3 py-1.5 rounded-full flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-[#1e8e3e] animate-pulse"></span>
+                        Live
+                    </span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-surface-container-high grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                        Time Remaining
+                    </span>
+<span class="font-h2 text-h2 text-primary">47h 12m</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                        Delivery To
+                    </span>
+<span class="font-body-lg text-body-lg text-on-surface font-medium truncate">Seattle, WA</span>
+</div>
+</div>
+</section>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-lowest rounded-xl shadow-level-1 p-md flex flex-col items-center justify-center gap-2 relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-surface-variant rounded-full opacity-50"></div>
+<span class="material-symbols-outlined text-outline text-[24px]">radar</span>
+<div class="text-center">
+<span class="block font-h1 text-h1 text-on-surface">14</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant">Suppliers Pinged</span>
+</div>
+</div>
+<div class="bg-primary-container rounded-xl shadow-level-1 p-md flex flex-col items-center justify-center gap-2 relative overflow-hidden text-on-primary-container">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-white rounded-full opacity-10"></div>
+<span class="material-symbols-outlined text-[24px]">local_offer</span>
+<div class="text-center">
+<span class="block font-h1 text-h1">3</span>
+<span class="block font-label-sm text-label-sm opacity-90">Offers Received</span>
+</div>
+</div>
+</section>
+<!-- Request Details -->
+<section class="bg-surface-container-lowest rounded-xl shadow-level-1 p-md">
+<h3 class="font-h3 text-h3 text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">description</span>
+                Request Summary
+            </h3>
+<div class="space-y-4">
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                    Looking for 500 bags (94 lbs each) of Type I/II Portland cement for a commercial foundation pour. Must meet ASTM C150 standards. Require delivery via flatbed with forklift unloads.
+                </p>
+<div class="bg-surface-container-low rounded-lg p-3 grid grid-cols-1 gap-3">
+<div class="flex justify-between items-center pb-2 border-b border-surface-container-high">
+<span class="font-label-md text-label-md text-on-surface-variant">Target Price/Bag</span>
+<span class="font-body-lg text-body-lg text-on-surface font-medium">≤ $14.50</span>
+</div>
+<div class="flex justify-between items-center pb-2 border-b border-surface-container-high">
+<span class="font-label-md text-label-md text-on-surface-variant">Required By</span>
+<span class="font-body-lg text-body-lg text-on-surface font-medium">Oct 15, 2023</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface-variant">Payment Terms</span>
+<span class="font-body-lg text-body-lg text-on-surface font-medium">Escrow Upon Delivery</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Attachments -->
+<section class="bg-surface-container-lowest rounded-xl shadow-level-1 p-md">
+<h3 class="font-h3 text-h3 text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">attachment</span>
+                Attachments (2)
+            </h3>
+<div class="flex gap-sm overflow-x-auto no-scrollbar pb-2">
+<!-- Image Attachment -->
+<div class="min-w-[120px] h-[120px] rounded-lg overflow-hidden relative group cursor-pointer border border-surface-container-high">
+<img alt="Site specs" class="w-full h-full object-cover" data-alt="A detailed, close-up shot of architectural blueprints spread out on a wooden table in a well-lit, modern corporate office setting. The lighting is bright and even, highlighting the technical lines of the blueprint. The color palette features stark whites, crisp blue lines, and warm wood tones, conveying a professional, precise, and structural aesthetic suitable for a high-end business application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCz2iqIFybAiLbZroqJFsaMZAqmtgxHVj947CogFh4HY1ZE4IGVuS1tKWrL8TtiRXDROCfY4HmUEMzOXyLBklRxAsFKqaMZZMHcFyh6ISHtKIN-igGQi2Aujysgj5Cc-pq7wTbtSCK66IX3sLlnXkeiKJsiL99zXXbomzyL0ac6jEZ2FagmZsg6sctLbsQMsFPtaIxoKuwSt3A0bJbfTEw7494E8BAK1pItz93cUcOeX4RQ5FQ6Pzc-CoASNcJWz5U-JjONf3FekGg"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white">zoom_in</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+<span class="text-white font-label-sm text-[10px] truncate block">site_specs.pdf</span>
+</div>
+</div>
+<!-- Document Attachment -->
+<div class="min-w-[120px] h-[120px] rounded-lg bg-surface-container-low flex flex-col items-center justify-center border border-surface-container-high cursor-pointer hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-primary text-[32px] mb-2">description</span>
+<span class="font-label-sm text-[10px] text-on-surface px-2 text-center truncate w-full">astm_reqs.docx</span>
+</div>
+</div>
+</section>
+<!-- Trust Indicator -->
+<div class="flex items-center justify-center gap-2 py-4">
+<span class="material-symbols-outlined text-[#1e8e3e] text-[18px]">verified_user</span>
+<span class="font-label-md text-label-md text-[#1e8e3e]">Escrow Protection Active</span>
+</div>
+</main>
+<!-- Sticky Bottom CTA -->
+<div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-surface-container-high shadow-level-2 pb-safe pt-3 px-4 z-50">
+<div class="max-w-screen-md mx-auto flex gap-3">
+<button class="flex-1 h-[56px] bg-primary text-on-primary rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 active:bg-on-primary-fixed-variant transition-colors shadow-sm">
+                View 3 Offers
+                <span class="bg-white/20 px-2 py-0.5 rounded-full text-[12px]">New</span>
+</button>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Delivery Coverage Preview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#213145",
+                        "background": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#454652",
+                        "surface-container": "#e5eeff",
+                        "on-surface": "#0b1c30",
+                        "on-primary-fixed": "#00105c",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary": "#6c3400",
+                        "primary-fixed-dim": "#bac3ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-container": "#cacfff",
+                        "secondary": "#4d5a9c",
+                        "tertiary-container": "#8f4700",
+                        "secondary-container": "#abb7ff",
+                        "surface-container-high": "#dce9ff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-secondary-container": "#394687",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#4355b9",
+                        "outline": "#757684",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f8f9ff",
+                        "surface-variant": "#d3e4fe",
+                        "primary-fixed": "#dee0ff",
+                        "primary": "#24389c",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "surface-container-highest": "#d3e4fe",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "secondary-fixed": "#dee1ff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "primary-container": "#3f51b5",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-container-low": "#eff4ff",
+                        "inverse-primary": "#bac3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "gutter-mobile": "12px",
+                        "md": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 fixed top-0 w-full z-50 shadow-sm border-b border-slate-100 dark:border-slate-800 pt-safe">
+<div class="flex items-center justify-between px-4 h-14 w-full">
+<button class="w-10 h-10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full active:opacity-70 transition-all duration-200">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-indigo-600 dark:text-indigo-400 font-['Inter'] font-semibold text-lg tracking-tight">Coverage Preview</h1>
+<button class="w-10 h-10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full active:opacity-70 transition-all duration-200">
+<span class="material-symbols-outlined text-2xl">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-[calc(56px+env(safe-area-inset-top))] mb-[calc(80px+env(safe-area-inset-bottom))] px-margin-mobile pt-md flex flex-col gap-lg">
+<!-- Hero Map Section -->
+<section class="relative rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.05)] bg-surface aspect-video">
+<img alt="Map Preview" class="w-full h-full object-cover" data-alt="A highly detailed aerial map view of a modern urban downtown area, focusing on a specific city district. A stylized, translucent indigo circular overlay denotes a delivery or service radius. The lighting is bright and clear, reflecting a light-mode interface aesthetic with a clean, corporate blue color palette. The mood is precise, professional, and indicative of logistical mapping." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9NhGe5Yk2UIs8vPvgKWsxlxZ3xSUeqOwg9F7_VZaFUWVBJd0in32K_WQl5mFubiRFHjI2o-ZRpFJeV9XzGljrurkGx5FU9CunKIOS9tihX_ctnF4McRW4DJzUFGr3XnglPzdDjPHOPaohNT8ZMpczPAG6-E-2qzXXMtZyhtRXiwB0RHFJ6dHJBhgw9P2UXEnid7UrkMHb_JanlP3gAT2xQfxGM8kMztyY_BxSwXiIRRS0hMBttAvUjKYQJdSgngrGG6gZ6mS0pTU"/>
+<!-- Map Overlay UI -->
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent flex flex-col justify-end p-md">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-h3 text-h3 text-white">Downtown San Francisco</h2>
+<p class="font-label-sm text-label-sm text-white/80 mt-xs">25-mile radius coverage</p>
+</div>
+<div class="bg-[#10B981]/20 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-1 border border-[#10B981]/30">
+<span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-[#10B981] font-semibold tracking-wider uppercase">Active</span>
+</div>
+</div>
+</div>
+<!-- Simulated Radius Graphic -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/20 rounded-full border-2 border-primary/50 flex items-center justify-center">
+<div class="w-4 h-4 bg-primary rounded-full shadow-[0_0_10px_rgba(36,56,156,0.5)]"></div>
+</div>
+</section>
+<!-- Metric Cards -->
+<section class="grid grid-cols-2 gap-gutter-mobile">
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col border border-surface-container-highest">
+<div class="flex items-center gap-2 mb-sm text-outline">
+<span class="material-symbols-outlined text-[20px]">storefront</span>
+<span class="font-label-sm text-label-sm">Est. Suppliers</span>
+</div>
+<div class="font-h1 text-h1 text-on-surface">124</div>
+<div class="font-body-md text-body-md text-[#10B981] mt-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span>High density</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col border border-surface-container-highest">
+<div class="flex items-center gap-2 mb-sm text-outline">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+<span class="font-label-sm text-label-sm">Avg. Fee</span>
+</div>
+<div class="font-h1 text-h1 text-on-surface">$45 - $120</div>
+<div class="font-body-md text-body-md text-on-surface-variant mt-xs">Per shipment</div>
+</div>
+</section>
+<!-- Delivery Methods List -->
+<section class="flex flex-col gap-sm">
+<h3 class="font-h3 text-h3 text-on-surface mb-xs px-1">Available Delivery Methods</h3>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-highest overflow-hidden">
+<!-- Method Item 1 -->
+<div class="p-md flex items-center justify-between border-b border-surface-container-highest active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Heavy Freight (Truck)</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">2-4 Business Days</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Method Item 2 -->
+<div class="p-md flex items-center justify-between active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">two_wheeler</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Express Courier</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Same Day (Under 50lbs)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Trust Footer -->
+<section class="mt-auto mb-md flex justify-center">
+<div class="flex items-center gap-2 px-4 py-2 bg-[#10B981]/10 rounded-full border border-[#10B981]/20">
+<span class="material-symbols-outlined text-[#10B981] text-[18px]" style="font-variation-settings: 'FILL' 1;">gpp_good</span>
+<span class="font-label-sm text-label-sm text-[#10B981] font-semibold tracking-wider">ESCROW PROTECTED REGION</span>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action -->
+<div class="fixed bottom-0 w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-[0_-4px_20px_rgba(0,0,0,0.08)] border-t border-slate-100 dark:border-slate-800 px-margin-mobile pt-sm pb-safe">
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 active:scale-[0.98] transition-transform shadow-sm">
+<span>Proceed to Payment</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</body></html>

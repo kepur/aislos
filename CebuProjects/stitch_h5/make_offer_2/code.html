@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Make Offer - Supplier</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed-variant": "#354282",
+                        "tertiary-container": "#8f4700",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#24389c",
+                        "surface-container-high": "#dce9ff",
+                        "surface-dim": "#cbdbf5",
+                        "surface-container-highest": "#d3e4fe",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-primary": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "on-tertiary-container": "#ffc7a2",
+                        "error": "#ba1a1a",
+                        "secondary": "#4d5a9c",
+                        "primary-container": "#3f51b5",
+                        "surface-tint": "#4355b9",
+                        "background": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "surface-bright": "#f8f9ff",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary": "#6c3400",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "on-secondary-fixed": "#021355",
+                        "on-primary-fixed": "#00105c",
+                        "surface": "#f8f9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "secondary-container": "#abb7ff",
+                        "outline": "#757684",
+                        "outline-variant": "#c5c5d4",
+                        "on-secondary-container": "#394687",
+                        "on-surface": "#0b1c30",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed": "#dee1ff",
+                        "on-primary-container": "#cacfff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#dee0ff",
+                        "on-surface-variant": "#454652",
+                        "inverse-primary": "#bac3ff",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "error-container": "#ffdad6",
+                        "success": "#16a34a",
+                        "success-container": "#bbf7d0",
+                        "on-success-container": "#166534"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "2xl": "1rem"
+                    },
+                    spacing: {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "gutter-mobile": "12px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "md": "16px"
+                    },
+                    fontFamily: {
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    fontSize: {
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-lg min-h-screen pb-[120px]">
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/60 shadow-sm flex items-center justify-between px-4 h-16 w-full text-primary font-['Inter'] antialiased">
+<button class="text-primary hover:bg-slate-50 active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="text-xl font-bold tracking-tight text-slate-900">Make Offer</div>
+<button class="text-primary hover:bg-slate-50 active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</header>
+<main class="pt-[80px] px-margin-mobile max-w-lg mx-auto flex flex-col gap-lg">
+<section class="bg-surface-container-lowest rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md">
+<div class="flex items-center gap-sm mb-sm text-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock">lock</span>
+<span>Masked Buyer Request #REQ-8942</span>
+</div>
+<h2 class="font-h2 text-h2 text-on-surface mb-sm">Premium Widget Component x500</h2>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="bg-surface-container text-primary-fixed-variant px-sm py-[2px] rounded-full font-label-sm text-label-sm">Tech/Electronics</span>
+<span class="bg-surface-container text-primary-fixed-variant px-sm py-[2px] rounded-full font-label-sm text-label-sm">Urgent</span>
+</div>
+<div class="bg-background rounded-lg p-sm border border-outline-variant flex items-start gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0">
+<span class="material-symbols-outlined fill" data-icon="location_city">location_city</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Delivery Location</p>
+<p class="font-body-md text-body-md text-on-surface-variant">San Francisco, CA (Zip: 94105)</p>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-md">
+<h3 class="font-h3 text-h3 text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                Pricing Details
+            </h3>
+<div class="bg-surface-container-lowest rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="unit-price">Unit Price ($)</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 text-outline material-symbols-outlined text-[20px]" data-icon="attach_money">attach_money</span>
+<input class="w-full h-[52px] pl-[40px] pr-md rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest font-body-lg text-body-lg text-on-surface transition-colors" id="unit-price" placeholder="0.00" type="number" value="45.00"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="delivery-fee">Total Delivery Fee ($)</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 text-outline material-symbols-outlined text-[20px]" data-icon="local_shipping">local_shipping</span>
+<input class="w-full h-[52px] pl-[40px] pr-md rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest font-body-lg text-body-lg text-on-surface transition-colors" id="delivery-fee" placeholder="0.00" type="number" value="150.00"/>
+</div>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-md">
+<h3 class="font-h3 text-h3 text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                Logistics &amp; Availability
+            </h3>
+<div class="bg-surface-container-lowest rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="eta">Estimated Time of Arrival (ETA)</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 text-outline material-symbols-outlined text-[20px]" data-icon="calendar_month">calendar_month</span>
+<input class="w-full h-[52px] pl-[40px] pr-md rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest font-body-lg text-body-lg text-on-surface transition-colors" id="eta" type="date" value="2023-11-15"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface">Stock Confidence</label>
+<div class="grid grid-cols-3 gap-sm">
+<label class="cursor-pointer">
+<input class="peer sr-only" name="stock" type="radio" value="low"/>
+<div class="h-[52px] flex items-center justify-center rounded-lg border border-outline-variant peer-checked:bg-primary-container peer-checked:text-on-primary-container peer-checked:border-primary font-label-md text-label-md text-on-surface-variant transition-colors">Low</div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="stock" type="radio" value="medium"/>
+<div class="h-[52px] flex items-center justify-center rounded-lg border border-outline-variant peer-checked:bg-primary-container peer-checked:text-on-primary-container peer-checked:border-primary font-label-md text-label-md text-on-surface-variant transition-colors">Medium</div>
+</label>
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="stock" type="radio" value="high"/>
+<div class="h-[52px] flex items-center justify-center rounded-lg border border-outline-variant peer-checked:bg-primary-container peer-checked:text-on-primary-container peer-checked:border-primary font-label-md text-label-md text-on-surface-variant transition-colors">High</div>
+</label>
+</div>
+<p class="font-label-sm text-label-sm text-outline mt-xs">Indicate how likely you are to fulfill the requested quantity.</p>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-sm mb-lg">
+<div class="bg-success-container/30 border border-success/20 rounded-lg p-sm flex items-center gap-sm">
+<span class="material-symbols-outlined text-success fill" data-icon="verified_user">verified_user</span>
+<span class="font-label-md text-label-md text-success">Escrow Protected Transaction</span>
+</div>
+</section>
+</main>
+<div class="fixed bottom-0 w-full z-50 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] rounded-t-2xl px-margin-mobile py-md pb-safe max-w-lg mx-auto left-0 right-0 border-t border-slate-100">
+<div class="flex justify-between items-center mb-md">
+<div class="font-label-md text-label-md text-on-surface-variant">Total Landed Cost</div>
+<div class="font-h1 text-h1 text-success flex items-center gap-xs">
+<span class="material-symbols-outlined text-[24px]" data-icon="payments">payments</span>
+                $22,650.00
+            </div>
+</div>
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-sm active:scale-[0.98] transition-transform shadow-sm">
+<span>Submit Offer</span>
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</body></html>

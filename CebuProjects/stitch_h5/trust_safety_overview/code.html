@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Trust &amp; Safety - {{APP_NAME}}</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#0b1c30",
+                        "on-primary-fixed": "#00105c",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#454652",
+                        "surface-container": "#e5eeff",
+                        "inverse-surface": "#213145",
+                        "background": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#8f4700",
+                        "secondary-container": "#abb7ff",
+                        "surface-container-high": "#dce9ff",
+                        "error": "#ba1a1a",
+                        "secondary": "#4d5a9c",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-container": "#cacfff",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary": "#6c3400",
+                        "primary-fixed-dim": "#bac3ff",
+                        "surface-tint": "#4355b9",
+                        "on-secondary-container": "#394687",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-error-container": "#93000a",
+                        "outline": "#757684",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#d3e4fe",
+                        "primary-fixed": "#dee0ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "surface": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#24389c",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#3f51b5",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "secondary-fixed": "#dee1ff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container-low": "#eff4ff",
+                        "inverse-primary": "#bac3ff",
+                        "on-tertiary-fixed": "#301400"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "gutter-mobile": "12px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased pb-safe min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center justify-between px-4 h-16 w-full">
+<button aria-label="Go back" class="p-2 text-primary hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 rounded-full">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white font-['Inter'] antialiased">Trust &amp; Safety</h1>
+<button aria-label="Notifications" class="p-2 text-primary hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="flex-grow pt-16 pb-24 px-margin-mobile flex flex-col gap-lg max-w-2xl mx-auto w-full">
+<!-- Hero Section -->
+<section class="text-center pt-xl pb-md">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-container/10 text-primary mb-md">
+<span class="material-symbols-outlined text-4xl" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h2 class="font-h1 text-h1 text-on-background mb-sm">Your peace of mind, guaranteed.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">We use bank-level security and verified processes to ensure every transaction is safe, transparent, and fair.</p>
+</section>
+<!-- Escrow & Verified Cards (Bento style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Escrow Protection -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col">
+<div class="flex items-center gap-sm mb-md">
+<div class="w-10 h-10 rounded-lg bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_balance" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface">Escrow Protection</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow">Your funds are securely held in escrow and only released to the supplier once you confirm the order has been completed to your satisfaction.</p>
+</div>
+<!-- Verified Suppliers -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col">
+<div class="flex items-center gap-sm mb-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container text-primary flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="how_to_reg" style="font-variation-settings: 'FILL' 1;">how_to_reg</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface">Verified Suppliers</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow">Every supplier undergoes rigorous KYB/KYC identity verification before they can quote on your requests, ensuring you only deal with legitimate businesses.</p>
+</div>
+</div>
+<!-- Transparency & Privacy List -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 overflow-hidden">
+<h3 class="font-h3 text-h3 text-on-surface p-md border-b border-outline-variant/30 bg-surface/50">Transparency &amp; Privacy</h3>
+<ul class="flex flex-col">
+<!-- Secure Messaging -->
+<li class="flex items-start gap-md p-md border-b border-outline-variant/30 last:border-b-0">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0 mt-xs">
+<span class="material-symbols-outlined text-sm" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-xs">End-to-End Secure Messaging</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">All communication between you and suppliers is encrypted and kept strictly on-platform to protect your data and privacy.</p>
+</div>
+</li>
+<!-- Buyer Privacy -->
+<li class="flex items-start gap-md p-md border-b border-outline-variant/30 last:border-b-0">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0 mt-xs">
+<span class="material-symbols-outlined text-sm" data-icon="visibility_off" style="font-variation-settings: 'FILL' 1;">visibility_off</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-xs">Identity Protection</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Your identity and contact details remain completely hidden from suppliers until you explicitly choose to award them a contract.</p>
+</div>
+</li>
+<!-- Audit Logs -->
+<li class="flex items-start gap-md p-md border-b border-outline-variant/30 last:border-b-0">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0 mt-xs">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-xs">Immutable Audit Logs</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Every quote, message, and transaction milestone is permanently recorded, ensuring complete transparency and accountability.</p>
+</div>
+</li>
+</ul>
+</section>
+<!-- Dispute Center Callout -->
+<section class="bg-surface-container rounded-xl p-md flex items-center gap-md border border-primary/10 relative overflow-hidden">
+<!-- Decorative background element -->
+<div class="absolute -right-6 -top-6 w-24 h-24 bg-primary/5 rounded-full blur-xl"></div>
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary shrink-0 shadow-sm z-10">
+<span class="material-symbols-outlined" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span>
+</div>
+<div class="z-10">
+<h3 class="font-label-md text-label-md text-on-surface mb-xs">Impartial Dispute Resolution</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mb-sm">In the rare event of a disagreement, our dedicated support team steps in to mediate and ensure a fair outcome based on the audit logs.</p>
+<a class="font-label-md text-label-md text-primary hover:text-primary-container flex items-center gap-xs" href="#">
+                    Learn about Dispute Center
+                    <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</section>
+<!-- Support CTA -->
+<section class="text-center pt-md">
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Still have questions about how we protect you?</p>
+<button class="w-full md:w-auto px-xl py-sm bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-primary-container active:scale-[0.98] transition-all h-[56px] flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+                Contact Trust &amp; Safety Team
+            </button>
+</section>
+</main>
+<!-- Bottom Navigation Component Suppressed as this is a sub-page/informational screen -->
+</body></html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Login - {{APP_NAME}}</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#0b1c30",
+                        "on-primary-fixed": "#00105c",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#454652",
+                        "surface-container": "#e5eeff",
+                        "inverse-surface": "#213145",
+                        "background": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#8f4700",
+                        "secondary-container": "#abb7ff",
+                        "surface-container-high": "#dce9ff",
+                        "error": "#ba1a1a",
+                        "secondary": "#4d5a9c",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-container": "#cacfff",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary": "#6c3400",
+                        "primary-fixed-dim": "#bac3ff",
+                        "surface-tint": "#4355b9",
+                        "on-secondary-container": "#394687",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-error-container": "#93000a",
+                        "outline": "#757684",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#d3e4fe",
+                        "primary-fixed": "#dee0ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "surface": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#24389c",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#3f51b5",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "secondary-fixed": "#dee1ff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container-low": "#eff4ff",
+                        "inverse-primary": "#bac3ff",
+                        "on-tertiary-fixed": "#301400"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "gutter-mobile": "12px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<main class="min-h-screen flex flex-col p-margin-mobile pb-[env(safe-area-inset-bottom)]">
+<!-- Main Content Container -->
+<div class="flex-1 flex flex-col justify-center max-w-md mx-auto w-full pt-xl">
+<!-- Header & Logo -->
+<div class="flex flex-col items-center text-center mb-xl">
+<div class="w-16 h-16 rounded-xl bg-surface-container-highest shadow-sm flex items-center justify-center mb-lg overflow-hidden">
+<img alt="Brand Logo" class="w-full h-full object-cover" data-alt="A sleek, modern corporate logo design for a high-end financial or e-commerce application. The logo features abstract geometric shapes in a sophisticated palette of deep indigo blue and pristine white, set against a solid light background. The style is minimalist, trustworthy, and heavily leans into a 'Soft Minimalism' aesthetic, conveying authority and structural integrity in a bright, modern light-mode setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASNC3rnFDayfDN-ounSHLtf2n9T5kOAAdgSw-rZcs0d2AYBnwBJOHpfUsHVKHwlZx77A2oPX6RjQJ1twykbXE0PgmbeKSXOUszprX1fnRb9m7peKR3UYFsj1ZF10dzRG7Aj6n7PVLBqFl6UKcmGHcJj1DeptLHBXuUWzblJviCSDv2sW3eXB6TkDnwNQ8K67LeXI-IK-yvOvvICpacqMb8gVQhVOTmB87_LTqZ2PFpMz2jKgQkVJt2zbDOtZycbH6-vmC-L4uS4Jo"/>
+</div>
+<h1 class="font-h1 text-h1 text-on-surface mb-xs">{{APP_NAME}}</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Secure access to your account.</p>
+</div>
+<!-- Login Form -->
+<form class="flex flex-col w-full" onsubmit="event.preventDefault();">
+<!-- Email/Phone Input -->
+<div class="flex flex-col gap-xs mb-md">
+<label class="font-label-md text-label-md text-on-surface pl-xs" for="identifier">Email or Phone</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-md text-on-surface-variant pointer-events-none" data-icon="person">person</span>
+<input class="w-full h-[52px] rounded-lg border border-outline-variant bg-surface-container-lowest pl-[44px] pr-md font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200" id="identifier" placeholder="Enter your email or phone" type="text"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-xs mb-md">
+<label class="font-label-md text-label-md text-on-surface pl-xs" for="password">Password</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-md text-on-surface-variant pointer-events-none" data-icon="lock">lock</span>
+<input class="w-full h-[52px] rounded-lg border border-outline-variant bg-surface-container-lowest pl-[44px] pr-[44px] font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200" id="password" placeholder="Enter your password" type="password"/>
+<button class="absolute right-md text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center h-full" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Options Row -->
+<div class="flex items-center justify-between mb-xl px-xs">
+<label class="flex items-center gap-sm cursor-pointer group">
+<div class="relative flex items-center justify-center">
+<input class="peer appearance-none w-5 h-5 border border-outline-variant rounded bg-surface-container-lowest checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary-fixed focus:outline-none transition-all cursor-pointer" type="checkbox"/>
+<span class="material-symbols-outlined absolute text-on-primary text-[16px] opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" data-icon="check" data-weight="fill">check</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Remember me</span>
+</label>
+<a class="font-label-md text-label-md text-primary hover:text-on-primary-fixed transition-colors" href="#">Forgot password?</a>
+</div>
+<!-- Primary CTA -->
+<button class="w-full h-[56px] rounded-lg bg-primary text-on-primary font-label-md text-label-md flex items-center justify-center shadow-[0_4px_12px_rgba(36,56,156,0.2)] hover:bg-on-primary-fixed active:scale-[0.98] transition-all duration-200" type="submit">
+                    Login
+                </button>
+</form>
+<!-- Divider -->
+<div class="flex items-center gap-md my-xl">
+<div class="flex-1 h-[1px] bg-outline-variant/60"></div>
+<span class="font-body-md text-body-md text-outline">Or continue with</span>
+<div class="flex-1 h-[1px] bg-outline-variant/60"></div>
+</div>
+<!-- Social Login -->
+<button class="w-full h-[52px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface font-label-md text-label-md flex items-center justify-center gap-sm hover:bg-surface-container-low active:bg-surface-container transition-all duration-200 shadow-sm" type="button">
+<img alt="Google Logo" class="w-5 h-5 object-contain" data-alt="A crisp, minimalist icon representing the Google 'G' logo, designed to fit seamlessly into a clean, modern user interface. The icon uses standard brand colors but is styled with a slight matte finish to match a sophisticated 'Corporate Modern' app design system, isolated on a pure white background with a subtle ambient shadow." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFuXGmhqme1x2D0OWMHPPYd91j0Ok9EncLaDgicwirOOXTzHYgBwrhRkk4MOydnHLUwyx9XpIgIe1TR1JXQp8rn3duHM_YR0JG8O7iDbo7WsMkMpr40yYfs554TMMqyM66p54q3ClkyfBrP8DEB71C2vBns66nb4WbP1tQSaUSq27MFG-c5GdEL1OFMe9n2PQOYvDxxPP90Cfn_oHKi0_9cEHxhCY9oZVjgpvzbcJBMpaMpCPl7Z9rgrHnMRTopvNLx0_rZXil8gE"/>
+<span>Google</span>
+</button>
+</div>
+<!-- Footer -->
+<div class="mt-auto pt-xl flex flex-col items-center gap-lg w-full max-w-md mx-auto">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Don't have an account? 
+                <a class="font-label-md text-label-md text-primary hover:text-on-primary-fixed transition-colors ml-xs" href="#">Register</a>
+</p>
+<!-- Language/Currency Switcher Shortcut -->
+<button class="flex items-center gap-xs px-md py-sm rounded-full bg-surface-container-low border border-outline-variant/30 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-200" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="language">language</span>
+<span class="font-label-sm text-label-sm">English (USD)</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</main>
+</body></html>

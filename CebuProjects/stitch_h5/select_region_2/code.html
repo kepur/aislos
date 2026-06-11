@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Select Region</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-surface": "#213145",
+                        "background": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#454652",
+                        "surface-container": "#e5eeff",
+                        "on-surface": "#0b1c30",
+                        "on-primary-fixed": "#00105c",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary": "#6c3400",
+                        "primary-fixed-dim": "#bac3ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-container": "#cacfff",
+                        "secondary": "#4d5a9c",
+                        "tertiary-container": "#8f4700",
+                        "secondary-container": "#abb7ff",
+                        "surface-container-high": "#dce9ff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-secondary-container": "#394687",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#4355b9",
+                        "outline": "#757684",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f8f9ff",
+                        "surface-variant": "#d3e4fe",
+                        "primary-fixed": "#dee0ff",
+                        "primary": "#24389c",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "surface-container-highest": "#d3e4fe",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "secondary-fixed": "#dee1ff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "primary-container": "#3f51b5",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-container-low": "#eff4ff",
+                        "inverse-primary": "#bac3ff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "xs": "4px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "gutter-mobile": "12px",
+                        "md": "16px",
+                        "sm": "8px"
+                    },
+                    fontFamily: {
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    fontSize: {
+                        "h2": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "400" }],
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+                        "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "h3": ["18px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "600" }],
+                        "h1": ["24px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopAppBar: Rendered strictly from Shared Components JSON -->
+<header class="fixed top-0 w-full z-50 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm flex items-center justify-between px-4 h-14">
+<button class="flex items-center justify-center w-10 h-10 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 active:opacity-70 transition-all duration-200">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-['Inter'] font-semibold text-lg tracking-tight text-indigo-600 dark:text-indigo-400">Location</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 active:opacity-70 transition-all duration-200">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-[56px] pb-[100px] px-margin-mobile flex flex-col gap-xl">
+<!-- Search Section -->
+<div class="relative mt-md">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant z-10">search</span>
+<input class="w-full h-[52px] pl-[48px] pr-md bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all placeholder:text-outline" placeholder="Search country, city, or area" type="text"/>
+</div>
+<!-- Saved Locations (Bento Grid approach) -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-h3 text-h3 text-on-surface">Saved Locations</h2>
+<div class="grid grid-cols-2 gap-md">
+<button class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-high flex flex-col items-start gap-sm active:scale-95 transition-transform text-left">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Home</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mt-xs truncate w-full opacity-80">Primary Address</span>
+</div>
+</button>
+<button class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-high flex flex-col items-start gap-sm active:scale-95 transition-transform text-left">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">work</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Office</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mt-xs truncate w-full opacity-80">Receiving Hub</span>
+</div>
+</button>
+</div>
+</section>
+<!-- Recent Locations (Glassmorphism List) -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-h3 text-h3 text-on-surface">Recent Locations</h2>
+<div class="bg-surface-container-lowest/80 backdrop-blur-md rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-high overflow-hidden flex flex-col">
+<button class="flex items-center gap-md p-md border-b border-surface-container-highest active:bg-surface-container-low transition-colors w-full text-left">
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+<span class="font-body-lg text-body-lg text-on-surface flex-1">Cebu City</span>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<button class="flex items-center gap-md p-md active:bg-surface-container-low transition-colors w-full text-left">
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+<span class="font-body-lg text-body-lg text-on-surface flex-1">Mandaue</span>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Browse Regions (Asymmetric Drill-down) -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-h3 text-h3 text-on-surface">Browse Regions</h2>
+<!-- Expanded Item -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border-2 border-primary overflow-hidden mb-sm flex flex-col">
+<button class="flex items-center justify-between p-md bg-surface-container-low active:opacity-80 transition-opacity w-full">
+<div class="flex items-center gap-sm text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">public</span>
+<span class="font-label-md text-label-md">Philippines</span>
+</div>
+<span class="material-symbols-outlined text-primary">expand_less</span>
+</button>
+<div class="px-md pb-md pt-sm flex flex-col">
+<div class="flex items-center gap-xs py-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Region:</span>
+<span class="font-label-md text-label-md text-on-surface">Central Visayas</span>
+</div>
+<div class="flex flex-col ml-sm border-l-2 border-surface-container-highest pl-md mt-xs gap-xs">
+<label class="flex items-center justify-between py-sm cursor-pointer group">
+<span class="font-body-lg text-body-lg text-on-surface group-active:text-primary transition-colors">Cebu City</span>
+<div class="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center bg-surface-container-lowest">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+</div>
+</label>
+<label class="flex items-center justify-between py-sm cursor-pointer group">
+<span class="font-body-lg text-body-lg text-on-surface group-active:text-primary transition-colors">Mandaue City</span>
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant flex items-center justify-center bg-surface-container-lowest"></div>
+</label>
+<label class="flex items-center justify-between py-sm cursor-pointer group">
+<span class="font-body-lg text-body-lg text-on-surface group-active:text-primary transition-colors">Lapu-Lapu City</span>
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant flex items-center justify-center bg-surface-container-lowest"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Collapsed Item -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-high overflow-hidden flex flex-col">
+<button class="flex items-center justify-between p-md active:bg-surface-container-low transition-colors w-full">
+<div class="flex items-center gap-sm text-on-surface">
+<span class="material-symbols-outlined text-on-surface-variant">public</span>
+<span class="font-label-md text-label-md">Singapore</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">expand_more</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Sticky Next Action (Level 2 Elevation) -->
+<div class="fixed bottom-0 w-full bg-surface-container-lowest/95 backdrop-blur-md border-t border-surface-container-highest shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-margin-mobile pt-md pb-safe z-40">
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-sm shadow-sm active:bg-primary-container transition-colors">
+<span>Next Step</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</body></html>

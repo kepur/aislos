@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProcureStream - Supplier Order Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#dadada",
+                    "surface-container-high": "#e8e8e8",
+                    "on-surface": "#1a1c1c",
+                    "inverse-primary": "#ffb3ac",
+                    "primary-fixed": "#ffdad6",
+                    "on-tertiary-fixed": "#1f1c06",
+                    "inverse-surface": "#2f3131",
+                    "surface-tint": "#ba1a1f",
+                    "primary-fixed-dim": "#ffb3ac",
+                    "on-primary-fixed": "#410003",
+                    "on-primary-fixed-variant": "#93000f",
+                    "error-container": "#ffdad6",
+                    "outline": "#8f6f6c",
+                    "secondary-fixed": "#b4ebff",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#004e5f",
+                    "on-secondary-fixed": "#001f27",
+                    "surface-bright": "#f9f9f9",
+                    "outline-variant": "#e4beba",
+                    "on-tertiary-fixed-variant": "#4b472d",
+                    "background": "#f9f9f9",
+                    "surface-variant": "#e2e2e2",
+                    "secondary": "#00677d",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed": "#ebe3c0",
+                    "tertiary": "#615c41",
+                    "error": "#ba1a1a",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#f0f1f1",
+                    "primary": "#b6171d",
+                    "on-error": "#ffffff",
+                    "surface-container": "#eeeeee",
+                    "secondary-fixed-dim": "#7dd2ee",
+                    "on-surface-variant": "#5b403d",
+                    "surface": "#f9f9f9",
+                    "on-background": "#1a1c1c",
+                    "surface-container-highest": "#e2e2e2",
+                    "tertiary-container": "#7a7558",
+                    "secondary-container": "#8fe3ff",
+                    "primary-container": "#da3432",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#cec7a5",
+                    "on-tertiary-container": "#fffbff",
+                    "on-secondary-container": "#00667c",
+                    "on-primary-container": "#fffbff",
+                    "surface-container-low": "#f3f3f4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "8px",
+                    "sm": "16px",
+                    "md": "24px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "xl": "64px",
+                    "base": "4px",
+                    "lg": "40px"
+            },
+            "fontFamily": {
+                    "display": ["Inter"],
+                    "body-md": ["Inter"],
+                    "data-mono": ["Inter"],
+                    "h2": ["Inter"],
+                    "h3": ["Inter"],
+                    "h1": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "data-mono": ["14px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "h2": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "h3": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex antialiased">
+<aside class="fixed left-0 top-0 h-full w-64 border-r border-surface-variant flex flex-col p-sm gap-xs h-screen bg-surface-container-lowest z-50">
+<div class="px-sm py-md mb-xs">
+<h1 class="font-h2 text-h2 text-on-surface uppercase tracking-widest font-black">ProcureStream</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-base">Enterprise Tier</p>
+</div>
+<nav class="flex-1 flex flex-col gap-base">
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:bg-surface-container rounded-md transition-all duration-200 ease-in-out font-body-sm text-body-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:bg-surface-container rounded-md transition-all duration-200 ease-in-out font-body-sm text-body-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+                Active Bids
+            </a>
+<a class="flex items-center gap-sm px-sm py-xs bg-surface-container-low text-primary shadow-sm border border-surface-variant rounded-md transition-all duration-200 ease-in-out font-body-sm text-body-sm font-medium" href="#">
+<span class="material-symbols-outlined fill-icon" data-icon="receipt_long">receipt_long</span>
+                Purchase Orders
+            </a>
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:bg-surface-container rounded-md transition-all duration-200 ease-in-out font-body-sm text-body-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                Inventory
+            </a>
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:bg-surface-container rounded-md transition-all duration-200 ease-in-out font-body-sm text-body-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+                Analytics
+            </a>
+</nav>
+<div class="mt-auto flex flex-col gap-base border-t border-surface-variant pt-sm">
+<button class="w-full bg-primary text-on-primary font-body-sm text-body-sm font-semibold rounded-DEFAULT py-xs px-sm hover:opacity-90 transition-opacity flex justify-center items-center gap-base">
+<span class="material-symbols-outlined text-[18px]">add</span> Create New Bid
+            </button>
+<div class="flex flex-col gap-base mt-xs">
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:bg-surface-container rounded-md transition-all font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-sm px-sm py-xs text-on-surface-variant hover:bg-surface-container rounded-md transition-all font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="contact_support">contact_support</span>
+                    Support
+                </a>
+</div>
+<div class="flex items-center gap-sm px-sm py-xs mt-xs">
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant">
+<img alt="Supplier Profile Avatar" class="w-full h-full object-cover" data-alt="A professional corporate headshot of a female executive in a modern office setting. The lighting is bright and even, highlighting a crisp navy blazer against a minimalist white background. The aesthetic is clean, trustworthy, and aligned with a premium SaaS platform identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAa3sU2cWWf3VV3r5s0SL3l59xMZq_T0PFATOpOQeLOpN6VnSenySHWDHXuytYlCbBEoWgtTHqvLKoqfbJy3kpRS1lJr75mIY9T3L2EA0EzWrOfpd7hkD-wvjxpKYV56FfY6uJZ2zIg8uwQhwrtdiIVfkU_8Ctm2ig8GEulLrJCeb-2yypVC7tbj-2N2JPTJ3cPZT7DKsGxfKqi3JM9y4cGqiM1tWAYSq0B9qAykf6xdcqWNHLc6lWYoV4hRpLzsa9L2zKgjw5dYWft"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-medium text-on-surface">Global Supp...</span>
+</div>
+</div>
+</div>
+</aside>
+<header class="fixed top-0 right-0 left-64 h-16 z-40 flex items-center justify-between px-10 bg-surface/80 backdrop-blur-md border-b border-surface-variant">
+<div class="flex items-center w-96">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full bg-surface-container-lowest border border-surface-variant rounded-DEFAULT py-xs pl-10 pr-sm font-body-sm text-body-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary transition-colors outline-none placeholder:text-on-surface-variant/60" placeholder="Search orders, bids, SKUs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+</div>
+</header>
+<main class="ml-64 mt-16 p-lg flex-1 overflow-y-auto">
+<div class="max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-lg">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Contract Active</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-data-mono text-data-mono text-on-surface-variant text-[12px]">PO-2024-8931</span>
+</div>
+<h2 class="font-display text-display text-on-surface">Aviation Components Supply</h2>
+</div>
+<div class="flex items-center gap-sm">
+<button class="px-md py-xs rounded-DEFAULT border border-secondary text-secondary font-body-sm text-body-sm font-medium hover:bg-secondary/5 transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">chat</span> Message Buyer
+                    </button>
+<button class="px-md py-xs rounded-DEFAULT bg-primary text-on-primary font-body-sm text-body-sm font-medium hover:opacity-90 shadow-sm transition-all flex items-center gap-xs opacity-50 cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[18px]">account_balance_wallet</span> Request Payout
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<div class="col-span-12 md:col-span-4 bg-surface-container-lowest border border-surface-variant rounded-lg p-md flex flex-col justify-center">
+<div class="flex items-center gap-sm mb-sm">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined fill-icon">shield_locked</span>
+</div>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Escrow Captured</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-base">Funds securely held by ProcureStream</p>
+</div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 bg-surface-container-lowest border border-surface-variant rounded-lg p-md flex flex-col justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-xs">Total Contract Value</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-display text-[32px] font-bold text-on-surface leading-none">$482,500</span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">.00 USD</span>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 bg-surface-container-lowest border border-surface-variant rounded-lg p-md flex flex-col justify-center relative overflow-hidden">
+<div class="absolute right-[-20px] top-[-20px] text-surface-variant opacity-20">
+<span class="material-symbols-outlined text-[120px] fill-icon">timer</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-xs relative z-10">Delivery Deadline</span>
+<div class="flex items-baseline gap-sm relative z-10">
+<div class="flex flex-col">
+<span class="font-data-mono text-[24px] font-bold text-on-surface">14</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Days</span>
+</div>
+<span class="text-on-surface-variant font-bold">:</span>
+<div class="flex flex-col">
+<span class="font-data-mono text-[24px] font-bold text-on-surface">08</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Hrs</span>
+</div>
+<span class="text-on-surface-variant font-bold">:</span>
+<div class="flex flex-col">
+<span class="font-data-mono text-[24px] font-bold text-on-surface">45</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Min</span>
+</div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-8 bg-surface-container-lowest border border-surface-variant rounded-lg flex flex-col">
+<div class="p-md border-b border-surface-variant flex justify-between items-center bg-surface-bright rounded-t-lg">
+<h3 class="font-h3 text-h3 text-on-surface">Order Summary</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">3 Items</span>
+</div>
+<div class="p-0 overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-surface-variant bg-surface-container-lowest">
+<th class="py-sm px-md font-label-caps text-label-caps text-on-surface-variant uppercase w-1/2">Item Description / SKU</th>
+<th class="py-sm px-md font-label-caps text-label-caps text-on-surface-variant uppercase text-right">Qty</th>
+<th class="py-sm px-md font-label-caps text-label-caps text-on-surface-variant uppercase text-right">Unit Price</th>
+<th class="py-sm px-md font-label-caps text-label-caps text-on-surface-variant uppercase text-right">Total</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm text-on-surface">
+<tr class="border-b border-surface-variant hover:bg-surface-bright transition-colors">
+<td class="py-sm px-md">
+<p class="font-medium">Titanium Turbine Blades (Grade 5)</p>
+<p class="font-data-mono text-[12px] text-on-surface-variant mt-base">SKU: TB-G5-001</p>
+</td>
+<td class="py-sm px-md text-right font-data-mono">200</td>
+<td class="py-sm px-md text-right font-data-mono">$1,500.00</td>
+<td class="py-sm px-md text-right font-data-mono font-medium">$300,000.00</td>
+</tr>
+<tr class="border-b border-surface-variant hover:bg-surface-bright transition-colors">
+<td class="py-sm px-md">
+<p class="font-medium">Carbon Fiber Housing Shells</p>
+<p class="font-data-mono text-[12px] text-on-surface-variant mt-base">SKU: CFH-X9-442</p>
+</td>
+<td class="py-sm px-md text-right font-data-mono">50</td>
+<td class="py-sm px-md text-right font-data-mono">$3,200.00</td>
+<td class="py-sm px-md text-right font-data-mono font-medium">$160,000.00</td>
+</tr>
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="py-sm px-md">
+<p class="font-medium">High-Temp Sensor Array</p>
+<p class="font-data-mono text-[12px] text-on-surface-variant mt-base">SKU: HTSA-22V</p>
+</td>
+<td class="py-sm px-md text-right font-data-mono">15</td>
+<td class="py-sm px-md text-right font-data-mono">$1,500.00</td>
+<td class="py-sm px-md text-right font-data-mono font-medium">$22,500.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 bg-surface-container-lowest border border-surface-variant rounded-lg flex flex-col overflow-hidden">
+<div class="h-40 w-full bg-surface-variant relative">
+<img alt="Map of Frankfurt" class="w-full h-full object-cover grayscale opacity-80" data-alt="A professional, minimalist grayscale map showing a corporate logistics route in Frankfurt, Germany. The map features a high-contrast deep teal location pin and subtle routing lines against a light silver background. The visual style is modern, corporate SaaS, with no labels or text, emphasizing clean geographic data visualization in a bright, light-mode aesthetic." data-location="Frankfurt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqI65zFEmf92LqYo1hVRkeXJpj9jQ5XlMuu5r9G-IlaMtSpaiDMAeXuL7xzDkZ7h2du9_IR0RMn_b83qd1nV59PhDk2kSOzt3eYAtU0IFuRiSXPYS3CZGT5yOfyTRfLHxk1G4-EOcEb9-ic1VyqcN_4tcnT-0vQ4lMyD7Wyrg5SRBMGjbsUdaeZ_Ct-MJEZcDAF1LbPY9inE-Mcw5A-S5iFqqL8spshhabMEaegKraD7Tz3y068utSTxMV34mCmH8Y02ziRhZTDk1w"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 flex items-center gap-xs bg-surface-container-lowest/90 backdrop-blur-sm px-sm py-xs border border-surface-variant rounded-md shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[16px] fill-icon">location_on</span>
+<span class="font-label-caps text-[10px] uppercase font-bold text-on-surface tracking-wider">Frankfurt Hub</span>
+</div>
+</div>
+<div class="p-md flex-1">
+<h3 class="font-h3 text-h3 text-on-surface mb-sm">Delivery Destination</h3>
+<div class="flex flex-col gap-sm">
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-on-surface">AeroDyne GmbH</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-base">Logistics Center Beta, Gate 4</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Flughafenring 12</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">60549 Frankfurt am Main, Germany</p>
+</div>
+<div class="pt-sm border-t border-surface-variant mt-auto">
+<p class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-base">Receiving Contact</p>
+<p class="font-body-sm text-body-sm text-on-surface">Heinrich Müller (+49 69 1234 5678)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 bg-surface-container-lowest border border-surface-variant rounded-lg p-md">
+<h3 class="font-h3 text-h3 text-on-surface mb-md">Delivery Milestones</h3>
+<div class="relative pl-6 md:pl-0">
+<div class="hidden md:block absolute top-[24px] left-[40px] right-[40px] h-[2px] bg-surface-variant z-0"></div>
+<div class="hidden md:block absolute top-[24px] left-[40px] w-1/2 h-[2px] bg-secondary z-0"></div>
+<div class="md:hidden absolute top-4 bottom-4 left-2 w-[2px] bg-surface-variant z-0"></div>
+<div class="md:hidden absolute top-4 h-1/2 left-2 w-[2px] bg-secondary z-0"></div>
+<div class="flex flex-col md:flex-row justify-between gap-md relative z-10">
+<div class="flex md:flex-col items-start md:items-center gap-sm md:w-1/4 relative">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center border-4 border-surface-container-lowest shrink-0">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<div class="md:text-center mt-1 md:mt-0">
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface">Contract Awarded</h4>
+<p class="font-data-mono text-[12px] text-on-surface-variant mt-base">Oct 12, 14:30 UTC</p>
+</div>
+</div>
+<div class="flex md:flex-col items-start md:items-center gap-sm md:w-1/4 relative">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center border-4 border-surface-container-lowest shrink-0">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<div class="md:text-center mt-1 md:mt-0">
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface">Escrow Funded</h4>
+<p class="font-data-mono text-[12px] text-on-surface-variant mt-base">Oct 13, 09:15 UTC</p>
+</div>
+</div>
+<div class="flex md:flex-col items-start md:items-center gap-sm md:w-1/4 relative">
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest border-2 border-primary text-primary flex items-center justify-center shrink-0 shadow-sm relative">
+<span class="absolute -inset-1 rounded-full border border-primary animate-ping opacity-20"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+</div>
+<div class="md:text-center mt-1 md:mt-0 w-full">
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface">Goods in Transit</h4>
+<p class="font-data-mono text-[12px] text-on-surface-variant mt-base mb-sm">Action Required</p>
+<button class="w-full md:w-auto px-sm py-xs bg-primary/10 text-primary border border-primary/20 rounded-DEFAULT font-body-sm text-[12px] font-medium hover:bg-primary/20 transition-colors flex items-center justify-center gap-xs mx-auto">
+<span class="material-symbols-outlined text-[16px]">upload_file</span> Upload POD
+                                    </button>
+</div>
+</div>
+<div class="flex md:flex-col items-start md:items-center gap-sm md:w-1/4 relative opacity-50">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center border-4 border-surface-container-lowest shrink-0">
+<span class="w-2.5 h-2.5 rounded-full bg-on-surface-variant/50"></span>
+</div>
+<div class="md:text-center mt-1 md:mt-0 w-full">
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface">Delivered &amp; Verified</h4>
+<p class="font-data-mono text-[12px] text-on-surface-variant mt-base mb-sm">Pending Arrival</p>
+<button class="w-full md:w-auto px-sm py-xs bg-surface-container text-on-surface-variant border border-surface-variant rounded-DEFAULT font-body-sm text-[12px] font-medium cursor-not-allowed flex items-center justify-center gap-xs mx-auto" disabled="">
+<span class="material-symbols-outlined text-[16px]">receipt</span> Upload Invoice
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

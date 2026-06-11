@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Supplier Verification Status - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#8fe3ff",
+                        "secondary": "#00677d",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary": "#615c41",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "surface-variant": "#e2e2e2",
+                        "tertiary-container": "#7a7558",
+                        "surface-tint": "#ba1a1f",
+                        "tertiary-fixed": "#ebe3c0",
+                        "surface-dim": "#dadada",
+                        "on-surface-variant": "#5b403d",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#93000f",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#da3432",
+                        "surface": "#f9f9f9",
+                        "background": "#f9f9f9",
+                        "primary": "#b6171d",
+                        "on-secondary-container": "#00667c",
+                        "surface-container-low": "#f3f3f4",
+                        "outline-variant": "#e4beba",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface-container-highest": "#e2e2e2",
+                        "secondary-fixed": "#b4ebff",
+                        "on-surface": "#1a1c1c",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "inverse-primary": "#ffb3ac",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "surface-container-high": "#e8e8e8",
+                        "error-container": "#ffdad6",
+                        "outline": "#8f6f6c",
+                        "on-background": "#1a1c1c",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "on-primary-fixed": "#410003",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-secondary-fixed": "#001f27",
+                        "primary-fixed": "#ffdad6",
+                        "surface-container": "#eeeeee",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "8px",
+                        "lg": "40px",
+                        "base": "4px",
+                        "xl": "64px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "sm": "16px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "display": ["Inter"],
+                        "h2": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex font-body-md">
+<!-- SideNavBar -->
+<aside class="bg-surface-container-lowest text-[#FF4F49] font-['Inter'] text-sm h-screen w-64 border-r fixed left-0 top-0 border-r border-slate-100 dark:border-slate-800 flat no shadows flex flex-col h-full p-4 gap-2 z-40 md:flex hidden">
+<div class="mb-8 px-2">
+<h1 class="font-bold text-slate-900 dark:text-white text-lg">Supplier Portal</h1>
+<p class="text-slate-500 text-xs">Global Procurement</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] flex items-center gap-3 px-3 py-2 rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] flex items-center gap-3 px-3 py-2 rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span>Active Bids</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] flex items-center gap-3 px-3 py-2 rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Suppliers</span>
+</a>
+<a class="bg-slate-50 dark:bg-slate-800 text-[#FF4F49] font-semibold rounded-lg flex items-center gap-3 px-3 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span>KYB Status</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] flex items-center gap-3 px-3 py-2 rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Documents</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] flex items-center gap-3 px-3 py-2 rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1">
+<button class="w-full bg-[#FF4F49] text-white py-2 rounded-md font-semibold text-sm mb-4">Upgrade Account</button>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] flex items-center gap-3 px-3 py-2 rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Support</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49] flex items-center gap-3 px-3 py-2 rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 ml-0 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[#FF4F49] font-['Inter'] antialiased docked full-width top-0 z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between px-10 py-4 w-full sticky top-0">
+<div class="flex items-center gap-6">
+<span class="text-xl font-black tracking-tight text-slate-900 dark:text-white">ProcurePing</span>
+<nav class="hidden md:flex gap-6 ml-8">
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors active:scale-95 duration-150" href="#">Marketplace</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors active:scale-95 duration-150" href="#">Bids</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors active:scale-95 duration-150" href="#">Analytics</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors active:scale-95 duration-150" href="#">Contracts</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-[#FF4F49] text-white px-4 py-2 rounded-md font-medium text-sm hover:opacity-90 transition-opacity">Create RFP</button>
+<button class="text-slate-600 dark:text-slate-300 font-medium text-sm hover:text-[#FF4F49] transition-colors">Login</button>
+<div class="flex items-center gap-3 border-l border-slate-200 dark:border-slate-700 pl-4">
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-[#FF4F49] transition-colors" data-icon="language">language</span>
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-[#FF4F49] transition-colors" data-icon="payments">payments</span>
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-[#FF4F49] transition-colors" data-icon="notifications">notifications</span>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-slate-200 ml-2" data-alt="A close up portrait of a professional business person looking directly at the camera. They are set against a bright, modern office background with subtle natural light. The mood is confident, approachable, and highly corporate. The image uses a clean, high-contrast aesthetic suitable for a premium SaaS application profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCahsh9MnlI45g6Tt7BlVfQgFqAx-h-tGUgftgEkx9dd7Pk-mZLllNuLIO833MY0SDIg0JQvYV6M2oWZxyYemykjh08jOdGVIbwn3aqRI3NXy-rUOY-IrGAJZvCtULwi0m8SjGIZkWAfO61AyzCV8HWFoXHmE_0V2B36oD6geBlNgqeq5zPwKfbsXeswBd9GErhNtsWvu-Rxb3d02F5MfylZhhcTwbdK4qKFbNYFHwiaSKNTlye-di5ZHNY5DPJIh-MFsD5rZV0w0Sh"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-lg bg-surface max-w-container-max mx-auto w-full flex flex-col gap-lg">
+<div class="flex flex-col gap-2">
+<h1 class="font-h1 text-h1 text-on-surface">Verification Status</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Monitor your organization's Know Your Business (KYB) verification progress.</p>
+</div>
+<!-- Status Card - Pending State -->
+<div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center text-center gap-md">
+<div class="w-20 h-20 bg-secondary-fixed-dim/20 rounded-full flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-display" data-icon="schedule" data-weight="fill" style="font-variation-settings: 'FILL' 1;">schedule</span>
+</div>
+<div class="flex flex-col gap-sm">
+<h2 class="font-display text-h2 text-on-surface">Under Review</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Your verification documents have been submitted and are currently being reviewed by our compliance team. This process typically takes 24-48 hours. We will notify you once the review is complete.</p>
+</div>
+<div class="bg-surface-container-low p-md rounded-lg w-full max-w-md mt-sm border border-surface-container-highest">
+<div class="flex justify-between items-center mb-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant">SUBMITTED ON</span>
+<span class="font-data-mono text-data-mono text-on-surface">Oct 24, 2024</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">EXPECTED COMPLETION</span>
+<span class="font-data-mono text-data-mono text-on-surface">Oct 26, 2024</span>
+</div>
+</div>
+</div>
+<!-- Verification History Log -->
+<div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-md mt-md">
+<h3 class="font-h3 text-h3 text-on-surface mb-md">Audit Log</h3>
+<div class="relative pl-sm">
+<!-- Timeline Line -->
+<div class="absolute top-2 bottom-2 left-[23px] w-[2px] bg-surface-container-highest"></div>
+<!-- Event 1 -->
+<div class="flex gap-md mb-sm relative">
+<div class="w-8 h-8 rounded-full bg-surface-container-low border-2 border-surface-container-lowest z-10 flex items-center justify-center text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-sm" data-icon="upload_file">upload_file</span>
+</div>
+<div class="flex-1 bg-surface py-sm px-md rounded-lg border border-surface-container-highest">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-body-md text-body-md font-semibold text-on-surface">Documents Submitted</h4>
+<span class="font-data-mono text-data-mono text-on-surface-variant text-sm">Oct 24, 14:30 EST</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Tax ID, Certificate of Incorporation, and Ultimate Beneficial Owner (UBO) declaration uploaded successfully.</p>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="flex gap-md relative">
+<div class="w-8 h-8 rounded-full bg-surface-container-low border-2 border-surface-container-lowest z-10 flex items-center justify-center text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-sm" data-icon="account_circle">account_circle</span>
+</div>
+<div class="flex-1 bg-surface py-sm px-md rounded-lg border border-surface-container-highest">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-body-md text-body-md font-semibold text-on-surface">Initial Registration</h4>
+<span class="font-data-mono text-data-mono text-on-surface-variant text-sm">Oct 24, 14:15 EST</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Organization profile created by Admin User.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 text-[#FF4F49] font-['Inter'] text-xs uppercase tracking-widest w-full border-t border-t border-slate-200 dark:border-slate-800 flat flex flex-col md:flex-row justify-between items-center px-10 py-12 w-full max-w-7xl mx-auto mt-auto">
+<div class="font-black text-slate-400 mb-4 md:mb-0">
+                ProcurePing
+            </div>
+<div class="text-slate-500 dark:text-slate-400 mb-4 md:mb-0 text-center md:text-left">
+                © 2024 ProcurePing Inc. All rights reserved. Secure Global Procurement.
+            </div>
+<div class="flex gap-6 flex-wrap justify-center">
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#FF4F49] opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#FF4F49] opacity-80 hover:opacity-100 transition-opacity" href="#">Terms of Service</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#FF4F49] opacity-80 hover:opacity-100 transition-opacity" href="#">Security Compliance</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#FF4F49] opacity-80 hover:opacity-100 transition-opacity" href="#">Global Network</a>
+</div>
+</footer>
+</div>
+</body></html>

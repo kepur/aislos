@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Supplier Settings - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f3f3f4",
+                      "surface-bright": "#f9f9f9",
+                      "on-surface": "#1a1c1c",
+                      "secondary": "#00677d",
+                      "error": "#ba1a1a",
+                      "background": "#f9f9f9",
+                      "on-tertiary-fixed-variant": "#4b472d",
+                      "surface-container-highest": "#e2e2e2",
+                      "outline-variant": "#e4beba",
+                      "on-primary-fixed": "#410003",
+                      "secondary-fixed": "#b4ebff",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-container": "#7a7558",
+                      "surface-container": "#eeeeee",
+                      "surface": "#f9f9f9",
+                      "on-tertiary-container": "#fffbff",
+                      "on-background": "#1a1c1c",
+                      "outline": "#8f6f6c",
+                      "on-secondary-fixed": "#001f27",
+                      "inverse-on-surface": "#f0f1f1",
+                      "on-tertiary-fixed": "#1f1c06",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed-dim": "#cec7a5",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#ffdad6",
+                      "surface-variant": "#e2e2e2",
+                      "primary": "#b6171d",
+                      "error-container": "#ffdad6",
+                      "on-surface-variant": "#5b403d",
+                      "on-secondary": "#ffffff",
+                      "on-primary-container": "#fffbff",
+                      "tertiary": "#615c41",
+                      "surface-container-high": "#e8e8e8",
+                      "on-primary-fixed-variant": "#93000f",
+                      "tertiary-fixed": "#ebe3c0",
+                      "on-secondary-container": "#00667c",
+                      "secondary-fixed-dim": "#7dd2ee",
+                      "inverse-surface": "#2f3131",
+                      "secondary-container": "#8fe3ff",
+                      "on-secondary-fixed-variant": "#004e5f",
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#ffb3ac",
+                      "primary-container": "#da3432",
+                      "surface-dim": "#dadada",
+                      "on-error": "#ffffff",
+                      "surface-tint": "#ba1a1f",
+                      "primary-fixed-dim": "#ffb3ac"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "8px",
+                      "sm": "16px",
+                      "base": "4px",
+                      "xl": "64px",
+                      "container-max": "1280px",
+                      "md": "24px",
+                      "lg": "40px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "label-caps": ["Inter"],
+                      "data-mono": ["Inter"],
+                      "h1": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "h2": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "display": ["Inter"],
+                      "h3": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                      "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                      "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                      "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                      "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                      "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                      "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                      "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                      "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined[data-weight="fill"] { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-white dark:bg-slate-900 fixed left-0 h-screen w-64 rounded-none border-r border-slate-100 dark:border-slate-800 flex flex-col py-6 pr-4 z-40">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-weight="fill">token</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-[#FF4F49] tracking-tight leading-none">ProcurePing</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Enterprise Buyer</p>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-1 pl-4">
+<!-- Main Tabs (Inactive) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined">gavel</span>
+                Active Bids
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined">groups</span>
+                Suppliers
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+                Market Insights
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+                Archive
+            </a>
+</div>
+<div class="mt-auto pl-4 flex flex-col gap-1 border-t border-surface-variant pt-4">
+<!-- Footer Tabs -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined">help_center</span>
+                Support
+            </a>
+<!-- Active Tab: Settings -->
+<a class="flex items-center gap-3 px-4 py-3 font-inter text-sm font-medium text-[#FF4F49] bg-slate-50 dark:bg-slate-800/50 rounded-r-full border-l-4 border-[#FF4F49]" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm docked full-width top-0 sticky z-50 flex justify-between items-center w-full px-10 h-16">
+<!-- Search Bar on Left -->
+<div class="flex-1 max-w-md relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm font-inter text-on-surface focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search global network..." type="text"/>
+</div>
+<!-- Trailing Icons & Profile -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-slate-600 dark:text-slate-400">
+<button class="hover:text-[#FF4F49] transition-colors duration-200 flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">language</span>
+</button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">currency_exchange</span>
+</button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">public</span>
+</button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 flex items-center justify-center relative">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-[#FF4F49] rounded-full border border-white"></span>
+</button>
+</div>
+<div class="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+<button class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-slate-200 flex items-center justify-center">
+<img alt="Executive User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a confident corporate executive in a modern, well-lit office environment. The lighting is soft and bright, emphasizing a clean, light-mode aesthetic. The individual wears a sharply tailored dark suit against a minimalist background featuring subtle white and architectural gray tones, conveying trust and global business acumen." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhUCIwjt42TRD0Fh_i90zU9P3XjIRoGDlHDJgLXTowPb9qQvll8AHj6tLo2CvuBpeAFDbJL9Qg761vmw-nEnMI4f8VN4JDoPbmqfePlCH75zXS7ybIyKJLwhu0sYQTcxddrh9JIzJLM21bQWDpspEBnrfy6xPcAEyls50X35v_oUjMJ3s0JnCxViVHAKEkUS3-DHPDBSUtEUJv09rflKwcqztCYLVAqaxqHoai1tFDfPHqP-n43bOULr7JcoGCYWV52ced90QAqEfD"/>
+</button>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="flex-1 p-lg max-w-[1400px] w-full mx-auto">
+<div class="mb-lg">
+<h1 class="font-h1 text-h1 text-on-surface tracking-tight">Organization Settings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Manage your company profile, compliance documents, and operational preferences.</p>
+</div>
+<div class="flex flex-col md:flex-row gap-xl items-start relative">
+<!-- Vertical Navigation (Sticky) -->
+<aside class="w-full md:w-64 shrink-0 md:sticky top-24">
+<nav class="flex flex-col gap-2">
+<a class="px-4 py-3 rounded-lg bg-surface-container-high text-primary font-body-sm text-body-sm font-medium flex items-center justify-between group" href="#company-profile">
+                            Company Profile
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</a>
+<a class="px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface hover:text-on-surface font-body-sm text-body-sm transition-colors flex items-center justify-between" href="#kyb-documents">
+                            KYB Documents
+                            <div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+</a>
+<a class="px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface hover:text-on-surface font-body-sm text-body-sm transition-colors" href="#branch-settings">
+                            Branch Settings
+                        </a>
+<a class="px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface hover:text-on-surface font-body-sm text-body-sm transition-colors" href="#notifications">
+                            Notification Channels
+                        </a>
+<a class="px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface hover:text-on-surface font-body-sm text-body-sm transition-colors" href="#security">
+                            Security
+                        </a>
+<a class="px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface hover:text-on-surface font-body-sm text-body-sm transition-colors" href="#preferences">
+                            Global Preferences
+                        </a>
+</nav>
+</aside>
+<!-- Content Area -->
+<div class="flex-1 w-full space-y-xl pb-xl">
+<!-- Company Profile Section -->
+<section class="scroll-mt-32" id="company-profile">
+<h2 class="font-h2 text-h2 text-on-surface mb-sm border-b border-surface-variant pb-4">Company Profile</h2>
+<div class="bg-surface border border-surface-container-highest rounded-xl p-md shadow-sm">
+<div class="flex items-start gap-md mb-lg pb-md border-b border-surface-variant">
+<div class="w-24 h-24 rounded-lg bg-surface-container-low border border-surface-variant flex flex-col items-center justify-center text-on-surface-variant relative overflow-hidden group cursor-pointer hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[32px] mb-1 group-hover:text-primary transition-colors">domain_add</span>
+<span class="font-label-caps text-label-caps text-[10px]">Upload Logo</span>
+</div>
+<div class="flex-1">
+<h3 class="font-h3 text-h3 text-on-surface">Corporate Identity</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 max-w-xl">This information is visible to verified buyers in the marketplace. Ensure your legal entity details match your KYB documentation exactly to avoid processing delays.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-md gap-y-sm">
+<div class="col-span-1 md:col-span-2">
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-base">Legal Entity Name</label>
+<input class="w-full bg-white border border-surface-container-highest rounded-lg px-4 py-2.5 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="text" value="GlobalTech Logistics GmbH"/>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-base">Registration Number</label>
+<input class="w-full bg-surface-container-low border border-surface-container-highest rounded-lg px-4 py-2.5 font-data-mono text-data-mono text-on-surface cursor-not-allowed" disabled="" type="text" value="HRB 123456"/>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-base">Tax Identification (VAT)</label>
+<input class="w-full bg-surface-container-low border border-surface-container-highest rounded-lg px-4 py-2.5 font-data-mono text-data-mono text-on-surface cursor-not-allowed" disabled="" type="text" value="DE999999999"/>
+</div>
+<div class="col-span-1 md:col-span-2 mt-sm">
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-base">Headquarters Address</label>
+<input class="w-full bg-white border border-surface-container-highest rounded-lg px-4 py-2.5 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="text" value="Friedrichstraße 123, 10117 Berlin, Germany"/>
+</div>
+</div>
+<div class="mt-lg flex justify-end">
+<button class="bg-primary hover:bg-primary-container text-white font-body-sm text-body-sm font-medium px-6 py-2.5 rounded-lg transition-colors shadow-sm">Save Changes</button>
+</div>
+</div>
+</section>
+<!-- KYB Documents Section -->
+<section class="scroll-mt-32" id="kyb-documents">
+<div class="flex items-end justify-between mb-sm border-b border-surface-variant pb-4">
+<h2 class="font-h2 text-h2 text-on-surface">KYB Documents</h2>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-[14px]">verified_user</span>
+                                Fully Verified
+                            </span>
+</div>
+<div class="bg-surface border border-surface-container-highest rounded-xl overflow-hidden shadow-sm">
+<!-- Document Row 1 -->
+<div class="flex items-center justify-between p-md border-b border-surface-variant last:border-0 hover:bg-surface-bright transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-weight="fill">description</span>
+</div>
+<div>
+<h4 class="font-body-md text-body-md font-medium text-on-surface">Certificate of Incorporation</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Last updated: Oct 12, 2023</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="font-body-sm text-body-sm text-secondary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">check_circle</span> Approved
+                                    </span>
+<button class="text-primary hover:text-primary-container font-label-caps text-label-caps border border-surface-variant px-3 py-1.5 rounded bg-white">View</button>
+</div>
+</div>
+<!-- Document Row 2 -->
+<div class="flex items-center justify-between p-md border-b border-surface-variant last:border-0 hover:bg-surface-bright transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div>
+<h4 class="font-body-md text-body-md font-medium text-on-surface">Bank Verification Letter</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Required for payout processing</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> Pending Review
+                                    </span>
+<button class="text-on-surface hover:text-primary font-label-caps text-label-caps border border-surface-variant px-3 py-1.5 rounded bg-white">Update</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>

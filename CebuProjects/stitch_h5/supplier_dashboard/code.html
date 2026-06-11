@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - {{APP_NAME}}</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dee1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00105c",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-tint": "#4355b9",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f8f9ff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#213145",
+                        "outline": "#757684",
+                        "surface-container": "#e5eeff",
+                        "surface-container-high": "#dce9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container-low": "#eff4ff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "tertiary": "#6c3400",
+                        "on-tertiary-fixed": "#301400",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "secondary-container": "#abb7ff",
+                        "surface": "#f8f9ff",
+                        "surface-variant": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#bac3ff",
+                        "primary": "#24389c",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary-fixed": "#021355",
+                        "on-surface-variant": "#454652",
+                        "on-secondary-container": "#394687",
+                        "tertiary-container": "#8f4700",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "tertiary-fixed": "#ffdcc6",
+                        "outline-variant": "#c5c5d4",
+                        "primary-container": "#3f51b5",
+                        "secondary": "#4d5a9c",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "surface-container-highest": "#d3e4fe",
+                        "primary-fixed": "#dee0ff",
+                        "on-primary-container": "#cacfff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter-mobile": "12px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .tap-highlight-transparent { -webkit-tap-highlight-color: transparent; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen pb-[80px] md:pb-0 pt-[56px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between px-4 h-14 w-full">
+<div class="flex items-center gap-2 tap-highlight-transparent cursor-pointer active:opacity-70 transition-opacity text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[24px]">sync_alt</span>
+</div>
+<div class="text-lg font-bold text-indigo-600 dark:text-indigo-400 font-['Inter'] tracking-tight">
+            {{APP_NAME}}
+        </div>
+<div class="flex items-center gap-2 tap-highlight-transparent cursor-pointer active:opacity-70 transition-opacity text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</div>
+</header>
+<main class="max-w-screen-md mx-auto p-margin-mobile flex flex-col gap-lg">
+<!-- Header Section -->
+<section class="flex flex-col gap-sm mt-md">
+<h1 class="font-h1 text-h1 text-on-surface">Dashboard</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Here is a summary of your activity.</p>
+</section>
+<!-- Primary CTA / Alert -->
+<section class="bg-primary-container text-on-primary-container rounded-xl p-md flex items-center justify-between shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] cursor-pointer active:opacity-90 transition-opacity">
+<div class="flex items-center gap-md">
+<div class="bg-primary text-on-primary rounded-full p-sm flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md">New Pings</h3>
+<p class="font-body-md text-body-md opacity-90">5 requests match your inventory</p>
+</div>
+</div>
+<span class="material-symbols-outlined">chevron_right</span>
+</section>
+<!-- Bento Grid Stats -->
+<section class="grid grid-cols-2 gap-gutter-mobile">
+<!-- Active Offers -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] border border-surface-container flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">local_offer</span>
+</div>
+<div>
+<p class="font-h1 text-h1 text-on-surface mb-xs">12</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Offers</p>
+</div>
+</div>
+<!-- Awarded Orders -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] border border-surface-container flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<div>
+<p class="font-h1 text-h1 text-on-surface mb-xs">2</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Awarded Orders</p>
+</div>
+</div>
+<!-- Pending Delivery -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] border border-surface-container flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div>
+<p class="font-h1 text-h1 text-on-surface mb-xs">1</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Pending Delivery</p>
+</div>
+</div>
+<!-- Pending Payout -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] border border-surface-container flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<div>
+<p class="font-h1 text-h1 text-on-surface mb-xs">$2,400</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Pending Payout</p>
+</div>
+</div>
+</section>
+<!-- Performance Stats -->
+<section class="flex flex-col gap-md mt-sm">
+<h2 class="font-h2 text-h2 text-on-surface">Performance</h2>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] border border-surface-container overflow-hidden">
+<div class="flex items-center justify-between p-md border-b border-surface-container">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+<span class="font-body-md text-body-md">Response Time</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">15m</span>
+</div>
+<div class="flex items-center justify-between p-md border-b border-surface-container">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">star</span>
+<span class="font-body-md text-body-md">Rating</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-label-md text-on-surface">4.9/5</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-md">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">gavel</span>
+<span class="font-body-md text-body-md">Dispute Rate</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">0%</span>
+</div>
+</div>
+</section>
+<!-- Recent Activity (Visual Polish) -->
+<section class="flex flex-col gap-md mt-sm mb-xl">
+<h2 class="font-h2 text-h2 text-on-surface">Recent Activity</h2>
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] border border-surface-container flex items-center justify-center min-h-[120px]">
+<p class="font-body-md text-body-md text-on-surface-variant text-center">No recent activity to display.</p>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)]">
+<div class="flex justify-around items-center w-full max-w-screen-md mx-auto pb-safe h-16 touch-none">
+<button class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 scale-105 transition-transform active:bg-slate-50 dark:active:bg-slate-800 w-full h-full">
+<span class="material-symbols-outlined text-[24px] mb-1" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full">
+<span class="material-symbols-outlined text-[24px] mb-1">add_circle</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Post</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full">
+<span class="material-symbols-outlined text-[24px] mb-1">local_offer</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Offers</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full">
+<span class="material-symbols-outlined text-[24px] mb-1">receipt_long</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Orders</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full">
+<span class="material-symbols-outlined text-[24px] mb-1">person</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Account</span>
+</button>
+</div>
+</nav>
+</body></html>

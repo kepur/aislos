@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Company Verification Queue</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#00667c",
+                        "surface-dim": "#dadada",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#8f6f6c",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "primary": "#b6171d",
+                        "secondary-container": "#8fe3ff",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "on-background": "#1a1c1c",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "surface-container-low": "#f3f3f4",
+                        "outline-variant": "#e4beba",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "surface-container-high": "#e8e8e8",
+                        "tertiary-container": "#7a7558",
+                        "on-primary-fixed": "#410003",
+                        "surface": "#f9f9f9",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-secondary-fixed": "#001f27",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-variant": "#e2e2e2",
+                        "primary-container": "#da3432",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#615c41",
+                        "surface-container": "#eeeeee",
+                        "on-primary-container": "#fffbff",
+                        "surface-tint": "#ba1a1f",
+                        "inverse-primary": "#ffb3ac",
+                        "secondary": "#00677d",
+                        "primary-fixed": "#ffdad6",
+                        "on-primary-fixed-variant": "#93000f",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9f9",
+                        "inverse-surface": "#2f3131",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-fixed": "#ebe3c0",
+                        "on-surface-variant": "#5b403d",
+                        "surface-container-highest": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#b4ebff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "sm": "16px",
+                        "container-max": "1280px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "base": "4px",
+                        "lg": "40px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden">
+<!-- SideNavBar Component (From JSON) -->
+<nav class="fixed left-0 top-0 h-full w-64 border-r bg-slate-50 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flat no shadows flex flex-col p-4 gap-2 z-50">
+<div class="mb-8 mt-2 px-2">
+<h2 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest font-['Inter'] antialiased tracking-tight">Supplier Portal</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1">Enterprise Tier</p>
+</div>
+<button class="w-full bg-primary text-on-primary py-3 rounded-md font-body-md text-body-md mb-6 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+            Create New Bid
+        </button>
+<div class="flex-1 flex flex-col gap-2">
+<!-- Active Tab -->
+<a class="flex items-center gap-3 px-3 py-2.5 bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 shadow-sm border border-slate-100 dark:border-slate-800 rounded-md font-['Inter'] text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<!-- Inactive Tabs -->
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md font-['Inter'] text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="gavel">gavel</span>
+                Active Bids
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md font-['Inter'] text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="receipt_long">receipt_long</span>
+                Purchase Orders
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md font-['Inter'] text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="inventory_2">inventory_2</span>
+                Inventory
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md font-['Inter'] text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="monitoring">monitoring</span>
+                Analytics
+            </a>
+</div>
+<div class="mt-auto flex flex-col gap-2 pt-4 border-t border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md font-['Inter'] text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-md font-['Inter'] text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="contact_support">contact_support</span>
+                Support
+            </a>
+<div class="flex items-center gap-3 px-3 py-2 mt-2">
+<div class="w-8 h-8 rounded-full bg-slate-300 overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="person">person</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col ml-64 min-h-screen">
+<!-- TopAppBar Component (From JSON) -->
+<header class="fixed top-0 right-0 left-64 h-16 z-40 flex items-center justify-between px-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flat no shadows font-['Inter'] antialiased tracking-tight">
+<div class="flex items-center gap-4 w-1/3">
+<h1 class="text-xl font-bold text-slate-900 dark:text-white">ProcureStream</h1>
+</div>
+<div class="flex-1 flex justify-center w-1/3">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+<input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-red-500 outline-none transition-all" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center justify-end gap-2 w-1/3">
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors scale-95 duration-100 active:opacity-80 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors scale-95 duration-100 active:opacity-80 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</button>
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors scale-95 duration-100 active:opacity-80 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+</button>
+<div class="ml-2 w-8 h-8 rounded-full bg-slate-200 overflow-hidden ml-2 cursor-pointer border border-slate-300">
+<img alt="Supplier Profile Avatar" class="w-full h-full object-cover" data-alt="A small circular avatar image showing a generic profile icon or initials for an administrative user in a corporate application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfb7TEPj8-c30m9FzNw5frdwp43DWEKOTWoR17WLgQVWGyhbO6xLWOdE9gHynrFDbVHT5M1uCbOzMiq3ybJObmfgttHVfr2U5xnWpDKmNCOFZRPzyr45db22TW7wKYNabveatTtSHCxkvN5IdV-JhbIPZS9cy5fm8edxInyUmvIMYzbzuB35owSsriEVOtKlbL5eFIXqk5ZNBkSlC_hRtd5gHZ7Y2q0uR3wiBXln6wz2vI8QTkpt3fPNVZ_eI_5H4Y1qgYyd0Idz8Z"/>
+</div>
+</div>
+</header>
+<!-- Main Workspace: Verification Queue -->
+<main class="mt-16 p-lg h-[calc(100vh-64px)] overflow-hidden flex flex-col bg-surface">
+<!-- Page Header -->
+<div class="mb-md flex justify-between items-end flex-shrink-0">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface">Verification Queue</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Review and approve pending supplier applications.</p>
+</div>
+<div class="flex gap-sm">
+<div class="bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-data-mono text-data-mono text-on-surface">14 Pending</span>
+</div>
+<div class="bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-data-mono text-data-mono text-on-surface">3 High Risk</span>
+</div>
+</div>
+</div>
+<!-- Split View Layout -->
+<div class="flex gap-gutter flex-1 min-h-0">
+<!-- Left Pane: Queue List -->
+<div class="w-1/3 flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<!-- List Header/Filters -->
+<div class="p-md border-b border-outline-variant bg-surface-container-lowest shrink-0">
+<div class="relative mb-3">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]" data-icon="search">search</span>
+<input class="w-full bg-surface text-on-surface font-body-sm text-body-sm border border-outline-variant rounded-lg py-2 pl-9 pr-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors placeholder:text-on-surface-variant/50" placeholder="Search company or ID..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-surface-variant text-on-surface font-label-caps text-label-caps rounded-full hover:bg-surface-dim transition-colors">All</button>
+<button class="px-3 py-1 bg-surface-container-low text-on-surface-variant font-label-caps text-label-caps border border-outline-variant rounded-full hover:bg-surface-variant transition-colors">Pending</button>
+<button class="px-3 py-1 bg-surface-container-low text-on-surface-variant font-label-caps text-label-caps border border-outline-variant rounded-full hover:bg-surface-variant transition-colors">Requires Revision</button>
+</div>
+</div>
+<!-- Scrollable List -->
+<div class="flex-1 overflow-y-auto">
+<!-- Active List Item -->
+<div class="p-md border-b border-outline-variant bg-primary-fixed/20 cursor-pointer relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-h3 text-h3 text-on-surface">Nexus Logistics Intl.</h3>
+<span class="font-label-caps text-label-caps bg-tertiary-container text-on-tertiary-container px-2 py-0.5 rounded-sm">High Risk</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant mt-2">
+<span class="font-data-mono text-data-mono">ID: SUP-8829</span>
+<span class="font-body-sm text-body-sm flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 2 hrs ago</span>
+</div>
+</div>
+<!-- Inactive List Items -->
+<div class="p-md border-b border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">AlphaTech Manufacturing</h3>
+<span class="font-label-caps text-label-caps bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-sm border border-outline-variant">Pending</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant mt-2">
+<span class="font-data-mono text-data-mono">ID: SUP-8830</span>
+<span class="font-body-sm text-body-sm flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 4 hrs ago</span>
+</div>
+</div>
+<div class="p-md border-b border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Global Source Traders</h3>
+<span class="font-label-caps text-label-caps bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-sm border border-outline-variant">Pending</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant mt-2">
+<span class="font-data-mono text-data-mono">ID: SUP-8831</span>
+<span class="font-body-sm text-body-sm flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 1 day ago</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Pane: Detailed View -->
+<div class="w-2/3 flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<!-- Detail Header -->
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest shrink-0">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h2 class="font-h2 text-h2 text-on-surface">Nexus Logistics Intl.</h2>
+<span class="font-label-caps text-label-caps bg-tertiary-container text-on-tertiary-container px-2 py-1 rounded-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span> Flagged
+                                </span>
+</div>
+<div class="flex gap-4 font-body-sm text-body-sm text-on-surface-variant">
+<span>Applied: Oct 24, 2023</span>
+<span>Region: EMEA</span>
+<span>Category: Freight</span>
+</div>
+</div>
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<!-- Inner Split: Docs vs Notes -->
+<div class="flex-1 flex min-h-0">
+<!-- Document Viewer Panel -->
+<div class="w-2/3 border-r border-outline-variant flex flex-col bg-surface">
+<!-- Document Tabs -->
+<div class="flex border-b border-outline-variant bg-surface-container-lowest px-2 pt-2">
+<button class="px-4 py-2 border-b-2 border-primary text-primary font-label-caps text-label-caps bg-surface transition-colors">Tax ID</button>
+<button class="px-4 py-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps hover:bg-surface transition-colors">Owner ID</button>
+<button class="px-4 py-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps hover:bg-surface transition-colors">Facility Photos</button>
+<button class="px-4 py-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-label-caps text-label-caps hover:bg-surface transition-colors">Bank Info</button>
+</div>
+<!-- Viewer Area -->
+<div class="flex-1 p-md flex flex-col items-center justify-center bg-surface-dim relative overflow-hidden group">
+<!-- Viewer Toolbar -->
+<div class="absolute top-4 right-4 flex gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 bg-surface-container-lowest/90 backdrop-blur border border-outline-variant rounded flex items-center justify-center hover:bg-surface-container-low text-on-surface shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="zoom_in">zoom_in</span>
+</button>
+<button class="w-8 h-8 bg-surface-container-lowest/90 backdrop-blur border border-outline-variant rounded flex items-center justify-center hover:bg-surface-container-low text-on-surface shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="zoom_out">zoom_out</span>
+</button>
+<button class="w-8 h-8 bg-surface-container-lowest/90 backdrop-blur border border-outline-variant rounded flex items-center justify-center hover:bg-surface-container-low text-on-surface shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+</button>
+</div>
+<!-- The Document (Simulated) -->
+<div class="w-full max-w-lg bg-surface-container-lowest shadow-[0px_12px_32px_rgba(0,0,0,0.1)] p-6 border border-outline-variant rotate-[-1deg] transition-transform duration-300 hover:rotate-0">
+<img alt="Scanned tax document" class="w-full h-auto opacity-90 sepia-[.2]" data-alt="A high-resolution, slightly angled scan of an official corporate tax registration document laying on a minimalist white desk. The document features dense, bureaucratic text, formal stamps, and barcode elements, bathed in cool, uniform, professional light-mode lighting, conveying a sense of rigid administrative scrutiny and high-stakes global verification." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCooefXvMA4v_rLSrwPR-p3Fc13DQyYE8DGoFVB_Bq8oMfQSvuAE4Ph-ihwwTBD1jjfGBdaBOcSKIKH2A1LB3U9dZEReT_bsod6kQVoBQgIUPX_2AQhTWFiKojECrifFdbphJiRXmNC4-U5th9KqWvfAQVk8UKUyWXOnUjPRw8LOmokFV-obv6Kj50FKgdkkz2jM_ShLQfIKcm1IgFoE817BHVTDahryS5-C86ppglncCZCSoh1otWvFRYBy9RSnbtkTenNYB0pyW3m"/>
+</div>
+</div>
+<!-- Extracted Data Bento -->
+<div class="h-1/3 border-t border-outline-variant bg-surface-container-lowest p-md overflow-y-auto">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="memory">memory</span> OCR Extracted Data
+                                </h4>
+<div class="grid grid-cols-2 gap-x-gutter gap-y-sm">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/70 mb-1">Entity Name</p>
+<p class="font-data-mono text-data-mono text-on-surface">NEXUS LOGISTICS INTERNATIONAL LLC</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/70 mb-1">Tax ID / VAT</p>
+<p class="font-data-mono text-data-mono text-primary flex items-center gap-1">
+                                            DE-99382-A1 <span class="material-symbols-outlined text-[14px]" data-icon="error">error</span>
+</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/70 mb-1">Registered Address</p>
+<p class="font-data-mono text-data-mono text-on-surface truncate">144 Logistics Way, Frankfurt, DE</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/70 mb-1">Match Confidence</p>
+<p class="font-data-mono text-data-mono text-on-surface">89%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Risk Notes Sidebar -->
+<div class="w-1/3 flex flex-col bg-surface-container-lowest">
+<div class="p-md border-b border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="gpp_maybe">gpp_maybe</span>
+<h3 class="font-h3 text-h3 text-on-surface">Risk Notes</h3>
+</div>
+<div class="flex-1 p-md overflow-y-auto bg-surface/50">
+<!-- Previous Note -->
+<div class="mb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-caps text-label-caps text-on-surface font-semibold">System Auto-Check</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">09:41 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface p-3 bg-error-container text-on-error-container rounded-lg border border-outline-variant/50">
+                                        Tax ID format does not match standard EU VAT patterns. Manual review required.
+                                    </p>
+</div>
+<!-- Previous Note -->
+<div class="mb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-caps text-label-caps text-on-surface font-semibold">S. Miller (Compliance)</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Yesterday</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface p-3 bg-surface-container-low rounded-lg border border-outline-variant">
+                                        Requested clearer photo of warehouse facility. Previous upload was blurry.
+                                    </p>
+</div>
+</div>
+<!-- Add Note Area -->
+<div class="p-md border-t border-outline-variant bg-surface-container-lowest">
+<textarea class="w-full bg-surface text-on-surface border border-outline-variant rounded-lg p-3 font-body-sm text-body-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none resize-none h-24 mb-3" placeholder="Add an internal note..."></textarea>
+<button class="w-full py-2 bg-surface-variant text-on-surface font-label-caps text-label-caps rounded-lg border border-outline-variant hover:bg-surface-dim transition-colors">Post Note</button>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="p-md border-t border-outline-variant bg-surface-container-lowest flex justify-between items-center shrink-0">
+<button class="px-6 py-2.5 border border-outline text-on-surface font-body-md text-body-md font-medium rounded-lg hover:bg-surface-container-low transition-colors">
+                            Request More Documents
+                        </button>
+<div class="flex gap-sm">
+<button class="px-6 py-2.5 bg-surface text-error font-body-md text-body-md font-medium rounded-lg border border-error/30 hover:bg-error-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span> Reject
+                            </button>
+<button class="px-8 py-2.5 bg-primary text-on-primary font-body-md text-body-md font-medium rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 shadow-[0px_4px_12px_rgba(0,0,0,0.1)]">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span> Approve Application
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

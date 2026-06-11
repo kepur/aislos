@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Request Review &amp; Publish</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#dee0ff",
+                    "primary-container": "#3f51b5",
+                    "surface-container-high": "#dce9ff",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#213145",
+                    "inverse-on-surface": "#eaf1ff",
+                    "error": "#ba1a1a",
+                    "surface-variant": "#d3e4fe",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#b9c3ff",
+                    "secondary-fixed": "#dee1ff",
+                    "on-surface-variant": "#454652",
+                    "on-surface": "#0b1c30",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#8f4700",
+                    "background": "#f8f9ff",
+                    "tertiary-fixed-dim": "#ffb784",
+                    "primary-fixed-dim": "#bac3ff",
+                    "outline-variant": "#c5c5d4",
+                    "surface-container-low": "#eff4ff",
+                    "on-tertiary-fixed": "#301400",
+                    "inverse-primary": "#bac3ff",
+                    "on-tertiary-fixed-variant": "#713700",
+                    "surface-bright": "#f8f9ff",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#021355",
+                    "surface-container": "#e5eeff",
+                    "on-primary-container": "#cacfff",
+                    "secondary-container": "#abb7ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-primary-fixed-variant": "#293ca0",
+                    "on-secondary-fixed-variant": "#354282",
+                    "on-secondary-container": "#394687",
+                    "on-error-container": "#93000a",
+                    "secondary": "#4d5a9c",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f8f9ff",
+                    "primary": "#24389c",
+                    "on-background": "#0b1c30",
+                    "tertiary-fixed": "#ffdcc6",
+                    "on-tertiary-container": "#ffc7a2",
+                    "outline": "#757684",
+                    "surface-dim": "#cbdbf5",
+                    "on-primary-fixed": "#00105c",
+                    "tertiary": "#6c3400",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#4355b9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "lg": "24px",
+                    "gutter-mobile": "12px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "label-md": [
+                            "Inter"
+                    ],
+                    "h2": [
+                            "Inter"
+                    ],
+                    "h1": [
+                            "Inter"
+                    ],
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "h3": [
+                            "Inter"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "body-lg": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "letterSpacing": "0",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "h2": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "h1": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "h3": [
+                            "18px",
+                            {
+                                    "lineHeight": "24px",
+                                    "letterSpacing": "0",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .pt-safe {
+            padding-top: env(safe-area-inset-top);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen pb-[120px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm tap-highlight-transparent cursor-pointer pt-safe">
+<div class="flex items-center justify-between px-4 h-14 w-full">
+<button class="flex items-center justify-center p-2 text-primary hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-primary dark:text-indigo-400 font-h2 text-h2 tracking-tight">Review Request</h1>
+<div class="w-10"></div> <!-- Placeholder for balance -->
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-[80px] px-margin-mobile flex flex-col gap-md">
+<!-- Progress Stepper -->
+<div class="w-full flex items-center justify-between px-2 mb-sm">
+<div class="flex items-center w-full">
+<div class="flex-1 flex items-center">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</div>
+<div class="flex-1 h-[2px] bg-primary mx-2"></div>
+</div>
+<div class="flex-1 flex items-center">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</div>
+<div class="flex-1 h-[2px] bg-primary mx-2"></div>
+</div>
+<div class="flex items-center">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm">3</div>
+</div>
+</div>
+</div>
+<div class="mb-sm">
+<h2 class="font-h1 text-h1 text-on-background mb-xs">Review &amp; Publish</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Please review the details of your request before publishing it to the marketplace.</p>
+</div>
+<!-- Item Details Card -->
+<section class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] flex flex-col gap-sm">
+<div class="flex items-center justify-between mb-xs">
+<h3 class="font-h3 text-h3 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                    Item Details
+                </h3>
+<button class="text-primary font-label-sm text-label-sm hover:opacity-70">Edit</button>
+</div>
+<div class="flex gap-md">
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-surface-container">
+<img alt="PS5 Console" class="w-full h-full object-cover" data-alt="A close-up, high-quality photograph of a brand new PlayStation 5 console resting on a pristine white surface. The lighting is soft and studio-quality, highlighting the sleek curves and modern design of the device. The background is a minimalist, slightly blurred living room setting, contributing to a premium, aspirational e-commerce aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDIUxVKxkI10hrGla9nK4xKznFfuwH1S45zTDZuBwJsJ-fI64dCYQZbfuNncLZ2UcPHbvrDhERW41o6nvTrjezebGtGsR66YZm-trMyE5P61c3BhiiDInbvyBzMADcxBB-kmoXsKycj_y6E3yce8eZFkvVtgYAmiq-FUpX02SFhFOgV9SQRM-bnUMTjTJvY1wf3geZ5JGCXr-oSSNt9gI0mFRtAYVWYHSEvuXNu2-Ho-ywpH1JTZnbLvn19AeJgDwv7feHw7lGDkE"/>
+</div>
+<div class="flex flex-col justify-center">
+<div class="font-label-md text-label-md text-on-background">Sony PlayStation 5 Disc Edition</div>
+<div class="font-body-md text-body-md text-on-surface-variant mt-1">Brand New, Unopened Box</div>
+<div class="inline-flex items-center gap-1 mt-2 bg-surface-variant text-on-surface-variant px-2 py-1 rounded font-label-sm text-label-sm w-fit">
+<span class="material-symbols-outlined text-[14px]">category</span> Electronics
+                    </div>
+</div>
+</div>
+</section>
+<!-- Quantity & Budget Card -->
+<section class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] flex flex-col gap-sm">
+<div class="flex items-center justify-between mb-xs">
+<h3 class="font-h3 text-h3 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">payments</span>
+                    Quantity &amp; Budget
+                </h3>
+<button class="text-primary font-label-sm text-label-sm hover:opacity-70">Edit</button>
+</div>
+<div class="grid grid-cols-2 gap-md mt-2">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Quantity Required</span>
+<span class="font-h2 text-h2 text-on-background mt-1">2 Units</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Target Price (Per Unit)</span>
+<span class="font-h2 text-h2 text-on-background mt-1">$450.00</span>
+</div>
+<div class="col-span-2 pt-sm border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-background">Total Escrow Budget</span>
+<span class="font-h2 text-h2 text-primary">$900.00</span>
+</div>
+</div>
+</section>
+<!-- Location & Radius Card -->
+<section class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] flex flex-col gap-sm">
+<div class="flex items-center justify-between mb-xs">
+<h3 class="font-h3 text-h3 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">location_on</span>
+                    Location &amp; Radius
+                </h3>
+<button class="text-primary font-label-sm text-label-sm hover:opacity-70">Edit</button>
+</div>
+<div class="flex items-start gap-sm mt-2">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">map</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-background">Downtown Seattle, WA</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">Accepting offers within 15 miles</span>
+</div>
+</div>
+</section>
+<!-- Delivery Window Card -->
+<section class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] flex flex-col gap-sm">
+<div class="flex items-center justify-between mb-xs">
+<h3 class="font-h3 text-h3 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">calendar_clock</span>
+                    Delivery Window
+                </h3>
+<button class="text-primary font-label-sm text-label-sm hover:opacity-70">Edit</button>
+</div>
+<div class="flex items-start gap-sm mt-2">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">event_available</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-background">By Oct 24, 2023</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">Preferred delivery: Evening (5 PM - 9 PM)</span>
+</div>
+</div>
+</section>
+<!-- Escrow Setup Card -->
+<section class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] border border-[#c5c5d4]/30 flex flex-col gap-sm">
+<div class="flex items-center justify-between mb-xs">
+<h3 class="font-h3 text-h3 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">shield</span>
+                    Escrow Setup
+                </h3>
+</div>
+<div class="bg-surface-container-low rounded-lg p-sm flex items-start gap-sm mt-2">
+<span class="material-symbols-outlined text-primary mt-0.5">lock</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-background">Funds Secured</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">Your $900.00 budget will be securely held in escrow until the items are delivered and verified.</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action Area -->
+<div class="fixed bottom-0 w-full bg-white/95 backdrop-blur-lg border-t border-slate-200 z-40 pb-safe px-margin-mobile py-md shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)]">
+<div class="flex flex-col gap-sm w-full max-w-screen-md mx-auto">
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 active:opacity-90 transition-opacity shadow-sm">
+                Publish Request
+                <span class="material-symbols-outlined text-[18px]">send</span>
+</button>
+<button class="w-full h-[44px] bg-transparent text-primary border border-primary rounded-lg font-label-md text-label-md flex items-center justify-center active:bg-surface-container-low transition-colors">
+                Save Draft
+            </button>
+</div>
+</div>
+</body></html>

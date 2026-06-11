@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProcurePing - Buyer Request Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#00667c",
+                        "tertiary": "#615c41",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed": "#b4ebff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface-tint": "#ba1a1f",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "primary-fixed": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#da3432",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#5b403d",
+                        "on-background": "#1a1c1c",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "outline": "#8f6f6c",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-fixed-variant": "#93000f",
+                        "tertiary-container": "#7a7558",
+                        "secondary": "#00677d",
+                        "surface-dim": "#dadada",
+                        "outline-variant": "#e4beba",
+                        "surface": "#f9f9f9",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#410003",
+                        "inverse-surface": "#2f3131",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#8fe3ff",
+                        "background": "#f9f9f9",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e2e2e2",
+                        "primary": "#b6171d",
+                        "surface-container-low": "#f3f3f4",
+                        "on-secondary-fixed": "#001f27",
+                        "inverse-primary": "#ffb3ac",
+                        "tertiary-fixed": "#ebe3c0",
+                        "surface-bright": "#f9f9f9",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "sm": "16px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "lg": "40px",
+                        "container-max": "1280px",
+                        "base": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h2": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "1", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased flex">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col fixed left-0 h-screen w-64 rounded-none border-r border-slate-100 bg-white shadow-[none] py-6 pr-4 z-40">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">radar</span>
+</div>
+<div>
+<h2 class="text-lg font-black text-[#FF4F49] tracking-tight leading-none">ProcurePing</h2>
+<span class="font-body-sm text-on-surface-variant text-xs">Enterprise Buyer</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-1 mt-4">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:bg-slate-50 font-inter text-sm font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-[#FF4F49] bg-slate-50 rounded-r-full border-l-4 border-[#FF4F49] font-inter text-sm font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">gavel</span>
+                Active Bids
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:bg-slate-50 font-inter text-sm font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">groups</span>
+                Suppliers
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:bg-slate-50 font-inter text-sm font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+                Market Insights
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:bg-slate-50 font-inter text-sm font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+                Archive
+            </a>
+</div>
+<div class="mt-auto flex flex-col gap-1 border-t border-slate-100 pt-4">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:bg-slate-50 font-inter text-sm font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">help_center</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:bg-slate-50 font-inter text-sm font-medium hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="docked full-width top-0 sticky z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm flex justify-between items-center w-full px-10 h-16">
+<div class="flex items-center gap-4 text-slate-600">
+<!-- Search could go here if search_bar was fully defined, omitting for now based on exact JSON translation priority -->
+</div>
+<div class="flex items-center gap-4 text-slate-600">
+<button class="hover:text-[#FF4F49] transition-colors duration-200 p-2"><span class="material-symbols-outlined">language</span></button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 p-2"><span class="material-symbols-outlined">currency_exchange</span></button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 p-2"><span class="material-symbols-outlined">public</span></button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 p-2"><span class="material-symbols-outlined">notifications</span></button>
+<div class="w-8 h-8 rounded-full bg-slate-200 ml-4 overflow-hidden border border-slate-300">
+<img alt="Executive User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of an executive user in a modern corporate setting. The lighting is soft and bright, emphasizing a clean, light-mode aesthetic. The color palette is composed of crisp whites, slate grays, and subtle cool tones, aligning with a professional B2B software platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtFXlsMqVWHAIvfiwtkkLcNm1lxcA6w7k1GfuanhFSC4LKD-C1eAN9FTi8uMNr80waL02o6z2KVzap4sP19Urp4TeGdlVSpdNX3WhGrAqSp4TWzeMOhz_qd0kn1KrG8xl2oqQZadzMGf_fqhGcuUiJorTvLg2eG7W2gMMYrEenezgDOgylmt-CkwdPALcD8DgG7a52jYQj34ZjoE-y4ak67_Bw1jF-TJ8qke8RYJ7c3wggHqUHJGxXbou09b9_rQypmlEqTubm3eJe"/>
+</div>
+</div>
+</header>
+<div class="p-lg flex-1 flex flex-col gap-md max-w-[1440px] mx-auto w-full">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-sm mb-xs">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#E8F5E9] text-[#2E7D32] font-label-caps text-[10px]">
+<span class="material-symbols-outlined text-[14px]">fiber_manual_record</span>
+                            LIVE/OPEN
+                        </span>
+<span class="font-body-sm text-on-surface-variant">REQ-2023-089</span>
+</div>
+<h1 class="font-h1 text-h1 text-on-surface">500x Industrial Grade Laptops</h1>
+</div>
+<div class="flex gap-sm">
+<button class="px-4 py-2 border border-outline text-on-surface font-body-sm font-medium rounded hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                        Edit Request
+                    </button>
+<button class="px-4 py-2 border border-error text-error font-body-sm font-medium rounded hover:bg-error-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+                        Cancel
+                    </button>
+</div>
+</div>
+<!-- KPI Bar (Bento Grid Style) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-sm">
+<div class="bg-surface p-md border border-slate-100 rounded-lg flex flex-col justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> TIME REMAINING</span>
+<span class="font-h2 text-h2 text-primary">22h 14m</span>
+</div>
+<div class="bg-surface p-md border border-slate-100 rounded-lg flex flex-col justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">cell_tower</span> SUPPLIERS PINGED</span>
+<span class="font-h2 text-h2 text-on-surface">142</span>
+</div>
+<div class="bg-surface p-md border border-slate-100 rounded-lg flex flex-col justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">inbox</span> OFFERS RECEIVED</span>
+<div class="flex items-baseline gap-2">
+<span class="font-h2 text-h2 text-on-surface">8</span>
+<span class="font-body-sm text-sm text-[#2E7D32] flex items-center"><span class="material-symbols-outlined text-[14px]">arrow_upward</span> 2 new</span>
+</div>
+</div>
+<div class="bg-surface p-md border border-slate-100 rounded-lg flex flex-col justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">payments</span> BUDGET RANGE</span>
+<span class="font-data-mono text-h3 text-on-surface">$1,250,000 USD</span>
+</div>
+</div>
+<!-- Main Content Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md mt-sm">
+<!-- Left Column: Specs, Location, Attachments -->
+<div class="lg:col-span-1 flex flex-col gap-md">
+<!-- Detailed Specifications -->
+<div class="bg-white border border-slate-100 rounded-lg p-md shadow-sm">
+<h3 class="font-h3 text-h3 text-on-surface mb-4 border-b border-slate-100 pb-2">Detailed Specifications</h3>
+<dl class="flex flex-col gap-3">
+<div class="flex justify-between items-center py-1">
+<dt class="font-body-sm text-on-surface-variant">Brand</dt>
+<dd class="font-body-sm font-medium text-on-surface">Dell</dd>
+</div>
+<div class="flex justify-between items-center py-1">
+<dt class="font-body-sm text-on-surface-variant">Model Range</dt>
+<dd class="font-body-sm font-medium text-on-surface">Optiplex / Latitude Rugged</dd>
+</div>
+<div class="flex justify-between items-center py-1">
+<dt class="font-body-sm text-on-surface-variant">Processor MIN</dt>
+<dd class="font-body-sm font-medium text-on-surface">Intel Core i7 (12th Gen+)</dd>
+</div>
+<div class="flex justify-between items-center py-1">
+<dt class="font-body-sm text-on-surface-variant">RAM MIN</dt>
+<dd class="font-body-sm font-medium text-on-surface">32GB DDR5</dd>
+</div>
+<div class="flex justify-between items-center py-1 border-t border-slate-50 pt-2">
+<dt class="font-body-sm text-on-surface-variant">Delivery Terms</dt>
+<dd class="font-body-sm font-medium text-on-surface">DDP (Delivered Duty Paid)</dd>
+</div>
+</dl>
+</div>
+<!-- Map Card -->
+<div class="bg-white border border-slate-100 rounded-lg overflow-hidden shadow-sm flex flex-col">
+<div class="p-4 border-b border-slate-100 bg-surface-bright">
+<h3 class="font-body-md font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">location_on</span>
+                                Delivery Region
+                            </h3>
+<p class="font-body-sm text-on-surface-variant mt-1">Cebu region, Philippines (100km radius)</p>
+</div>
+<div class="h-48 bg-slate-200 relative">
+<img alt="Map of Cebu Region" class="w-full h-full object-cover grayscale opacity-80" data-alt="A clean, professional grayscale map visualization centered on the Cebu region in the Philippines. The map aesthetic is modern and minimalistic, fitting a corporate B2B application. A vibrant red (coral) circular radius overlay indicates the delivery zone, contrasting sharply with the subtle gray map background." data-location="Cebu, Philippines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBslXIJKlCYUZbDsoEY33Lt3GLC8jEMLZRtUtRxs8Ypqw9rEk3taL4IpJ0zzMp9gJCklUW3EQGHnKsK-a23iylooSpQEr39EsZmIkDWRsqWczb0IFCV6hdyMmHmDScCF2zNxR0ICfTt-otOGodEA2jrG0tTdNZ02B-fOYeol0BXw06uRMntek7Hu7awCA94uup7VMmBJNOHourgFb6zaQzpcI7Z0ujJMnfnTAhpEOJyILvOoq0pRacgpG7q3uJ_1PfQC_AQwvaEPPgo"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-24 h-24 rounded-full border-2 border-primary bg-primary/10 flex items-center justify-center">
+<div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_rgba(182,23,29,0.8)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Attachments -->
+<div class="bg-white border border-slate-100 rounded-lg p-md shadow-sm">
+<h3 class="font-h3 text-h3 text-on-surface mb-4">Attachments</h3>
+<div class="flex flex-col gap-2">
+<a class="flex items-center justify-between p-3 border border-slate-200 rounded hover:border-primary/50 transition-colors group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<span class="font-body-sm font-medium text-on-surface">Detailed_Specs.pdf</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">download</span>
+</a>
+<a class="flex items-center justify-between p-3 border border-slate-200 rounded hover:border-primary/50 transition-colors group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">table_chart</span>
+<span class="font-body-sm font-medium text-on-surface">Compliance_Matrix.xlsx</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">download</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Right Column: Tabs, Offers, Timeline -->
+<div class="lg:col-span-2 flex flex-col gap-md">
+<!-- Tabs -->
+<div class="border-b border-slate-200">
+<nav aria-label="Tabs" class="-mb-px flex space-x-8">
+<a aria-current="page" class="border-primary text-primary whitespace-nowrap py-4 px-1 border-b-2 font-body-md font-medium" href="#">
+                                Offers (8)
+                            </a>
+<a class="border-transparent text-on-surface-variant hover:text-on-surface hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-body-md font-medium flex items-center gap-2" href="#">
+                                Messages
+                                <span class="bg-surface-tint text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">3</span>
+</a>
+</nav>
+</div>
+<!-- Offers List (Glassmorphism inspired cards) -->
+<div class="flex flex-col gap-4">
+<!-- Offer Card 1 -->
+<div class="bg-white/80 backdrop-blur-sm border border-slate-100 rounded-lg p-md shadow-[0px_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-[#2E7D32]"></div>
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded flex items-center justify-center font-bold text-slate-600">
+                                        TS
+                                    </div>
+<div>
+<h4 class="font-h3 text-h3 text-on-surface flex items-center gap-2">TechSupply Global <span class="material-symbols-outlined text-[16px] text-[#2E7D32]" style="font-variation-settings: 'FILL' 1;">verified</span></h4>
+<span class="font-body-sm text-on-surface-variant">Tier 1 Verified Supplier</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-data-mono text-h2 text-on-surface block">$1,185,000</span>
+<span class="font-label-caps text-label-caps text-[#2E7D32] bg-[#E8F5E9] px-2 py-1 rounded inline-block mt-1">-5.2% vs Budget</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 border-t border-slate-50 pt-4">
+<div>
+<span class="block font-label-caps text-label-caps text-on-surface-variant mb-1">LEAD TIME</span>
+<span class="font-body-sm font-medium">14 Days</span>
+</div>
+<div>
+<span class="block font-label-caps text-label-caps text-on-surface-variant mb-1">COMPLIANCE SCORE</span>
+<span class="font-body-sm font-medium text-[#2E7D32]">100% Match</span>
+</div>
+<div class="flex justify-end items-center">
+<button class="bg-primary text-white font-body-sm font-medium px-4 py-2 rounded hover:bg-surface-tint transition-colors">Review Offer</button>
+</div>
+</div>
+</div>
+<!-- Offer Card 2 -->
+<div class="bg-white/80 backdrop-blur-sm border border-slate-100 rounded-lg p-md shadow-[0px_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded flex items-center justify-center font-bold text-slate-600">
+                                        EI
+                                    </div>
+<div>
+<h4 class="font-h3 text-h3 text-on-surface flex items-center gap-2">Enterprise IT Solutions <span class="material-symbols-outlined text-[16px] text-[#2E7D32]" style="font-variation-settings: 'FILL' 1;">verified</span></h4>
+<span class="font-body-sm text-on-surface-variant">Tier 2 Supplier</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-data-mono text-h2 text-on-surface block">$1,210,000</span>
+<span class="font-label-caps text-label-caps text-[#2E7D32] bg-[#E8F5E9] px-2 py-1 rounded inline-block mt-1">-3.2% vs Budget</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 border-t border-slate-50 pt-4">
+<div>
+<span class="block font-label-caps text-label-caps text-on-surface-variant mb-1">LEAD TIME</span>
+<span class="font-body-sm font-medium text-[#B71C1C]">28 Days</span>
+</div>
+<div>
+<span class="block font-label-caps text-label-caps text-on-surface-variant mb-1">COMPLIANCE SCORE</span>
+<span class="font-body-sm font-medium">95% Match</span>
+</div>
+<div class="flex justify-end items-center">
+<button class="border border-outline text-on-surface font-body-sm font-medium px-4 py-2 rounded hover:bg-surface-container-low transition-colors">Review Offer</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Timeline -->
+<div class="bg-surface border border-slate-100 rounded-lg p-md mt-4">
+<h3 class="font-h3 text-h3 text-on-surface mb-6 border-b border-slate-100 pb-2">Activity Timeline</h3>
+<div class="relative border-l-2 border-slate-200 ml-3 space-y-8">
+<div class="relative pl-6">
+<div class="absolute w-4 h-4 bg-primary rounded-full -left-[9px] top-1 border-2 border-white"></div>
+<div class="flex flex-col">
+<span class="font-body-sm font-semibold text-on-surface">First Offer Received</span>
+<span class="font-body-sm text-on-surface-variant">TechSupply Global submitted a bid.</span>
+<span class="font-label-caps text-label-caps text-slate-400 mt-1">TODAY, 09:14 AM</span>
+</div>
+</div>
+<div class="relative pl-6">
+<div class="absolute w-4 h-4 bg-slate-300 rounded-full -left-[9px] top-1 border-2 border-white"></div>
+<div class="flex flex-col">
+<span class="font-body-sm font-semibold text-on-surface">100+ Suppliers Notified</span>
+<span class="font-body-sm text-on-surface-variant">System pinged all Tier 1 and Tier 2 IT hardware suppliers in APAC.</span>
+<span class="font-label-caps text-label-caps text-slate-400 mt-1">YESTERDAY, 14:02 PM</span>
+</div>
+</div>
+<div class="relative pl-6">
+<div class="absolute w-4 h-4 bg-slate-300 rounded-full -left-[9px] top-1 border-2 border-white"></div>
+<div class="flex flex-col">
+<span class="font-body-sm font-semibold text-on-surface">Request Published</span>
+<span class="font-body-sm text-on-surface-variant">Request REQ-2023-089 was approved and moved to LIVE status.</span>
+<span class="font-label-caps text-label-caps text-slate-400 mt-1">YESTERDAY, 13:45 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post Request: Category Selection - ProcureGlobal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-surface": "#2f3131",
+                        "surface-tint": "#ba1a1f",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "on-primary-fixed": "#410003",
+                        "on-primary-fixed-variant": "#93000f",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#dadada",
+                        "surface-container-high": "#e8e8e8",
+                        "on-surface": "#1a1c1c",
+                        "inverse-primary": "#ffb3ac",
+                        "primary-fixed": "#ffdad6",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "surface-bright": "#f9f9f9",
+                        "outline-variant": "#e4beba",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "background": "#f9f9f9",
+                        "outline": "#8f6f6c",
+                        "secondary-fixed": "#b4ebff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "on-secondary-fixed": "#001f27",
+                        "tertiary": "#615c41",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface-variant": "#e2e2e2",
+                        "secondary": "#00677d",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ebe3c0",
+                        "tertiary-container": "#7a7558",
+                        "secondary-container": "#8fe3ff",
+                        "primary-container": "#da3432",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-tertiary-container": "#fffbff",
+                        "on-secondary-container": "#00667c",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-low": "#f3f3f4",
+                        "primary": "#b6171d",
+                        "on-error": "#ffffff",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-surface-variant": "#5b403d",
+                        "surface": "#f9f9f9",
+                        "on-background": "#1a1c1c",
+                        "surface-container-highest": "#e2e2e2"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.125rem",
+                        lg: "0.25rem",
+                        xl: "0.5rem",
+                        full: "0.75rem"
+                    },
+                    spacing: {
+                        xl: "64px",
+                        base: "4px",
+                        gutter: "24px",
+                        "container-max": "1280px",
+                        lg: "40px",
+                        xs: "8px",
+                        sm: "16px",
+                        md: "24px"
+                    },
+                    fontFamily: {
+                        h2: ["Inter"],
+                        display: ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        h3: ["Inter"],
+                        h1: ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    fontSize: {
+                        h2: ["24px", { lineHeight: "1.3", fontWeight: "600" }],
+                        display: ["48px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "body-md": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "data-mono": ["14px", { lineHeight: "1", fontWeight: "500" }],
+                        "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "label-caps": ["12px", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "700" }],
+                        h3: ["20px", { lineHeight: "1.4", fontWeight: "600" }],
+                        h1: ["32px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "600" }],
+                        "body-sm": ["14px", { lineHeight: "1.5", fontWeight: "400" }]
+                    }
+                }
+            }
+        };
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar (Shared Component) - Suppressed due to task-focused linear flow (Post Request) -->
+<!-- SideNavBar (Shared Component) - Suppressed due to task-focused linear flow (Post Request) -->
+<!-- Main Canvas for Linear Flow -->
+<main class="flex-grow flex flex-col items-center py-lg px-gutter max-w-container-max mx-auto w-full">
+<!-- Header & Stepper -->
+<div class="w-full max-w-3xl mb-xl">
+<div class="flex items-center justify-between mb-sm">
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+<span class="font-label-caps text-label-caps uppercase">Cancel</span>
+</button>
+<span class="font-h3 text-h3 text-on-surface">Post New Request</span>
+<div class="w-20"></div> <!-- Spacer for balance -->
+</div>
+<!-- Stepper Progress -->
+<div class="relative flex justify-between items-center w-full mt-lg">
+<div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-[2px] bg-surface-variant -z-10"></div>
+<div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-1/4 h-[2px] bg-primary -z-10"></div>
+<!-- Step 1: Active -->
+<div class="flex flex-col items-center gap-xs bg-background px-xs">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-data-mono text-data-mono shadow-sm">1</div>
+<span class="font-label-caps text-label-caps text-primary">Category</span>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center gap-xs bg-background px-xs">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-data-mono text-data-mono">2</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Details</span>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center gap-xs bg-background px-xs">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-data-mono text-data-mono">3</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Location</span>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center gap-xs bg-background px-xs">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-data-mono text-data-mono">4</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Review</span>
+</div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="w-full max-w-4xl flex flex-col gap-lg">
+<div class="text-center">
+<h1 class="font-h1 text-h1 text-on-surface mb-xs">Select a Category</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Choose the primary classification for your procurement request.</p>
+</div>
+<!-- Search Input -->
+<div class="relative w-full max-w-2xl mx-auto">
+<span class="material-symbols-outlined absolute left-sm top-1/2 transform -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-14 pl-xl pr-sm bg-surface-container-lowest border border-surface-variant rounded-lg font-body-lg text-body-lg text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all shadow-sm" placeholder="What are you looking for?" type="text"/>
+</div>
+<!-- Recently Used -->
+<div class="flex flex-col gap-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Recently Used</span>
+<div class="flex flex-wrap gap-xs">
+<button class="px-sm py-xs bg-surface-container-low border border-surface-variant rounded-full font-body-sm text-body-sm text-on-surface hover:bg-surface-container transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">hardware</span> Industrial Hardware
+                    </button>
+<button class="px-sm py-xs bg-surface-container-low border border-surface-variant rounded-full font-body-sm text-body-sm text-on-surface hover:bg-surface-container transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">cable</span> Networking Cable
+                    </button>
+<button class="px-sm py-xs bg-surface-container-low border border-surface-variant rounded-full font-body-sm text-body-sm text-on-surface hover:bg-surface-container transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">precision_manufacturing</span> Machined Parts
+                    </button>
+</div>
+</div>
+<!-- Grid & Preview Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Main Grid (Left 2 columns) -->
+<div class="md:col-span-2 flex flex-col gap-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Popular Categories</span>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-sm">
+<!-- Category Card 1 (Active/Hover state example) -->
+<div class="bg-surface-container-lowest border border-primary rounded-lg p-md flex flex-col items-center justify-center gap-xs cursor-pointer shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-all ring-1 ring-primary relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<span class="material-symbols-outlined text-[32px] text-primary">construction</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface text-center">Construction Materials</span>
+</div>
+<!-- Category Card 2 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md flex flex-col items-center justify-center gap-xs cursor-pointer hover:border-outline hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-all group">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors">sailing</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface text-center">Marine Equipment</span>
+</div>
+<!-- Category Card 3 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md flex flex-col items-center justify-center gap-xs cursor-pointer hover:border-outline hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-all group">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors">computer</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface text-center">IT &amp; Office</span>
+</div>
+<!-- Category Card 4 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md flex flex-col items-center justify-center gap-xs cursor-pointer hover:border-outline hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-all group">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors">memory</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface text-center">Electronics</span>
+</div>
+<!-- Category Card 5 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md flex flex-col items-center justify-center gap-xs cursor-pointer hover:border-outline hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-all group">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors">agriculture</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface text-center">Agriculture</span>
+</div>
+<!-- Category Card 6 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md flex flex-col items-center justify-center gap-xs cursor-pointer hover:border-outline hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-all group">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors">local_shipping</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface text-center">Logistics</span>
+</div>
+</div>
+</div>
+<!-- Sidebar / Preview (Right Column) -->
+<div class="md:col-span-1 flex flex-col gap-md">
+<!-- Preview Card -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md flex flex-col gap-sm shadow-sm h-full">
+<div class="flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-primary">visibility</span>
+<span class="font-label-caps text-label-caps text-on-surface uppercase">Attribute Preview</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Selecting <strong class="text-on-surface">Construction Materials</strong> will require the following specifications in the next step:</p>
+<div class="flex flex-col gap-xs mt-xs">
+<div class="flex items-center gap-sm bg-surface-container-low p-xs rounded">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">inventory_2</span>
+<span class="font-data-mono text-data-mono text-on-surface">Material Grade</span>
+</div>
+<div class="flex items-center gap-sm bg-surface-container-low p-xs rounded">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">scale</span>
+<span class="font-data-mono text-data-mono text-on-surface">Quantity &amp; Unit (Tons, m³)</span>
+</div>
+<div class="flex items-center gap-sm bg-surface-container-low p-xs rounded">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+<span class="font-data-mono text-data-mono text-on-surface">Delivery Radius</span>
+</div>
+</div>
+</div>
+<!-- Custom Request Option -->
+<div class="bg-surface-container-high border border-surface-variant rounded-lg p-md flex flex-col items-center justify-center text-center gap-sm mt-auto">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant">add_box</span>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface mb-base">Can't find it?</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Create a custom request category.</p>
+</div>
+<button class="mt-xs px-sm py-xs bg-background border border-primary text-primary font-label-caps text-label-caps uppercase rounded hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors">Create Custom</button>
+</div>
+</div>
+</div>
+<!-- Bottom Action -->
+<div class="flex justify-end pt-lg mt-md border-t border-surface-variant w-full">
+<button class="px-xl py-sm bg-primary text-on-primary font-label-caps text-label-caps uppercase rounded hover:bg-on-primary-fixed-variant transition-colors shadow-sm">Continue to Details</button>
+</div>
+</div>
+</main>
+</body></html>

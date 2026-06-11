@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Buyer Dashboard - {{APP_NAME}}</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#213145",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "tertiary": "#6c3400",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-tertiary-fixed": "#301400",
+                        "on-tertiary-container": "#ffc7a2",
+                        "secondary-container": "#abb7ff",
+                        "secondary": "#4d5a9c",
+                        "on-primary-container": "#cacfff",
+                        "primary": "#24389c",
+                        "on-secondary-container": "#394687",
+                        "surface": "#f8f9ff",
+                        "background": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#3f51b5",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#454652",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-dim": "#cbdbf5",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary-container": "#8f4700",
+                        "surface-tint": "#4355b9",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#354282",
+                        "inverse-primary": "#bac3ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#dee1ff",
+                        "on-surface": "#0b1c30",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c5c5d4",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container": "#e5eeff",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dee0ff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-secondary-fixed": "#021355",
+                        "on-primary-fixed": "#00105c",
+                        "primary-fixed-dim": "#bac3ff",
+                        "on-background": "#0b1c30",
+                        "outline": "#757684",
+                        "success-container": "#d1fae5",
+                        "on-success-container": "#065f46",
+                        "warning-container": "#fef3c7",
+                        "on-warning-container": "#92400e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h1": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+        /* Ambient Shadows */
+        .shadow-level-1 { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        .shadow-level-2 { box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased pt-16 pb-32 pt-safe selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 shadow-sm pt-safe">
+<div class="flex items-center justify-between px-4 h-16 w-full">
+<button class="text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">swap_horizontal_circle</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white font-['Inter'] antialiased">{{APP_NAME}}</h1>
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center relative">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-error rounded-full border-2 border-white"></span>
+</button>
+</div>
+</header>
+<main class="max-w-md mx-auto px-margin-mobile flex flex-col gap-margin-mobile py-margin-mobile">
+<!-- Welcome & CTA -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-h1 text-h1 text-on-background">Welcome back, Alex</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Here is an overview of your marketplace activity.</p>
+<button class="mt-xs w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-lg flex items-center justify-center gap-xs shadow-level-1 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+                Post a Request
+            </button>
+</section>
+<!-- Alerts Section -->
+<section class="flex flex-col gap-sm">
+<!-- Action Required: Delivery Confirmation -->
+<div class="bg-warning-container rounded-xl p-md flex items-start gap-md border border-warning-container shadow-level-1">
+<div class="bg-white/50 p-sm rounded-full flex-shrink-0">
+<span class="material-symbols-outlined text-on-warning-container">local_shipping</span>
+</div>
+<div class="flex-1">
+<h3 class="font-label-md text-label-md text-on-warning-container mb-xs">Delivery awaiting confirmation</h3>
+<p class="font-body-md text-body-md text-on-warning-container/80 mb-sm">Order #ORD-8821 has been marked as delivered by the seller.</p>
+<button class="bg-white text-on-warning-container font-label-sm text-label-sm px-md py-xs rounded-full shadow-sm hover:bg-white/90 transition-colors">Review Order</button>
+</div>
+</div>
+<!-- Draft Request -->
+<div class="bg-surface-container-low rounded-xl p-md flex items-center justify-between border border-outline-variant/30 shadow-level-1">
+<div class="flex items-center gap-md">
+<div class="bg-surface-container-high p-sm rounded-lg text-primary">
+<span class="material-symbols-outlined">edit_document</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Continue draft request</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">MacBook Pro M3 Max</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</section>
+<!-- Bento Grid Dashboard -->
+<section class="grid grid-cols-2 gap-gutter-mobile">
+<!-- Escrow Held Widget -->
+<div class="col-span-2 bg-surface-container-lowest rounded-xl p-md border border-surface-container-highest shadow-level-1 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 right-0 p-md opacity-10">
+<span class="material-symbols-outlined text-6xl text-primary">lock</span>
+</div>
+<div class="flex items-center gap-xs mb-sm z-10">
+<span class="material-symbols-outlined text-primary text-sm">shield</span>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Escrow Protected</span>
+</div>
+<div class="z-10">
+<h4 class="font-body-md text-body-md text-on-surface-variant mb-xs">Total Funds in Escrow</h4>
+<p class="font-h1 text-h1 text-on-surface">$4,250.00</p>
+</div>
+</div>
+<!-- Active Requests -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-surface-container-highest shadow-level-1 flex flex-col gap-sm">
+<div class="flex items-center justify-between">
+<div class="bg-surface-variant p-sm rounded-lg text-primary">
+<span class="material-symbols-outlined">list_alt</span>
+</div>
+<span class="font-h2 text-h2 text-on-surface">3</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Active Requests</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">1 receiving bids</p>
+</div>
+</div>
+<!-- Offers Received -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-surface-container-highest shadow-level-1 flex flex-col gap-sm relative">
+<div class="absolute top-md right-md w-2 h-2 bg-error rounded-full"></div>
+<div class="flex items-center justify-between">
+<div class="bg-secondary-container p-sm rounded-lg text-on-secondary-container">
+<span class="material-symbols-outlined">local_offer</span>
+</div>
+<span class="font-h2 text-h2 text-on-surface">12</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Offers Received</h4>
+<p class="font-label-sm text-label-sm text-primary">2 new today</p>
+</div>
+</div>
+<!-- Orders in Progress -->
+<div class="col-span-2 bg-surface-container-lowest rounded-xl p-md border border-surface-container-highest shadow-level-1">
+<div class="flex items-center justify-between mb-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">inventory_2</span>
+<h4 class="font-label-md text-label-md text-on-surface">Orders in Progress</h4>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container px-sm py-xs rounded-full">2 Active</span>
+</div>
+<div class="flex flex-col gap-sm">
+<!-- Order Item -->
+<div class="flex items-center justify-between py-sm border-b border-surface-container last:border-0">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img alt="Product thumbnail" class="w-full h-full object-cover" data-alt="A clean, well-lit top-down product shot of a modern smartwatch resting on a minimal white surface. The lighting is soft and diffused, creating subtle shadows. The aesthetic is premium, high-tech, and aligns with a crisp, modern light-mode e-commerce interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8EQCQQ2wZg6nbp6jeGqjXd8jdbFx1gZ3Ldjo85voKSvCH-PrxN1EIUPu5bgfMZZPgr_qTL2G8oGzqvzVT4sP-H-xZehMLg81NLiOxA0HzU2AWxU1Uh-lpjcwWUSBMvvo5ljucxxDDzut3Z0g5f8cOqpDW5HM14B0MJ1-0wblGvsDxkzDghPg_CRcs_iXomvCaJQXdq3xcDId6OGGg18Uys62D3NZSjzdGmuAB7XCb1RWRlhBC6pkkJr5PmM4tL5gijmE1Ra9WOTs"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface line-clamp-1">Apple Watch Ultra 2</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs">In Transit • Est. Oct 24</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Order Item -->
+<div class="flex items-center justify-between py-sm border-b border-surface-container last:border-0">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img alt="Product thumbnail" class="w-full h-full object-cover" data-alt="A close-up, high-quality product shot of a sleek black laptop on a minimalist grey background. The lighting highlights the metallic texture and clean lines of the device. The composition is simple, professional, and fits perfectly within a modern digital marketplace UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW7vvCL22Z3kisFOVUk0z7zZVy7lLMT8C0o15Cm0ju9FnFG69M7JveGqk1g89zg0lZm9t4-corMux53Lz06T_A21VLA-vQr4GcEMKmv5kqnr12GOs7IXclmkopsKza8G_rTULR4BFgc7YM2WP0mEK2aJ6kTL7BrDwAEPUUucGsxM5pP_ij3n8Mbec2e-uOq6EYeqplkft9A_hxCsnrdQisEhUGa66f_Ps_7z4i19aetEaYWJE_oyG8-uGjz8wGerehv7IurFO9ZaQ"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface line-clamp-1">ThinkPad X1 Carbon</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs text-warning-container-on">Awaiting Shipment</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Quick Links -->
+<div class="col-span-2 grid grid-cols-2 gap-gutter-mobile">
+<button class="bg-surface-container-lowest rounded-xl p-md border border-surface-container-highest shadow-level-1 flex items-center gap-sm active:scale-[0.98] transition-transform">
+<div class="bg-surface-container p-sm rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined">chat</span>
+</div>
+<div class="text-left">
+<h4 class="font-label-md text-label-md text-on-surface">Messages</h4>
+<p class="font-label-sm text-label-sm text-primary">1 Unread</p>
+</div>
+</button>
+<button class="bg-surface-container-lowest rounded-xl p-md border border-surface-container-highest shadow-level-1 flex items-center gap-sm active:scale-[0.98] transition-transform">
+<div class="bg-error-container p-sm rounded-full text-on-error-container">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<div class="text-left">
+<h4 class="font-label-md text-label-md text-on-surface">Disputes</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">0 Active</p>
+</div>
+</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 pb-safe bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<div class="flex justify-around items-center h-16 px-2 w-full">
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl py-1 px-3 text-[10px] font-medium font-['Inter'] hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">home</span>
+                Home
+            </a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 text-[10px] font-medium font-['Inter'] hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">add_circle</span>
+                Post
+            </a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 text-[10px] font-medium font-['Inter'] hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">local_offer</span>
+                Offers
+            </a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 text-[10px] font-medium font-['Inter'] hover:text-indigo-500 active:scale-90 transition-transform relative" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">inventory_2</span>
+<span class="absolute top-0 right-2 w-2 h-2 bg-error rounded-full"></span>
+                Orders
+            </a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 text-[10px] font-medium font-['Inter'] hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">person</span>
+                Account
+            </a>
+</div>
+</nav>
+</body></html>

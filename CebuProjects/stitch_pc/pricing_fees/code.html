@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProcurePing - Pricing &amp; Fees</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#8fe3ff",
+                    "on-tertiary-fixed-variant": "#4b472d",
+                    "on-background": "#1a1c1c",
+                    "inverse-on-surface": "#f0f1f1",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed-dim": "#7dd2ee",
+                    "on-tertiary-fixed": "#1f1c06",
+                    "primary": "#b6171d",
+                    "surface-container-lowest": "#ffffff",
+                    "outline": "#8f6f6c",
+                    "on-secondary-container": "#00667c",
+                    "surface-dim": "#dadada",
+                    "surface": "#f9f9f9",
+                    "tertiary-fixed-dim": "#cec7a5",
+                    "on-secondary-fixed": "#001f27",
+                    "surface-container-high": "#e8e8e8",
+                    "tertiary-container": "#7a7558",
+                    "on-primary-fixed": "#410003",
+                    "primary-fixed-dim": "#ffb3ac",
+                    "surface-container-low": "#f3f3f4",
+                    "outline-variant": "#e4beba",
+                    "on-secondary-fixed-variant": "#004e5f",
+                    "secondary": "#00677d",
+                    "primary-fixed": "#ffdad6",
+                    "on-primary-fixed-variant": "#93000f",
+                    "on-primary": "#ffffff",
+                    "background": "#f9f9f9",
+                    "on-primary-container": "#fffbff",
+                    "surface-tint": "#ba1a1f",
+                    "inverse-primary": "#ffb3ac",
+                    "surface-variant": "#e2e2e2",
+                    "primary-container": "#da3432",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#615c41",
+                    "surface-container": "#eeeeee",
+                    "on-surface": "#1a1c1c",
+                    "on-tertiary-container": "#fffbff",
+                    "surface-container-highest": "#e2e2e2",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#b4ebff",
+                    "surface-bright": "#f9f9f9",
+                    "tertiary-fixed": "#ebe3c0",
+                    "on-surface-variant": "#5b403d",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#2f3131"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "40px",
+                    "gutter": "24px",
+                    "base": "4px",
+                    "md": "24px",
+                    "xs": "8px",
+                    "sm": "16px",
+                    "container-max": "1280px",
+                    "xl": "64px"
+            },
+            "fontFamily": {
+                    "label-caps": [
+                            "Inter"
+                    ],
+                    "h3": [
+                            "Inter"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "h2": [
+                            "Inter"
+                    ],
+                    "data-mono": [
+                            "Inter"
+                    ],
+                    "display": [
+                            "Inter"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "h1": [
+                            "Inter"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "h3": [
+                            "20px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h2": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "data-mono": [
+                            "14px",
+                            {
+                                    "lineHeight": "1",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "display": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h1": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background antialiased font-body-md selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 border-b bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none transition-transform duration-150">
+<div class="flex items-center justify-between px-10 py-4 max-w-[1440px] mx-auto w-full">
+<div class="flex items-center gap-8">
+<a class="text-2xl font-black tracking-tighter text-blue-700 dark:text-blue-500 font-sans antialiased" href="#">
+                    ProcurePing
+                </a>
+<nav class="hidden md:flex items-center gap-6">
+<a class="font-sans antialiased text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300" href="#">How it Works</a>
+<a class="font-sans antialiased text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300" href="#">Categories</a>
+<a class="font-sans antialiased text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300" href="#">Solutions</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">language</span>
+</button>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">payments</span>
+</button>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">public</span>
+</button>
+</div>
+<button class="font-sans antialiased text-sm font-medium tracking-tight border border-blue-700 dark:border-blue-500 text-blue-700 dark:text-blue-500 px-4 py-2 rounded-md hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors">
+                    Become a Supplier
+                </button>
+<button class="font-sans antialiased text-sm font-medium tracking-tight bg-blue-700 dark:bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-800 dark:hover:bg-blue-700 transition-colors">
+                    Post a Request
+                </button>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-[88px] pb-xl px-lg lg:px-lg max-w-container-max mx-auto w-full">
+<!-- Hero Section -->
+<section class="py-xl text-center flex flex-col items-center max-w-3xl mx-auto">
+<h1 class="font-h1 text-h1 text-on-surface mb-xs">Transparent Pricing. Zero Hidden Fees.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-md">ProcurePing is built on absolute clarity. We operate a zero-commission model on transactions. You only pay for specialized tools or third-party payment processing.</p>
+</section>
+<!-- No Commission / Core Value Prop -->
+<section class="mb-xl">
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md flex flex-col md:flex-row items-center justify-between gap-md relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
+<div class="z-10 flex-1">
+<div class="flex items-center gap-xs mb-sm">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<h2 class="font-h2 text-h2 text-on-surface">100% Commission-Free Transactions</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Unlike traditional marketplaces that tax your success, ProcurePing takes $0 from your negotiated contracts. The price you agree on is the price you pay.</p>
+</div>
+<div class="z-10 flex gap-sm w-full md:w-auto">
+<div class="bg-surface p-sm rounded-lg border border-surface-variant flex-1 text-center">
+<span class="font-h1 text-h1 text-primary block mb-base">$0</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Buyer Registration</span>
+</div>
+<div class="bg-surface p-sm rounded-lg border border-surface-variant flex-1 text-center">
+<span class="font-h1 text-h1 text-primary block mb-base">$0</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Posting Requests</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Fee Structure Grid -->
+<section class="mb-xl">
+<h3 class="font-h3 text-h3 text-on-surface mb-md">Platform Fee Structure</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Buyers Card -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md">
+<div class="flex items-center gap-xs mb-md border-b border-surface-variant pb-sm">
+<span class="material-symbols-outlined text-on-surface">shopping_cart</span>
+<h4 class="font-h3 text-h3 text-on-surface">For Buyers</h4>
+</div>
+<ul class="space-y-sm">
+<li class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Account Creation</span>
+<span class="font-data-mono text-data-mono text-primary font-semibold">Free</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Posting RFQs</span>
+<span class="font-data-mono text-data-mono text-primary font-semibold">Free</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Reviewing Bids</span>
+<span class="font-data-mono text-data-mono text-primary font-semibold">Free</span>
+</li>
+<li class="flex justify-between items-center pt-sm border-t border-surface-variant border-dashed">
+<span class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
+                                Platform Access
+                                <span class="material-symbols-outlined text-sm text-outline" title="Standard features included">info</span>
+</span>
+<span class="font-data-mono text-data-mono text-on-surface">$0/mo</span>
+</li>
+</ul>
+</div>
+<!-- Suppliers Card -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md">
+<div class="flex items-center gap-xs mb-md border-b border-surface-variant pb-sm">
+<span class="material-symbols-outlined text-on-surface">storefront</span>
+<h4 class="font-h3 text-h3 text-on-surface">For Suppliers</h4>
+</div>
+<ul class="space-y-sm">
+<li class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Account Creation</span>
+<span class="font-data-mono text-data-mono text-primary font-semibold">Free</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Responding to RFQs</span>
+<span class="font-data-mono text-data-mono text-primary font-semibold">Free</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Basic Verification</span>
+<span class="font-data-mono text-data-mono text-primary font-semibold">Free</span>
+</li>
+<li class="flex justify-between items-center pt-sm border-t border-surface-variant border-dashed">
+<span class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
+                                Platform Access
+                                <span class="material-symbols-outlined text-sm text-outline" title="Standard features included">info</span>
+</span>
+<span class="font-data-mono text-data-mono text-on-surface">$0/mo</span>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Payment Provider Fees Table -->
+<section class="mb-xl">
+<h3 class="font-h3 text-h3 text-on-surface mb-sm">Third-Party Processing Fees</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">ProcurePing utilizes secure, regulated third-party processors to handle escrow and direct payments. We pass these costs on transparently with zero markup.</p>
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface">
+<tr>
+<th class="font-label-caps text-label-caps text-on-surface-variant p-sm border-b border-surface-variant w-1/3">Method</th>
+<th class="font-label-caps text-label-caps text-on-surface-variant p-sm border-b border-surface-variant w-1/3">Processing Fee</th>
+<th class="font-label-caps text-label-caps text-on-surface-variant p-sm border-b border-surface-variant w-1/3">Settlement Time</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant">credit_card</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Stripe (Credit Card)</span>
+</td>
+<td class="p-sm font-data-mono text-data-mono text-on-surface">2.9% + $0.30</td>
+<td class="p-sm font-body-sm text-body-sm text-on-surface-variant">1-2 Business Days</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant">account_balance</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Bank Transfer (ACH/Wire)</span>
+</td>
+<td class="p-sm font-data-mono text-data-mono text-on-surface">0.8% (Capped at $5.00)</td>
+<td class="p-sm font-body-sm text-body-sm text-on-surface-variant">3-5 Business Days</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant">currency_bitcoin</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">USDT / Stablecoin</span>
+</td>
+<td class="p-sm font-data-mono text-data-mono text-on-surface">Network Gas Fee Only</td>
+<td class="p-sm font-body-sm text-body-sm text-on-surface-variant">Instant (&lt; 10 mins)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Supplier Premium Tools Bento -->
+<section>
+<h3 class="font-h3 text-h3 text-on-surface mb-sm">Supplier Growth Tools (Optional)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Accelerate your win rate with premium visibility and analytics. These are entirely optional tools for established suppliers.</p>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Premium Tool 1 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md flex flex-col shadow-[0px_4px_12px_rgba(0,0,0,0.05)] hover:border-outline transition-colors group">
+<div class="mb-sm">
+<span class="material-symbols-outlined text-secondary text-3xl mb-xs block group-hover:scale-110 transition-transform">insights</span>
+<h4 class="font-h3 text-h3 text-on-surface">Market Analytics Pro</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-base">Access historical bid data and competitor pricing trends to optimize your proposals.</p>
+</div>
+<div class="mt-auto pt-sm border-t border-surface-variant">
+<span class="font-data-mono text-data-mono text-on-surface text-xl font-bold block mb-xs">$99<span class="text-sm font-normal text-on-surface-variant">/mo</span></span>
+<button class="w-full bg-secondary text-on-secondary font-label-caps text-label-caps py-2 rounded-md hover:bg-on-secondary-fixed transition-colors">Upgrade</button>
+</div>
+</div>
+<!-- Premium Tool 2 -->
+<div class="bg-surface-container-lowest border-2 border-primary rounded-xl p-md flex flex-col shadow-[0px_4px_12px_rgba(0,0,0,0.05)] relative">
+<div class="absolute top-0 right-0 bg-primary text-on-primary font-label-caps text-[10px] px-2 py-1 rounded-bl-lg rounded-tr-md">POPULAR</div>
+<div class="mb-sm">
+<span class="material-symbols-outlined text-primary text-3xl mb-xs block">star</span>
+<h4 class="font-h3 text-h3 text-on-surface">Featured Placement</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-base">Pin your verified profile to the top of buyer search results in specific categories.</p>
+</div>
+<div class="mt-auto pt-sm border-t border-surface-variant">
+<span class="font-data-mono text-data-mono text-on-surface text-xl font-bold block mb-xs">From $49<span class="text-sm font-normal text-on-surface-variant">/category</span></span>
+<button class="w-full bg-primary text-on-primary font-label-caps text-label-caps py-2 rounded-md hover:bg-primary-container hover:text-on-primary-container transition-colors">Select Categories</button>
+</div>
+</div>
+<!-- Premium Tool 3 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md flex flex-col shadow-[0px_4px_12px_rgba(0,0,0,0.05)] hover:border-outline transition-colors group">
+<div class="mb-sm">
+<span class="material-symbols-outlined text-secondary text-3xl mb-xs block group-hover:scale-110 transition-transform">bolt</span>
+<h4 class="font-h3 text-h3 text-on-surface">Priority Pings</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-base">Get instant SMS and API notifications the moment a relevant RFQ is posted.</p>
+</div>
+<div class="mt-auto pt-sm border-t border-surface-variant">
+<span class="font-data-mono text-data-mono text-on-surface text-xl font-bold block mb-xs">$29<span class="text-sm font-normal text-on-surface-variant">/mo</span></span>
+<button class="w-full bg-surface text-on-surface border border-surface-variant font-label-caps text-label-caps py-2 rounded-md hover:bg-surface-variant transition-colors">Add to Plan</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-10 py-20 max-w-[1440px] mx-auto">
+<div class="col-span-1 md:col-span-4 flex justify-between items-center mb-8">
+<span class="text-xl font-bold text-slate-900 dark:text-white font-sans text-xs uppercase tracking-widest font-semibold">ProcurePing</span>
+</div>
+<div class="col-span-1">
+<ul class="space-y-4">
+<li><a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">How it Works</a></li>
+<li><a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Categories</a></li>
+<li><a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Solutions</a></li>
+</ul>
+</div>
+<div class="col-span-1">
+<ul class="space-y-4">
+<li><a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Language</a></li>
+<li><a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Currency</a></li>
+<li><a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Region</a></li>
+</ul>
+</div>
+<div class="col-span-1 md:col-span-2">
+<ul class="space-y-4 md:text-right flex flex-col md:items-end">
+<li><a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Privacy Policy</a></li>
+<li><a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div class="col-span-1 md:col-span-4 mt-8 pt-8 border-t border-slate-200 dark:border-slate-800 text-center md:text-left">
+<p class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500">© 2024 ProcurePing. Global Procurement Excellence.</p>
+</div>
+</div>
+</footer>
+</body></html>

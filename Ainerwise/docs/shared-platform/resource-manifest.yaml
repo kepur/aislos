@@ -1,0 +1,162 @@
+# Machine-readable shared platform manifest (SP01)
+# No real secrets — placeholders only.
+version: "1.0"
+updated: "2026-06-11"
+
+canonical:
+  workspace: /Users/mac/Code_Start/Aislos/Ainerwise
+  compose_project_name: ainerwise
+  compose_file: /Users/mac/Code_Start/Aislos/Ainerwise/docker-compose.yml
+  forbidden_dev_paths:
+    - /Users/mac/Code_Start/Ainerwise
+
+checkout_drift_risk:
+  status: active
+  description: Same compose project binds both Aislos/Ainerwise and legacy Ainerwise checkouts
+  canonical_services:
+    - backend
+    - marketing-portal
+  legacy_bind_services:
+    - frontend-pc
+    - frontend-h5
+    - frontend-admin
+    - store-frontend
+    - store-admin
+    - developer-portal
+    - partner-portal
+    - kiosk-portal
+    - agent-console
+    - celery-worker
+    - celery-beat
+    - ai-orchestrator
+    - channel-gateway
+    - nginx
+  remediation: SP02 — docker compose up -d per service from canonical cwd (user-approved window)
+
+services:
+  - name: postgres
+    owner: ainerwise-core
+    environment: local-dev
+    image: pgvector/pgvector:pg16
+    ports: ["5432:5432"]
+    volumes: [ainerwise_pg_data]
+  - name: redis
+    owner: ainerwise-core
+    environment: local-dev
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    volumes: [ainerwise_redis_data]
+  - name: minio
+    owner: ainerwise-core
+    environment: local-dev
+    ports: ["9000:9000", "9001:9001"]
+    volumes: [ainerwise_minio_data]
+  - name: backend
+    owner: ainerwise-core
+    bind_mount: "${canonical.workspace}/backend -> /app"
+    ports: ["8000:8000"]
+  - name: nginx
+    owner: platform-gateway
+    bind_mount: "${canonical.workspace}/nginx/default.conf"
+    ports: ["80:80"]
+
+postgresql:
+  instances:
+    - name: ainerwise-core
+      database: ainerwise
+      schema: public
+      app_role: ainerwise
+      migration_owner: ainerwise/backend/alembic
+      current_head: "028"
+      single_head_required: true
+    - name: cebu-legacy
+      database: cebu
+      schema: cebu
+      app_role: cebu_app
+      migration_owner: cebu-independent-chain
+      merge_into_ainerwise: false
+      retirement:
+        requires: [parity_report, data_reconciliation, readonly_observation, user_approval]
+
+redis:
+  auth: env REDIS_PASSWORD
+  namespaces:
+    - prefix: "celery:"
+      owner: ainerwise-core
+      queues: [default, ai_ingestion, automation]
+    - prefix: "stream:"
+      owner: ainerwise-core
+      streams:
+        - key: stream:events
+          consumer_groups: [domain-consumers]
+    - prefix: "cebu:"
+      owner: cebu-legacy
+      status: planned_sp02
+
+minio:
+  endpoint: minio:9000
+  buckets:
+    - name: marketing-assets
+      owner: marketing
+      service_account: svc-marketing-upload
+      external_access: presigned_put_only
+    - name: knowledge
+      owner: knowledge
+      service_account: svc-knowledge
+    - name: cebu-import
+      owner: cebu-migration
+      status: planned_sp04
+
+portals:
+  - host: localhost
+    portal_key: aislos
+    trusted_header: X-Portal-Key
+    gateway: nginx
+  - host: cebu.localhost
+    portal_key: cebu
+    trusted_header: X-Portal-Key
+    gateway: nginx
+
+integration_clients:
+  type: opaque_bearer
+  api_prefix: /api/v1/media-integration/v1
+  scopes:
+    - briefs:read
+    - briefs:claim
+    - briefs:progress
+    - briefs:upload
+    - briefs:submit
+  rotation_owner: marketing-admin
+  secrets_in_manifest: false
+
+external_systems:
+  - name: ainern2d
+    access: openapi_sdk_only
+    forbidden: [postgres, redis, celery, internal_api, minio_root]
+  - name: cebu-legacy-backend
+    role: migration_source_readonly
+    write_target: ainerwise-core-only
+
+backup:
+  postgres:
+    rpo_hours: 24
+    rto_hours: 4
+    owner: platform-dba
+  redis:
+    rpo_hours: 24
+    rto_hours: 2
+    owner: platform
+  minio:
+    rpo_hours: 24
+    rto_hours: 4
+    owner: platform
+
+migration_lock:
+  global_serial: true
+  max_concurrent_migration_writers: 1
+  pre_check_command: alembic heads
+  post_check_commands:
+    - alembic upgrade head
+    - alembic downgrade -1
+    - alembic upgrade head
+    - alembic heads

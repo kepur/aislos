@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Post Request | {{APP_NAME}}</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#6c3400",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#00105c",
+                        "outline": "#757684",
+                        "surface-variant": "#d3e4fe",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#bac3ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#4355b9",
+                        "on-tertiary-container": "#ffc7a2",
+                        "secondary-container": "#abb7ff",
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c5c5d4",
+                        "surface": "#f8f9ff",
+                        "on-secondary-fixed": "#021355",
+                        "on-secondary-fixed-variant": "#354282",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary-container": "#8f4700",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed": "#dee1ff",
+                        "surface-container": "#e5eeff",
+                        "on-surface": "#0b1c30",
+                        "primary-container": "#3f51b5",
+                        "primary-fixed": "#dee0ff",
+                        "on-surface-variant": "#454652",
+                        "primary": "#24389c",
+                        "on-secondary-container": "#394687",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "background": "#f8f9ff",
+                        "secondary": "#4d5a9c",
+                        "inverse-primary": "#bac3ff",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-background": "#0b1c30",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#cacfff",
+                        "surface-dim": "#cbdbf5",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "tertiary-fixed-dim": "#ffb784"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body-md text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar Shared Component -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 shadow-sm flex items-center justify-between px-4 h-16 w-full font-['Inter'] antialiased">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 cursor-pointer active:scale-95 duration-150">close</span>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Post Request</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">notifications</span>
+</div>
+</header>
+<main class="flex-1 mt-16 mb-24 px-margin-mobile pt-sm">
+<!-- Progress Stepper -->
+<nav class="flex items-center justify-between mb-lg pt-4">
+<div class="flex flex-col items-center flex-1">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-label-md mb-2">1</div>
+<span class="text-label-sm text-primary font-semibold">Basics</span>
+</div>
+<div class="h-[2px] flex-1 bg-primary/20 -mt-6"></div>
+<div class="flex flex-col items-center flex-1">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-bold text-label-md mb-2">2</div>
+<span class="text-label-sm text-on-surface-variant">Specs</span>
+</div>
+<div class="h-[2px] flex-1 bg-primary/20 -mt-6"></div>
+<div class="flex flex-col items-center flex-1">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-bold text-label-md mb-2">3</div>
+<span class="text-label-sm text-on-surface-variant">Logistics</span>
+</div>
+</nav>
+<!-- Form Canvas (Bento-ish Layout for Mobile) -->
+<section class="space-y-md">
+<!-- STEP 1: Basic Info Container -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30">
+<div class="flex items-center gap-2 mb-md">
+<span class="material-symbols-outlined text-primary" data-weight="fill">info</span>
+<h2 class="font-h2 text-primary">Basic Information</h2>
+</div>
+<div class="space-y-lg">
+<div class="space-y-xs">
+<label class="block font-label-md text-on-surface-variant">Request Title</label>
+<input class="w-full h-[52px] px-md rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-white text-body-lg" placeholder="e.g. 500 Industrial Grade Bearings" type="text"/>
+<p class="text-[11px] text-outline">Be specific to attract high-quality biddings.</p>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="space-y-xs col-span-2">
+<label class="block font-label-md text-on-surface-variant">Category</label>
+<div class="relative">
+<select class="w-full h-[52px] px-md rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-white appearance-none text-body-lg">
+<option>Industrial Parts</option>
+<option>Electronics</option>
+<option>Raw Materials</option>
+<option>Logistics Services</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="block font-label-md text-on-surface-variant">Quantity</label>
+<input class="w-full h-[52px] px-md rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-white text-body-lg" placeholder="0" type="number"/>
+</div>
+<div class="space-y-xs">
+<label class="block font-label-md text-on-surface-variant">Unit</label>
+<select class="w-full h-[52px] px-md rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-white text-body-lg">
+<option>Units</option>
+<option>kg</option>
+<option>Liters</option>
+<option>Boxes</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+<!-- TRUST BANNER: Pre-fund Escrow -->
+<div class="bg-indigo-50 border border-indigo-100 p-md rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary-container p-2 rounded-full">
+<span class="material-symbols-outlined text-white text-lg" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Pre-fund Escrow</p>
+<p class="text-[12px] text-indigo-700/80">Increases response rate by 45%</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- STEP 2 & 3 Placeholder hints (for scrollable feel) -->
+<div class="bg-surface-container-low p-md rounded-xl border border-dashed border-outline-variant flex flex-col items-center justify-center py-xl opacity-60">
+<span class="material-symbols-outlined text-[48px] text-outline mb-sm">photo_camera</span>
+<p class="font-label-md text-on-surface-variant">Specifications &amp; Images</p>
+<p class="text-label-sm text-outline">Continue to Step 2 to add details</p>
+</div>
+<!-- Targeting Card (Logistics Preview) -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border border-outline-variant/30">
+<div class="flex items-center gap-2 mb-sm">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<h3 class="font-h3 text-on-surface">Target Delivery Area</h3>
+</div>
+<div class="relative h-40 w-full rounded-lg overflow-hidden mb-sm">
+<img class="w-full h-full object-cover" data-alt="A clean and modern digital map interface displaying a vibrant blue targeting radius over a minimalist cityscape. The map uses soft gray and white tones for roads and buildings, with the delivery radius highlighted in a semi-transparent indigo glow. The aesthetic is professional and technical, suggesting high-precision logistics and geofencing capabilities in a premium corporate application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRQ46X32cP0Csgyq7vf1xd6DKnVt53fZzz11V2Bq4QrF0y_jyKn5bvfpiA7pjSsLxo0uTDw288qL6KjjNa8rwP3nJ2hmVnwoetoaDiAxwzRvcOloHkhlXmD3ovZleKc6fXt6Untk6uKsfkQXdeFYcozois6W_9bL2B7GZWNOIDOZwR9xJ0sG9Ql_DtsStY1QYNmn6lTuux3hJ9Llw-EZj0Wngm1QBOCFTGJXXjX1QWc22RwlZ1tbSfAObhiPZx6LsolGYTT3Cykn0"/>
+<div class="absolute inset-0 bg-primary/10 flex items-center justify-center">
+<div class="w-20 h-20 rounded-full border-2 border-primary bg-primary/20 animate-pulse"></div>
+</div>
+</div>
+<div class="flex justify-between items-center text-label-sm text-on-surface-variant">
+<span>Radius: <span class="font-bold text-primary">50km</span> from Central Hub</span>
+<button class="text-primary font-semibold">Adjust</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action Bar -->
+<footer class="fixed bottom-0 w-full bg-white/90 backdrop-blur-xl border-t border-slate-100 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-margin-mobile py-sm pb-safe z-50">
+<div class="flex gap-md">
+<button class="flex-1 h-14 bg-surface-container-high text-on-surface-variant font-semibold rounded-xl active:scale-95 transition-transform flex items-center justify-center">
+                Save Draft
+            </button>
+<button class="flex-[2] h-14 bg-primary text-on-primary font-semibold rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span>Next Step</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</footer>
+<!-- BottomNavBar Hidden on this Transactional Screen based on Relevance Check Rule -->
+<!-- The BottomNavBar from JSON is excluded because this is a Transactional/Form page -->
+</body></html>

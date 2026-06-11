@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Escrow Status Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#394687",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-tint": "#4355b9",
+                        "primary-container": "#3f51b5",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "on-primary-fixed": "#00105c",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-tertiary-container": "#ffc7a2",
+                        "secondary-fixed": "#dee1ff",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#abb7ff",
+                        "on-primary-container": "#cacfff",
+                        "on-surface": "#0b1c30",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-surface-variant": "#454652",
+                        "secondary": "#4d5a9c",
+                        "inverse-surface": "#213145",
+                        "inverse-primary": "#bac3ff",
+                        "outline-variant": "#c5c5d4",
+                        "tertiary-container": "#8f4700",
+                        "on-background": "#0b1c30",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "tertiary": "#6c3400",
+                        "primary": "#24389c",
+                        "surface-variant": "#d3e4fe",
+                        "background": "#f8f9ff",
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary-fixed": "#021355",
+                        "surface-container-low": "#eff4ff",
+                        "primary-fixed": "#dee0ff",
+                        "outline": "#757684",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#bac3ff",
+                        "on-tertiary-fixed": "#301400",
+                        "error-container": "#ffdad6"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "gutter-mobile": "12px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "margin-mobile": "16px",
+                        "base": "4px"
+                    },
+                    fontFamily: {
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h1": ["Inter"]
+                    },
+                    fontSize: {
+                        "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "400" }],
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+                        "h3": ["18px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "600" }],
+                        "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "h2": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0", fontWeight: "400" }],
+                        "h1": ["24px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 23px; /* 16px padding + 16px half-width of icon - 1px half-width of line */
+            top: 24px;
+            bottom: 24px;
+            width: 2px;
+            z-index: 0;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-bright text-on-surface antialiased min-h-screen pb-[104px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/60 shadow-sm font-['Inter'] antialiased text-indigo-600 flex items-center justify-between px-4 h-16 transition-colors" data-component="TopAppBar">
+<div class="flex items-center gap-2 active:scale-95 duration-150 cursor-pointer">
+<span class="material-symbols-outlined icon-filled" data-icon="swap_horizontal_circle">swap_horizontal_circle</span>
+</div>
+<div class="text-xl font-bold tracking-tight text-slate-900">
+            {{APP_NAME}}
+        </div>
+<div class="flex items-center gap-2 active:scale-95 duration-150 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</div>
+</header>
+<main class="pt-[88px] px-margin-mobile flex flex-col gap-lg max-w-2xl mx-auto">
+<!-- Header -->
+<section>
+<h1 class="font-h1 text-h1 text-on-surface mb-xs">Escrow Details</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Secure transaction record and status tracking.</p>
+</section>
+<!-- Summary Card -->
+<section class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col gap-md relative overflow-hidden">
+<!-- Decorative gradient bg -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-container/20 to-transparent rounded-bl-full pointer-events-none"></div>
+<div class="flex justify-between items-start relative z-10">
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Protected</span>
+<span class="font-h1 text-h1 text-primary">$1,250.00</span>
+</div>
+<div class="bg-surface-container-high text-on-surface font-label-sm text-label-sm px-2 py-1 rounded-lg border border-outline-variant/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">receipt_long</span>
+                    #ORD-892-XYZ
+                </div>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/20 my-xs"></div>
+<div class="flex items-center gap-sm relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px] icon-filled">shield_locked</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Funds Held in Escrow</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">Your payment is secured until delivery.</span>
+</div>
+</div>
+</section>
+<!-- Timeline -->
+<section class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 relative">
+<h2 class="font-h3 text-h3 text-on-surface mb-lg">Transaction Journey</h2>
+<div class="relative">
+<!-- Global Line Background -->
+<div class="timeline-line bg-surface-container-high"></div>
+<!-- Progress Line Override -->
+<div class="timeline-line bg-primary z-0" style="bottom: calc(100% - 140px);"></div> <!-- Roughly covers the first 3 steps -->
+<div class="flex flex-col gap-xl relative z-10">
+<!-- Step 1: Completed -->
+<div class="flex items-start gap-md">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm shrink-0 mt-xs relative z-10">
+<span class="material-symbols-outlined text-[16px] icon-filled">check</span>
+</div>
+<div class="flex flex-col flex-1 pt-1">
+<span class="font-label-md text-label-md text-on-surface">Authorization Pending</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[13px] mt-xs">Payment method verified.</span>
+<span class="font-label-sm text-label-sm text-outline mt-1">Oct 24, 09:15 AM</span>
+</div>
+</div>
+<!-- Step 2: Completed -->
+<div class="flex items-start gap-md">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm shrink-0 mt-xs relative z-10">
+<span class="material-symbols-outlined text-[16px] icon-filled">check</span>
+</div>
+<div class="flex flex-col flex-1 pt-1">
+<span class="font-label-md text-label-md text-on-surface">Funds Held</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[13px] mt-xs">Amount secured in holding account.</span>
+<span class="font-label-sm text-label-sm text-outline mt-1">Oct 24, 09:16 AM</span>
+</div>
+</div>
+<!-- Step 3: Current -->
+<div class="flex items-start gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest border-[3px] border-primary flex items-center justify-center text-primary shadow-sm shrink-0 mt-xs relative z-10">
+<span class="material-symbols-outlined text-[16px]">more_horiz</span>
+</div>
+<div class="flex flex-col flex-1 pt-1">
+<span class="font-label-md text-label-md text-primary">Offer Awarded</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[13px] mt-xs">Seller has accepted the terms and is preparing fulfillment.</span>
+<span class="font-label-sm text-label-sm text-primary mt-1">Oct 25, 14:30 PM (Current)</span>
+</div>
+</div>
+<!-- Step 4: Upcoming -->
+<div class="flex items-start gap-md opacity-60">
+<div class="w-8 h-8 rounded-full bg-surface-bright border border-outline-variant flex items-center justify-center text-outline-variant shrink-0 mt-xs relative z-10">
+<span class="material-symbols-outlined text-[16px]">point_of_sale</span>
+</div>
+<div class="flex flex-col flex-1 pt-1">
+<span class="font-label-md text-label-md text-on-surface">Captured</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[13px] mt-xs">Pending fulfillment scan.</span>
+</div>
+</div>
+<!-- Step 5: Upcoming -->
+<div class="flex items-start gap-md opacity-60">
+<div class="w-8 h-8 rounded-full bg-surface-bright border border-outline-variant flex items-center justify-center text-outline-variant shrink-0 mt-xs relative z-10">
+<span class="material-symbols-outlined text-[16px]">local_shipping</span>
+</div>
+<div class="flex flex-col flex-1 pt-1">
+<span class="font-label-md text-label-md text-on-surface">Delivered</span>
+</div>
+</div>
+<!-- Step 6: Upcoming -->
+<div class="flex items-start gap-md opacity-60">
+<div class="w-8 h-8 rounded-full bg-surface-bright border border-outline-variant flex items-center justify-center text-outline-variant shrink-0 mt-xs relative z-10">
+<span class="material-symbols-outlined text-[16px]">thumb_up</span>
+</div>
+<div class="flex flex-col flex-1 pt-1">
+<span class="font-label-md text-label-md text-on-surface">Accepted</span>
+</div>
+</div>
+<!-- Step 7: Upcoming -->
+<div class="flex items-start gap-md opacity-60">
+<div class="w-8 h-8 rounded-full bg-surface-bright border border-outline-variant flex items-center justify-center text-outline-variant shrink-0 mt-xs relative z-10">
+<span class="material-symbols-outlined text-[16px]">account_balance</span>
+</div>
+<div class="flex flex-col flex-1 pt-1">
+<span class="font-label-md text-label-md text-on-surface">Released</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[13px] mt-xs">Funds transfer to seller.</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Exceptions Section -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 overflow-hidden">
+<div class="p-md bg-surface-container-low border-b border-outline-variant/20 flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">info</span>
+<h3 class="font-label-md text-label-md text-on-surface">Exception States</h3>
+</div>
+<div class="p-md flex flex-col gap-md">
+<div class="flex items-center justify-between p-sm rounded-lg hover:bg-surface-bright transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-error-container text-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Disputed</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">View resolution process</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/20"></div>
+<div class="flex items-center justify-between p-sm rounded-lg hover:bg-surface-bright transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]">currency_exchange</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Refunded</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">Return policy details</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action -->
+<div class="fixed bottom-0 w-full z-40 bg-surface-container-lowest/90 backdrop-blur-xl border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-safe pt-md px-margin-mobile">
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 active:bg-primary-container transition-colors shadow-sm mb-md">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+            Contact Escrow Support
+        </button>
+</div>
+</body></html>

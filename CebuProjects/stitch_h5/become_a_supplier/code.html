@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Supplier Onboarding - Grow Your Business</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#0b1c30",
+                      "on-primary-fixed": "#00105c",
+                      "surface-dim": "#cbdbf5",
+                      "on-surface-variant": "#454652",
+                      "surface-container": "#e5eeff",
+                      "inverse-surface": "#213145",
+                      "background": "#f8f9ff",
+                      "on-secondary": "#ffffff",
+                      "tertiary-container": "#8f4700",
+                      "secondary-container": "#abb7ff",
+                      "surface-container-high": "#dce9ff",
+                      "error": "#ba1a1a",
+                      "secondary": "#4d5a9c",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-primary-container": "#cacfff",
+                      "on-secondary-fixed": "#021355",
+                      "tertiary": "#6c3400",
+                      "primary-fixed-dim": "#bac3ff",
+                      "surface-tint": "#4355b9",
+                      "on-secondary-container": "#394687",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "secondary-fixed-dim": "#b9c3ff",
+                      "tertiary-fixed": "#ffdcc6",
+                      "on-error-container": "#93000a",
+                      "outline": "#757684",
+                      "error-container": "#ffdad6",
+                      "surface-variant": "#d3e4fe",
+                      "primary-fixed": "#dee0ff",
+                      "surface-bright": "#f8f9ff",
+                      "on-tertiary-container": "#ffc7a2",
+                      "surface": "#f8f9ff",
+                      "on-background": "#0b1c30",
+                      "surface-container-lowest": "#ffffff",
+                      "primary": "#24389c",
+                      "outline-variant": "#c5c5d4",
+                      "on-tertiary": "#ffffff",
+                      "primary-container": "#3f51b5",
+                      "tertiary-fixed-dim": "#ffb784",
+                      "secondary-fixed": "#dee1ff",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "on-secondary-fixed-variant": "#354282",
+                      "on-primary-fixed-variant": "#293ca0",
+                      "surface-container-highest": "#d3e4fe",
+                      "surface-container-low": "#eff4ff",
+                      "inverse-primary": "#bac3ff",
+                      "on-tertiary-fixed": "#301400"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "base": "4px",
+                      "margin-mobile": "16px",
+                      "lg": "24px",
+                      "gutter-mobile": "12px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h2": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h1": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "h3": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar from JSON Component -->
+<header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-slate-200/60 dark:border-slate-800/60 shadow-sm flex items-center justify-between px-4 h-16">
+<div class="flex items-center gap-3 text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 p-2 rounded-full cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">swap_horizontal_circle</span>
+</div>
+<div class="text-xl font-bold tracking-tight text-slate-900 dark:text-white font-['Inter'] antialiased">
+            Marketplace
+        </div>
+<div class="flex items-center gap-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 p-2 rounded-full cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[64px] pb-[80px] md:pb-[64px]">
+<!-- Hero Section -->
+<section class="relative bg-surface-container-low px-4 py-12 md:py-20 overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary-container/10 to-surface-variant/20 z-0 pointer-events-none"></div>
+<div class="max-w-4xl mx-auto relative z-10 flex flex-col md:flex-row items-center gap-8">
+<div class="flex-1 space-y-6 text-center md:text-left">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded-full border border-outline-variant text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>Supplier Network</span>
+</div>
+<h1 class="font-h1 text-h1 md:text-[40px] md:leading-[48px] text-on-surface">Scale your business with real buyer demand.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mx-auto md:mx-0">
+                        Access a steady stream of verified buyer requests. Compete fairly, build your reputation, and secure guaranteed payments through our escrow-backed platform.
+                    </p>
+<div class="pt-4 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+<button class="bg-primary hover:bg-primary/90 text-on-primary h-[56px] px-8 rounded-lg font-label-md text-label-md shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2">
+<span>Start Supplier Verification</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+<div class="flex items-center justify-center md:justify-start gap-2 text-on-surface-variant font-label-sm text-label-sm pt-2">
+<span class="material-symbols-outlined text-[16px] text-primary">security</span>
+<span>KYB (Know Your Business) required for onboarding</span>
+</div>
+</div>
+<div class="flex-1 w-full relative">
+<div class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl relative border border-outline-variant/30">
+<img alt="Professionals reviewing data" class="w-full h-full object-cover" data-alt="A bright, modern corporate office environment shown from a slightly elevated angle. Two professional individuals, casually but neatly dressed, are looking thoughtfully at a large tablet displaying business growth metrics. Soft, high-key natural lighting floods the space, creating a professional, growth-oriented aesthetic. The color palette emphasizes clean whites, professional blues, and warm skin tones, aligning with a reliable corporate modern identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlu5PfwS85kFwGvVTStMiFbTQ1hWK0xB3IMGY27ZP0Kd0bGFxTQUix_L79YEcd5t9woHB31wol67LIvKrvornHkdo8Ds9bqMbMqIFuNv9Vnv2hfLCKNVcyoodCtdwc4EhBUBZUI8Sixn6kMnwo2LIlLFxwReZGeRzaMUHSuE3yfRm_mcOeppp2MC3OCZAH7xKAMB-FMSIs7IZUw1F9-ahHlX5uQMvXgrRuF5WdY2cYg2cPVt3Pl-DdUYnQ_eWMJHN5cN6vFZM75xw"/>
+<!-- Floating Trust Badge -->
+<div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md rounded-xl p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] border border-surface-variant flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined icon-filled">storefront</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Verified Supplier</p>
+<p class="font-body-md text-[12px] leading-tight text-on-surface-variant">Access granted to exclusive buyer requests</p>
+</div>
+<span class="material-symbols-outlined text-green-600 ml-auto text-[24px]">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Features -->
+<section class="max-w-5xl mx-auto px-4 py-16">
+<div class="text-center mb-12">
+<h2 class="font-h2 text-h2 md:text-[32px] md:leading-[40px] text-on-surface mb-4">Everything you need to capture demand</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Our platform is designed to connect qualified suppliers directly with buyers ready to transact, providing all the tools for a secure workflow.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-[minmax(200px,auto)]">
+<!-- Feature 1: Real Buyer Pings (Spans 8 cols on desktop) -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-highest flex flex-col md:flex-row gap-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary-container/20 rounded-full blur-3xl -mr-20 -mt-20 transition-transform group-hover:scale-110"></div>
+<div class="flex-1 z-10 flex flex-col justify-center">
+<div class="w-12 h-12 bg-surface-container rounded-xl flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-[24px]">campaign</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface mb-2">Receive real buyer pings</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Stop hunting for leads. Get instantly notified when verified buyers post requests that match your specific inventory and capabilities.</p>
+</div>
+<div class="flex-1 z-10 bg-surface rounded-xl border border-outline-variant/50 p-4 flex flex-col gap-3">
+<!-- Mock Notification -->
+<div class="bg-surface-container-lowest p-3 rounded-lg shadow-sm flex items-start gap-3 border border-surface-container-highest">
+<div class="w-8 h-8 rounded-full bg-tertiary-container/10 flex items-center justify-center text-tertiary-container shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[16px]">inventory_2</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface">New Request: High-Volume Order</p>
+<p class="text-[11px] text-on-surface-variant mt-0.5">Buyer needs 500 units by next week.</p>
+</div>
+<span class="text-[10px] text-primary font-medium ml-auto whitespace-nowrap">Just now</span>
+</div>
+<!-- Mock Notification 2 -->
+<div class="bg-surface-container-lowest p-3 rounded-lg shadow-sm flex items-start gap-3 border border-surface-container-highest opacity-70">
+<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center text-primary-container shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[16px]">build</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface">Custom Build Request</p>
+<p class="text-[11px] text-on-surface-variant mt-0.5">Specifications match your profile.</p>
+</div>
+<span class="text-[10px] text-on-surface-variant ml-auto whitespace-nowrap">2m ago</span>
+</div>
+</div>
+</div>
+<!-- Feature 2: Compete (Spans 4 cols on desktop) -->
+<div class="md:col-span-4 bg-primary text-on-primary rounded-2xl p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col relative overflow-hidden">
+<div class="absolute bottom-0 right-0 w-32 h-32 bg-white/10 rounded-tl-full"></div>
+<div class="z-10 h-full flex flex-col">
+<div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-white mb-4 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[24px]">handshake</span>
+</div>
+<h3 class="font-h3 text-h3 mb-2">Compete with custom offers</h3>
+<p class="font-body-md text-body-md text-primary-fixed-dim mb-6 flex-grow">Submit tailored proposals directly to buyers. Stand out by offering better terms, faster shipping, or premium quality.</p>
+<div class="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/20 flex items-center justify-between">
+<span class="font-label-sm text-label-sm">Your Bid</span>
+<span class="font-h3 text-h3">$4,250</span>
+</div>
+</div>
+</div>
+<!-- Feature 3: Trust Score (Spans 6 cols on desktop) -->
+<div class="md:col-span-6 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-highest flex flex-col h-full">
+<div class="w-12 h-12 bg-surface-container rounded-xl flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-[24px]">star</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface mb-2">Build your platform trust score</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Every successful transaction builds your reputation. Higher trust scores lead to more visibility and preferential access to high-value requests.</p>
+<div class="mt-auto bg-surface p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-on-surface">Supplier Rating</span>
+<div class="flex text-[#F59E0B]">
+<span class="material-symbols-outlined icon-filled text-[18px]">star</span>
+<span class="material-symbols-outlined icon-filled text-[18px]">star</span>
+<span class="material-symbols-outlined icon-filled text-[18px]">star</span>
+<span class="material-symbols-outlined icon-filled text-[18px]">star</span>
+<span class="material-symbols-outlined icon-filled text-[18px]">star_half</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2.5">
+<div class="bg-primary h-2.5 rounded-full" style="width: 92%"></div>
+</div>
+<p class="text-[12px] text-on-surface-variant mt-2 text-right">Top 8% of suppliers</p>
+</div>
+</div>
+<!-- Feature 4: Escrow (Spans 6 cols on desktop) -->
+<div class="md:col-span-6 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-highest flex flex-col h-full relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-transparent to-surface-variant/30 pointer-events-none"></div>
+<div class="z-10 h-full flex flex-col">
+<div class="w-12 h-12 bg-surface-container rounded-xl flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-[24px]">lock</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface mb-2">Secure escrow-backed payments</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Never worry about unpaid invoices. Funds are secured in escrow before you ship, guaranteeing payment upon successful delivery.</p>
+<div class="mt-auto flex items-center gap-4 bg-surface p-4 rounded-xl border border-outline-variant/30">
+<div class="w-10 h-10 rounded-full bg-[#10B981]/10 flex items-center justify-center text-[#10B981] shrink-0">
+<span class="material-symbols-outlined icon-filled text-[20px]">shield</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-[#10B981]">Funds Secured in Escrow</p>
+<p class="font-body-md text-[12px] text-on-surface-variant">Ready for fulfillment</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="max-w-3xl mx-auto px-4 py-12 mb-8">
+<div class="bg-surface-container rounded-2xl p-8 text-center border border-primary/10 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+<div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-sm">
+<span class="material-symbols-outlined text-[32px]">fact_check</span>
+</div>
+<h2 class="font-h2 text-h2 text-on-surface mb-3">Ready to start capturing demand?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 max-w-md mx-auto">Complete the KYB process to unlock your supplier dashboard and start receiving requests today.</p>
+<button class="bg-primary hover:bg-primary/90 text-on-primary h-[56px] px-8 rounded-lg font-label-md text-label-md shadow-sm transition-all active:scale-95 w-full sm:w-auto">
+                    Start Supplier Verification
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar from JSON Component (Mobile Only) -->
+<nav class="md:hidden bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl fixed bottom-0 w-full z-50 pb-safe border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex justify-around items-center h-16 px-2 text-[10px] font-medium font-['Inter']">
+<!-- Tab 1: Home (Inactive) -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform cursor-pointer w-16">
+<span class="material-symbols-outlined text-[24px] mb-1">home</span>
+<span>Home</span>
+</div>
+<!-- Tab 2: Post (Inactive) -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform cursor-pointer w-16">
+<span class="material-symbols-outlined text-[24px] mb-1">add_circle</span>
+<span>Post</span>
+</div>
+<!-- Tab 3: Offers (Inactive) -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform cursor-pointer w-16">
+<span class="material-symbols-outlined text-[24px] mb-1">local_offer</span>
+<span>Offers</span>
+</div>
+<!-- Tab 4: Orders (Inactive) -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform cursor-pointer w-16">
+<span class="material-symbols-outlined text-[24px] mb-1">inventory_2</span>
+<span>Orders</span>
+</div>
+<!-- Tab 5: Account (Active - Best semantic match for an onboarding/profile setup context) -->
+<div class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl py-1 px-3 hover:text-indigo-500 active:scale-90 transition-transform cursor-pointer w-16">
+<span class="material-symbols-outlined icon-filled text-[24px] mb-1">person</span>
+<span>Account</span>
+</div>
+</nav>
+</body></html>

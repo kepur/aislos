@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Buyer Registration - {{APP_NAME}}</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar hiding for cleaner mobile look */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f8f9ff",
+                        "outline-variant": "#c5c5d4",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-secondary-fixed": "#021355",
+                        "on-primary-fixed": "#00105c",
+                        "outline": "#757684",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#6c3400",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "secondary-container": "#abb7ff",
+                        "surface-tint": "#4355b9",
+                        "surface-variant": "#d3e4fe",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-error-container": "#93000a",
+                        "secondary": "#4d5a9c",
+                        "inverse-primary": "#bac3ff",
+                        "background": "#f8f9ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary-container": "#cacfff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "secondary-fixed": "#dee1ff",
+                        "inverse-surface": "#213145",
+                        "tertiary-container": "#8f4700",
+                        "on-secondary-container": "#394687",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-surface-variant": "#454652",
+                        "primary": "#24389c",
+                        "primary-fixed": "#dee0ff",
+                        "primary-container": "#3f51b5",
+                        "on-surface": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "base": "4px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-sans antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Contextual Header (Transactional flow, no global nav) -->
+<header class="flex items-center justify-between px-margin-mobile h-16 w-full shrink-0">
+<button aria-label="Back to Role Selection" class="flex items-center gap-xs text-on-surface-variant hover:text-on-surface transition-colors active:opacity-70">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+<span class="font-label-md text-label-md">Role Selection</span>
+</button>
+<div class="font-label-sm text-label-sm text-primary bg-primary-fixed px-sm py-xs rounded-full">
+            Step 1 of 2
+        </div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col w-full max-w-lg mx-auto pb-[100px]"> <!-- padding bottom for sticky footer -->
+<!-- Header Text -->
+<div class="px-margin-mobile pt-sm pb-md">
+<h1 class="font-h1 text-h1 text-on-surface mb-xs">Create Buyer Account</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Enter your details to access the {{APP_NAME}} marketplace securely.</p>
+</div>
+<!-- Form Container Card -->
+<div class="mx-margin-mobile bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-high p-md flex flex-col gap-md">
+<!-- Full Name -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="fullName">Full Name</label>
+<input class="w-full h-[52px] px-sm rounded-DEFAULT border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="fullName" placeholder="Jane Doe" type="text"/>
+</div>
+<!-- Email -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="email">Business Email</label>
+<input class="w-full h-[52px] px-sm rounded-DEFAULT border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="email" placeholder="jane@company.com" type="email"/>
+</div>
+<!-- Phone -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="phone">Phone Number</label>
+<div class="flex gap-sm">
+<div class="relative w-[100px] shrink-0">
+<select class="w-full h-[52px] pl-sm pr-[32px] appearance-none rounded-DEFAULT border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="countryCode">
+<option value="+1">+1 (US)</option>
+<option value="+44">+44 (UK)</option>
+<option value="+61">+61 (AU)</option>
+</select>
+<span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none">expand_more</span>
+</div>
+<input class="flex-1 h-[52px] px-sm rounded-DEFAULT border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="phone" placeholder="(555) 000-0000" type="tel"/>
+</div>
+</div>
+<!-- Password -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="password">Secure Password</label>
+<div class="relative">
+<input class="w-full h-[52px] pl-sm pr-[48px] rounded-DEFAULT border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="password" placeholder="••••••••" type="password"/>
+<button aria-label="Toggle password visibility" class="absolute right-sm top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors flex items-center justify-center p-xs" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+<p class="font-label-sm text-[11px] text-outline mt-1">Must be at least 8 characters with a number and symbol.</p>
+</div>
+<hr class="border-t border-surface-container my-xs"/>
+<!-- Location Grid -->
+<div class="grid grid-cols-2 gap-sm">
+<!-- Country -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="country">Country</label>
+<div class="relative">
+<select class="w-full h-[52px] pl-sm pr-[32px] appearance-none rounded-DEFAULT border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="country">
+<option disabled="" selected="" value="">Select...</option>
+<option value="US">United States</option>
+<option value="UK">United Kingdom</option>
+<option value="CA">Canada</option>
+</select>
+<span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- City -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="city">City</label>
+<input class="w-full h-[52px] px-sm rounded-DEFAULT border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="city" placeholder="e.g. New York" type="text"/>
+</div>
+</div>
+<!-- Currency -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="currency">Preferred Settlement Currency</label>
+<div class="relative">
+<select class="w-full h-[52px] pl-[40px] pr-[32px] appearance-none rounded-DEFAULT border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="currency">
+<option value="USD">USD - US Dollar</option>
+<option value="EUR">EUR - Euro</option>
+<option value="GBP">GBP - British Pound</option>
+</select>
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[20px]">payments</span>
+<span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Trust Indicator -->
+<div class="flex items-center gap-xs mt-xs p-sm bg-surface-container-low rounded-lg border border-surface-container-high">
+<span class="material-symbols-outlined text-[18px] text-primary">gavel</span>
+<p class="font-label-sm text-[11px] text-on-surface-variant">Your details are verified to ensure escrow protection during reverse auctions.</p>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Action Area -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest/95 backdrop-blur-md border-t border-surface-container px-margin-mobile pt-md pb-[max(16px,env(safe-area-inset-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.08)] z-50 flex flex-col items-center">
+<button class="w-full max-w-lg h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-DEFAULT flex items-center justify-center gap-xs active:scale-[0.98] transition-transform shadow-sm">
+<span>Continue to Preferences</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<p class="font-label-sm text-[12px] text-outline mt-sm text-center">
+            By continuing, you agree to our <a class="text-primary underline underline-offset-2" href="#">Terms of Service</a>.
+        </p>
+</div>
+</body></html>

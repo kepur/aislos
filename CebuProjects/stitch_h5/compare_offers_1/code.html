@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Offers Comparison - {{APP_NAME}}</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#6c3400",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#00105c",
+                    "outline": "#757684",
+                    "surface-variant": "#d3e4fe",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#bac3ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-tint": "#4355b9",
+                    "on-tertiary-container": "#ffc7a2",
+                    "secondary-container": "#abb7ff",
+                    "surface-container-high": "#dce9ff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c5c5d4",
+                    "surface": "#f8f9ff",
+                    "on-secondary-fixed": "#021355",
+                    "on-secondary-fixed-variant": "#354282",
+                    "surface-container-low": "#eff4ff",
+                    "tertiary-container": "#8f4700",
+                    "inverse-surface": "#213145",
+                    "secondary-fixed": "#dee1ff",
+                    "surface-container": "#e5eeff",
+                    "on-surface": "#0b1c30",
+                    "primary-container": "#3f51b5",
+                    "primary-fixed": "#dee0ff",
+                    "on-surface-variant": "#454652",
+                    "primary": "#24389c",
+                    "on-secondary-container": "#394687",
+                    "secondary-fixed-dim": "#b9c3ff",
+                    "background": "#f8f9ff",
+                    "secondary": "#4d5a9c",
+                    "inverse-primary": "#bac3ff",
+                    "surface-bright": "#f8f9ff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-background": "#0b1c30",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#cacfff",
+                    "surface-dim": "#cbdbf5",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed": "#301400",
+                    "on-primary-fixed-variant": "#293ca0",
+                    "tertiary-fixed": "#ffdcc6",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#713700",
+                    "tertiary-fixed-dim": "#ffb784"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "gutter-mobile": "12px",
+                    "margin-mobile": "16px",
+                    "md": "16px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "h3": ["Inter"],
+                    "label-md": ["Inter"],
+                    "h1": ["Inter"],
+                    "h2": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        .backdrop-blur-custom { backdrop-filter: blur(12px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm border-b border-slate-200/60 dark:border-slate-800/60 h-16 flex items-center justify-between px-4">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-50 active:scale-95 transition-all text-slate-600">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div>
+<h1 class="text-h2 font-h2 text-slate-900 leading-tight">Industrial Pump System</h1>
+<p class="text-label-sm text-indigo-600 font-medium">12 Offers Received</p>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-indigo-600 active:scale-95 duration-150 transition-colors hover:bg-slate-50">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-32 px-margin-mobile max-w-md mx-auto">
+<!-- Filter/Sorting Pill Row -->
+<div class="flex gap-2 mb-lg overflow-x-auto no-scrollbar pb-2">
+<span class="px-4 py-2 bg-primary text-on-primary rounded-full text-label-sm font-semibold flex items-center gap-1 whitespace-nowrap">
+                All Offers
+            </span>
+<span class="px-4 py-2 bg-white border border-outline-variant text-on-surface-variant rounded-full text-label-sm whitespace-nowrap">
+                Lowest Price
+            </span>
+<span class="px-4 py-2 bg-white border border-outline-variant text-on-surface-variant rounded-full text-label-sm whitespace-nowrap">
+                Fastest Delivery
+            </span>
+</div>
+<!-- Offers List -->
+<div class="space-y-md">
+<!-- Offer Card 1: Top Rated -->
+<div class="bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden">
+<div class="p-md">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">factory</span>
+</div>
+<div>
+<h3 class="text-label-md font-h3 text-on-surface">Global Tools Corp</h3>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-yellow-500 text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-bold text-on-surface">4.9</span>
+<span class="text-label-sm text-outline">(124 reviews)</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="bg-green-50 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 border border-green-100 mb-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                VERIFIED
+                            </span>
+<div class="flex items-center gap-1">
+<input class="w-4 h-4 text-primary rounded border-slate-300 focus:ring-primary" id="comp-1" type="checkbox"/>
+<label class="text-label-sm text-outline" for="comp-1">Compare</label>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-sm mb-md flex justify-between">
+<div class="text-center flex-1 border-r border-slate-200">
+<p class="text-label-sm text-outline mb-base uppercase tracking-wider">Price</p>
+<p class="text-h3 font-h3 text-primary">PHP 5,500</p>
+</div>
+<div class="text-center flex-1">
+<p class="text-label-sm text-outline mb-base uppercase tracking-wider">Delivery</p>
+<p class="text-h3 font-h3 text-on-surface">3 Days</p>
+</div>
+</div>
+<div class="space-y-sm mb-lg">
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+<span class="font-semibold text-on-surface">Spec Summary:</span> High-pressure stainless steel unit, 500L/min flow rate, ISO 9001 certified components.
+                        </p>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 h-12 bg-surface-container-highest text-primary font-semibold rounded-lg text-body-md active:scale-95 transition-all">View Details</button>
+<button class="flex-1 h-12 bg-primary text-on-primary font-semibold rounded-lg text-body-md shadow-md shadow-primary/20 active:scale-95 transition-all">Accept Offer</button>
+</div>
+</div>
+</div>
+<!-- Offer Card 2: Economy Option -->
+<div class="bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden">
+<div class="p-md">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">engineering</span>
+</div>
+<div>
+<h3 class="text-label-md font-h3 text-on-surface">Precision Indus</h3>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-yellow-500 text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-bold text-on-surface">4.7</span>
+<span class="text-label-sm text-outline">(89 reviews)</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 border border-blue-100 mb-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+                                EXPRESS
+                            </span>
+<div class="flex items-center gap-1">
+<input class="w-4 h-4 text-primary rounded border-slate-300 focus:ring-primary" id="comp-2" type="checkbox"/>
+<label class="text-label-sm text-outline" for="comp-2">Compare</label>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-sm mb-md flex justify-between">
+<div class="text-center flex-1 border-r border-slate-200">
+<p class="text-label-sm text-outline mb-base uppercase tracking-wider">Price</p>
+<p class="text-h3 font-h3 text-primary">PHP 4,950</p>
+</div>
+<div class="text-center flex-1">
+<p class="text-label-sm text-outline mb-base uppercase tracking-wider">Delivery</p>
+<p class="text-h3 font-h3 text-on-surface">5 Days</p>
+</div>
+</div>
+<div class="space-y-sm mb-lg">
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+<span class="font-semibold text-on-surface">Spec Summary:</span> Standard aluminum casing, 450L/min flow, Includes 1-year basic warranty on motor.
+                        </p>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 h-12 bg-surface-container-highest text-primary font-semibold rounded-lg text-body-md active:scale-95 transition-all">View Details</button>
+<button class="flex-1 h-12 bg-primary text-on-primary font-semibold rounded-lg text-body-md shadow-md shadow-primary/20 active:scale-95 transition-all">Accept Offer</button>
+</div>
+</div>
+</div>
+<!-- Offer Card 3 -->
+<div class="bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden">
+<div class="p-md">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">build_circle</span>
+</div>
+<div>
+<h3 class="text-label-md font-h3 text-on-surface">Mechanix Pro</h3>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-yellow-500 text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-bold text-on-surface">4.5</span>
+<span class="text-label-sm text-outline">(56 reviews)</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1">
+<input class="w-4 h-4 text-primary rounded border-slate-300 focus:ring-primary" id="comp-3" type="checkbox"/>
+<label class="text-label-sm text-outline" for="comp-3">Compare</label>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-sm mb-md flex justify-between">
+<div class="text-center flex-1 border-r border-slate-200">
+<p class="text-label-sm text-outline mb-base uppercase tracking-wider">Price</p>
+<p class="text-h3 font-h3 text-primary">PHP 5,200</p>
+</div>
+<div class="text-center flex-1">
+<p class="text-label-sm text-outline mb-base uppercase tracking-wider">Delivery</p>
+<p class="text-h3 font-h3 text-on-surface">2 Days</p>
+</div>
+</div>
+<div class="space-y-sm mb-lg">
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+<span class="font-semibold text-on-surface">Spec Summary:</span> Ultra-compact design, local assembly, optimized for continuous duty cycles.
+                        </p>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 h-12 bg-surface-container-highest text-primary font-semibold rounded-lg text-body-md active:scale-95 transition-all">View Details</button>
+<button class="flex-1 h-12 bg-primary text-on-primary font-semibold rounded-lg text-body-md shadow-md shadow-primary/20 active:scale-95 transition-all">Accept Offer</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Side-by-Side Comparison Preview (Glassmorphism Modal State Simulation) -->
+<div class="fixed bottom-24 left-4 right-4 z-[60] bg-white/90 backdrop-blur-custom p-4 rounded-2xl shadow-2xl border border-white/50 hidden md:block">
+<div class="flex justify-between items-center mb-3">
+<h4 class="text-label-md font-h2 text-primary">Compare Offers</h4>
+<span class="material-symbols-outlined text-outline cursor-pointer">close</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-2 border-r border-slate-200">
+<p class="text-[10px] font-bold text-outline uppercase">Global Tools</p>
+<p class="text-label-md font-bold text-primary">PHP 5,500</p>
+<p class="text-[10px] text-on-surface-variant">3 Days • High Res</p>
+</div>
+<div class="p-2">
+<p class="text-[10px] font-bold text-outline uppercase">Precision Indus</p>
+<p class="text-label-md font-bold text-primary">PHP 4,950</p>
+<p class="text-[10px] text-on-surface-variant">5 Days • Std Res</p>
+</div>
+</div>
+</div>
+<!-- Floating Action Button: Compare -->
+<button class="fixed bottom-20 right-4 z-50 bg-indigo-600 text-on-primary h-14 px-6 rounded-full shadow-lg shadow-indigo-500/40 flex items-center gap-2 font-semibold active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="swap_horiz">swap_horiz</span>
+        Compare (2)
+    </button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] h-16 flex justify-around items-center px-2">
+<div class="flex flex-col items-center justify-center text-slate-400 py-1 hover:text-indigo-500 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-medium font-['Inter']">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 py-1 hover:text-indigo-500 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="text-[10px] font-medium font-['Inter']">Post</span>
+</div>
+<div class="flex flex-col items-center justify-center text-indigo-600 bg-indigo-50 rounded-xl py-1 px-3 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="local_offer">local_offer</span>
+<span class="text-[10px] font-medium font-['Inter']">Offers</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 py-1 hover:text-indigo-500 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-[10px] font-medium font-['Inter']">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 py-1 hover:text-indigo-500 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-medium font-['Inter']">Account</span>
+</div>
+</nav>
+</body></html>

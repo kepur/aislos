@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Supplier Payout Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#354282",
+                      "tertiary-container": "#8f4700",
+                      "surface-container-lowest": "#ffffff",
+                      "primary": "#24389c",
+                      "surface-container-high": "#dce9ff",
+                      "surface-dim": "#cbdbf5",
+                      "surface-container-highest": "#d3e4fe",
+                      "primary-fixed-dim": "#bac3ff",
+                      "tertiary-fixed": "#ffdcc6",
+                      "on-primary": "#ffffff",
+                      "on-background": "#0b1c30",
+                      "on-tertiary-container": "#ffc7a2",
+                      "error": "#ba1a1a",
+                      "secondary": "#4d5a9c",
+                      "primary-container": "#3f51b5",
+                      "surface-tint": "#4355b9",
+                      "background": "#f8f9ff",
+                      "surface-container": "#e5eeff",
+                      "surface-bright": "#f8f9ff",
+                      "surface-variant": "#d3e4fe",
+                      "tertiary": "#6c3400",
+                      "surface-container-low": "#eff4ff",
+                      "tertiary-fixed-dim": "#ffb784",
+                      "on-secondary-fixed": "#021355",
+                      "on-primary-fixed": "#00105c",
+                      "surface": "#f8f9ff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "secondary-container": "#abb7ff",
+                      "outline": "#757684",
+                      "outline-variant": "#c5c5d4",
+                      "on-secondary-container": "#394687",
+                      "on-surface": "#0b1c30",
+                      "secondary-fixed-dim": "#b9c3ff",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "inverse-surface": "#213145",
+                      "secondary-fixed": "#dee1ff",
+                      "on-primary-container": "#cacfff",
+                      "on-tertiary-fixed": "#301400",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed": "#dee0ff",
+                      "on-surface-variant": "#454652",
+                      "inverse-primary": "#bac3ff",
+                      "on-primary-fixed-variant": "#293ca0",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "sm": "8px",
+                      "xl": "32px",
+                      "margin-mobile": "16px",
+                      "gutter-mobile": "12px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "h1": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h3": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h2": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-[96px] md:pb-lg md:pl-[280px]">
+<nav class="hidden md:flex flex-col py-6 h-full w-[280px] rounded-r-2xl divide-y divide-slate-100 dark:divide-slate-800 shadow-2xl bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 text-sm font-medium font-['Inter'] fixed top-0 left-0 z-40">
+<div class="px-6 pb-6">
+<h2 class="text-lg font-black text-indigo-600">Admin Console</h2>
+<p class="text-slate-500 font-body-md text-body-md">System Oversight</p>
+</div>
+<div class="flex-1 py-4 flex flex-col gap-sm px-4">
+<a class="flex items-center gap-md px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-md px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">verified_user</span>
+                Verifications
+            </a>
+<a class="flex items-center gap-md px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">gavel</span>
+                Disputes
+            </a>
+<a class="flex items-center gap-md px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">security</span>
+                Risk
+            </a>
+<a class="flex items-center gap-md px-4 py-3 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-r-4 border-indigo-600 transition-all duration-200 active:opacity-80" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+                Settings
+            </a>
+</div>
+</nav>
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-4 h-16 w-full border-b border-slate-200/60 dark:border-slate-800/60 shadow-sm bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-indigo-600 dark:text-indigo-400 font-['Inter'] antialiased md:hidden">
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined">swap_horizontal_circle</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{{APP_NAME}}</h1>
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="pt-[80px] md:pt-lg px-margin-mobile md:px-lg max-w-7xl mx-auto space-y-lg">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface mb-sm">Payout Settings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your preferred payout methods, settlement schedules, and currency preferences.</p>
+</div>
+<section class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md border border-outline-variant/30">
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-h2 text-h2 text-on-surface">Payout Methods</h2>
+<button class="font-label-md text-label-md text-primary flex items-center gap-xs hover:bg-surface-container p-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                    Add Method
+                </button>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center justify-between p-md border border-outline-variant/50 rounded-lg hover:border-primary/50 transition-colors cursor-pointer bg-surface-container-lowest relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Bank Transfer (ACH)</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">JPMorgan Chase ****4892</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-xs">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                            Verified
+                        </span>
+<span class="font-label-sm text-label-sm text-outline">Default</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-md border border-outline-variant/50 rounded-lg hover:border-primary/50 transition-colors cursor-pointer bg-surface-container-lowest">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">language</span>
+</div>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Payoneer</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">supplier@example.com</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-xs">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                            Verified
+                        </span>
+</div>
+</div>
+<div class="flex items-center justify-between p-md border border-outline-variant/50 rounded-lg hover:border-primary/50 transition-colors cursor-pointer bg-surface-container-lowest">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">currency_bitcoin</span>
+</div>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">USDT (ERC-20)</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">0x71C...9A34</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-xs">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">pending</span>
+                            Pending
+                        </span>
+</div>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md border border-outline-variant/30 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">event_repeat</span>
+<h2 class="font-h2 text-h2 text-on-surface">Settlement Schedule</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Choose how often you want your funds to be automatically transferred to your default payout method.</p>
+</div>
+<div class="space-y-sm">
+<label class="flex items-center justify-between p-3 border border-outline-variant/50 rounded-lg cursor-pointer hover:bg-surface-container/50">
+<span class="font-label-md text-label-md text-on-surface">Daily</span>
+<input checked="" class="text-primary focus:ring-primary h-5 w-5 border-outline-variant" name="schedule" type="radio"/>
+</label>
+<label class="flex items-center justify-between p-3 border border-outline-variant/50 rounded-lg cursor-pointer hover:bg-surface-container/50">
+<span class="font-label-md text-label-md text-on-surface">Weekly (Mondays)</span>
+<input class="text-primary focus:ring-primary h-5 w-5 border-outline-variant" name="schedule" type="radio"/>
+</label>
+<label class="flex items-center justify-between p-3 border border-outline-variant/50 rounded-lg cursor-pointer hover:bg-surface-container/50">
+<span class="font-label-md text-label-md text-on-surface">Manual</span>
+<input class="text-primary focus:ring-primary h-5 w-5 border-outline-variant" name="schedule" type="radio"/>
+</label>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md border border-outline-variant/30 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">payments</span>
+<h2 class="font-h2 text-h2 text-on-surface">Preferred Currency</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Select the default currency for your payouts. Conversions may apply based on your selected payout method.</p>
+</div>
+<div class="relative">
+<select class="block w-full pl-3 pr-10 py-3 text-base border border-outline-variant focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg bg-surface-container-lowest text-on-surface font-body-md h-[52px]">
+<option selected="">USD - US Dollar</option>
+<option>EUR - Euro</option>
+<option>GBP - British Pound</option>
+<option>CAD - Canadian Dollar</option>
+</select>
+</div>
+<div class="mt-md bg-surface-container-low p-3 rounded-lg flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">info</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">A 1.5% conversion fee applies when receiving funds in a currency different from the original transaction.</p>
+</div>
+</div>
+</section>
+<div class="flex justify-end pt-sm">
+<button class="bg-primary text-on-primary font-label-md text-label-md h-[56px] px-xl rounded-lg shadow-sm hover:bg-primary/90 transition-colors active:scale-[0.98] flex items-center justify-center w-full md:w-auto">
+                Save Changes
+            </button>
+</div>
+</main>
+<nav class="md:hidden fixed bottom-0 w-full z-50 pb-safe border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl text-indigo-600 dark:text-indigo-400 text-[10px] font-medium font-['Inter'] flex justify-around items-center h-16 px-2">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+            Home
+        </a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">add_circle</span>
+            Post
+        </a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">local_offer</span>
+            Offers
+        </a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">inventory_2</span>
+            Orders
+        </a>
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl py-1 px-3 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+            Account
+        </a>
+</nav>
+</body></html>

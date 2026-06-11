@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Help Center - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#8fe3ff",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "on-background": "#1a1c1c",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "primary": "#b6171d",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#8f6f6c",
+                        "on-secondary-container": "#00667c",
+                        "surface-dim": "#dadada",
+                        "surface": "#f9f9f9",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-secondary-fixed": "#001f27",
+                        "surface-container-high": "#e8e8e8",
+                        "tertiary-container": "#7a7558",
+                        "on-primary-fixed": "#410003",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "surface-container-low": "#f3f3f4",
+                        "outline-variant": "#e4beba",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "secondary": "#00677d",
+                        "primary-fixed": "#ffdad6",
+                        "on-primary-fixed-variant": "#93000f",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9f9",
+                        "on-primary-container": "#fffbff",
+                        "surface-tint": "#ba1a1f",
+                        "inverse-primary": "#ffb3ac",
+                        "surface-variant": "#e2e2e2",
+                        "primary-container": "#da3432",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#615c41",
+                        "surface-container": "#eeeeee",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-container-highest": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#b4ebff",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-fixed": "#ebe3c0",
+                        "on-surface-variant": "#5b403d",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2f3131"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "gutter": "24px",
+                        "base": "4px",
+                        "md": "24px",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "container-max": "1280px",
+                        "xl": "64px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-[80px]">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none flex items-center justify-between px-10 py-4 max-w-[1440px] mx-auto w-full font-sans antialiased text-sm font-medium tracking-tight">
+<div class="flex items-center gap-gutter">
+<a class="text-2xl font-black tracking-tighter text-blue-700 dark:text-blue-500" href="#">ProcurePing</a>
+<nav class="hidden md:flex gap-sm">
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300 active:scale-95 transition-transform duration-150 py-2" href="#">How it Works</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300 active:scale-95 transition-transform duration-150 py-2" href="#">Categories</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300 active:scale-95 transition-transform duration-150 py-2" href="#">Solutions</a>
+</nav>
+</div>
+<div class="flex items-center gap-sm">
+<button class="hidden md:flex items-center justify-center p-2 text-blue-600 dark:text-blue-400 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined">language</span></button>
+<button class="hidden md:flex items-center justify-center p-2 text-blue-600 dark:text-blue-400 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined">payments</span></button>
+<button class="hidden md:flex items-center justify-center p-2 text-blue-600 dark:text-blue-400 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined">public</span></button>
+<a class="hidden md:inline-flex items-center justify-center px-4 py-2 border border-secondary text-secondary rounded font-label-caps text-label-caps hover:bg-secondary/5 transition-colors" href="#">Become a Supplier</a>
+<a class="inline-flex items-center justify-center px-4 py-2 bg-primary text-on-primary rounded font-label-caps text-label-caps hover:bg-primary/90 transition-colors shadow-sm" href="#">Post a Request</a>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center w-full max-w-container-max mx-auto px-lg mb-xl">
+<!-- Hero Search Section -->
+<section class="w-full pt-xl pb-lg flex flex-col items-center text-center">
+<h1 class="font-display text-display text-on-background mb-sm">How can we help you today?</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-lg max-w-2xl">Search for articles, guides, and troubleshooting steps to resolve your procurement issues quickly and securely.</p>
+<div class="w-full max-w-3xl relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-variation-settings: 'FILL' 1;">search</span>
+<input class="w-full pl-xl pr-sm py-md bg-surface-container-lowest border border-surface-variant rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow shadow-[0_4px_12px_rgba(0,0,0,0.05)]" placeholder="Search for 'escrow hold times' or 'dispute process'..." type="text"/>
+</div>
+</section>
+<!-- Category Bento Grid -->
+<section class="w-full py-md">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Buyer Questions -->
+<a class="group block p-md bg-surface-container-lowest border border-surface-variant rounded-xl hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all" href="#">
+<div class="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-sm group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Buyer Questions</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Guides on posting requests, evaluating bids, and managing supplier communications.</p>
+</a>
+<!-- Supplier Questions -->
+<a class="group block p-md bg-surface-container-lowest border border-surface-variant rounded-xl hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all" href="#">
+<div class="w-12 h-12 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center mb-sm group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
+<span class="material-symbols-outlined">storefront</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Supplier Questions</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Learn how to submit winning bids, verify your business, and receive payouts.</p>
+</a>
+<!-- Escrow & Payment -->
+<a class="group block p-md bg-surface-container-lowest border border-surface-variant rounded-xl hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all" href="#">
+<div class="w-12 h-12 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center mb-sm group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Escrow &amp; Payment</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Detailed information on our secure escrow system, milestone payments, and currency handling.</p>
+</a>
+<!-- Delivery & Proof -->
+<a class="group block p-md bg-surface-container-lowest border border-surface-variant rounded-xl hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all" href="#">
+<div class="w-12 h-12 rounded-lg bg-on-surface-variant/10 text-on-surface-variant flex items-center justify-center mb-sm group-hover:bg-on-surface-variant group-hover:text-surface transition-colors">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Delivery &amp; Proof</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Uploading proof of delivery, tracking shipments, and releasing milestone funds.</p>
+</a>
+<!-- Disputes -->
+<a class="group block p-md bg-surface-container-lowest border border-surface-variant rounded-xl hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all" href="#">
+<div class="w-12 h-12 rounded-lg bg-error/10 text-error flex items-center justify-center mb-sm group-hover:bg-error group-hover:text-on-error transition-colors">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Disputes</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">How to initiate a dispute, the arbitration process, and expected resolution timelines.</p>
+</a>
+<!-- Account Verification -->
+<a class="group block p-md bg-surface-container-lowest border border-surface-variant rounded-xl hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all relative overflow-hidden" href="#">
+<div class="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full -mr-8 -mt-8"></div>
+<div class="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-sm group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Account Verification</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">KYC/AML requirements, document uploads, and achieving Verified Supplier status.</p>
+</a>
+</div>
+</section>
+<!-- Featured Articles & Contact Support -->
+<section class="w-full py-lg grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Featured Articles -->
+<div class="lg:col-span-2">
+<h2 class="font-h2 text-h2 text-on-background mb-md">Featured Articles</h2>
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl overflow-hidden">
+<div class="divide-y divide-surface-variant">
+<a class="block p-sm hover:bg-surface-container-low transition-colors flex items-center justify-between group" href="#">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary/70 group-hover:text-primary transition-colors">article</span>
+<span class="font-body-md text-body-md text-on-background group-hover:text-primary transition-colors">How long does escrow hold funds?</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+<a class="block p-sm hover:bg-surface-container-low transition-colors flex items-center justify-between group" href="#">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary/70 group-hover:text-primary transition-colors">article</span>
+<span class="font-body-md text-body-md text-on-background group-hover:text-primary transition-colors">What are the requirements for a Verified Supplier badge?</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+<a class="block p-sm hover:bg-surface-container-low transition-colors flex items-center justify-between group" href="#">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary/70 group-hover:text-primary transition-colors">article</span>
+<span class="font-body-md text-body-md text-on-background group-hover:text-primary transition-colors">How to dispute a missed delivery milestone</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+<a class="block p-sm hover:bg-surface-container-low transition-colors flex items-center justify-between group" href="#">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary/70 group-hover:text-primary transition-colors">article</span>
+<span class="font-body-md text-body-md text-on-background group-hover:text-primary transition-colors">Understanding international wire transfer fees</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Contact Support CTA -->
+<div class="lg:col-span-1">
+<div class="bg-surface-container-low rounded-xl p-lg flex flex-col h-full border border-surface-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+<div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+</div>
+<h2 class="font-h2 text-h2 text-on-background mb-xs">Still need help?</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md flex-grow">Our dedicated support team is available 24/7 to assist enterprise clients with urgent procurement issues.</p>
+<a class="w-full inline-flex items-center justify-center px-4 py-3 bg-primary text-on-primary rounded font-label-caps text-label-caps hover:bg-primary/90 transition-colors shadow-sm mb-sm gap-2" href="#">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+                        Start Live Chat
+                    </a>
+<a class="w-full inline-flex items-center justify-center px-4 py-3 border border-secondary text-secondary rounded font-label-caps text-label-caps hover:bg-secondary/5 transition-colors gap-2" href="#">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+                        Email Support
+                    </a>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full border-t border-t border-slate-200 dark:border-slate-800 flat no shadows grid grid-cols-1 md:grid-cols-4 gap-12 px-10 py-20 max-w-[1440px] mx-auto mt-auto">
+<div class="flex flex-col gap-sm">
+<span class="text-xl font-bold text-slate-900 dark:text-white mb-sm">ProcurePing</span>
+<span class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500">© 2024 ProcurePing. Global Procurement Excellence.</span>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-900 dark:text-white mb-2">Platform</h4>
+<a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">How it Works</a>
+<a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Categories</a>
+<a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Solutions</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-900 dark:text-white mb-2">Preferences</h4>
+<a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Language</a>
+<a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Currency</a>
+<a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Region</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-900 dark:text-white mb-2">Legal</h4>
+<a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Privacy Policy</a>
+<a class="font-sans text-xs uppercase tracking-widest font-semibold text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Terms of Service</a>
+</div>
+</footer>
+</body></html>

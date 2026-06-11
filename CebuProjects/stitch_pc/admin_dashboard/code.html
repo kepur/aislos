@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Operations Dashboard - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f3f3f4",
+                      "surface-bright": "#f9f9f9",
+                      "on-surface": "#1a1c1c",
+                      "secondary": "#00677d",
+                      "error": "#ba1a1a",
+                      "background": "#f9f9f9",
+                      "on-tertiary-fixed-variant": "#4b472d",
+                      "surface-container-highest": "#e2e2e2",
+                      "outline-variant": "#e4beba",
+                      "on-primary-fixed": "#410003",
+                      "secondary-fixed": "#b4ebff",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-container": "#7a7558",
+                      "surface-container": "#eeeeee",
+                      "surface": "#f9f9f9",
+                      "on-tertiary-container": "#fffbff",
+                      "on-background": "#1a1c1c",
+                      "outline": "#8f6f6c",
+                      "on-secondary-fixed": "#001f27",
+                      "inverse-on-surface": "#f0f1f1",
+                      "on-tertiary-fixed": "#1f1c06",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed-dim": "#cec7a5",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#ffdad6",
+                      "surface-variant": "#e2e2e2",
+                      "primary": "#b6171d",
+                      "error-container": "#ffdad6",
+                      "on-surface-variant": "#5b403d",
+                      "on-secondary": "#ffffff",
+                      "on-primary-container": "#fffbff",
+                      "tertiary": "#615c41",
+                      "surface-container-high": "#e8e8e8",
+                      "on-primary-fixed-variant": "#93000f",
+                      "tertiary-fixed": "#ebe3c0",
+                      "on-secondary-container": "#00667c",
+                      "secondary-fixed-dim": "#7dd2ee",
+                      "inverse-surface": "#2f3131",
+                      "secondary-container": "#8fe3ff",
+                      "on-secondary-fixed-variant": "#004e5f",
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#ffb3ac",
+                      "primary-container": "#da3432",
+                      "surface-dim": "#dadada",
+                      "on-error": "#ffffff",
+                      "surface-tint": "#ba1a1f",
+                      "primary-fixed-dim": "#ffb3ac"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "8px",
+                      "sm": "16px",
+                      "base": "4px",
+                      "xl": "64px",
+                      "container-max": "1280px",
+                      "md": "24px",
+                      "lg": "40px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "display": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "h1": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h2": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "h3": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen overflow-hidden flex">
+<!-- SideNavBar -->
+<nav class="bg-inverse-surface dark:bg-slate-900 text-[#FF4F49] font-inter text-sm font-medium text-lg font-black text-[#FF4F49] fixed left-0 h-screen w-64 rounded-none border-r border-slate-100 dark:border-slate-800 flat no shadows flex flex-col h-full py-6 pr-4 hidden md:flex z-40 text-on-primary">
+<div class="px-6 mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined text-3xl" data-weight="fill">admin_panel_settings</span>
+<div>
+<div class="text-xl font-bold tracking-tight text-white">ProcurePing</div>
+<div class="text-xs text-on-surface-variant font-label-caps text-surface-dim">Admin Operations</div>
+</div>
+</div>
+<ul class="flex flex-col gap-2 flex-grow">
+<li class="pl-4">
+<a class="flex items-center gap-3 py-3 px-4 text-[#FF4F49] bg-slate-50 dark:bg-slate-800/50 rounded-r-full border-l-4 border-[#FF4F49] hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+</li>
+<li class="pl-4">
+<a class="flex items-center gap-3 py-3 px-4 text-surface-dim dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 rounded-r-full border-l-4 border-transparent hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+                    Active Bids
+                </a>
+</li>
+<li class="pl-4">
+<a class="flex items-center gap-3 py-3 px-4 text-surface-dim dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 rounded-r-full border-l-4 border-transparent hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+                    Suppliers
+                </a>
+</li>
+<li class="pl-4">
+<a class="flex items-center gap-3 py-3 px-4 text-surface-dim dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 rounded-r-full border-l-4 border-transparent hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+                    Market Insights
+                </a>
+</li>
+<li class="pl-4">
+<a class="flex items-center gap-3 py-3 px-4 text-surface-dim dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 rounded-r-full border-l-4 border-transparent hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                    Archive
+                </a>
+</li>
+</ul>
+<ul class="flex flex-col gap-2 mt-auto">
+<li class="pl-4">
+<a class="flex items-center gap-3 py-3 px-4 text-surface-dim dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 rounded-r-full border-l-4 border-transparent hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_center">help_center</span>
+                    Support
+                </a>
+</li>
+<li class="pl-4">
+<a class="flex items-center gap-3 py-3 px-4 text-surface-dim dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 rounded-r-full border-l-4 border-transparent hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Settings
+                </a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[#FF4F49] font-inter text-sm antialiased text-xl font-bold tracking-tight text-slate-900 dark:text-white docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center w-full px-10 h-16 bg-surface-container-lowest">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-full py-2 pl-10 pr-4 text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Search orders, IDs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="hover:text-[#FF4F49] transition-colors duration-200 flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[20px]" data-icon="language">language</span>
+</button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[20px]" data-icon="currency_exchange">currency_exchange</span>
+</button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[20px]" data-icon="public">public</span>
+</button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-highest relative">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+<div class="h-8 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-3 cursor-pointer Active: opacity-80 scale-95 transition-all hover:text-[#FF4F49] transition-colors duration-200">
+<img alt="Executive User Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a confident executive user in a modern office setting. The lighting is bright and corporate, conveying trust and authority. The aesthetic matches a clean, light-mode dashboard interface with high-contrast elements and purposeful minimalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMwODGuU5K_xY_djdbYTQuIE6BJGvWSmwUF_5oFIUXiC1bf-_aUmOC7s7z04OPbRvxbBR6EshIvOmy0RDmUV6BZskoE-Z8IBtEAcJMCPzo4Gld9XkDPOLYK7HEQf3cUbIFIAcF_wgwnckTQ5YjyRDIyHCTgAdF9o1eZnIP6eFs5lWuWnUd9H933VXDP8eoGS38XshhpW-OkEp3TXy8wIdq4GHTK1QVXHCMPdvvJO-Or68pOSzm6ciKf0I4xRkGk-IhylITTPvu5BHl"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-lg bg-surface">
+<div class="max-w-container-max mx-auto space-y-md">
+<div class="flex justify-between items-end mb-sm">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface">Admin Operations</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Real-time platform metrics and operational queues.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-secondary text-secondary rounded-DEFAULT font-label-caps text-label-caps hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+                            EXPORT REPORT
+                        </button>
+</div>
+</div>
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-sm">
+<!-- GMV Card -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg p-md col-span-1 lg:col-span-2 relative overflow-hidden group hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-primary-fixed/30 rounded-full blur-3xl group-hover:bg-primary-fixed/50 transition-colors"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase">Global Merchandise Value (30d)</h3>
+<span class="material-symbols-outlined text-primary bg-primary-container/20 p-2 rounded-full">account_balance</span>
+</div>
+<div class="flex items-end gap-4 relative z-10">
+<div class="font-display text-display text-on-surface font-data-mono tracking-tight">$42.8M</div>
+<div class="flex items-center text-secondary font-body-sm text-body-sm mb-2">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span class="ml-1">+12.4%</span>
+</div>
+</div>
+</div>
+<!-- Escrow Card -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg p-md col-span-1 hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase">Escrow Held</h3>
+<span class="material-symbols-outlined text-tertiary">lock</span>
+</div>
+<div class="font-h2 text-h2 text-on-surface font-data-mono">$8.4M</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-tertiary h-full w-3/4 rounded-full"></div>
+</div>
+</div>
+<!-- Disputes Card -->
+<div class="bg-surface-container-lowest border border-error-container rounded-lg p-md col-span-1 bg-gradient-to-br from-surface-container-lowest to-error-container/20 hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-caps text-label-caps text-error uppercase">Active Disputes</h3>
+<span class="material-symbols-outlined text-error">gavel</span>
+</div>
+<div class="flex items-end gap-3">
+<div class="font-h2 text-h2 text-on-surface">14</div>
+<div class="text-error font-body-sm text-body-sm mb-1 font-medium">Requires Attention</div>
+</div>
+</div>
+<!-- Small KPI Row -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg p-md hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Active Intents</h3>
+<div class="font-h2 text-h2 text-on-surface">1,248</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg p-md hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Offers Submitted</h3>
+<div class="font-h2 text-h2 text-on-surface">4,592</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg p-md hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Orders in Progress</h3>
+<div class="font-h2 text-h2 text-on-surface">892</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg p-md hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Completed (30d)</h3>
+<div class="font-h2 text-h2 text-on-surface">3,104</div>
+</div>
+</div>
+<!-- Complex Section Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-sm">
+<!-- Left Column: Risk & Queues -->
+<div class="col-span-1 lg:col-span-1 flex flex-col gap-sm">
+<!-- Risk Alerts -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg flex-1 flex flex-col">
+<div class="p-4 border-b border-surface-container-highest flex justify-between items-center">
+<h2 class="font-h3 text-h3 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-error">warning</span>
+                                    Risk Alerts
+                                </h2>
+<span class="bg-error-container text-on-error-container px-2 py-0.5 rounded text-xs font-label-caps">3 HIGH</span>
+</div>
+<div class="p-2 flex-1 flex flex-col gap-1 overflow-y-auto max-h-[300px]">
+<div class="p-3 bg-surface-bright rounded hover:bg-surface-container-low transition-colors cursor-pointer border border-transparent hover:border-surface-container-highest flex gap-3 items-start">
+<div class="w-2 h-2 rounded-full bg-error mt-1.5 flex-shrink-0"></div>
+<div>
+<div class="font-body-sm text-body-sm font-medium text-on-surface">Suspicious Activity Detected</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Multiple login attempts from Supplier ID #4928</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant mt-2">10 mins ago</div>
+</div>
+</div>
+<div class="p-3 bg-surface-bright rounded hover:bg-surface-container-low transition-colors cursor-pointer border border-transparent hover:border-surface-container-highest flex gap-3 items-start">
+<div class="w-2 h-2 rounded-full bg-error mt-1.5 flex-shrink-0"></div>
+<div>
+<div class="font-body-sm text-body-sm font-medium text-on-surface">Escrow Threshold Exceeded</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Transaction TRX-992 requires manual clearance.</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant mt-2">1 hr ago</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Verification Queue -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg flex-1 flex flex-col">
+<div class="p-4 border-b border-surface-container-highest flex justify-between items-center">
+<h2 class="font-h3 text-h3 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+                                    Verification Queue
+                                </h2>
+<span class="text-on-surface-variant text-sm">12 Pending</span>
+</div>
+<div class="p-0 flex-1 overflow-y-auto max-h-[300px]">
+<!-- Table-like list -->
+<div class="flex items-center justify-between p-4 border-b border-surface-container-lowest hover:bg-surface-bright transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-sm">G</div>
+<div>
+<div class="font-body-sm text-body-sm font-medium text-on-surface">Global Tech Supplies</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">KYC / AML Pending</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-surface-container-lowest hover:bg-surface-bright transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold text-sm">I</div>
+<div>
+<div class="font-body-sm text-body-sm font-medium text-on-surface">Industrial Metals LLC</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">Financial Audit</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Charts & Data -->
+<div class="col-span-1 lg:col-span-2 flex flex-col gap-sm">
+<!-- Main Chart Area (Simulated) -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg p-md flex-1">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h2 class="font-h3 text-h3 text-on-surface">Intent Volume &amp; Completion</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Trailing 6 months overview</p>
+</div>
+<select class="bg-surface border border-outline-variant text-on-surface text-sm rounded focus:ring-primary focus:border-primary px-3 py-1.5">
+<option>Last 6 Months</option>
+<option>This Year</option>
+<option>All Time</option>
+</select>
+</div>
+<!-- Abstract Chart Representation -->
+<div class="h-64 w-full flex items-end justify-between gap-2 px-4 relative">
+<!-- Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+<div class="border-b border-surface-container-highest w-full h-0"></div>
+<div class="border-b border-surface-container-highest w-full h-0"></div>
+<div class="border-b border-surface-container-highest w-full h-0"></div>
+<div class="border-b border-surface-container-highest w-full h-0"></div>
+</div>
+<!-- Bars -->
+<div class="w-1/6 flex flex-col gap-1 items-center z-10 group cursor-pointer">
+<div class="w-full flex items-end gap-1 h-48 justify-center">
+<div class="w-1/2 bg-surface-variant h-[40%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 bg-secondary h-[30%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-2">JAN</span>
+</div>
+<div class="w-1/6 flex flex-col gap-1 items-center z-10 group cursor-pointer">
+<div class="w-full flex items-end gap-1 h-48 justify-center">
+<div class="w-1/2 bg-surface-variant h-[55%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 bg-secondary h-[45%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-2">FEB</span>
+</div>
+<div class="w-1/6 flex flex-col gap-1 items-center z-10 group cursor-pointer">
+<div class="w-full flex items-end gap-1 h-48 justify-center">
+<div class="w-1/2 bg-surface-variant h-[45%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 bg-secondary h-[60%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-2">MAR</span>
+</div>
+<div class="w-1/6 flex flex-col gap-1 items-center z-10 group cursor-pointer">
+<div class="w-full flex items-end gap-1 h-48 justify-center">
+<div class="w-1/2 bg-surface-variant h-[70%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 bg-secondary h-[65%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-2">APR</span>
+</div>
+<div class="w-1/6 flex flex-col gap-1 items-center z-10 group cursor-pointer">
+<div class="w-full flex items-end gap-1 h-48 justify-center">
+<div class="w-1/2 bg-surface-variant h-[85%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 bg-secondary h-[75%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-2">MAY</span>
+</div>
+<div class="w-1/6 flex flex-col gap-1 items-center z-10 group cursor-pointer">
+<div class="w-full flex items-end gap-1 h-48 justify-center">
+<div class="w-1/2 bg-surface-variant h-[100%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 bg-secondary h-[90%] rounded-t group-hover:opacity-80 transition-opacity"></div>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-2">JUN</span>
+</div>
+</div>
+<div class="flex justify-center gap-6 mt-6">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-surface-variant"></div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">New Intents</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Completed Orders</span>
+</div>
+</div>
+</div>
+<!-- Data Table Slice -->
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-lg overflow-hidden">
+<div class="p-4 border-b border-surface-container-highest flex justify-between items-center bg-surface-bright">
+<h2 class="font-h3 text-h3 text-on-surface text-base">Recent High-Value Orders</h2>
+<a class="text-secondary font-label-caps text-label-caps hover:underline" href="#">View All</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-surface-container-highest text-on-surface-variant">
+<th class="py-3 px-4 font-label-caps text-label-caps font-semibold">Order ID</th>
+<th class="py-3 px-4 font-label-caps text-label-caps font-semibold">Category</th>
+<th class="py-3 px-4 font-label-caps text-label-caps font-semibold">Value</th>
+<th class="py-3 px-4 font-label-caps text-label-caps font-semibold">Status</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm text-on-surface">
+<tr class="border-b border-surface-container-highest hover:bg-surface-bright transition-colors">
+<td class="py-3 px-4 font-data-mono">ORD-8921</td>
+<td class="py-3 px-4">Semiconductors</td>
+<td class="py-3 px-4 font-data-mono">$1.2M</td>
+<td class="py-3 px-4">
+<span class="px-2 py-1 rounded bg-secondary-container/30 text-on-surface text-xs border border-secondary/20">In Transit</span>
+</td>
+</tr>
+<tr class="border-b border-surface-container-highest hover:bg-surface-bright transition-colors">
+<td class="py-3 px-4 font-data-mono">ORD-8920</td>
+<td class="py-3 px-4">Raw Minerals</td>
+<td class="py-3 px-4 font-data-mono">$850K</td>
+<td class="py-3 px-4">
+<span class="px-2 py-1 rounded bg-surface-container-high text-on-surface text-xs border border-outline-variant">Escrow Held</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="py-3 px-4 font-data-mono">ORD-8919</td>
+<td class="py-3 px-4">Heavy Machinery</td>
+<td class="py-3 px-4 font-data-mono">$2.4M</td>
+<td class="py-3 px-4">
+<span class="px-2 py-1 rounded bg-[#dcfce7] text-[#166534] text-xs border border-[#86efac]">Completed</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Request Review and Publish - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-container": "#8fe3ff",
+                      "background": "#f9f9f9",
+                      "on-primary-fixed": "#410003",
+                      "inverse-surface": "#2f3131",
+                      "on-tertiary": "#ffffff",
+                      "surface": "#f9f9f9",
+                      "surface-dim": "#dadada",
+                      "outline-variant": "#e4beba",
+                      "tertiary-container": "#7a7558",
+                      "secondary": "#00677d",
+                      "surface-bright": "#f9f9f9",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ebe3c0",
+                      "surface-container-low": "#f3f3f4",
+                      "on-secondary-fixed": "#001f27",
+                      "inverse-primary": "#ffb3ac",
+                      "surface-variant": "#e2e2e2",
+                      "primary": "#b6171d",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed-variant": "#4b472d",
+                      "on-surface": "#1a1c1c",
+                      "on-tertiary-fixed": "#1f1c06",
+                      "surface-tint": "#ba1a1f",
+                      "surface-container": "#eeeeee",
+                      "secondary-fixed": "#b4ebff",
+                      "inverse-on-surface": "#f0f1f1",
+                      "on-secondary-fixed-variant": "#004e5f",
+                      "secondary-fixed-dim": "#7dd2ee",
+                      "on-secondary-container": "#00667c",
+                      "tertiary": "#615c41",
+                      "surface-container-highest": "#e2e2e2",
+                      "surface-container-high": "#e8e8e8",
+                      "outline": "#8f6f6c",
+                      "primary-fixed-dim": "#ffb3ac",
+                      "on-tertiary-container": "#fffbff",
+                      "on-primary-fixed-variant": "#93000f",
+                      "on-background": "#1a1c1c",
+                      "tertiary-fixed-dim": "#cec7a5",
+                      "on-surface-variant": "#5b403d",
+                      "on-primary": "#ffffff",
+                      "primary-container": "#da3432",
+                      "on-primary-container": "#fffbff",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#ffdad6",
+                      "on-secondary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "8px",
+                      "md": "24px",
+                      "lg": "40px",
+                      "container-max": "1280px",
+                      "xl": "64px",
+                      "sm": "16px",
+                      "gutter": "24px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "h1": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "Inter"
+                      ],
+                      "display": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "h1": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "data-mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "h2": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h3": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar (Nav suppressed as it's a linear transactional flow, but header kept for brand context) -->
+<header class="bg-surface-container-lowest border-b border-surface-variant px-10 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+<div class="text-xl font-black tracking-tight text-on-surface">ProcurePing</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</header>
+<main class="flex-grow w-full max-w-[1000px] mx-auto px-10 py-lg">
+<!-- Header -->
+<div class="mb-lg">
+<h1 class="font-h1 text-h1 text-on-surface mb-xs">Review &amp; Publish Request</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Please review all details before publishing your RFP to the marketplace.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Main Content Area -->
+<div class="md:col-span-2 flex flex-col gap-md">
+<!-- Request Summary Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-md">
+<h2 class="font-h3 text-h3 text-on-surface mb-md pb-xs border-b border-surface-variant">Request Details</h2>
+<div class="grid grid-cols-2 gap-md mb-md">
+<div>
+<span class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-base">Project Name</span>
+<span class="font-body-md text-body-md font-medium text-on-surface">Q3 Enterprise Hardware Refresh</span>
+</div>
+<div>
+<span class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-base">Category</span>
+<span class="font-body-md text-body-md font-medium text-on-surface">IT Equipment &amp; Infrastructure</span>
+</div>
+</div>
+<div class="mb-md">
+<span class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-base">Description</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Procurement of 500 high-performance laptops and associated docking stations for the North American engineering division. Must include 3-year on-site support and international warranty coverage.</p>
+</div>
+<div class="grid grid-cols-2 gap-md pt-md border-t border-surface-variant">
+<div>
+<span class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-base">Estimated Budget</span>
+<span class="font-data-mono text-data-mono text-primary font-bold text-lg">$1,250,000.00 USD</span>
+</div>
+<div>
+<span class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-base">Delivery Target</span>
+<span class="font-body-md text-body-md font-medium text-on-surface">Oct 15, 2024 - Nov 01, 2024</span>
+</div>
+</div>
+</div>
+<!-- Specifications & Documents -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-md">
+<h2 class="font-h3 text-h3 text-on-surface mb-md pb-xs border-b border-surface-variant">Specifications &amp; Attachments</h2>
+<ul class="flex flex-col gap-xs">
+<li class="flex items-center justify-between p-xs bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Detailed_Specs_V2.pdf</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">2.4 MB</span>
+</li>
+<li class="flex items-center justify-between p-xs bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant">table</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Compliance_Matrix_Template.xlsx</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">850 KB</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Sidebar / Settings Area -->
+<div class="flex flex-col gap-md">
+<!-- Logistics & Map -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant overflow-hidden">
+<img alt="Delivery Radius Map" class="w-full h-32 object-cover" data-alt="A highly detailed, professional digital map interface displaying a global logistics route. The map is rendered in a clean, high-contrast greyscale style typical of enterprise software. A vibrant red circular radius overlay indicates a delivery zone, with small deep teal pins marking key distribution nodes. The lighting is flat and analytical, emphasizing data clarity in a modern, secure corporate environment." data-location="Global Delivery Radius" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC_10V01nMvVr316hFCuokJDjaZiHb_2n50uUPtAviS9U7_JnFCNtufqFnnNzXpK_M0YHxXBNDPEJ80EZzArfjSZSni_J8XDV45EeR5IS9kzteVBByvoCaNUm-lnxJeiaTIoVPe9_ygxph9nwdKKNg32tnoZrXMmW6WjBMIpZHEn3_AiCLOH8tCvF3zmEDBaHCBuo_F7LfvQz7s_AYZJQCeCJOwgX6j_ESzfmNrCMR0wb_KRbbA3FyeiXjIxyzy1HxO9Y3FnUtlUuc"/>
+<div class="p-md">
+<span class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-base">Delivery Location</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface block mb-xs">Multiple Locations (North America)</span>
+<span class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-base">Supplier Radius restriction</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface">Global (No restrictions)</span>
+</div>
+</div>
+<!-- Settings & Authorization -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-md flex flex-col gap-md">
+<div>
+<div class="flex items-center justify-between mb-xs">
+<span class="font-body-md text-body-md font-semibold text-on-surface">Visibility</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Currently set to <strong>Public Marketplace</strong>. Toggle off for Invite-Only.</p>
+</div>
+<div class="border-t border-surface-variant pt-md">
+<div class="flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Payment Authorization</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Escrow funds verified and ready for deployment upon award.</p>
+</div>
+</div>
+<!-- Final Action -->
+<div class="mt-auto pt-md border-t border-surface-variant flex flex-col gap-xs">
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-body-md text-body-md font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-xs shadow-md">
+<span class="material-symbols-outlined">send</span>
+                        Publish Request
+                    </button>
+<button class="w-full bg-transparent border border-secondary text-secondary hover:bg-secondary-container hover:text-on-secondary-container font-body-md text-body-md font-medium py-3 px-6 rounded-lg transition-colors text-center">
+                        Save as Draft
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

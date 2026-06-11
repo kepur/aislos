@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Confirm Receipt - Cement Order</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "primary-fixed-dim": "#bac3ff",
+                        "surface-dim": "#cbdbf5",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-container": "#abb7ff",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#354282",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-secondary-container": "#394687",
+                        "inverse-primary": "#bac3ff",
+                        "on-error-container": "#93000a",
+                        "background": "#f8f9ff",
+                        "surface": "#f8f9ff",
+                        "secondary": "#4d5a9c",
+                        "primary": "#24389c",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "primary-container": "#3f51b5",
+                        "inverse-surface": "#213145",
+                        "outline": "#757684",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-surface-variant": "#454652",
+                        "tertiary-fixed": "#ffdcc6",
+                        "secondary-fixed": "#dee1ff",
+                        "surface-container": "#e5eeff",
+                        "on-background": "#0b1c30",
+                        "on-primary-fixed": "#00105c",
+                        "on-tertiary-fixed": "#301400",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#cacfff",
+                        "tertiary": "#6c3400",
+                        "surface-container-low": "#eff4ff",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#021355",
+                        "primary-fixed": "#dee0ff",
+                        "on-surface": "#0b1c30",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-tertiary-container": "#ffc7a2",
+                        "outline-variant": "#c5c5d4",
+                        "tertiary-container": "#8f4700",
+                        "surface-tint": "#4355b9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "gutter-mobile": "12px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "h2": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+        body { -webkit-tap-highlight-color: transparent; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col pt-safe pb-safe md:flex-row">
+<!-- TopAppBar (Mobile & Web) -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 shadow-sm flex items-center justify-between px-4 h-16 transition-all duration-200">
+<button class="w-10 h-10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined text-2xl" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white font-['Inter'] antialiased">Confirm Receipt</h1>
+<div class="w-10 h-10"></div> <!-- Placeholder for balance -->
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-lg mx-auto pt-20 px-margin-mobile pb-32 md:pb-8 flex flex-col gap-6">
+<!-- Order Summary Card -->
+<section class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container flex flex-col gap-sm">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Order #CMT-8924</p>
+<h2 class="font-h3 text-h3 text-on-background">Portland Cement Type I</h2>
+</div>
+<span class="bg-primary/10 text-primary font-label-sm text-label-sm px-2 py-1 rounded-full whitespace-nowrap">Delivered</span>
+</div>
+<div class="flex gap-4">
+<img alt="Pallets of cement bags neatly stacked in a brightly lit, modern industrial warehouse environment. The scene emphasizes an organized logistics flow, clean concrete floors, and a professional, reliable supply chain atmosphere consistent with a trustworthy reverse e-commerce platform." class="w-20 h-20 rounded-lg object-cover" data-alt="Pallets of cement bags neatly stacked in a brightly lit, modern industrial warehouse environment. The scene emphasizes an organized logistics flow, clean concrete floors, and a professional, reliable supply chain atmosphere consistent with a trustworthy reverse e-commerce platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCobPsQAicOtyyKW6SJgeugOEi-TB3TClXOKTdJyxTnaaaDe8bbPxeQTdyFwvMqXZ_UzVP1epX3XhvRYlMA5J27HSZWn6PWrIp2wC4-BbAqeeemuUXLohgq2ogRumrP6Dlpt5DSepAjzr5hEiKhzrNvZD6_62RgQcfkZ7Klp0j2PuI5HZPBAkyPalJbYAQdSppvWQopYwHf3vG7zE6Qx782DkDlerwhOJumOskjJ_tgSWgTsho2qjpxhMlZoldQ5o4v84erh1GvtO8"/>
+<div class="flex flex-col justify-center gap-1">
+<p class="font-body-md text-body-md text-on-surface-variant">Quantity: <span class="font-label-md text-label-md text-on-background">500 Bags (50kg)</span></p>
+<p class="font-body-md text-body-md text-on-surface-variant">Supplier: <span class="font-label-md text-label-md text-on-background">Apex Materials Ltd.</span></p>
+<p class="font-body-md text-body-md text-on-surface-variant">Total Value: <span class="font-label-md text-label-md text-on-background">$4,250.00</span></p>
+</div>
+</div>
+</section>
+<!-- Trust Indicator -->
+<div class="bg-surface-container-low rounded-lg p-3 flex items-center gap-3 border border-surface-container">
+<span class="material-symbols-outlined text-primary" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<p class="font-body-md text-body-md text-on-surface-variant">Funds currently held securely in <strong class="text-primary font-label-md">Escrow</strong>.</p>
+</div>
+<!-- Verification Checklist -->
+<section class="flex flex-col gap-3">
+<h3 class="font-h2 text-h2 text-on-background mb-1">Delivery Checklist</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">Please verify the following before confirming receipt.</p>
+<!-- Item 1 -->
+<label class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container flex items-start gap-4 cursor-pointer hover:bg-surface-bright transition-colors">
+<div class="flex items-center h-6">
+<input class="w-5 h-5 rounded border-outline text-primary focus:ring-primary focus:ring-offset-0 bg-transparent cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-background">Correct Item</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Received Portland Cement Type I as specified in the order.</span>
+</div>
+</label>
+<!-- Item 2 -->
+<label class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container flex items-start gap-4 cursor-pointer hover:bg-surface-bright transition-colors">
+<div class="flex items-center h-6">
+<input class="w-5 h-5 rounded border-outline text-primary focus:ring-primary focus:ring-offset-0 bg-transparent cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-background">Correct Quantity</span>
+<span class="font-body-md text-body-md text-on-surface-variant">All 500 bags (50kg each) are present and accounted for.</span>
+</div>
+</label>
+<!-- Item 3 -->
+<label class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-container flex items-start gap-4 cursor-pointer hover:bg-surface-bright transition-colors">
+<div class="flex items-center h-6">
+<input class="w-5 h-5 rounded border-outline text-primary focus:ring-primary focus:ring-offset-0 bg-transparent cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-background">Acceptable Condition</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Bags are intact, dry, and free from significant damage or moisture exposure.</span>
+</div>
+</label>
+</section>
+<!-- Warning Area -->
+<section class="bg-error-container/30 border border-error-container rounded-xl p-md mt-4 flex gap-3">
+<span class="material-symbols-outlined text-error mt-0.5" data-icon="warning">warning</span>
+<div class="flex flex-col gap-1">
+<h4 class="font-label-md text-label-md text-on-background">Irreversible Action</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">By confirming receipt, you authorize the release of <strong class="text-on-background">$4,250.00</strong> from escrow to the supplier. This action cannot be undone. If there are issues, please <a class="text-primary underline" href="#">open a dispute</a> instead.</p>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action Area -->
+<div class="fixed bottom-0 w-full z-40 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-margin-mobile py-4 pb-safe flex justify-center md:static md:bg-transparent md:border-none md:shadow-none md:py-0 md:pt-6 md:pb-12 md:max-w-lg md:mx-auto">
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-2 active:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+            Confirm Receipt &amp; Release Funds
+        </button>
+</div>
+</body></html>

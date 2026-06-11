@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post Request: Payment and Escrow Setup - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-container": "#8fe3ff",
+                      "background": "#f9f9f9",
+                      "on-primary-fixed": "#410003",
+                      "inverse-surface": "#2f3131",
+                      "on-tertiary": "#ffffff",
+                      "surface": "#f9f9f9",
+                      "surface-dim": "#dadada",
+                      "outline-variant": "#e4beba",
+                      "tertiary-container": "#7a7558",
+                      "secondary": "#00677d",
+                      "surface-bright": "#f9f9f9",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ebe3c0",
+                      "surface-container-low": "#f3f3f4",
+                      "on-secondary-fixed": "#001f27",
+                      "inverse-primary": "#ffb3ac",
+                      "surface-variant": "#e2e2e2",
+                      "primary": "#b6171d",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed-variant": "#4b472d",
+                      "on-surface": "#1a1c1c",
+                      "on-tertiary-fixed": "#1f1c06",
+                      "surface-tint": "#ba1a1f",
+                      "surface-container": "#eeeeee",
+                      "secondary-fixed": "#b4ebff",
+                      "inverse-on-surface": "#f0f1f1",
+                      "on-secondary-fixed-variant": "#004e5f",
+                      "secondary-fixed-dim": "#7dd2ee",
+                      "on-secondary-container": "#00667c",
+                      "tertiary": "#615c41",
+                      "surface-container-highest": "#e2e2e2",
+                      "surface-container-high": "#e8e8e8",
+                      "outline": "#8f6f6c",
+                      "primary-fixed-dim": "#ffb3ac",
+                      "on-tertiary-container": "#fffbff",
+                      "on-primary-fixed-variant": "#93000f",
+                      "on-background": "#1a1c1c",
+                      "tertiary-fixed-dim": "#cec7a5",
+                      "on-surface-variant": "#5b403d",
+                      "on-primary": "#ffffff",
+                      "primary-container": "#da3432",
+                      "on-primary-container": "#fffbff",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#ffdad6",
+                      "on-secondary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "8px",
+                      "md": "24px",
+                      "lg": "40px",
+                      "container-max": "1280px",
+                      "xl": "64px",
+                      "sm": "16px",
+                      "gutter": "24px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "h1": ["Inter"],
+                      "data-mono": ["Inter"],
+                      "display": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "h2": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "h3": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "data-mono": ["14px", {"lineHeight": "1", "fontWeight": "500"}],
+                      "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "h2": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "h3": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar (Linear/Transactional Intent - Suppressed, but requested high-trust header instead) -->
+<header class="bg-surface-container-lowest border-b border-surface-container w-full z-50 sticky top-0 py-sm px-lg flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined fill text-primary text-2xl">shield</span>
+<span class="font-h3 text-h3 text-on-surface">ProcurePing Secure Checkout</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs text-secondary">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="font-data-mono text-data-mono">256-bit SSL Encrypted</span>
+</div>
+<button class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface uppercase tracking-widest transition-colors flex items-center gap-base">
+                Cancel
+                <span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</header>
+<main class="flex-grow w-full max-w-container-max mx-auto px-lg py-xl grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Settings -->
+<div class="lg:col-span-8 flex flex-col gap-lg">
+<!-- Page Title -->
+<div class="flex flex-col gap-base">
+<h1 class="font-h1 text-h1 text-on-surface">Payment &amp; Escrow Setup</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Configure your secure funding method for RFP #PR-2024-889.</p>
+</div>
+<!-- Authorization Strategy Selector -->
+<section class="bg-surface-container-lowest border border-surface-container-highest rounded-lg p-md shadow-sm">
+<h2 class="font-h3 text-h3 text-on-surface mb-sm">1. Select Authorization Strategy</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<!-- Option 1: Deposit Only -->
+<label class="relative flex cursor-pointer rounded-lg border border-primary-container bg-surface-container-low p-sm focus:outline-none">
+<input checked="" class="peer sr-only" name="auth_strategy" type="radio" value="deposit"/>
+<span class="absolute right-sm top-sm text-primary opacity-100 peer-checked:opacity-100 material-symbols-outlined fill">check_circle</span>
+<div class="flex flex-col gap-xs pr-lg">
+<span class="font-h3 text-h3 text-on-surface">Deposit Only</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Authorize 20% of total budget to initiate contract. Balance held outside platform.</span>
+</div>
+</label>
+<!-- Option 2: Full Authorization -->
+<label class="relative flex cursor-pointer rounded-lg border border-surface-variant bg-surface-container-lowest p-sm hover:bg-surface-container-low transition-colors focus:outline-none">
+<input class="peer sr-only" name="auth_strategy" type="radio" value="full"/>
+<span class="absolute right-sm top-sm text-surface-variant peer-checked:text-primary material-symbols-outlined">radio_button_unchecked</span>
+<div class="flex flex-col gap-xs pr-lg">
+<span class="font-h3 text-h3 text-on-surface">Full Authorization</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Authorize 100% of budget into secure escrow. Highest supplier trust signal.</span>
+</div>
+</label>
+</div>
+</section>
+<!-- Payment Method Selector -->
+<section class="bg-surface-container-lowest border border-surface-container-highest rounded-lg p-md shadow-sm">
+<h2 class="font-h3 text-h3 text-on-surface mb-sm">2. Funding Method</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm mb-md">
+<!-- Method: Card -->
+<div class="border border-surface-variant rounded-DEFAULT p-sm hover:border-outline cursor-pointer transition-colors flex items-center justify-between bg-surface-container-lowest">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">credit_card</span>
+<span class="font-body-md text-body-md font-medium text-on-surface">Credit / Debit Card</span>
+</div>
+<div class="flex gap-1">
+<div class="w-8 h-5 bg-surface-container rounded-sm border border-surface-variant flex items-center justify-center text-[8px] font-bold text-on-surface">VISA</div>
+<div class="w-8 h-5 bg-surface-container rounded-sm border border-surface-variant flex items-center justify-center text-[8px] font-bold text-on-surface">MC</div>
+</div>
+</div>
+<!-- Method: Wire/Bank -->
+<div class="border border-primary bg-error-container/10 rounded-DEFAULT p-sm cursor-pointer transition-colors flex items-center justify-between relative overflow-hidden">
+<div class="absolute right-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+<span class="font-body-md text-body-md font-medium text-primary-container">Bank Wire Transfer</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">0% FEE</span>
+</div>
+<!-- Method: Crypto -->
+<div class="border border-surface-variant rounded-DEFAULT p-sm hover:border-outline cursor-pointer transition-colors flex items-center justify-between bg-surface-container-lowest">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">currency_bitcoin</span>
+<span class="font-body-md text-body-md font-medium text-on-surface">USDT / USDC</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">FAST</span>
+</div>
+<!-- Method: Stripe -->
+<div class="border border-surface-variant rounded-DEFAULT p-sm hover:border-outline cursor-pointer transition-colors flex items-center justify-between bg-surface-container-lowest">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">payments</span>
+<span class="font-body-md text-body-md font-medium text-on-surface">Stripe Corporate</span>
+</div>
+</div>
+</div>
+<!-- Active Method Details (Bank Wire) -->
+<div class="bg-surface-container p-sm rounded-DEFAULT border border-surface-variant">
+<div class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary mt-1">info</span>
+<div>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface mb-1">Manual Wire Transfer Instructions</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xs">A proforma invoice with ProcurePing Escrow banking details will be generated upon confirmation. Funds must clear before supplier receives the 'Funded' signal.</p>
+<p class="font-data-mono text-data-mono text-on-surface">Est. Processing Time: 1-3 Business Days</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Summary & Escrow -->
+<div class="lg:col-span-4 flex flex-col gap-md">
+<!-- Authorization Preview Card -->
+<div class="bg-surface-container-lowest border border-surface-container-highest shadow-[0px_12px_32px_rgba(0,0,0,0.1)] rounded-lg overflow-hidden sticky top-xl">
+<div class="p-md bg-surface-container-low border-b border-surface-variant flex flex-col items-center text-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-xs">Authorization Amount</span>
+<span class="font-display text-display text-on-surface font-black">$25,000.00</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-1">USD • Deposit Only (20%)</span>
+</div>
+<div class="p-md flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Total RFP Budget</span>
+<span class="font-data-mono text-data-mono text-on-surface">$125,000.00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Platform Fee (0.5%)</span>
+<span class="font-data-mono text-data-mono text-on-surface">$125.00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Wire Transfer Fee</span>
+<span class="font-data-mono text-data-mono text-secondary">Waived</span>
+</div>
+<hr class="border-surface-variant my-xs"/>
+<div class="flex justify-between items-center font-bold">
+<span class="font-body-md text-body-md text-on-surface">Total Due Now</span>
+<span class="font-data-mono text-data-mono text-on-surface text-lg">$25,125.00</span>
+</div>
+<button class="w-full mt-md bg-primary hover:bg-primary-container text-on-primary font-body-md text-body-md font-semibold py-sm rounded-DEFAULT transition-colors flex justify-center items-center gap-xs shadow-sm">
+                        Generate Funding Invoice
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<p class="text-center font-body-sm text-body-sm text-on-surface-variant mt-xs">No funds will be deducted yet.</p>
+</div>
+</div>
+<!-- Escrow Security Card -->
+<div class="bg-surface-container border border-surface-variant rounded-lg p-sm">
+<div class="flex items-center gap-xs mb-sm pb-xs border-b border-surface-variant">
+<span class="material-symbols-outlined text-secondary fill">security</span>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface">ProcurePing Escrow</h3>
+</div>
+<ul class="flex flex-col gap-xs">
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Funds held in tier-1 regulated banking institutions.</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Released only upon verified milestone completion.</span>
+</li>
+<li class="flex items-start gap-xs">
+<span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Full dispute resolution support included.</span>
+</li>
+</ul>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-slate-950 w-full border-t border-surface-variant dark:border-slate-800 mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center px-lg py-xl w-full max-w-container-max mx-auto">
+<div class="font-black text-outline text-lg mb-4 md:mb-0">
+                PROCUREPING
+            </div>
+<div class="flex gap-md mb-4 md:mb-0">
+<a class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Security Compliance</a>
+<a class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Global Network</a>
+</div>
+<div class="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant text-center md:text-right">
+                © 2024 ProcurePing Inc. All rights reserved. Secure Global Procurement.
+            </div>
+</div>
+</footer>
+</body></html>

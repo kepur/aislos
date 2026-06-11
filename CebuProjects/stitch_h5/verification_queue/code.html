@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Verification Queue</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#eff4ff",
+                        "outline-variant": "#c5c5d4",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary-container": "#8f4700",
+                        "primary-fixed": "#dee0ff",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-fixed": "#dee1ff",
+                        "primary": "#24389c",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-variant": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-surface": "#0b1c30",
+                        "inverse-surface": "#213145",
+                        "surface-container-high": "#dce9ff",
+                        "outline": "#757684",
+                        "background": "#f8f9ff",
+                        "on-primary-container": "#cacfff",
+                        "surface-tint": "#4355b9",
+                        "secondary-container": "#abb7ff",
+                        "primary-container": "#3f51b5",
+                        "on-secondary-container": "#394687",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container": "#e5eeff",
+                        "on-primary-fixed": "#00105c",
+                        "secondary": "#4d5a9c",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "inverse-primary": "#bac3ff",
+                        "on-surface-variant": "#454652",
+                        "surface": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "tertiary": "#6c3400",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-background": "#0b1c30",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+<!-- Navigation Drawer (Desktop) -->
+<nav class="hidden md:flex flex-col bg-white dark:bg-slate-900 h-full w-80 rounded-r-2xl shadow-2xl divide-y divide-slate-100 dark:divide-slate-800 fixed left-0 top-0 z-[60]">
+<div class="p-4 flex items-center gap-3">
+<img alt="Admin headshot" class="w-10 h-10 rounded-full" data-alt="A small circular avatar image for an admin user profile, showing a generic professional headshot or placeholder." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2mP2g1qa9nUU-i5ZLJU-mWoT8Nxc2dOAhcSZU_KvPRczwhR0enHC7CfAoP41VBG4C79gtQYHy4nsZGgG58MND-pcXZvm3jdry7l7jUUC7r6HZWOFfhZ_R16Bbu-3qD-LBil8HK6sOHUZeU2pme2Ox9QANZIb7W51oeKxk2WODzPO-ocf4vUQoJ5ikiF03bv1a6mEWcCqy_jjQ7j_5p0s1bfwqpDUm7b6MmcFPc5AV-nB13PH4hDjmBM0yUTHdlJ607vWuN7dIYHc"/>
+<div>
+<div class="font-h3 text-h3 text-slate-700 dark:text-slate-200">Marketplace Controller</div>
+<div class="font-body-md text-body-md text-slate-500">Global Operations Node</div>
+</div>
+</div>
+<div class="flex-1 py-4 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 mx-2 my-1 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg hover:translate-x-1 transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+                System Status
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-indigo-600 text-white rounded-lg mx-2 my-1 font-label-md text-label-md shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
+                Supplier Onboarding
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 mx-2 my-1 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg hover:translate-x-1 transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">payments</span>
+                Fee Management
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 mx-2 my-1 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg hover:translate-x-1 transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">shield</span>
+                Conflict Resolution
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 mx-2 my-1 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg hover:translate-x-1 transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">terminal</span>
+                Security Logs
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-80 flex flex-col min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-indigo-600 dark:text-indigo-400 font-inter text-base font-semibold tracking-tight text-slate-900 dark:text-slate-50 docked full-width top-0 sticky z-50 border-b border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-4 h-16 w-full">
+<div class="flex items-center gap-3">
+<button class="md:hidden text-indigo-600 dark:text-indigo-400">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-h2 text-h2">Marketplace Admin</span>
+</div>
+<div class="hidden md:block">
+<img alt="Admin profile" class="w-8 h-8 rounded-full" data-alt="A small circular avatar image for an admin user profile, showing a generic professional headshot or placeholder." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjDLq3psJDpQSb7H3gudSvJ1VKGN4a-cQw6yP2FR-_N5_lyz5sP-E8zQLXC4jcdBz0FN1I4tAphr0AiDUSn5QqfEKPcS2fsfLK8mc2db0hsKHOIyBDWKViV-38IJMD6uJoeluzD94HS9wkw72Px0RabcUYXbftHfgZYyNnCGuQ6xhGqZFVXTl0VCV1uYBrXVLqIdoWYmRhsp6MXx0Q86QJMqk0ww-g_z_wyk3WFkWs4JLEBkjsSN0ABySNC0G4DXUAMD59DIUIsiw"/>
+</div>
+</header>
+<!-- Canvas -->
+<div class="p-margin-mobile md:p-xl flex-1 flex flex-col gap-lg max-w-7xl mx-auto w-full">
+<div class="flex flex-col gap-sm">
+<h1 class="font-h1 text-h1 text-on-surface">Verification Queue</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Review and process supplier onboarding applications.</p>
+</div>
+<!-- Bento Grid / Cards Area -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col gap-md relative overflow-hidden border border-outline-variant/30">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-xs">
+<h3 class="font-h3 text-h3 text-on-surface">Cebu Industrial Supply</h3>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                PH / Cebu
+                            </div>
+</div>
+<span class="bg-surface-variant text-primary font-label-sm text-label-sm px-2 py-1 rounded-md border border-primary/20">Pending</span>
+</div>
+<div class="grid grid-cols-2 gap-sm bg-surface p-sm rounded-lg border border-outline-variant/20">
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Submitted Docs</span>
+<div class="flex items-center gap-1 font-body-md text-body-md text-on-surface">
+<span class="material-symbols-outlined text-primary text-[18px]">description</span>
+                                3/3 Uploaded
+                            </div>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Risk Notes</span>
+<div class="flex items-center gap-1 font-body-md text-body-md text-tertiary-container">
+<span class="material-symbols-outlined text-tertiary-container text-[18px]">warning</span>
+                                Flagged IP
+                            </div>
+</div>
+</div>
+<div class="flex gap-sm mt-auto pt-sm border-t border-outline-variant/20">
+<button class="flex-1 bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg shadow-sm hover:bg-primary/90 transition-colors">Approve</button>
+<button class="flex-1 bg-surface-container-highest text-on-surface font-label-md text-label-md py-3 rounded-lg hover:bg-surface-container-high transition-colors">Request More</button>
+<button class="w-12 bg-error-container text-on-error-container flex items-center justify-center rounded-lg hover:bg-error-container/80 transition-colors">
+<span class="material-symbols-outlined">block</span>
+</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col gap-md relative overflow-hidden border border-outline-variant/30">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-xs">
+<h3 class="font-h3 text-h3 text-on-surface">Shenzhen Tech Components</h3>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                CN / Shenzhen
+                            </div>
+</div>
+<span class="bg-surface-variant text-primary font-label-sm text-label-sm px-2 py-1 rounded-md border border-primary/20">Pending</span>
+</div>
+<div class="grid grid-cols-2 gap-sm bg-surface p-sm rounded-lg border border-outline-variant/20">
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Submitted Docs</span>
+<div class="flex items-center gap-1 font-body-md text-body-md text-on-surface">
+<span class="material-symbols-outlined text-primary text-[18px]">description</span>
+                                2/3 Uploaded
+                            </div>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Risk Notes</span>
+<div class="flex items-center gap-1 font-body-md text-body-md text-on-surface">
+<span class="material-symbols-outlined text-outline text-[18px]">check_circle</span>
+                                Clear
+                            </div>
+</div>
+</div>
+<div class="flex gap-sm mt-auto pt-sm border-t border-outline-variant/20">
+<button class="flex-1 bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg shadow-sm hover:bg-primary/90 transition-colors">Approve</button>
+<button class="flex-1 bg-surface-container-highest text-on-surface font-label-md text-label-md py-3 rounded-lg hover:bg-surface-container-high transition-colors">Request More</button>
+<button class="w-12 bg-error-container text-on-error-container flex items-center justify-center rounded-lg hover:bg-error-container/80 transition-colors">
+<span class="material-symbols-outlined">block</span>
+</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col gap-md relative overflow-hidden border border-outline-variant/30">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-xs">
+<h3 class="font-h3 text-h3 text-on-surface">Jakarta Global Trading</h3>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                ID / Jakarta
+                            </div>
+</div>
+<span class="bg-surface-variant text-primary font-label-sm text-label-sm px-2 py-1 rounded-md border border-primary/20">Pending</span>
+</div>
+<div class="grid grid-cols-2 gap-sm bg-surface p-sm rounded-lg border border-outline-variant/20">
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Submitted Docs</span>
+<div class="flex items-center gap-1 font-body-md text-body-md text-on-surface">
+<span class="material-symbols-outlined text-primary text-[18px]">description</span>
+                                3/3 Uploaded
+                            </div>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Risk Notes</span>
+<div class="flex items-center gap-1 font-body-md text-body-md text-error">
+<span class="material-symbols-outlined text-error text-[18px]">error</span>
+                                Missing Tax ID
+                            </div>
+</div>
+</div>
+<div class="flex gap-sm mt-auto pt-sm border-t border-outline-variant/20">
+<button class="flex-1 bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg shadow-sm hover:bg-primary/90 transition-colors opacity-50 cursor-not-allowed">Approve</button>
+<button class="flex-1 bg-surface-container-highest text-on-surface font-label-md text-label-md py-3 rounded-lg hover:bg-surface-container-high transition-colors">Request More</button>
+<button class="w-12 bg-error-container text-on-error-container flex items-center justify-center rounded-lg hover:bg-error-container/80 transition-colors">
+<span class="material-symbols-outlined">block</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg text-indigo-600 dark:text-indigo-400 font-inter text-[10px] font-medium fixed bottom-0 w-full z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex justify-around items-center h-20 px-2 border-t border-slate-100 dark:border-slate-800">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">how_to_reg</span>
+<span>Verify</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">gavel</span>
+<span>Disputes</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span>Vault</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span>Audit</span>
+</a>
+</nav>
+</body></html>

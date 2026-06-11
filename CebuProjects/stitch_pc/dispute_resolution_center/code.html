@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dispute Center - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface-variant": "#5b403d",
+                      "on-tertiary-container": "#fffbff",
+                      "surface-container-highest": "#e2e2e2",
+                      "primary-fixed": "#ffdad6",
+                      "on-error": "#ffffff",
+                      "surface-bright": "#f9f9f9",
+                      "on-background": "#1a1c1c",
+                      "error": "#ba1a1a",
+                      "on-error-container": "#93000a",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-container": "#fffbff",
+                      "surface-dim": "#dadada",
+                      "on-tertiary-fixed-variant": "#4b472d",
+                      "inverse-on-surface": "#f0f1f1",
+                      "surface-container-high": "#e8e8e8",
+                      "on-surface": "#1a1c1c",
+                      "primary-fixed-dim": "#ffb3ac",
+                      "on-secondary-fixed": "#001f27",
+                      "surface-variant": "#e2e2e2",
+                      "on-secondary-fixed-variant": "#004e5f",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#e4beba",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed-variant": "#93000f",
+                      "tertiary": "#615c41",
+                      "background": "#f9f9f9",
+                      "outline": "#8f6f6c",
+                      "secondary-fixed": "#b4ebff",
+                      "inverse-surface": "#2f3131",
+                      "on-primary": "#ffffff",
+                      "on-secondary-container": "#00667c",
+                      "inverse-primary": "#ffb3ac",
+                      "tertiary-container": "#7a7558",
+                      "surface-tint": "#ba1a1f",
+                      "surface-container-low": "#f3f3f4",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#8fe3ff",
+                      "surface-container": "#eeeeee",
+                      "on-tertiary-fixed": "#1f1c06",
+                      "secondary": "#00677d",
+                      "surface": "#f9f9f9",
+                      "on-primary-fixed": "#410003",
+                      "tertiary-fixed-dim": "#cec7a5",
+                      "tertiary-fixed": "#ebe3c0",
+                      "secondary-fixed-dim": "#7dd2ee",
+                      "primary-container": "#da3432",
+                      "primary": "#b6171d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "md": "24px",
+                      "xs": "8px",
+                      "base": "4px",
+                      "container-max": "1280px",
+                      "xl": "64px",
+                      "sm": "16px",
+                      "lg": "40px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ],
+                      "display": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h3": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h1": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "h2": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased overflow-hidden">
+<!-- TopNavBar -->
+<nav class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md font-inter text-sm antialiased docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center w-full px-10 h-16">
+<div class="flex items-center gap-6">
+<div class="text-xl font-bold tracking-tight text-slate-900 dark:text-white text-[#FF4F49]">ProcurePing</div>
+<div class="relative ml-8">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-DEFAULT focus:ring-2 focus:ring-primary w-64 font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant" placeholder="Search disputes..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors duration-200 Active: opacity-80 scale-95 transition-all">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="p-2 text-slate-600 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors duration-200 Active: opacity-80 scale-95 transition-all">
+<span class="material-symbols-outlined">currency_exchange</span>
+</button>
+<button class="p-2 text-slate-600 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors duration-200 Active: opacity-80 scale-95 transition-all">
+<span class="material-symbols-outlined">public</span>
+</button>
+<button class="p-2 text-slate-600 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors duration-200 Active: opacity-80 scale-95 transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<img alt="Executive User Profile" class="w-8 h-8 rounded-full border border-surface-container-highest object-cover ml-2" data-alt="A professional headshot of a corporate executive wearing a dark suit and light blue tie. The lighting is bright and even, set against a clean, modern office background. The overall aesthetic is formal, reliable, and consistent with a high-end enterprise software user profile. The image is crisp, conveying trust and authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWooQ16B-gGtaou6PVoxAr7qtNGjLIuV6rypjqWw8eAAJB8cwjLfh_tK0lQ_b_re3kq-dvpy6aoniahwtt5omP75xQjfyDRBEk3Rs5SvgbQsN51plOqH_XHhpcUIwZWhe7lZuTMFS7XCSc6WVISt126NgqXqCuZbmks7WezeVia8E2DGblS5SkgYcMr0Bx23fCTUV3BSe8bahOc-2WX5VidNmQujRz_1tpIUoBfcTXkmwx5a7dJQCmrJ-o5_aJhobViTVM5gsq8zAu"/>
+</div>
+</nav>
+<div class="flex h-[calc(100vh-64px)] w-full">
+<!-- SideNavBar -->
+<aside class="bg-white dark:bg-slate-900 font-inter text-sm font-medium fixed left-0 h-screen w-64 rounded-none border-r border-slate-100 dark:border-slate-800 flat no shadows flex flex-col h-full py-6 pr-4 z-40 hidden md:flex" style="top: 64px; height: calc(100vh - 64px);">
+<nav class="flex-1 mt-4 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 text-[#FF4F49] bg-slate-50 dark:bg-slate-800/50 rounded-r-full border-l-4 border-[#FF4F49] hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">gavel</span>
+                    Active Bids
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">groups</span>
+                    Suppliers
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+                    Market Insights
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+                    Archive
+                </a>
+</nav>
+<div class="mt-auto space-y-1 pb-16">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">help_center</span>
+                    Support
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 Click: bg-slate-100 dark:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-64 flex h-full overflow-hidden bg-surface-bright">
+<!-- Left Pane: Dispute Queue -->
+<div class="w-[320px] min-w-[320px] border-r border-surface-variant bg-surface-container-lowest flex flex-col h-full overflow-hidden">
+<div class="p-sm border-b border-surface-variant flex-none">
+<h2 class="font-h3 text-h3 text-on-surface">Dispute Queue</h2>
+<div class="flex gap-2 mt-xs">
+<span class="bg-error-container text-on-error-container font-label-caps text-label-caps px-2 py-1 rounded-DEFAULT">HIGH PRIORITY (3)</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-2 py-1 rounded-DEFAULT">ALL (12)</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-xs space-y-xs">
+<!-- Case Item Active -->
+<div class="bg-surface-container border-l-2 border-primary p-sm rounded-DEFAULT cursor-pointer shadow-[0px_4px_12px_rgba(0,0,0,0.05)]">
+<div class="flex justify-between items-start mb-1">
+<span class="font-data-mono text-data-mono text-primary">#DSP-8821</span>
+<span class="text-xs text-on-surface-variant">2h ago</span>
+</div>
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Late Delivery &amp; Damaged Goods</h4>
+<div class="flex items-center gap-2 mt-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-xs">Awaiting Admin Review</span>
+</div>
+</div>
+<!-- Case Item -->
+<div class="bg-surface-container-lowest border border-surface-variant p-sm rounded-DEFAULT cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="font-data-mono text-data-mono text-on-surface-variant">#DSP-8819</span>
+<span class="text-xs text-on-surface-variant">5h ago</span>
+</div>
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Specification Mismatch</h4>
+<div class="flex items-center gap-2 mt-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-xs">Supplier Responded</span>
+</div>
+</div>
+<!-- Case Item -->
+<div class="bg-surface-container-lowest border border-surface-variant p-sm rounded-DEFAULT cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="font-data-mono text-data-mono text-on-surface-variant">#DSP-8815</span>
+<span class="text-xs text-on-surface-variant">1d ago</span>
+</div>
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Quantity Shortage</h4>
+<div class="flex items-center gap-2 mt-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-xs">Awaiting Evidence</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Center Pane: Evidence Workspace -->
+<div class="flex-1 flex flex-col h-full bg-surface-bright overflow-hidden">
+<!-- Header -->
+<div class="p-md border-b border-surface-variant bg-surface-container-lowest flex-none">
+<div class="flex justify-between items-center mb-xs">
+<h1 class="font-h2 text-h2 text-on-surface">Case #DSP-8821</h1>
+<span class="bg-error-container text-on-error-container font-label-caps text-label-caps px-3 py-1.5 rounded-DEFAULT flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">warning</span> Escrow Frozen
+                        </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">PO-2023-441A • Dispute Value: <span class="font-data-mono text-data-mono">$12,450.00</span></p>
+</div>
+<!-- Scrollable Evidence Area -->
+<div class="flex-1 overflow-y-auto p-md space-y-md">
+<!-- Buyer Claim Card -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-DEFAULT p-gutter shadow-[0px_4px_12px_rgba(0,0,0,0.05)]">
+<div class="flex items-center gap-3 border-b border-surface-variant pb-sm mb-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-h3 text-h3">B</div>
+<div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface">Buyer Claim: GlobalTech Industries</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Filed Oct 12, 10:45 AM</p>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mb-md">
+                            The shipment arrived 4 days late, causing a production delay. Furthermore, upon inspection, 3 of the 10 industrial routers (Serial #R-101, R-102, R-105) sustained visible casing damage during transit and fail power-on tests. We request a full refund for the damaged units and a 10% penalty on the remaining order for the delay as per our SLA.
+                        </p>
+<div class="grid grid-cols-3 gap-sm">
+<div class="aspect-video bg-surface-container rounded-DEFAULT overflow-hidden border border-surface-variant relative group">
+<img alt="Damaged router casing" class="w-full h-full object-cover" data-alt="A close-up shot of a dark gray industrial router with a visibly cracked and dented corner casing. The lighting is harsh and direct, highlighting the damage against a neutral background. The image is clear, objective, and serves as documentary evidence of shipping damage in a corporate setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhbeU9gsl6s5L6Hf2tKk2LDTnzWNE9pOGrSj6OwJQXqXKIck2NsS03yXNff4PO0yjv38eq3jouSHa3gXbozUEq6SHYXmHJ-3rl1OjlIpC3cwx7DA7zzL6_z1B6nW8lrCUv2cC9wrsMePimXAHH_am72NGtDOyrecAyOTJctkT6KCCzDR74HJyRHZTTqzRLBxDplkKAhbcDpD_p-NF_5seDQ2dJSqtHoZ-Sd3mK8Z7EAHu5msRJBhQUzrs8-K65yXjikEWB4CDShwcM"/>
+<div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+<span class="material-symbols-outlined text-white">zoom_in</span>
+</div>
+</div>
+<div class="aspect-video bg-surface-container rounded-DEFAULT overflow-hidden border border-surface-variant flex items-center justify-center cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="text-center">
+<span class="material-symbols-outlined text-primary text-2xl mb-1">picture_as_pdf</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-xs">Inspection_Report.pdf</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Supplier Response Card -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-DEFAULT p-gutter shadow-[0px_4px_12px_rgba(0,0,0,0.05)] ml-8">
+<div class="flex items-center gap-3 border-b border-surface-variant pb-sm mb-sm">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-h3 text-h3">S</div>
+<div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface">Supplier Response: NetWorks Ltd</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Filed Oct 13, 09:15 AM</p>
+</div>
+<span class="ml-auto flex items-center gap-1 text-secondary font-label-caps text-label-caps bg-secondary-fixed px-2 py-1 rounded-DEFAULT">
+<span class="material-symbols-outlined text-[14px]">verified_user</span> Verified Supplier
+                            </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mb-md">
+                            The delay was due to severe weather at the primary shipping hub, which falls under Force Majeure. We have attached the carrier's weather delay notice. Regarding the damage, units left our facility in perfect condition. The damage appears consistent with improper unloading at the destination dock. We offer a 50% discount on replacement units but reject the full refund and SLA penalty claims.
+                        </p>
+<div class="grid grid-cols-3 gap-sm">
+<div class="aspect-video bg-surface-container rounded-DEFAULT overflow-hidden border border-surface-variant flex items-center justify-center cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="text-center">
+<span class="material-symbols-outlined text-primary text-2xl mb-1">picture_as_pdf</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-xs">Carrier_Notice.pdf</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Pane: Admin Decision -->
+<div class="w-[360px] min-w-[360px] border-l border-surface-variant bg-surface-container-lowest flex flex-col h-full overflow-hidden">
+<div class="p-gutter border-b border-surface-variant flex-none">
+<h2 class="font-h3 text-h3 text-on-surface mb-sm">Resolution Panel</h2>
+<div class="bg-surface-container p-sm rounded-DEFAULT border border-surface-variant mb-md">
+<div class="flex justify-between items-center mb-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Escrow Status</span>
+<span class="font-label-caps text-label-caps text-error bg-error-container px-2 py-0.5 rounded-DEFAULT">LOCKED</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Total Value</span>
+<span class="font-data-mono text-data-mono text-on-surface">$12,450.00</span>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">INTERNAL NOTES (NOT VISIBLE TO PARTIES)</label>
+<textarea class="w-full bg-surface-bright border border-outline-variant rounded-DEFAULT p-3 font-body-sm text-body-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary h-32 resize-none placeholder:text-on-surface-variant/50" placeholder="Enter administrative observations..."></textarea>
+</div>
+</div>
+</div>
+<div class="p-gutter flex-1 flex flex-col justify-end space-y-3 bg-surface-container-lowest">
+<button class="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-body-sm text-body-sm font-semibold py-3 rounded-DEFAULT hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">gavel</span>
+                        Issue Partial Refund
+                    </button>
+<button class="w-full flex items-center justify-center gap-2 border border-secondary text-secondary font-body-sm text-body-sm font-semibold py-3 rounded-DEFAULT hover:bg-secondary-fixed transition-colors">
+<span class="material-symbols-outlined text-[18px]">currency_exchange</span>
+                        Issue Full Refund
+                    </button>
+<button class="w-full flex items-center justify-center gap-2 border border-outline text-on-surface font-body-sm text-body-sm font-semibold py-3 rounded-DEFAULT hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">lock_open</span>
+                        Release to Supplier
+                    </button>
+<div class="border-t border-surface-variant my-2 pt-4 space-y-3">
+<button class="w-full flex items-center justify-center gap-2 bg-surface-container-high text-on-surface font-body-sm text-body-sm py-2.5 rounded-DEFAULT hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">attachment</span>
+                            Request More Evidence
+                        </button>
+<button class="w-full flex items-center justify-center gap-2 text-error font-body-sm text-body-sm hover:underline py-2">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+                            Escalate to Legal
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

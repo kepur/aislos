@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Delivery Coverage Preview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f8f9ff",
+                        "surface-bright": "#f8f9ff",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-secondary-fixed": "#021355",
+                        "on-secondary-fixed-variant": "#354282",
+                        "outline": "#757684",
+                        "secondary-fixed": "#dee1ff",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-tint": "#4355b9",
+                        "primary-fixed-dim": "#bac3ff",
+                        "inverse-surface": "#213145",
+                        "on-primary-fixed": "#00105c",
+                        "on-tertiary-fixed": "#301400",
+                        "primary-fixed": "#dee0ff",
+                        "surface-dim": "#cbdbf5",
+                        "surface-container-high": "#dce9ff",
+                        "on-surface": "#0b1c30",
+                        "inverse-primary": "#bac3ff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-secondary-container": "#394687",
+                        "on-primary-container": "#cacfff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "surface-container-low": "#eff4ff",
+                        "primary-container": "#3f51b5",
+                        "tertiary-container": "#8f4700",
+                        "secondary-container": "#abb7ff",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-background": "#0b1c30",
+                        "primary": "#24389c",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-surface-variant": "#454652",
+                        "surface-container": "#e5eeff",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary": "#6c3400",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "secondary": "#4d5a9c",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col pt-safe pb-safe">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between px-4 h-14 w-full pt-safe">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center text-slate-500 dark:text-slate-400 active:opacity-70 transition-opacity tap-highlight-transparent cursor-pointer rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="font-h3 text-h3 text-on-background truncate flex-1 text-center font-bold">Coverage Preview</h1>
+<div aria-label="Help" class="w-10 h-10 flex items-center justify-center text-slate-500 dark:text-slate-400 active:opacity-70 transition-opacity tap-highlight-transparent cursor-pointer rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help_outline</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 mt-14 mb-[88px] px-margin-mobile py-lg overflow-y-auto">
+<!-- Map Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] overflow-hidden mb-lg">
+<div class="h-48 w-full bg-surface-container relative">
+<img alt="Map view showing delivery radius" class="w-full h-full object-cover" data-alt="A clean, modern top-down satellite map view of an urban area, subtly styled to match a corporate minimalist aesthetic. The map features a soft color palette with muted blues for water and light grays for landmasses, reflecting a light-mode UI design. A distinct, semi-transparent indigo circular overlay represents a delivery radius, centered over a bustling city district. The lighting is even and flat, emphasizing clarity and structural integrity suitable for a high-end logistics dashboard." data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFEgpU0Po3a0AFgFShASuWTUdv7TJlq44r_cQ8WMHEjAE2t3gb3zEZ9Z_R6gtfbBeGPey4481URtUC4244iK42jFZDXpq0e7F3TXyN5GBYeZU055cradngHMFGIt0rwOrCT-VNifDyigKNaxEPyFmuW_ITQMSytL6MEGI4QUWoX5jZaArpf6RkLGhl02skbT4AXHsXK74bBBNtUNrtEbliNmcP7jqhf8Y7f5-G14DDyGRexLxuFZ67EJ_0ld0trgQBTqa0GcZpGx4"/>
+</div>
+<div class="p-md">
+<div class="flex items-start justify-between mb-sm">
+<div>
+<h2 class="font-h2 text-h2 text-on-surface mb-xs">Downtown San Francisco</h2>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">radar</span>
+                            15-mile delivery radius
+                        </p>
+</div>
+<div class="bg-surface-container-highest px-3 py-1 rounded-full flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm text-primary">Active</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Metrics Bento Grid -->
+<div class="grid grid-cols-2 gap-sm mb-lg">
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] flex flex-col justify-between h-32">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined">storefront</span>
+<h3 class="font-label-md text-label-md">Est. Suppliers</h3>
+</div>
+<div>
+<p class="font-h1 text-h1 text-on-surface">124</p>
+<p class="font-label-sm text-label-sm text-primary flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+                        High availability
+                    </p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] flex flex-col justify-between h-32">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined">payments</span>
+<h3 class="font-label-md text-label-md">Avg. Fee</h3>
+</div>
+<div>
+<p class="font-h1 text-h1 text-on-surface">$45 - $120</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Per transaction</p>
+</div>
+</div>
+</div>
+<!-- Delivery Methods Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] p-md mb-lg">
+<h3 class="font-h3 text-h3 text-on-surface mb-md">Available Delivery Methods</h3>
+<div class="space-y-0 border border-slate-100 rounded-lg overflow-hidden">
+<div class="flex items-center justify-between p-md bg-surface-bright border-b border-slate-100">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Heavy Freight (Truck)</p>
+<p class="font-body-md text-body-md text-on-surface-variant">2-4 business days</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-md bg-surface-bright">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">two_wheeler</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Express Courier</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Same day available</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Trust Indicator -->
+<div class="flex items-center justify-center gap-2 py-sm mb-lg">
+<span class="material-symbols-outlined text-[#16a34a] text-[20px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-label-sm text-label-sm text-[#16a34a] font-semibold uppercase tracking-wider">Escrow Protected Region</span>
+</div>
+</main>
+<!-- Sticky Bottom Action -->
+<div class="fixed bottom-0 w-full z-50 bg-white/98 backdrop-blur-lg border-t border-slate-200 shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)] px-margin-mobile py-md pb-safe">
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 active:bg-primary-container active:text-on-primary-container transition-colors shadow-sm">
+            Proceed to Payment
+            <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</body></html>

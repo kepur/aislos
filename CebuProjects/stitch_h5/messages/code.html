@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Messages</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#cacfff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#bac3ff",
+                        "surface-tint": "#4355b9",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary-fixed": "#301400",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#c5c5d4",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-background": "#0b1c30",
+                        "on-secondary-fixed-variant": "#354282",
+                        "primary-container": "#3f51b5",
+                        "secondary-fixed": "#dee1ff",
+                        "on-primary-fixed": "#00105c",
+                        "surface-dim": "#cbdbf5",
+                        "secondary-container": "#abb7ff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-bright": "#f8f9ff",
+                        "secondary": "#4d5a9c",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "tertiary-container": "#8f4700",
+                        "primary-fixed": "#dee0ff",
+                        "outline": "#757684",
+                        "inverse-surface": "#213145",
+                        "primary": "#24389c",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#6c3400",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#021355",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "background": "#f8f9ff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#454652",
+                        "on-secondary-container": "#394687",
+                        "surface-container": "#e5eeff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "gutter-mobile": "12px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter", "sans-serif"],
+                        "h2": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-sm": ["Inter", "sans-serif"],
+                        "h1": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "h3": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+        body { -webkit-tap-highlight-color: transparent; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased pt-safe min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between px-4 h-14 pt-safe">
+<button class="w-10 h-10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full active:opacity-70 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Inter'] font-semibold text-lg tracking-tight text-indigo-600 dark:text-indigo-400">Messages</h1>
+<button class="w-10 h-10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full active:opacity-70 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 mt-14 mb-[calc(64px+env(safe-area-inset-bottom))] p-margin-mobile flex flex-col gap-sm">
+<!-- Filters / Tabs -->
+<div class="flex gap-sm overflow-x-auto pb-2 scrollbar-hide">
+<button class="px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md whitespace-nowrap">All Messages</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md border border-outline-variant whitespace-nowrap">Unread</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md border border-outline-variant whitespace-nowrap">Orders</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md border border-outline-variant whitespace-nowrap">Requests</button>
+</div>
+<!-- Message List -->
+<div class="flex flex-col gap-base">
+<!-- Message Card 1 (Unread) -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex gap-md items-start active:bg-surface-container-low transition-colors">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary overflow-hidden">
+<img alt="Supplier Logo" class="w-full h-full object-cover" data-alt="A close-up, softly lit photograph of a modern corporate logo embossed on brushed steel. The image uses a clean, light-mode aesthetic with bright whites and deep corporate blues. The lighting is bright and even, conveying trust, professionalism, and high-end manufacturing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9lgZjyOsknX0oI3axkziSax6sBi4VxBUBcHyjG-MAokgM5PRFMotsoazo4VTZc5UG4fHKdOh-JttQVK6WgsW67s1tFDIfxadoUGtU6vfXeth4t6trous70urOpVPtGh_2M806x0IEr7z9JpLIeeqDZNZcP_E4hjyBekE0aew8U46SkFGPRhSnjvTxi1o8DB-gyESbC2CMHipY_MaRTwlW7rY9FuaYiW39QRxZTlCaTtoIVBWJIvrM5GcbEVPBqjLltAOK15XmnWA"/>
+</div>
+<div class="absolute top-0 right-0 w-3 h-3 bg-error rounded-full border-2 border-surface-container-lowest"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-h3 text-h3 text-on-surface truncate pr-2">Apex Industrial Supplies</h3>
+<span class="font-label-sm text-label-sm text-primary whitespace-nowrap">10:42 AM</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant truncate mb-1">RE: Bulk Order RFQ-90210</p>
+<p class="font-body-md text-body-md text-on-surface line-clamp-2">We have updated the shipping quote as requested. Please review the attached pro-forma invoice. The escrow terms remain unchanged.</p>
+</div>
+</div>
+<!-- Message Card 2 (Read, Order Context) -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex gap-md items-start active:bg-surface-container-low transition-colors">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary overflow-hidden">
+<img alt="Supplier Logo" class="w-full h-full object-cover" data-alt="A detail shot of a modern glass and steel office building exterior reflecting a bright blue sky. The scene is shot in a bright, light-mode style with a cool, corporate color palette emphasizing whites, blues, and subtle greys. The mood is highly professional and transparent." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0wEt-NHw8FrDs84usEpP7VoLXb2sbzOF0jR24VzDsjJSyrFwuVXholhJreMWcCPrQ60gisQxo42oaXlX3oc4YtkfaQaFZaxcD4ZuTBqXy9ZGnEMDSbAe3k2n0GM3j6JAvjHrODTfElZMZoJ9O9YsBYLRm5J2TaL8n6XPPdyvZ6rlPVWQX2Z85PiMz1ZKHt1Wxp_RDFvQ_ILrfym5yn8O5DwAVc5VhbAP2UYQSfv3cFtSiptwwyeS6Ns2BQmTy7J8Ye1m9KUCobLQ"/>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-h3 text-h3 text-on-surface truncate pr-2">Global Tech Manufacturing</h3>
+<span class="font-label-sm text-label-sm text-outline whitespace-nowrap">Yesterday</span>
+</div>
+<div class="flex items-center gap-1 mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary" data-icon="inventory_2">inventory_2</span>
+<p class="font-label-md text-label-md text-secondary truncate">Order #ORD-5542</p>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">The final quality control check has passed. We will be handing over the goods to the logistics partner tomorrow morning.</p>
+</div>
+</div>
+<!-- Message Card 3 (Read) -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex gap-md items-start active:bg-surface-container-low transition-colors">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="domain">domain</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-h3 text-h3 text-on-surface truncate pr-2">EcoPackaging Solutions</h3>
+<span class="font-label-sm text-label-sm text-outline whitespace-nowrap">Oct 12</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant truncate mb-1">Sample Request Follow-up</p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Did you receive the biodegradable samples we sent last week? We're eager to hear your feedback on the new material composition.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md flex justify-around items-center h-16 pb-safe px-2">
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-indigo-500 active:scale-95 transition-transform duration-150 w-16">
+<span class="material-symbols-outlined mb-1" data-icon="storefront">storefront</span>
+<span class="font-['Inter'] text-[11px] font-medium">Market</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-indigo-500 active:scale-95 transition-transform duration-150 w-16">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-['Inter'] text-[11px] font-medium">Sourcing</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-indigo-500 active:scale-95 transition-transform duration-150 w-16">
+<span class="material-symbols-outlined mb-1" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Inter'] text-[11px] font-medium">Orders</span>
+</button>
+<button class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 active:scale-95 transition-transform duration-150 w-16">
+<span class="material-symbols-outlined mb-1" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Inter'] text-[11px] font-medium">Account</span>
+</button>
+</nav>
+</body></html>

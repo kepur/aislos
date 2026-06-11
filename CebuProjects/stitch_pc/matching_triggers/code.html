@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProcurePing - Alert Rules</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#8f6f6c",
+                        "on-secondary-container": "#00667c",
+                        "surface-dim": "#dadada",
+                        "secondary-container": "#8fe3ff",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "on-background": "#1a1c1c",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "primary": "#b6171d",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "surface-container-low": "#f3f3f4",
+                        "outline-variant": "#e4beba",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "surface": "#f9f9f9",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-secondary-fixed": "#001f27",
+                        "surface-container-high": "#e8e8e8",
+                        "tertiary-container": "#7a7558",
+                        "on-primary-fixed": "#410003",
+                        "surface-variant": "#e2e2e2",
+                        "primary-container": "#da3432",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#615c41",
+                        "surface-container": "#eeeeee",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#00677d",
+                        "primary-fixed": "#ffdad6",
+                        "on-primary-fixed-variant": "#93000f",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9f9",
+                        "on-primary-container": "#fffbff",
+                        "surface-tint": "#ba1a1f",
+                        "inverse-primary": "#ffb3ac",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "surface-container-highest": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#b4ebff",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-fixed": "#ebe3c0",
+                        "on-surface-variant": "#5b403d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "base": "4px",
+                        "lg": "40px",
+                        "gutter": "24px",
+                        "xl": "64px",
+                        "sm": "16px",
+                        "container-max": "1280px",
+                        "xs": "8px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "h2": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "display": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col h-full py-6 pr-4 bg-surface-container-lowest border-r border-surface-variant fixed left-0 h-screen w-64 rounded-none z-40">
+<div class="px-6 mb-8">
+<h1 class="font-h3 text-h3 text-primary-container font-black tracking-tight">ProcurePing</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Enterprise Buyer</p>
+</div>
+<div class="flex-1 flex flex-col gap-1 px-3">
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">gavel</span>
+                Active Bids
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">groups</span>
+                Suppliers
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">monitoring</span>
+                Market Insights
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">inventory_2</span>
+                Archive
+            </a>
+</div>
+<div class="mt-auto flex flex-col gap-1 px-3 pt-6 border-t border-surface-variant">
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full font-body-md text-body-md text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help_center</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-r-full font-body-md text-body-md text-primary-container bg-surface-container-low border-l-4 border-primary-container" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+                Settings
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 min-w-0">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-10 h-16 bg-surface-container-lowest/90 backdrop-blur-md sticky top-0 z-50 border-b border-surface-variant shadow-sm">
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="pl-9 pr-4 py-2 bg-surface-container-low border-none rounded-DEFAULT font-body-sm text-body-sm focus:ring-1 focus:ring-primary-container w-64" placeholder="Search rules..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary-container transition-colors duration-200">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary-container transition-colors duration-200">
+<span class="material-symbols-outlined">currency_exchange</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary-container transition-colors duration-200">
+<span class="material-symbols-outlined">public</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary-container transition-colors duration-200 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-surface-variant ml-2">
+<img alt="Executive User Profile" class="w-full h-full object-cover" data-alt="A professional corporate headshot of a senior executive in a modern office setting. The lighting is bright and clean, emphasizing a trustworthy and efficient persona. The individual is wearing a tailored dark suit against a subtly blurred corporate background. The overall aesthetic is aligned with a high-end enterprise SaaS platform, utilizing crisp focus and realistic corporate tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTFdT5lYK3oa_pxjAh_QvtaZfk9hvV7u9Y5bBZd3AVFMhiWfUAEgeUUAh7EYo9VqnHcjD5ujtR9M0i6ywgeiXAxgENuYQonfxXG1m9gVENba2rwoXFq0wcizu0kD16wb-m2zeSP1hh4u_hmpEVrSFU3lIqv1K97ATJzR8D2woAWU2uDFcvZ0qURWi48SX6xlVI5y_ewcUT-XGb-7J5GUqVuCmCePffveAqgk8Dbug5yUNHceZbzGe52Bh78LcC3tgmklERm3crcONo"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-6 md:p-lg max-w-container-max mx-auto w-full">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+<div>
+<h2 class="font-h1 text-h1 text-on-background">Alert Rules</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Configure automated matching triggers and notification preferences.</p>
+</div>
+<button class="bg-primary-container hover:bg-surface-tint text-on-primary px-6 py-2.5 rounded-DEFAULT font-body-md text-body-md font-medium transition-colors shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+                    New Rule
+                </button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Column: Active Rules List -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm h-full">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-h3 text-h3 text-on-background flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">rule</span>
+                                Active Triggers
+                            </h3>
+<span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded-DEFAULT font-label-caps text-label-caps">3 ACTIVE</span>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Rule Card 1 -->
+<div class="border border-surface-variant rounded-DEFAULT p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary-container bg-surface-bright">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-body-md text-body-md font-semibold text-on-background">IT Hardware - High Value</h4>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-surface-variant after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex flex-wrap gap-2 mb-3">
+<span class="bg-surface-container text-on-surface-variant px-2 py-1 rounded-DEFAULT font-label-caps text-label-caps border border-surface-dim">CAT: LAPTOPS</span>
+<span class="bg-surface-container text-on-surface-variant px-2 py-1 rounded-DEFAULT font-label-caps text-label-caps border border-surface-dim">BRAND: DELL, LENOVO</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-data-mono text-data-mono">
+<span>&gt; $50,000</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">mail</span>
+<span class="material-symbols-outlined text-[16px] text-primary">send</span>
+</div>
+</div>
+</div>
+<!-- Rule Card 2 -->
+<div class="border border-surface-variant rounded-DEFAULT p-4 hover:shadow-md transition-shadow cursor-pointer bg-surface-bright opacity-70">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-body-md text-body-md font-semibold text-on-background">Office Supplies - Regional</h4>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-surface-variant after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex flex-wrap gap-2 mb-3">
+<span class="bg-surface-container text-on-surface-variant px-2 py-1 rounded-DEFAULT font-label-caps text-label-caps border border-surface-dim">CAT: PAPER</span>
+<span class="bg-surface-container text-on-surface-variant px-2 py-1 rounded-DEFAULT font-label-caps text-label-caps border border-surface-dim">RADIUS: 50KM</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-data-mono text-data-mono">
+<span>Any Budget</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-[16px]">dashboard</span>
+</div>
+</div>
+</div>
+<!-- Rule Card 3 -->
+<div class="border border-surface-variant rounded-DEFAULT p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-secondary bg-surface-bright">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-body-md text-body-md font-semibold text-on-background">Urgent Logistics</h4>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-surface-variant after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex flex-wrap gap-2 mb-3">
+<span class="bg-surface-container text-on-surface-variant px-2 py-1 rounded-DEFAULT font-label-caps text-label-caps border border-surface-dim">TAG: RUSH</span>
+<span class="bg-surface-container text-on-surface-variant px-2 py-1 rounded-DEFAULT font-label-caps text-label-caps border border-surface-dim">AUTO-OFFER</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-data-mono text-data-mono">
+<span>&lt; $10,000</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">sms</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Rule Editor -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- Top Section: Targeting & Budget -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm">
+<div class="flex justify-between items-center border-b border-surface-variant pb-4 mb-6">
+<h3 class="font-h3 text-h3 text-on-background flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">tune</span>
+                                Targeting Criteria
+                            </h3>
+<button class="text-primary-container font-body-sm text-body-sm hover:underline">Clear All</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Category/Brand -->
+<div class="flex flex-col gap-4">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">CATEGORY MATCH</label>
+<select class="w-full bg-surface border border-surface-variant rounded-DEFAULT px-3 py-2 font-body-sm text-body-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none">
+<option>IT Hardware</option>
+<option>Software Licenses</option>
+<option>Logistics</option>
+</select>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">MANUFACTURER / BRAND</label>
+<input class="w-full bg-surface border border-surface-variant rounded-DEFAULT px-3 py-2 font-body-sm text-body-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none" type="text" value="Dell, Lenovo, HP"/>
+</div>
+</div>
+<!-- Budget & Quantity -->
+<div class="flex flex-col gap-4">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">BUDGET RANGE (USD)</label>
+<div class="flex items-center gap-2">
+<input class="w-full bg-surface border border-surface-variant rounded-DEFAULT px-3 py-2 font-data-mono text-data-mono focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none" type="number" value="50000"/>
+<span class="text-on-surface-variant font-body-sm">to</span>
+<input class="w-full bg-surface border border-surface-variant rounded-DEFAULT px-3 py-2 font-data-mono text-data-mono focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none" placeholder="Max" type="number"/>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">MINIMUM QUANTITY</label>
+<input class="w-full bg-surface border border-surface-variant rounded-DEFAULT px-3 py-2 font-data-mono text-data-mono focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none" type="number" value="100"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Middle Section: Location Map -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm">
+<h3 class="font-h3 text-h3 text-on-background flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary">location_on</span>
+                            Geographic Radius
+                        </h3>
+<div class="relative w-full h-48 bg-surface-variant rounded-DEFAULT overflow-hidden border border-surface-variant">
+<img alt="Map of global trade routes" class="w-full h-full object-cover grayscale opacity-80" data-alt="A clean, professional grayscale map showing global trade routes and city connections. The map is designed for a high-end enterprise interface, utilizing varying shades of grey with subtle, sharp grid lines. A semi-transparent deep teal radius overlay is visible over a major metropolitan area, indicating a selected geographic zone. The overall aesthetic is minimal, corporate, and data-focused." data-location="Global" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtD68TITaFKozMKHFFxATppLZirlEdh0N9Jzbkus20ENraJEbIPE3bQb_n192KrLsPBZ6iuELqQG7K_Jq4mcHx_Gf22HSzUqLeQ7S3SMvKep86XZxz8kPX0DAId8CFnnM74jHIE4ey0R7nwwPrlF3ePkfj_ZktOQ2KrDuy5VoM_LVDrOKUo-qZd1VoxL8XBJ3YG8MaDljqDDNYVociyfcifMQ9YGs4AdcAHvZ5zfAO-hXTobMmrPMDQdRnmxnx3v-39TqNSR1Mu2ji"/>
+<!-- Mock UI Elements on Map -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-secondary/20 border border-secondary rounded-full flex items-center justify-center">
+<div class="w-3 h-3 bg-primary-container rounded-full shadow-sm ring-2 ring-white"></div>
+</div>
+<div class="absolute bottom-4 right-4 bg-surface-container-lowest/90 backdrop-blur px-3 py-1.5 rounded border border-surface-variant flex items-center gap-2">
+<span class="font-label-caps text-label-caps text-on-background">RADIUS</span>
+<span class="font-data-mono text-data-mono text-primary-container font-semibold">150 KM</span>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Actions & Channels -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Notification Channels -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm">
+<h3 class="font-h3 text-h3 text-on-background flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary">campaign</span>
+                                Channels
+                            </h3>
+<div class="flex flex-col gap-3">
+<label class="flex items-center justify-between p-3 border border-surface-variant rounded-DEFAULT bg-surface hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">dashboard</span>
+<span class="font-body-md text-body-md font-medium">Dashboard Feed</span>
+</div>
+<input checked="" class="w-4 h-4 text-primary-container bg-surface border-surface-variant rounded focus:ring-primary-container" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between p-3 border border-primary-container/30 rounded-DEFAULT bg-primary-fixed/20 transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">mail</span>
+<span class="font-body-md text-body-md font-medium text-primary-container">Email Notifications</span>
+</div>
+<input checked="" class="w-4 h-4 text-primary-container bg-surface border-surface-variant rounded focus:ring-primary-container" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between p-3 border border-surface-variant rounded-DEFAULT bg-surface hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">send</span>
+<span class="font-body-md text-body-md font-medium">Telegram Bot</span>
+</div>
+<input class="w-4 h-4 text-primary-container bg-surface border-surface-variant rounded focus:ring-primary-container" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- Automation & Limits -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm flex flex-col justify-between">
+<div>
+<h3 class="font-h3 text-h3 text-on-background flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary">bolt</span>
+                                    Automation &amp; Limits
+                                </h3>
+<div class="flex items-center justify-between py-3 border-b border-surface-variant">
+<div>
+<div class="font-body-md text-body-md font-medium text-on-background">Auto-offer Generation</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Draft response instantly when matched</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-surface-variant after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex items-center justify-between py-3">
+<div>
+<div class="font-body-md text-body-md font-medium text-on-background">Quiet Hours</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Suppress pings 10PM - 6AM EST</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-surface-variant after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-surface-variant flex justify-end gap-3">
+<button class="px-4 py-2 border border-secondary text-secondary rounded-DEFAULT font-body-sm text-body-sm font-medium hover:bg-secondary/5 transition-colors">Discard Changes</button>
+<button class="px-4 py-2 bg-primary-container text-on-primary rounded-DEFAULT font-body-sm text-body-sm font-medium hover:bg-surface-tint transition-colors shadow-sm">Save Rule</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

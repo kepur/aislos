@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Buyer Order Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dee0ff",
+                        "primary-container": "#3f51b5",
+                        "surface-container-high": "#dce9ff",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "inverse-on-surface": "#eaf1ff",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#d3e4fe",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "secondary-fixed": "#dee1ff",
+                        "on-surface-variant": "#454652",
+                        "on-surface": "#0b1c30",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#8f4700",
+                        "background": "#f8f9ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "primary-fixed-dim": "#bac3ff",
+                        "outline-variant": "#c5c5d4",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary-fixed": "#301400",
+                        "inverse-primary": "#bac3ff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#021355",
+                        "surface-container": "#e5eeff",
+                        "on-primary-container": "#cacfff",
+                        "secondary-container": "#abb7ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-secondary-container": "#394687",
+                        "on-error-container": "#93000a",
+                        "secondary": "#4d5a9c",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "primary": "#24389c",
+                        "on-background": "#0b1c30",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-tertiary-container": "#ffc7a2",
+                        "outline": "#757684",
+                        "surface-dim": "#cbdbf5",
+                        "on-primary-fixed": "#00105c",
+                        "tertiary": "#6c3400",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#4355b9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "lg": "24px",
+                        "gutter-mobile": "12px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        
+        /* Ambient Shadows */
+        .shadow-level-1 { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .shadow-level-2 { box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased pt-safe pb-safe pb-[88px]">
+<!-- Top Navigation (Custom for Detail Page - Suppressing Bottom Nav due to focus) -->
+<header class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100 flex items-center justify-between px-4 h-14 pt-safe">
+<button class="tap-highlight-transparent cursor-pointer text-slate-500 active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="font-h3 text-h3 text-on-background truncate px-4">Order #882-94B</h1>
+<button class="tap-highlight-transparent cursor-pointer text-slate-500 active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">more_vert</span>
+</button>
+</header>
+<main class="mt-[56px] px-margin-mobile flex flex-col gap-md py-md">
+<!-- Status Header Card -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container flex flex-col gap-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-4 -mt-4 pointer-events-none"></div>
+<div class="flex justify-between items-start z-10">
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Status</span>
+<h2 class="font-h2 text-h2 text-primary">In Transit</h2>
+</div>
+<div class="bg-surface-container px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+<span class="font-label-sm text-label-sm text-primary">Est. Oct 24</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 z-10">
+                Your package has arrived at the local sorting facility and is out for delivery.
+            </p>
+</div>
+<!-- Escrow Timeline (Glassmorphism Bento Style) -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">shield_locked</span>
+<h3 class="font-h3 text-h3 text-on-background">Escrow Protection</h3>
+</div>
+<div class="relative pl-6 py-2 border-l-2 border-primary/20 ml-3 space-y-6">
+<!-- Step 1: Completed -->
+<div class="relative">
+<div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center ring-4 ring-white">
+<span class="material-symbols-outlined text-white text-[10px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-background">Funds Secured</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Oct 20, 14:32</span>
+</div>
+</div>
+<!-- Step 2: Active -->
+<div class="relative">
+<div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-surface-container-lowest border-2 border-primary flex items-center justify-center ring-4 ring-white">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-background">Funds Held in Escrow</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Awaiting delivery confirmation</span>
+</div>
+</div>
+<!-- Step 3: Pending -->
+<div class="relative">
+<div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-surface-container-lowest border-2 border-outline-variant ring-4 ring-white"></div>
+<div class="flex flex-col opacity-50">
+<span class="font-label-md text-label-md text-on-background">Funds Released</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Upon buyer confirmation</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Item Summary Bento Grid -->
+<div class="grid grid-cols-1 gap-md">
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container flex gap-md items-center">
+<img alt="Product Image" class="w-20 h-20 rounded-lg object-cover bg-surface-container" data-alt="A pristine, high-end pair of modern athletic sneakers photographed in a bright studio setting. The lighting is crisp and even, highlighting the textured fabric and sleek lines of the footwear. The mood is premium and commercial, fitting a high-value e-commerce platform. The background is a clean, neutral white to ensure the focus remains entirely on the product, aligning with a corporate modern, trust-focused UI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlhWQum-qsn4Qh7w4rHjDCMt908-BbtwbzRXwv6Et_io26IHGBeJeeRqIysKmjJGsskqdlKhcL_SW0FclTI452egyceiEb1zqV1zHJN1B0iX791Un7jiflrIWvHq3KJWG-fl-j5xIWxZff_fjTj5qOKeBxoqe-Hupz0JOFjciPilDGN4SGKeLL5K6Ofbngyt-AuBmNChbzD4C90IBUKAII_uNkfETfqiGzmFr_ezQ_B0xfTsrJRLt2XUsM7BZH3Cypy04NeV8RwyA"/>
+<div class="flex flex-col gap-1 flex-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Nike Air Max Pre-Day</span>
+<h3 class="font-label-md text-label-md text-on-background line-clamp-1">Limited Edition Obsidian / White</h3>
+<div class="flex justify-between items-center mt-1">
+<span class="font-body-md text-body-md text-on-surface-variant">Size 10.5</span>
+<span class="font-label-md text-label-md text-primary">$245.00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Messaging Link -->
+<button class="w-full bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container flex items-center justify-between active:bg-surface-container transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-h3 text-h3">
+                    S
+                </div>
+<div class="flex flex-col text-left">
+<span class="font-label-md text-label-md text-on-background">Contact Seller</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Usually responds in 1 hour</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">chevron_right</span>
+</button>
+<!-- Order Details List -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container flex flex-col gap-y-3">
+<h3 class="font-label-md text-label-md text-on-background border-b border-surface-container pb-2 mb-1">Order Details</h3>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Subtotal</span>
+<span class="font-body-md text-body-md text-on-background">$245.00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Escrow Fee (1.5%)</span>
+<span class="font-body-md text-body-md text-on-background">$3.68</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Shipping</span>
+<span class="font-body-md text-body-md text-on-background">$12.00</span>
+</div>
+<div class="border-t border-surface-container pt-3 mt-1 flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-background">Total Paid</span>
+<span class="font-h3 text-h3 text-primary">$260.68</span>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Actions (Level 2 Elevation) -->
+<div class="fixed bottom-0 w-full bg-white/98 backdrop-blur-lg border-t border-slate-200 shadow-level-2 px-margin-mobile py-4 pb-safe z-50 flex gap-3">
+<button class="flex-1 h-[56px] bg-white border border-outline-variant text-on-surface-variant rounded-lg font-label-md text-label-md flex items-center justify-center active:bg-surface-container transition-colors">
+            Open Dispute
+        </button>
+<button class="flex-[2] h-[56px] bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center shadow-sm active:opacity-90 transition-opacity gap-2">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            Confirm Receipt
+        </button>
+</div>
+</body></html>

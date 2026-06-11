@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Buyer Message Thread</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#cacfff",
+                    "on-tertiary-container": "#ffc7a2",
+                    "secondary-fixed-dim": "#b9c3ff",
+                    "on-primary-fixed-variant": "#293ca0",
+                    "surface": "#f8f9ff",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#bac3ff",
+                    "surface-tint": "#4355b9",
+                    "surface-container-high": "#dce9ff",
+                    "on-tertiary-fixed": "#301400",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#c5c5d4",
+                    "tertiary-fixed": "#ffdcc6",
+                    "on-background": "#0b1c30",
+                    "on-secondary-fixed-variant": "#354282",
+                    "primary-container": "#3f51b5",
+                    "secondary-fixed": "#dee1ff",
+                    "on-primary-fixed": "#00105c",
+                    "surface-dim": "#cbdbf5",
+                    "secondary-container": "#abb7ff",
+                    "primary-fixed-dim": "#bac3ff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "surface-bright": "#f8f9ff",
+                    "secondary": "#4d5a9c",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb784",
+                    "tertiary-container": "#8f4700",
+                    "primary-fixed": "#dee0ff",
+                    "outline": "#757684",
+                    "inverse-surface": "#213145",
+                    "primary": "#24389c",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#0b1c30",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#6c3400",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#021355",
+                    "surface-container-low": "#eff4ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "background": "#f8f9ff",
+                    "on-tertiary-fixed-variant": "#713700",
+                    "surface-variant": "#d3e4fe",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#454652",
+                    "on-secondary-container": "#394687",
+                    "surface-container": "#e5eeff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "gutter-mobile": "12px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "h2": [
+                            "Inter"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "h1": [
+                            "Inter"
+                    ],
+                    "label-md": [
+                            "Inter"
+                    ],
+                    "h3": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "body-lg": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "letterSpacing": "0",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h2": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "h1": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "h3": [
+                            "18px",
+                            {
+                                    "lineHeight": "24px",
+                                    "letterSpacing": "0",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #f8f9ff; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        /* Hide scrollbar for clean chat UI */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased h-screen flex flex-col overflow-hidden">
+<!-- TopAppBar Shared Component -->
+<header class="bg-white dark:bg-slate-900 fixed top-0 w-full z-50 shadow-sm border-b border-slate-100 dark:border-slate-800 pt-safe">
+<div class="flex items-center justify-between px-4 h-14 w-full">
+<button aria-label="Back" class="text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 active:opacity-70 transition-all duration-200 p-2 -ml-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Inter'] font-semibold text-lg tracking-tight text-on-surface truncate px-2 text-center flex-1">Global Tech Supplies Inc.</h1>
+<button aria-label="Help" class="text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 active:opacity-70 transition-all duration-200 p-2 -mr-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Context Card (Sticky Below Header) -->
+<div class="fixed top-[calc(56px+env(safe-area-inset-top))] w-full z-40 bg-surface/95 backdrop-blur-md px-margin-mobile py-sm border-b border-outline-variant/30 shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+<div class="bg-surface-container-lowest rounded-lg p-sm flex items-center justify-between shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-outline-variant/20 cursor-pointer active:bg-surface-container-low transition-colors">
+<div class="flex flex-col gap-xs flex-1 min-w-0 pr-sm">
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-on-surface truncate">REQ-2023-8492</span>
+<span class="bg-surface-container-high text-primary font-label-sm px-2 py-0.5 rounded text-[10px]">Escrow Active</span>
+</div>
+<p class="font-body-md text-on-surface-variant text-sm truncate">500x Industrial Grade SSD 2TB</p>
+</div>
+<div class="flex flex-col items-end gap-xs shrink-0">
+<span class="font-label-md text-on-surface">$45,000.00</span>
+<span class="material-symbols-outlined text-outline-variant text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Chat Canvas -->
+<main class="flex-1 overflow-y-auto no-scrollbar pt-[150px] pb-[80px] px-margin-mobile flex flex-col gap-md">
+<!-- Date Divider -->
+<div class="flex justify-center my-sm">
+<span class="bg-surface-container text-on-surface-variant font-label-sm px-3 py-1 rounded-full text-[11px]">Today</span>
+</div>
+<!-- Supplier Message -->
+<div class="flex items-end gap-sm w-4/5">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 overflow-hidden">
+<img alt="Supplier Avatar" class="w-full h-full object-cover" data-alt="A close-up portrait of a professional business person in a modern office setting. The lighting is bright and clean, fitting a modern corporate light-mode aesthetic. The color palette is neutral with soft blues and crisp whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA31TLNFOc9CGiC-UNRG7PYaiHODVyJKDlyZUktu8lHc4klwwoRj1VRvqSBWyaMBQ_E8C3ytgVzGwfJu00Fg1AyOQu10cxsdjJ2uCCz1UYKSsZ_IbZ-2bfx37Qhsy2ADr9LYfMlWcZ2JymFQtFTO18FCdk8AFx47wllr0eLGArTKG1myCKCS6nPUx7lncqwiDhukh9pMsNk9a7DkgXcVY_ps_IHbTYSINJ4jwOttkg7gtcBTCmcdvm535yZ_xieGDE2_KXK6Ol_-SE"/>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-on-surface-variant ml-1 text-[10px]">Sarah (Supplier) • 09:41 AM</span>
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl rounded-bl-none p-3 shadow-sm">
+<p class="font-body-md text-on-surface">Hello! We have reviewed your request for the SSDs. We can fulfill the full order of 500 units within your timeline.</p>
+</div>
+</div>
+</div>
+<!-- System Notice -->
+<div class="flex justify-center my-2">
+<div class="flex items-center gap-2 bg-surface-container-highest/50 px-4 py-2 rounded-xl max-w-sm border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="verified_user">verified_user</span>
+<p class="font-label-sm text-on-surface-variant text-xs text-center">Escrow funds of $45,000.00 verified and secured. Proceed with confidence.</p>
+</div>
+</div>
+<!-- Buyer (Self) Message -->
+<div class="flex flex-col items-end gap-xs w-4/5 self-end">
+<span class="font-label-sm text-on-surface-variant mr-1 text-[10px]">Read • 09:45 AM</span>
+<div class="bg-primary text-on-primary rounded-2xl rounded-br-none p-3 shadow-sm">
+<p class="font-body-md text-on-primary">Excellent. Can you confirm the specific part number before I approve the final milestone?</p>
+</div>
+</div>
+</main>
+<!-- Message Input Area -->
+<div class="fixed bottom-0 w-full bg-surface-container-lowest border-t border-outline-variant/20 pb-safe z-50">
+<div class="flex items-end gap-2 px-margin-mobile py-sm min-h-[64px]">
+<button aria-label="Attach file" class="p-2 text-outline hover:text-primary transition-colors shrink-0 rounded-full active:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+<div class="flex-1 bg-surface-container-low rounded-xl border border-outline-variant/30 focus-within:border-primary focus-within:bg-surface-container-lowest transition-colors flex items-center mb-1">
+<textarea class="w-full bg-transparent border-none focus:ring-0 resize-none font-body-md text-on-surface p-3 max-h-[100px]" placeholder="Type a message..." rows="1"></textarea>
+</div>
+<button aria-label="Send message" class="p-2 bg-primary text-on-primary rounded-full shrink-0 mb-1 active:bg-primary-fixed-dim transition-colors shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</body></html>

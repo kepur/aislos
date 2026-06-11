@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Post Request - Global Trust Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#4d5a9c",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "on-background": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "surface-container": "#e5eeff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-surface-variant": "#454652",
+                        "on-secondary-container": "#394687",
+                        "primary": "#24389c",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-low": "#eff4ff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#dee1ff",
+                        "on-surface": "#0b1c30",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#00105c",
+                        "primary-fixed": "#dee0ff",
+                        "on-tertiary-fixed": "#301400",
+                        "secondary-container": "#abb7ff",
+                        "outline": "#757684",
+                        "on-primary-container": "#cacfff",
+                        "inverse-surface": "#213145",
+                        "background": "#f8f9ff",
+                        "tertiary-container": "#8f4700",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-primary": "#bac3ff",
+                        "surface-tint": "#4355b9",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#6c3400",
+                        "error": "#ba1a1a",
+                        "primary-container": "#3f51b5",
+                        "surface-dim": "#cbdbf5",
+                        "surface": "#f8f9ff",
+                        "primary-fixed-dim": "#bac3ff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    fontFamily: {
+                        "h2": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"]
+                    },
+                    fontSize: {
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen antialiased flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-4 h-14 w-full">
+<div class="flex items-center justify-center w-10 h-10 tap-highlight-transparent cursor-pointer active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">sync_alt</span>
+</div>
+<div class="text-lg font-bold text-indigo-600 dark:text-indigo-400 font-['Inter'] text-sm font-medium tracking-tight">
+            Post Request
+        </div>
+<div class="flex items-center justify-center w-10 h-10 tap-highlight-transparent cursor-pointer active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">notifications</span>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 px-margin-mobile pt-[80px] pb-[100px] flex flex-col gap-lg max-w-screen-md mx-auto w-full">
+<!-- Header Intent -->
+<section class="flex flex-col gap-xs">
+<h1 class="font-h1 text-h1 text-on-surface">What do you need?</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Describe your request naturally or upload an image to start a secure reverse auction.</p>
+</section>
+<!-- Multi-Modal Input Container -->
+<section class="flex flex-col gap-md">
+<!-- Natural Language Text Area Card (Level 1 Elevation) -->
+<div class="bg-surface rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col gap-sm">
+<div class="flex items-center gap-xs text-primary mb-xs">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+<span class="font-label-sm text-label-sm">AI Assisted Entry</span>
+</div>
+<textarea class="w-full bg-transparent border-none focus:ring-0 resize-none h-28 font-body-lg text-body-lg text-on-surface placeholder:text-outline p-0" placeholder="Describe what you need...
+e.g., 'Looking to source 50 enterprise-grade ergonomic office chairs. Budget is around $15,000 total. Must be new.'"></textarea>
+<div class="flex items-center justify-between mt-sm pt-sm border-t border-outline-variant/20">
+<span class="font-body-md text-body-md text-on-surface-variant max-w-[60%]">Natural language parsing will extract key details.</span>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded-full active:opacity-90 transition-opacity flex items-center gap-xs shadow-sm">
+                        Parse
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Visual Divider -->
+<div class="flex items-center gap-md py-xs">
+<div class="flex-1 h-[1px] bg-outline-variant/40"></div>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Or</span>
+<div class="flex-1 h-[1px] bg-outline-variant/40"></div>
+</div>
+<!-- Image Upload Search Card -->
+<div class="bg-surface-container-low rounded-xl border-2 border-dashed border-outline-variant/50 p-lg flex flex-col items-center justify-center gap-sm cursor-pointer active:bg-surface-container-high transition-colors">
+<div class="flex gap-sm text-primary bg-primary-fixed-dim/30 p-sm rounded-full mb-xs">
+<span class="material-symbols-outlined text-[24px]">photo_camera</span>
+<span class="material-symbols-outlined text-[24px]">upload_file</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Visual Search</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-center">Tap to snap a photo or upload an image of the item you want to source.</span>
+</div>
+</section>
+<!-- Parsed Preview Card (Level 1 Elevation) -->
+<section class="flex flex-col gap-sm mt-sm">
+<h2 class="font-h3 text-h3 text-on-surface flex items-center gap-xs">
+                Parsed Details
+                <span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+</h2>
+<div class="bg-surface rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col gap-md">
+<p class="font-body-md text-body-md text-on-surface-variant">Review and edit the details extracted from your input before posting.</p>
+<div class="flex flex-wrap gap-sm">
+<!-- Chip 1: Category -->
+<div class="bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded-full pl-md pr-sm py-sm flex items-center gap-sm border border-secondary/10">
+<span class="opacity-70 font-body-md text-body-md">Category:</span> Furniture
+                        <button class="flex items-center justify-center w-6 h-6 rounded-full bg-surface/50 text-secondary ml-xs">
+<span class="material-symbols-outlined text-[14px]">edit</span>
+</button>
+</div>
+<!-- Chip 2: Quantity -->
+<div class="bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded-full pl-md pr-sm py-sm flex items-center gap-sm border border-secondary/10">
+<span class="opacity-70 font-body-md text-body-md">Qty:</span> 50 units
+                        <button class="flex items-center justify-center w-6 h-6 rounded-full bg-surface/50 text-secondary ml-xs">
+<span class="material-symbols-outlined text-[14px]">edit</span>
+</button>
+</div>
+<!-- Chip 3: Condition -->
+<div class="bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded-full pl-md pr-sm py-sm flex items-center gap-sm border border-secondary/10">
+<span class="opacity-70 font-body-md text-body-md">Condition:</span> New
+                        <button class="flex items-center justify-center w-6 h-6 rounded-full bg-surface/50 text-secondary ml-xs">
+<span class="material-symbols-outlined text-[14px]">edit</span>
+</button>
+</div>
+<!-- Chip 4: Budget -->
+<div class="bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-md text-label-md rounded-full pl-md pr-sm py-sm flex items-center gap-sm border border-tertiary/10">
+<span class="opacity-70 font-body-md text-body-md">Budget:</span> $15,000
+                        <button class="flex items-center justify-center w-6 h-6 rounded-full bg-surface/50 text-tertiary ml-xs">
+<span class="material-symbols-outlined text-[14px]">edit</span>
+</button>
+</div>
+</div>
+<!-- Action to add more -->
+<button class="self-start text-primary font-label-md text-label-md flex items-center gap-xs mt-xs active:opacity-70">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Add Detail Manually
+                </button>
+</div>
+<!-- Sticky Submit Area (Visual representation) -->
+<div class="mt-md">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md h-[56px] rounded-xl shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)] active:opacity-90 flex items-center justify-center gap-sm">
+                    Continue to Post
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<div class="flex items-center justify-center gap-xs mt-sm text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">shield</span>
+                    Escrow Protected Transaction
+                </div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 border-t rounded-t-xl bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)] pb-safe h-16 touch-none">
+<div class="flex justify-around items-center w-full max-w-screen-md mx-auto h-full">
+<!-- Home (Inactive) -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-[24px]">home</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Home</span>
+</div>
+<!-- Post (Active) -->
+<div class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 scale-105 transition-transform active:bg-slate-50 dark:active:bg-slate-800 w-full h-full cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-[24px] fill-icon">add_circle</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider text-indigo-600 font-bold">Post</span>
+</div>
+<!-- Offers (Inactive) -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-[24px]">local_offer</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Offers</span>
+</div>
+<!-- Orders (Inactive) -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-[24px]">receipt_long</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Orders</span>
+</div>
+<!-- Account (Inactive) -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-[24px]">person</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Account</span>
+</div>
+</div>
+</nav>
+</body></html>

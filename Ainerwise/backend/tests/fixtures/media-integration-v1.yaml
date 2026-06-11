@@ -1,0 +1,497 @@
+openapi: 3.1.0
+info:
+  title: AISLOS Media Integration API
+  version: "1.0.0"
+  description: |
+    Vendor-neutral external REST API for media production systems.
+    Authenticate with an Integration Client opaque bearer token (not a user JWT).
+    All mutating endpoints require the `Idempotency-Key` header.
+servers:
+  - url: https://api.aislos.com/api/v1/media-integration/v1
+    description: Production
+  - url: http://localhost:8000/api/v1/media-integration/v1
+    description: Local development
+
+security:
+  - IntegrationClientToken: []
+
+tags:
+  - name: requests
+    description: Media request lifecycle for external producers
+
+paths:
+  /requests:
+    get:
+      operationId: listMediaRequests
+      tags: [requests]
+      summary: List available or in-progress media requests
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            default: available
+        - name: media_type
+          in: query
+          schema:
+            type: string
+        - name: channel
+          in: query
+          schema:
+            type: string
+        - name: language
+          in: query
+          schema:
+            type: string
+        - name: region_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: skip
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        "200":
+          description: Paginated media requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaRequestListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /requests/{request_id}:
+    get:
+      operationId: getMediaRequest
+      tags: [requests]
+      summary: Get a single media request
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+      responses:
+        "200":
+          description: Media request detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaRequestExternal"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /requests/{request_id}/claim:
+    post:
+      operationId: claimMediaRequest
+      tags: [requests]
+      summary: Claim a media request for processing
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Claimed request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaRequestExternal"
+        "400":
+          $ref: "#/components/responses/MissingIdempotencyKey"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /requests/{request_id}/heartbeat:
+    post:
+      operationId: heartbeatMediaRequest
+      tags: [requests]
+      summary: Report progress and extend claim lease
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HeartbeatRequest"
+      responses:
+        "200":
+          description: Updated request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaRequestExternal"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /requests/{request_id}/fail:
+    post:
+      operationId: failMediaRequest
+      tags: [requests]
+      summary: Mark a request as failed
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FailRequest"
+      responses:
+        "200":
+          description: Failed request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaRequestExternal"
+
+  /requests/{request_id}/uploads:
+    post:
+      operationId: createMediaUpload
+      tags: [requests]
+      summary: Create a presigned upload slot
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadCreateRequest"
+      responses:
+        "201":
+          description: Upload slot created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadCreateResponse"
+
+  /requests/{request_id}/assets:
+    post:
+      operationId: submitMediaAsset
+      tags: [requests]
+      summary: Submit an uploaded asset for review
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssetSubmitRequest"
+      responses:
+        "201":
+          description: Asset submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssetSubmitResponse"
+
+  /requests/{request_id}/complete:
+    post:
+      operationId: completeMediaRequest
+      tags: [requests]
+      summary: Mark request complete after all assets submitted
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Completed request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaRequestExternal"
+
+components:
+  securitySchemes:
+    IntegrationClientToken:
+      type: http
+      scheme: bearer
+      description: Opaque Integration Client secret issued by AISLOS Admin
+
+  parameters:
+    RequestId:
+      name: request_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid integration token
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    Forbidden:
+      description: Client inactive or insufficient scope
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    MissingIdempotencyKey:
+      description: Idempotency-Key header required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    Conflict:
+      description: Claim conflict, idempotency conflict, or invalid state
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+
+  schemas:
+    MediaRequestListResponse:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MediaRequestExternal"
+        total:
+          type: integer
+
+    MediaRequestExternal:
+      type: object
+      required: [id, status, deliverable_key, deliverable, brief]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        deliverable_key:
+          type: string
+        deliverable:
+          $ref: "#/components/schemas/MediaRequestDeliverable"
+        brief:
+          $ref: "#/components/schemas/MediaRequestExternalBrief"
+        progress_percent:
+          type: integer
+          nullable: true
+        progress_message:
+          type: string
+          nullable: true
+        claim_expires_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    MediaRequestDeliverable:
+      type: object
+      required: [key, media_type, channel, language, format]
+      properties:
+        key:
+          type: string
+        media_type:
+          type: string
+        channel:
+          type: string
+        language:
+          type: string
+        format:
+          type: string
+        width:
+          type: integer
+          nullable: true
+        height:
+          type: integer
+          nullable: true
+        duration_seconds:
+          type: integer
+          nullable: true
+        variant_count:
+          type: integer
+          nullable: true
+        required_text:
+          type: array
+          items:
+            type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+
+    MediaRequestExternalBrief:
+      type: object
+      required: [brief_id, title, version, copy, audience, brand_constraints, channel_specs, compliance]
+      properties:
+        brief_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        objective:
+          type: string
+          nullable: true
+        version:
+          type: integer
+        content_hash:
+          type: string
+          nullable: true
+        copy:
+          type: object
+        audience:
+          type: object
+        brand_constraints:
+          type: object
+        channel_specs:
+          type: object
+        compliance:
+          type: object
+
+    HeartbeatRequest:
+      type: object
+      required: [progress_percent]
+      properties:
+        external_job_ref:
+          type: string
+          nullable: true
+        progress_percent:
+          type: integer
+          minimum: 0
+          maximum: 100
+        progress_message:
+          type: string
+          nullable: true
+
+    FailRequest:
+      type: object
+      required: [failure_code, failure_message]
+      properties:
+        failure_code:
+          type: string
+        failure_message:
+          type: string
+        retryable:
+          type: boolean
+          default: true
+
+    UploadCreateRequest:
+      type: object
+      required: [file_name, mime_type, size_bytes, sha256]
+      properties:
+        file_name:
+          type: string
+        mime_type:
+          type: string
+        size_bytes:
+          type: integer
+          exclusiveMinimum: 0
+        sha256:
+          type: string
+
+    UploadCreateResponse:
+      type: object
+      required: [upload_id, upload_url, object_key, expires_at]
+      properties:
+        upload_id:
+          type: string
+          format: uuid
+        upload_url:
+          type: string
+          format: uri
+        object_key:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+
+    AssetSubmitRequest:
+      type: object
+      required: [upload_id, mime_type, sha256]
+      properties:
+        upload_id:
+          type: string
+          format: uuid
+        external_asset_ref:
+          type: string
+          nullable: true
+        variant_key:
+          type: string
+          nullable: true
+        mime_type:
+          type: string
+        width:
+          type: integer
+          nullable: true
+        height:
+          type: integer
+          nullable: true
+        duration_seconds:
+          type: integer
+          nullable: true
+        sha256:
+          type: string
+        metadata:
+          type: object
+          nullable: true
+
+    AssetSubmitResponse:
+      type: object
+      required: [asset_id, status, media_request_id, review_id]
+      properties:
+        asset_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        media_request_id:
+          type: string
+          format: uuid
+        review_id:
+          type: string
+          format: uuid
+
+    IntegrationError:
+      type: object
+      required: [code, message, correlation_id, retryable]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        correlation_id:
+          type: string
+        retryable:
+          type: boolean
+          default: false
+
+    ErrorEnvelope:
+      type: object
+      properties:
+        error:
+          $ref: "#/components/schemas/IntegrationError"

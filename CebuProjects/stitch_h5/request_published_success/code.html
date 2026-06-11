@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Success Screen - {{APP_NAME}}</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dee1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00105c",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-tint": "#4355b9",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f8f9ff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#213145",
+                        "outline": "#757684",
+                        "surface-container": "#e5eeff",
+                        "surface-container-high": "#dce9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container-low": "#eff4ff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "tertiary": "#6c3400",
+                        "on-tertiary-fixed": "#301400",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "secondary-container": "#abb7ff",
+                        "surface": "#f8f9ff",
+                        "surface-variant": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#bac3ff",
+                        "primary": "#24389c",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary-fixed": "#021355",
+                        "on-surface-variant": "#454652",
+                        "on-secondary-container": "#394687",
+                        "tertiary-container": "#8f4700",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "tertiary-fixed": "#ffdcc6",
+                        "outline-variant": "#c5c5d4",
+                        "primary-container": "#3f51b5",
+                        "secondary": "#4d5a9c",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "surface-container-highest": "#d3e4fe",
+                        "primary-fixed": "#dee0ff",
+                        "on-primary-container": "#cacfff",
+                        "success": "#16a34a",
+                        "on-success": "#ffffff",
+                        "success-container": "#dcfce7",
+                        "on-success-container": "#166534"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter-mobile": "12px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-bright text-on-surface antialiased min-h-screen flex flex-col font-body-md">
+<!-- Top Navigation is suppressed as this is a transactional success splash screen -->
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col justify-center px-margin-mobile pt-lg pb-32">
+<!-- Success Illustration & Header -->
+<div class="flex flex-col items-center text-center mb-xl">
+<div class="w-24 h-24 bg-success-container rounded-full flex items-center justify-center mb-lg shadow-[0_4px_20px_0px_rgba(22,163,74,0.15)]">
+<span class="material-symbols-outlined text-success" style="font-size: 48px; font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h1 class="font-h1 text-h1 text-on-surface mb-sm">Request Published</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Your request is now live and actively seeking offers.</p>
+</div>
+<!-- Bento Grid Details -->
+<div class="grid grid-cols-2 gap-sm mb-lg">
+<!-- Full Width ID Card -->
+<div class="col-span-2 bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0px_rgba(0,0,0,0.05)] flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">tag</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Request ID</span>
+</div>
+<span class="font-h3 text-h3 text-on-surface">#7721</span>
+</div>
+<!-- Suppliers Pinged -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0px_rgba(0,0,0,0.05)] flex flex-col gap-sm">
+<div class="w-10 h-10 bg-secondary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">groups</span>
+</div>
+<div>
+<div class="font-h2 text-h2 text-on-surface">14</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Verified Suppliers Pinged</div>
+</div>
+</div>
+<!-- Estimated Time -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_0px_rgba(0,0,0,0.05)] flex flex-col gap-sm">
+<div class="w-10 h-10 bg-surface-variant rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 1;">schedule</span>
+</div>
+<div>
+<div class="font-h2 text-h2 text-on-surface"><span class="text-[16px] leading-[28px] align-baseline">&lt;</span> 30m</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Est. First Offer Time</div>
+</div>
+</div>
+</div>
+<!-- Trust Indicator -->
+<div class="bg-surface-container-low rounded-lg p-md flex items-start gap-md mb-xl border border-surface-variant">
+<span class="material-symbols-outlined text-primary mt-xs" style="font-variation-settings: 'FILL' 1;">shield</span>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-xs">Escrow Protected</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Funds are securely held until you approve a final offer and confirm delivery.</p>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Actions -->
+<div class="fixed bottom-0 w-full z-50 bg-white/98 backdrop-blur-lg border-t border-slate-200 pb-safe shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)] px-margin-mobile pt-md flex flex-col gap-sm">
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm active:bg-primary-fixed-variant transition-colors shadow-sm">
+<span class="material-symbols-outlined">visibility</span>
+            View Live Offers
+        </button>
+<div class="flex gap-sm">
+<button class="flex-1 h-[52px] bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm active:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">share</span>
+                Share Link
+            </button>
+<button class="flex-1 h-[52px] bg-surface-container-lowest text-on-surface-variant rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm active:bg-surface-variant transition-colors">
+                Back to Home
+            </button>
+</div>
+<div class="h-4"></div><!-- Bottom padding spacer before safe area -->
+</div>
+<!-- Bottom Nav Bar is suppressed as this is a transactional success screen -->
+</body></html>

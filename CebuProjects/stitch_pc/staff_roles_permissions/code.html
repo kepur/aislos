@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Procurement Admin - Staff Roles and Permissions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#ba1a1f",
+                        "on-surface": "#1a1c1c",
+                        "tertiary": "#615c41",
+                        "primary": "#b6171d",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "tertiary-container": "#7a7558",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3f4",
+                        "background": "#f9f9f9",
+                        "secondary-container": "#8fe3ff",
+                        "on-primary-fixed-variant": "#93000f",
+                        "outline": "#8f6f6c",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "on-tertiary-container": "#fffbff",
+                        "surface": "#f9f9f9",
+                        "surface-variant": "#e2e2e2",
+                        "on-primary-fixed": "#410003",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f9f9f9",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#001f27",
+                        "on-primary-container": "#fffbff",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "primary-fixed": "#ffdad6",
+                        "tertiary-fixed": "#ebe3c0",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "primary-container": "#da3432",
+                        "on-error": "#ffffff",
+                        "secondary": "#00677d",
+                        "on-background": "#1a1c1c",
+                        "surface-dim": "#dadada",
+                        "surface-container": "#eeeeee",
+                        "on-surface-variant": "#5b403d",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#b4ebff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#00667c",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "surface-container-highest": "#e2e2e2",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e8e8e8",
+                        "outline-variant": "#e4beba",
+                        "inverse-primary": "#ffb3ac"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "container-max": "1280px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "base": "4px",
+                        "md": "24px",
+                        "xl": "64px",
+                        "sm": "16px"
+                    },
+                    "fontFamily": {
+                        "display": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex font-body-md text-body-md overflow-x-hidden">
+<!-- SideNavBar -->
+<nav class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 z-40">
+<div class="flex flex-col h-full py-8">
+<div class="px-md mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden shrink-0">
+<img alt="Organization Logo" class="w-full h-full object-cover" data-alt="A highly detailed close-up of a minimalist corporate logo inside a circular avatar placeholder. The logo features abstract geometric shapes in vibrant coral and deep teal against a pristine white background. The lighting is soft and even, typical of a modern UI profile picture. The mood is professional, secure, and corporate, fitting a high-stakes reverse marketplace platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGJ3EdwDBHVZSfK8fQrBMaSv6At50QFhXSdVCofj6YGtudbYj2oapMMInXiwss3kMjzVxgVZxvfepWiGOQi9imr9ywpUKQpOPN5brvRmiRQzq3oX7AMR-H7otjfkxNvPJvorlQHhxgLbTa-nHYgvF6xEJnagsF6KrOPvKXrqHL1jUO3MSqBeraIcVBd6Bujr_cYH8w5ahvSjwZwoORWHUIVslCGn8GiHRkwNSzU5ZctgtMeHrnQNQ_jNE1RlJ1bWgmy5uxuFvaraSm"/>
+</div>
+<div class="flex flex-col">
+<span class="font-black text-slate-900 dark:text-white font-body-lg text-body-lg truncate">Global Admin</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest text-slate-500">Enterprise Tier</span>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-xs px-xs">
+<a class="flex items-center gap-sm px-sm py-sm rounded-DEFAULT text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-DEFAULT bg-slate-50 dark:bg-slate-900 text-[#FF4F49] border-r-4 border-[#FF4F49] duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="group" data-weight="fill">group</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Users</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-DEFAULT text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="verified_user">verified_user</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Verification</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-DEFAULT text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="storefront">storefront</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Marketplace</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-DEFAULT text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="account_balance">account_balance</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Escrow</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-DEFAULT text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="gavel">gavel</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Disputes</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-xs px-xs pt-md border-t border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-sm px-sm py-sm rounded-DEFAULT text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="settings">settings</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Settings</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-DEFAULT text-slate-500 dark:text-slate-500 hover:text-[#FF4F49] hover:bg-slate-50 dark:hover:bg-slate-900 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="help">help</span>
+<span class="font-['Inter'] text-xs font-semibold uppercase tracking-widest">Support</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 flex flex-col min-w-0">
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 w-full top-0 z-30 sticky flex justify-between items-center px-10 h-16">
+<div class="flex items-center gap-md">
+<span class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider">Procurement Admin</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center text-slate-600 dark:text-slate-400 gap-xs">
+<button class="p-xs rounded-DEFAULT hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button class="p-xs rounded-DEFAULT hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</button>
+<button class="p-xs rounded-DEFAULT hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors opacity-80 hover:opacity-100 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-xs right-xs w-2 h-2 bg-[#FF4F49] rounded-full"></span>
+</button>
+<button class="p-xs rounded-DEFAULT hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden shrink-0 border border-slate-200 dark:border-slate-800">
+<img alt="Administrator profile" class="w-full h-full object-cover" data-alt="A corporate headshot of a middle-aged male administrator with a professional demeanor. He is wearing a crisp dark suit and a light blue shirt. The background is a clean, neutral white wall with soft, flattering lighting typical of a high-end corporate portrait. The overall aesthetic is serious, secure, and modern, fitting the primary persona of a global enterprise system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBO-wpMuLjkbkMsxyXOeIP1qXSILbNmyF0vpzAvhkyNoMIfQw0uwLW5L0D9Oz6891XGl_iOq5ufEjXJq7UmCB7Zau_thx6tg6mbIopd6aQTc1ZIpCD1uFQWiX-61lrKuy3YxCoQsK78oUDlK91E0oqTFoNHYlVuSZZ7Vbu7Zi2p3wtdhnHRLo_MUJ39WCrcF9YLLQUsOMaiPblw981qWnGvZaqHhH7nY1rKaRR_TGFHdr-OVYd50WbAfrj-v4KjUE3aE6n958zl08pF"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="p-lg max-w-container-max mx-auto w-full flex flex-col gap-md">
+<!-- Page Header -->
+<div class="flex items-end justify-between mb-sm">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface">Staff Roles &amp; Permissions</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-base">Manage administrative access levels and internal team privileges.</p>
+</div>
+<button class="bg-primary text-on-primary px-md py-xs rounded-DEFAULT font-label-caps text-label-caps uppercase hover:opacity-90 transition-opacity flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span>
+                    Invite Staff
+                </button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+<!-- Left Column: Staff List -->
+<div class="lg:col-span-1 flex flex-col gap-md">
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg flex flex-col overflow-hidden">
+<div class="px-md py-sm border-b border-surface-variant bg-surface-container-low flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-on-surface">Active Staff</h3>
+<span class="font-label-caps text-label-caps text-on-surface-variant bg-surface-container-highest px-xs py-base rounded-DEFAULT">12 Total</span>
+</div>
+<div class="flex-1 overflow-y-auto max-h-[600px] flex flex-col">
+<!-- Staff Item 1 -->
+<div class="p-md border-b border-surface-variant hover:bg-surface-container-low transition-colors cursor-pointer bg-surface-container">
+<div class="flex items-center gap-sm mb-xs">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-h3 text-h3 shrink-0">
+                                        JD
+                                    </div>
+<div class="flex-1 min-w-0">
+<p class="font-h3 text-body-md text-on-surface truncate">John Doe</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">john.d@procureadmin.com</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+<div class="flex items-center gap-xs mt-sm">
+<span class="px-xs py-base bg-tertiary-container text-on-tertiary-container font-label-caps text-label-caps rounded-DEFAULT uppercase">Super Admin</span>
+<span class="w-2 h-2 rounded-full bg-[#10b981] ml-auto"></span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">Active now</span>
+</div>
+</div>
+<!-- Staff Item 2 -->
+<div class="p-md border-b border-surface-variant hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-sm mb-xs">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-h3 text-h3 shrink-0">
+                                        AS
+                                    </div>
+<div class="flex-1 min-w-0">
+<p class="font-h3 text-body-md text-on-surface truncate">Alice Smith</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">alice.s@procureadmin.com</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+<div class="flex items-center gap-xs mt-sm">
+<span class="px-xs py-base bg-surface-variant text-on-surface-variant font-label-caps text-label-caps rounded-DEFAULT uppercase border border-surface-dim">Finance Manager</span>
+<span class="w-2 h-2 rounded-full bg-surface-dim ml-auto"></span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">2h ago</span>
+</div>
+</div>
+<!-- Staff Item 3 -->
+<div class="p-md border-b border-surface-variant hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex items-center gap-sm mb-xs">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-h3 text-h3 shrink-0">
+                                        MR
+                                    </div>
+<div class="flex-1 min-w-0">
+<p class="font-h3 text-body-md text-on-surface truncate">Marcus Reed</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">m.reed@procureadmin.com</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+<div class="flex items-center gap-xs mt-sm">
+<span class="px-xs py-base bg-surface-variant text-on-surface-variant font-label-caps text-label-caps rounded-DEFAULT uppercase border border-surface-dim">Dispute Manager</span>
+<span class="w-2 h-2 rounded-full bg-[#10b981] ml-auto"></span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">Active now</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Roles & Matrix -->
+<div class="lg:col-span-2 flex flex-col gap-md">
+<!-- Role Templates Tabs -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md">
+<h3 class="font-h3 text-h3 text-on-surface mb-sm">Role Templates</h3>
+<div class="flex flex-wrap gap-xs">
+<button class="px-sm py-xs rounded-full border border-primary bg-primary text-on-primary font-body-sm text-body-sm transition-colors">
+                                Super Admin
+                            </button>
+<button class="px-sm py-xs rounded-full border border-surface-variant bg-surface-container-lowest text-on-surface-variant hover:border-outline font-body-sm text-body-sm transition-colors">
+                                Platform Ops
+                            </button>
+<button class="px-sm py-xs rounded-full border border-surface-variant bg-surface-container-lowest text-on-surface-variant hover:border-outline font-body-sm text-body-sm transition-colors">
+                                Auditor (Read-Only)
+                            </button>
+<button class="px-sm py-xs rounded-full border border-surface-variant bg-surface-container-lowest text-on-surface-variant hover:border-outline font-body-sm text-body-sm transition-colors">
+                                Dispute Manager
+                            </button>
+<button class="px-sm py-xs rounded-full border border-surface-variant bg-surface-container-lowest text-on-surface-variant hover:border-outline font-body-sm text-body-sm transition-colors">
+                                Verification Manager
+                            </button>
+<button class="px-sm py-xs rounded-full border border-surface-variant bg-surface-container-lowest text-on-surface-variant hover:border-outline font-body-sm text-body-sm transition-colors">
+                                Finance Manager
+                            </button>
+</div>
+</div>
+<!-- Permissions Matrix -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg overflow-hidden flex flex-col">
+<div class="px-md py-sm border-b border-surface-variant bg-surface-container-low flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-on-surface">Permissions Matrix: Super Admin</h3>
+<button class="text-primary font-body-sm text-body-sm hover:underline">Edit Template</button>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-surface-variant bg-surface-container-lowest">
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant uppercase w-1/3">Feature Domain</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant uppercase text-center w-1/6">None</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant uppercase text-center w-1/6">View</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant uppercase text-center w-1/6">Edit</th>
+<th class="p-sm font-label-caps text-label-caps text-on-surface-variant uppercase text-center w-1/6">Full</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="p-sm font-body-md text-body-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="group">group</span>
+                                            Users &amp; Organizations
+                                        </td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_users" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_users" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_users" type="radio"/></td>
+<td class="p-sm text-center"><input checked="" class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_users" type="radio"/></td>
+</tr>
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="p-sm font-body-md text-body-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="storefront">storefront</span>
+                                            Marketplace Bids
+                                        </td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_bids" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_bids" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_bids" type="radio"/></td>
+<td class="p-sm text-center"><input checked="" class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_bids" type="radio"/></td>
+</tr>
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="p-sm font-body-md text-body-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="account_balance">account_balance</span>
+                                            Escrow &amp; Finance
+                                        </td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_escrow" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_escrow" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_escrow" type="radio"/></td>
+<td class="p-sm text-center"><input checked="" class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_escrow" type="radio"/></td>
+</tr>
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="p-sm font-body-md text-body-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="gavel">gavel</span>
+                                            Dispute Resolution
+                                        </td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_disputes" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_disputes" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_disputes" type="radio"/></td>
+<td class="p-sm text-center"><input checked="" class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_disputes" type="radio"/></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-sm font-body-md text-body-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="settings">settings</span>
+                                            System Configuration
+                                        </td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_sys" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_sys" type="radio"/></td>
+<td class="p-sm text-center"><input class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_sys" type="radio"/></td>
+<td class="p-sm text-center"><input checked="" class="w-4 h-4 text-primary border-outline focus:ring-primary" name="perm_sys" type="radio"/></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-md bg-surface-container-lowest border-t border-surface-variant flex justify-end gap-sm">
+<button class="px-md py-xs rounded-DEFAULT border border-secondary text-secondary font-label-caps text-label-caps uppercase hover:bg-surface-container-low transition-colors">
+                                Discard Changes
+                            </button>
+<button class="px-md py-xs rounded-DEFAULT bg-primary text-on-primary font-label-caps text-label-caps uppercase hover:opacity-90 transition-opacity opacity-50 cursor-not-allowed">
+                                Save Matrix
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

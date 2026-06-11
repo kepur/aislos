@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Template Manager - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#615c41",
+                      "surface-container": "#eeeeee",
+                      "on-surface": "#1a1c1c",
+                      "on-secondary-fixed": "#001f27",
+                      "on-tertiary-container": "#fffbff",
+                      "secondary-fixed": "#b4ebff",
+                      "inverse-on-surface": "#f0f1f1",
+                      "primary-fixed": "#ffdad6",
+                      "surface-container-high": "#e8e8e8",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#004e5f",
+                      "surface-dim": "#dadada",
+                      "primary-fixed-dim": "#ffb3ac",
+                      "on-tertiary-fixed": "#1f1c06",
+                      "surface-variant": "#e2e2e2",
+                      "error": "#ba1a1a",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-primary": "#ffffff",
+                      "surface-bright": "#f9f9f9",
+                      "tertiary-fixed": "#ebe3c0",
+                      "secondary-container": "#8fe3ff",
+                      "secondary-fixed-dim": "#7dd2ee",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#fffbff",
+                      "on-tertiary-fixed-variant": "#4b472d",
+                      "inverse-primary": "#ffb3ac",
+                      "on-surface-variant": "#5b403d",
+                      "outline": "#8f6f6c",
+                      "surface": "#f9f9f9",
+                      "surface-container-low": "#f3f3f4",
+                      "tertiary-container": "#7a7558",
+                      "tertiary-fixed-dim": "#cec7a5",
+                      "on-primary-fixed-variant": "#93000f",
+                      "on-primary-fixed": "#410003",
+                      "background": "#f9f9f9",
+                      "secondary": "#00677d",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-container": "#da3432",
+                      "primary": "#b6171d",
+                      "surface-container-highest": "#e2e2e2",
+                      "on-secondary": "#ffffff",
+                      "on-background": "#1a1c1c",
+                      "on-secondary-container": "#00667c",
+                      "surface-tint": "#ba1a1f",
+                      "inverse-surface": "#2f3131",
+                      "outline-variant": "#e4beba"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "lg": "40px",
+                      "base": "4px",
+                      "md": "24px",
+                      "sm": "16px",
+                      "xl": "64px",
+                      "gutter": "24px",
+                      "xs": "8px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "display": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h1": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "data-mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h2": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h3": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-white dark:bg-slate-900 fixed left-0 h-screen w-64 rounded-none border-r border-slate-100 dark:border-slate-800 flex flex-col h-full py-6 pr-4 hidden md:flex z-40">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-[#FF4F49] font-display text-display">ProcurePing</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Enterprise Buyer</p>
+</div>
+<div class="flex-1 overflow-y-auto">
+<ul class="space-y-2">
+<li>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="gavel">gavel</span>
+                        Active Bids
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="groups">groups</span>
+                        Suppliers
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="monitoring">monitoring</span>
+                        Market Insights
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="inventory_2">inventory_2</span>
+                        Archive
+                    </a>
+</li>
+</ul>
+</div>
+<div class="mt-auto">
+<ul class="space-y-2">
+<li>
+<a class="flex items-center px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help_center">help_center</span>
+                        Support
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-6 py-3 text-[#FF4F49] bg-slate-50 dark:bg-slate-800/50 rounded-r-full border-l-4 border-[#FF4F49] font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+                        Settings
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col md:ml-64 w-full h-full">
+<!-- TopNavBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center w-full px-10 h-16 font-inter text-sm antialiased hidden md:flex">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400" data-icon="search">search</span>
+<input class="border-none bg-transparent focus:ring-0 text-on-surface placeholder:text-on-surface-variant w-64" placeholder="Search templates..." type="text"/>
+</div>
+<div class="flex items-center gap-6 text-slate-600 dark:text-slate-400">
+<button class="hover:text-[#FF4F49] transition-colors duration-200"><span class="material-symbols-outlined" data-icon="language">language</span></button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200"><span class="material-symbols-outlined" data-icon="currency_exchange">currency_exchange</span></button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200"><span class="material-symbols-outlined" data-icon="public">public</span></button>
+<button class="hover:text-[#FF4F49] transition-colors duration-200 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary-container rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant">
+<img alt="Executive User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of an executive user in a modern corporate setting. The lighting is soft and natural, emphasizing a trustworthy and efficient demeanor. The overall tone is corporate and secure, fitting a high-stakes financial platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkHrKwoBNpHzkQ2HdhlaeiaUo8tPiSbtkVC5-0_LxYzWBXPkxpt8aPYsp84ztgRJ7spnZiyaMZQq-Ayg_geiY3gVw050YpmKqDD8xjA580W0OEo3dFY9j6QyUC-qTL2C57Z9xOkLG6rxbui2LkDyPvunVMkao3xHb9LPmkVOGAuHa7sPKgp-aD8J9uSOUVG55e4coXfGehMY7ihkgRO0LMRIRGtAJxWKzEs5iHaTcajB6aGctgnu5gLZlkWCKsO5GE0ig8fzGqciRF"/>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex-1 overflow-y-auto p-4 md:p-lg">
+<div class="max-w-container-max mx-auto h-full flex flex-col gap-md">
+<!-- Page Header -->
+<div class="flex justify-between items-center pb-4 border-b border-surface-variant">
+<div>
+<h2 class="font-h1 text-h1 text-on-background">Notification Templates</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage system-triggered messages across all channels.</p>
+</div>
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-body-sm text-body-sm font-semibold hover:bg-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                        New Template
+                    </button>
+</div>
+<!-- Content Grid -->
+<div class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-md min-h-0">
+<!-- Left Column: Template List -->
+<div class="lg:col-span-3 flex flex-col bg-surface-container-lowest border border-surface-variant rounded-xl overflow-hidden h-full">
+<div class="p-4 border-b border-surface-variant bg-surface-bright">
+<h3 class="font-h3 text-h3 text-on-surface">Templates</h3>
+</div>
+<div class="flex-1 overflow-y-auto p-2 space-y-1">
+<!-- Active Item -->
+<button class="w-full text-left p-3 rounded-lg bg-surface-variant border-l-2 border-primary-container flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Supplier Ping</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="mail">mail</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">INVITATION</span>
+</button>
+<button class="w-full text-left p-3 rounded-lg hover:bg-surface-container-low transition-colors flex flex-col gap-1 text-on-surface-variant border-l-2 border-transparent">
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm font-medium">Offer Awarded</span>
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
+</div>
+<span class="font-label-caps text-label-caps">TRANSACTION</span>
+</button>
+<button class="w-full text-left p-3 rounded-lg hover:bg-surface-container-low transition-colors flex flex-col gap-1 text-on-surface-variant border-l-2 border-transparent">
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm font-medium">Delivery Accepted</span>
+<span class="material-symbols-outlined text-sm" data-icon="local_shipping">local_shipping</span>
+</div>
+<span class="font-label-caps text-label-caps">LOGISTICS</span>
+</button>
+<button class="w-full text-left p-3 rounded-lg hover:bg-surface-container-low transition-colors flex flex-col gap-1 text-on-surface-variant border-l-2 border-transparent">
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm font-medium">Dispute Opened</span>
+<span class="material-symbols-outlined text-error text-sm" data-icon="warning">warning</span>
+</div>
+<span class="font-label-caps text-label-caps text-error">CRITICAL</span>
+</button>
+</div>
+</div>
+<!-- Center Column: Editor -->
+<div class="lg:col-span-6 flex flex-col bg-surface-container-lowest border border-surface-variant rounded-xl overflow-hidden h-full">
+<div class="p-4 border-b border-surface-variant bg-surface-bright flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-on-surface">Edit: Supplier Ping</h3>
+<div class="flex gap-2">
+<button class="p-1.5 rounded bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface-variant" title="Email Active">
+<span class="material-symbols-outlined text-sm" data-icon="mail">mail</span>
+</button>
+<button class="p-1.5 rounded bg-transparent hover:bg-surface-container-high transition-colors text-surface-dim" title="In-App Inactive">
+<span class="material-symbols-outlined text-sm" data-icon="notifications">notifications</span>
+</button>
+<button class="p-1.5 rounded bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface-variant" title="SMS Active">
+<span class="material-symbols-outlined text-sm" data-icon="sms">sms</span>
+</button>
+</div>
+</div>
+<div class="flex-1 p-6 overflow-y-auto flex flex-col gap-6">
+<!-- Subject Line -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">SUBJECT LINE</label>
+<input class="w-full border border-surface-variant rounded-lg px-3 py-2 font-body-sm text-body-sm text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors bg-surface-container-lowest" type="text" value="New Bid Opportunity: {{PROJECT_NAME}}"/>
+</div>
+<!-- Variable Picker -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">DYNAMIC VARIABLES</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded font-data-mono text-data-mono text-xs hover:bg-secondary-fixed transition-colors">{{SUPPLIER_NAME}}</button>
+<button class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded font-data-mono text-data-mono text-xs hover:bg-secondary-fixed transition-colors">{{BUYER_NAME}}</button>
+<button class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded font-data-mono text-data-mono text-xs hover:bg-secondary-fixed transition-colors">{{PROJECT_NAME}}</button>
+<button class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded font-data-mono text-data-mono text-xs hover:bg-secondary-fixed transition-colors">{{DEADLINE_DATE}}</button>
+</div>
+</div>
+<!-- Rich Text Editor Body -->
+<div class="flex flex-col gap-2 flex-1 min-h-[300px]">
+<label class="font-label-caps text-label-caps text-on-surface-variant">MESSAGE BODY</label>
+<div class="border border-surface-variant rounded-lg flex flex-col h-full overflow-hidden bg-surface-container-lowest">
+<!-- Toolbar -->
+<div class="bg-surface-bright border-b border-surface-variant p-2 flex gap-1">
+<button class="p-1 rounded hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-sm" data-icon="format_bold">format_bold</span></button>
+<button class="p-1 rounded hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-sm" data-icon="format_italic">format_italic</span></button>
+<div class="w-px bg-surface-variant mx-1"></div>
+<button class="p-1 rounded hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-sm" data-icon="format_list_bulleted">format_list_bulleted</span></button>
+<button class="p-1 rounded hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-sm" data-icon="link">link</span></button>
+</div>
+<!-- Text Area -->
+<textarea class="w-full flex-1 border-none focus:ring-0 font-body-sm text-body-sm text-on-surface p-4 resize-none bg-transparent">Dear {{SUPPLIER_NAME}},
+
+You have been invited by {{BUYER_NAME}} to participate in a new bidding event: {{PROJECT_NAME}}.
+
+Please review the requirements and submit your proposal before {{DEADLINE_DATE}}.
+
+Click below to view the full details and respond securely within the ProcurePing platform.</textarea>
+</div>
+</div>
+</div>
+<!-- Editor Actions -->
+<div class="p-4 border-t border-surface-variant bg-surface-bright flex justify-end gap-3">
+<button class="px-4 py-2 border border-secondary text-secondary rounded-lg font-body-sm text-body-sm font-semibold hover:bg-surface-container-low transition-colors">Discard Changes</button>
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-body-sm text-body-sm font-semibold hover:bg-primary transition-colors">Save Template</button>
+</div>
+</div>
+<!-- Right Column: Preview -->
+<div class="lg:col-span-3 flex flex-col bg-surface-container-low border border-surface-variant rounded-xl overflow-hidden h-full">
+<div class="p-4 border-b border-surface-variant bg-surface-bright flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-on-surface">Preview</h3>
+<span class="font-label-caps text-label-caps text-on-surface-variant">MOBILE</span>
+</div>
+<div class="flex-1 flex items-center justify-center p-6 overflow-y-auto">
+<!-- Mobile Device Mockup -->
+<div class="w-[280px] h-[550px] bg-white rounded-[2rem] border-8 border-surface-variant shadow-lg relative overflow-hidden flex flex-col">
+<!-- Top Bar -->
+<div class="bg-surface-bright h-6 flex justify-between items-center px-4 text-[10px] text-on-surface-variant font-data-mono">
+<span>9:41</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-[10px]" data-icon="signal_cellular_4_bar">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[10px]" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[10px]" data-icon="battery_full">battery_full</span>
+</div>
+</div>
+<!-- Email Header -->
+<div class="p-4 border-b border-surface-container">
+<div class="flex justify-between items-start mb-2">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">FROM</p>
+<p class="font-body-sm text-body-sm font-semibold text-on-surface">ProcurePing Alerts</p>
+</div>
+<span class="text-[10px] text-on-surface-variant">Just now</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-2">SUBJECT</p>
+<p class="font-body-sm text-body-sm text-on-surface font-semibold leading-tight">New Bid Opportunity: Q3 Steel Procurement</p>
+</div>
+</div>
+<!-- Email Body Preview -->
+<div class="p-4 flex-1 overflow-y-auto bg-white font-body-sm text-body-sm text-on-surface leading-relaxed">
+<p class="mb-3">Dear Acme Corp,</p>
+<p class="mb-3">You have been invited by Global Industries to participate in a new bidding event: Q3 Steel Procurement.</p>
+<p class="mb-4">Please review the requirements and submit your proposal before Oct 15, 2023.</p>
+<button class="w-full py-2 bg-primary-container text-on-primary-container rounded font-semibold text-center mt-2">View Bid Details</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

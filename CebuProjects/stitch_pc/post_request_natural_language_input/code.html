@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post Request: Natural Language Input - GlobalBuyer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#2f3131",
+                        "surface-tint": "#ba1a1f",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "on-primary-fixed": "#410003",
+                        "on-primary-fixed-variant": "#93000f",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#dadada",
+                        "surface-container-high": "#e8e8e8",
+                        "on-surface": "#1a1c1c",
+                        "inverse-primary": "#ffb3ac",
+                        "primary-fixed": "#ffdad6",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "surface-bright": "#f9f9f9",
+                        "outline-variant": "#e4beba",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "background": "#f9f9f9",
+                        "outline": "#8f6f6c",
+                        "secondary-fixed": "#b4ebff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "on-secondary-fixed": "#001f27",
+                        "tertiary": "#615c41",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface-variant": "#e2e2e2",
+                        "secondary": "#00677d",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ebe3c0",
+                        "tertiary-container": "#7a7558",
+                        "secondary-container": "#8fe3ff",
+                        "primary-container": "#da3432",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-tertiary-container": "#fffbff",
+                        "on-secondary-container": "#00667c",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-low": "#f3f3f4",
+                        "primary": "#b6171d",
+                        "on-error": "#ffffff",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-surface-variant": "#5b403d",
+                        "surface": "#f9f9f9",
+                        "on-background": "#1a1c1c",
+                        "surface-container-highest": "#e2e2e2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "base": "4px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "lg": "40px",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Inter"],
+                        "display": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex">
+<!-- SideNavBar (Suppressed due to transaction/focused flow) -->
+<div class="flex-1 flex flex-col min-w-0">
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm fixed top-0 left-0 w-full flex justify-between items-center px-8 h-16 z-40">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-2">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<div class="text-xl font-black text-slate-900 dark:text-white tracking-tighter">GlobalBuyer</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined">payments</span>
+</button>
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined">public</span>
+</button>
+<button class="font-sans text-sm font-medium tracking-tight text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 duration-150 px-4 py-2 rounded-md">
+                    Support
+                </button>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-surface-variant" data-alt="A professional headshot of a corporate executive in a modern office setting. The lighting is bright and even, highlighting a confident expression. The background is slightly blurred with soft grey tones and subtle architectural lines." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTdJkmJCHs7BAbCayhy4_h-xMPw7B_-xSB9yTHtv2p8Ba5YyCN10VygdY0okpSVuxRKS29IKc7ndYaAF-GX0N0IZpLdd51G_8fQo7ewp6YYAjDC8PJT1m-CBRJCnx4Fr1YayYy32DFOhfzkSTre3VGkH3n8-MM6cAmghEU5GZe4eLfzKQUwBPaGBM-FCqgd2qWP4gnljZM7mn58K-382FXBYFPPfo2w0UscXU3lE7Dc7enL2HRleBZtvf3RUL-GxSnk81BWLZN17PZ"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-24 px-8 pb-12 max-w-container-max mx-auto w-full">
+<div class="mb-8">
+<h1 class="font-h1 text-h1 text-on-surface mb-2">Fast Request</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Describe what you need in plain English. We'll extract the details for you.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Input Area -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-6 shadow-sm flex flex-col h-full min-h-[400px] relative focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<label class="sr-only" for="nl-input">Describe your request</label>
+<textarea class="w-full flex-1 resize-none bg-transparent border-none focus:ring-0 font-body-lg text-body-lg text-on-surface placeholder-on-surface-variant/50 p-0" id="nl-input" placeholder="e.g., 'I need 500 bags of Holcim Portland cement delivered to Mandaue this weekend.'"></textarea>
+<div class="mt-4 flex justify-between items-center border-t border-surface-container pt-4">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">smart_toy</span>
+<span class="font-body-sm text-body-sm">AI Assistant Active</span>
+</div>
+<button class="bg-primary text-on-primary font-body-md text-body-md px-6 py-2 rounded-lg hover:bg-on-primary-fixed-variant transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+                                Generate Request
+                            </button>
+</div>
+</div>
+</div>
+<!-- Parsed Attributes Preview Panel -->
+<div class="lg:col-span-5">
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-6 shadow-sm sticky top-24">
+<div class="flex justify-between items-center mb-6 border-b border-surface-container pb-4">
+<h2 class="font-h3 text-h3 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">data_object</span>
+                                Parsed Fields
+                            </h2>
+<button class="text-secondary font-body-sm text-body-sm flex items-center gap-1 hover:text-on-secondary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                                Review and refine fields
+                            </button>
+</div>
+<div class="space-y-4">
+<!-- Field: Title -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TITLE</span>
+<span class="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant" title="High Confidence">
+<span class="w-2 h-2 rounded-full bg-green-500"></span> High
+                                    </span>
+</div>
+<div class="bg-surface-container-low px-4 py-3 rounded-lg font-body-md text-body-md text-on-surface border border-surface-container">
+                                    Holcim Portland Cement
+                                </div>
+</div>
+<!-- Field: Quantity -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">QUANTITY</span>
+<span class="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant" title="High Confidence">
+<span class="w-2 h-2 rounded-full bg-green-500"></span> High
+                                    </span>
+</div>
+<div class="bg-surface-container-low px-4 py-3 rounded-lg font-body-md text-body-md text-on-surface border border-surface-container">
+                                    500 bags
+                                </div>
+</div>
+<!-- Field: Brand -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">BRAND</span>
+<span class="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant" title="Medium Confidence">
+<span class="w-2 h-2 rounded-full bg-yellow-500"></span> Medium
+                                    </span>
+</div>
+<div class="bg-surface-container-low px-4 py-3 rounded-lg font-body-md text-body-md text-on-surface border border-surface-container">
+                                    Holcim
+                                </div>
+</div>
+<!-- Field: Location -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">LOCATION</span>
+<span class="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant" title="High Confidence">
+<span class="w-2 h-2 rounded-full bg-green-500"></span> High
+                                    </span>
+</div>
+<div class="bg-surface-container-low px-4 py-3 rounded-lg font-body-md text-body-md text-on-surface border border-surface-container flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">location_on</span>
+                                    Mandaue
+                                </div>
+</div>
+<!-- Field: Delivery Timing -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">DELIVERY TIMING</span>
+<span class="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant" title="Low Confidence">
+<span class="w-2 h-2 rounded-full bg-red-500"></span> Low
+                                    </span>
+</div>
+<div class="bg-surface-container-low px-4 py-3 rounded-lg font-body-md text-body-md text-on-surface border border-surface-container border-dashed border-red-300 bg-red-50/50 dark:bg-red-900/10 flex items-center justify-between">
+<span>this weekend</span>
+<span class="material-symbols-outlined text-[18px] text-error cursor-help" title="Needs specific date format">warning</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

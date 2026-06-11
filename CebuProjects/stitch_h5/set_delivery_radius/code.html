@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Location &amp; Delivery Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#dee0ff",
+                      "outline": "#757684",
+                      "inverse-surface": "#213145",
+                      "primary": "#24389c",
+                      "on-tertiary": "#ffffff",
+                      "on-surface": "#0b1c30",
+                      "error-container": "#ffdad6",
+                      "tertiary": "#6c3400",
+                      "on-primary": "#ffffff",
+                      "on-secondary-fixed": "#021355",
+                      "surface-container-low": "#eff4ff",
+                      "surface-container-highest": "#d3e4fe",
+                      "background": "#f8f9ff",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "surface-variant": "#d3e4fe",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-surface-variant": "#454652",
+                      "on-secondary-container": "#394687",
+                      "surface-container": "#e5eeff",
+                      "on-primary-container": "#cacfff",
+                      "on-tertiary-container": "#ffc7a2",
+                      "secondary-fixed-dim": "#b9c3ff",
+                      "on-primary-fixed-variant": "#293ca0",
+                      "surface": "#f8f9ff",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#bac3ff",
+                      "surface-tint": "#4355b9",
+                      "surface-container-high": "#dce9ff",
+                      "on-tertiary-fixed": "#301400",
+                      "error": "#ba1a1a",
+                      "outline-variant": "#c5c5d4",
+                      "tertiary-fixed": "#ffdcc6",
+                      "on-background": "#0b1c30",
+                      "on-secondary-fixed-variant": "#354282",
+                      "primary-container": "#3f51b5",
+                      "secondary-fixed": "#dee1ff",
+                      "on-primary-fixed": "#00105c",
+                      "surface-dim": "#cbdbf5",
+                      "secondary-container": "#abb7ff",
+                      "primary-fixed-dim": "#bac3ff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "surface-bright": "#f8f9ff",
+                      "secondary": "#4d5a9c",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb784",
+                      "tertiary-container": "#8f4700"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "md": "16px",
+                      "margin-mobile": "16px",
+                      "gutter-mobile": "12px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "safe": "env(safe-area-inset-bottom)"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h3": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "h1": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h2": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top App Bar (Task Focused - Suppresses BottomNav) -->
+<header class="fixed top-0 w-full z-50 glass-panel border-b border-outline-variant/50 shadow-sm flex items-center justify-between px-margin-mobile h-[64px]">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-on-surface">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h1 class="font-h2 text-h2 text-on-surface tracking-tight">Location &amp; Delivery</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-on-surface">
+<span class="material-symbols-outlined text-[24px]">help</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="pt-[80px] pb-[100px] px-margin-mobile max-w-2xl mx-auto flex flex-col gap-lg">
+<!-- Search & Quick Location Section -->
+<section class="flex flex-col gap-sm">
+<div class="relative w-full shadow-[0_2px_12px_rgba(0,0,0,0.03)] rounded-lg">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="w-full h-[52px] pl-[44px] pr-md bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline-variant" placeholder="Search country, city, or area..." type="text"/>
+</div>
+<button class="flex items-center justify-center gap-xs w-full h-[48px] rounded-lg bg-surface-container border border-outline-variant/30 text-primary font-label-md text-label-md hover:bg-surface-container-high transition-colors active:bg-surface-container-highest">
+<span class="material-symbols-outlined text-[20px]">my_location</span>
+                Use Current Location
+            </button>
+</section>
+<!-- Map Visualization Container -->
+<section class="relative w-full h-[280px] rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-outline-variant/40 bg-surface-container-lowest">
+<!-- Map Image -->
+<img alt="Map view" class="w-full h-full object-cover opacity-90 mix-blend-multiply" data-alt="A highly detailed, professional digital map interface displayed on a high-resolution screen, representing a modern enterprise logistics tracking system. The map is rendered in a clean, light-mode aesthetic using soft minimalist tones of pale blue and off-white. A precise, translucent indigo circular radius overlay is centered on a specific urban location, marked by a sharp, modern pin. The lighting is bright and even, simulating a premium web application canvas, conveying a mood of efficiency, trust, and advanced technological capability." data-location="Global City Map" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg-I8ZEahOOr4gk_OoxvMTk_b-XXcCQfoKIGhGrjbYhQFzlmo_zTuuHVAZ-aAS5yjkRylr-NmTYLUzKh9QL4VeAsOKvIe9ok12bgBzoYfLEl6O0ISP8uCSzl_mqR9G9lNdFDj0PjRjQqKVDlhfdxCHC-Si4g00KDtVo0545fIc5-EHbunfwO0_E9OQ1abkbVEvJ2zK0ATzbbYH0rk3r6BtmGf1VngOJh2cbVJXjeFzxUo3xgtkH0wLy8FxmYQCsFuuFH-JKe0lYp4"/>
+<!-- Radius Overlay Simulation -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] rounded-full bg-primary/10 border-[1.5px] border-primary/40 pointer-events-none"></div>
+<!-- Center Pin -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[100%] flex flex-col items-center pointer-events-none drop-shadow-md">
+<span class="material-symbols-outlined text-primary text-[36px]" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<div class="w-2 h-1 bg-on-surface/20 rounded-[100%] blur-[1px] -mt-1"></div>
+</div>
+<!-- Floating Map Controls -->
+<div class="absolute bottom-md right-md flex flex-col gap-xs bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant overflow-hidden">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container border-b border-outline-variant/50">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container">
+<span class="material-symbols-outlined text-[20px]">remove</span>
+</button>
+</div>
+</section>
+<!-- Radius Configuration Card -->
+<section class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/50 flex flex-col gap-md">
+<div class="flex items-center justify-between">
+<h2 class="font-h3 text-h3 text-on-surface">Delivery Radius</h2>
+<span class="font-label-md text-label-md text-primary bg-primary-fixed px-3 py-1 rounded-full">5 km</span>
+</div>
+<!-- Preset Pills -->
+<div class="flex gap-sm overflow-x-auto hide-scrollbar pb-xs">
+<button class="shrink-0 px-4 py-2 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container transition-colors">1 km</button>
+<button class="shrink-0 px-4 py-2 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container transition-colors">3 km</button>
+<button class="shrink-0 px-4 py-2 rounded-full border border-primary bg-primary-container text-on-primary-container font-label-md text-label-md shadow-sm transition-all transform scale-105">5 km</button>
+<button class="shrink-0 px-4 py-2 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container transition-colors">10 km</button>
+<button class="shrink-0 px-4 py-2 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container transition-colors">25 km</button>
+<button class="shrink-0 px-4 py-2 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container transition-colors">50 km</button>
+<button class="shrink-0 px-4 py-2 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container transition-colors">Custom</button>
+</div>
+<!-- Custom Slider Mockup -->
+<div class="pt-sm pb-xs">
+<div class="relative w-full h-1.5 bg-surface-container-highest rounded-full">
+<!-- Track active -->
+<div class="absolute top-0 left-0 h-full bg-primary rounded-full" style="width: 20%;"></div>
+<!-- Thumb -->
+<div class="absolute top-1/2 left-[20%] -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-surface-container-lowest border-2 border-primary rounded-full shadow-[0_2px_8px_rgba(36,56,156,0.2)]"></div>
+</div>
+<div class="flex justify-between mt-xs text-outline font-label-sm text-label-sm">
+<span>1 km</span>
+<span>Max</span>
+</div>
+</div>
+</section>
+<!-- Dynamic Stats Bento Grid -->
+<section class="grid grid-cols-2 gap-margin-mobile">
+<!-- Supplier Stat Card -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/50 flex flex-col gap-xs relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-secondary-fixed/30 rounded-full blur-xl"></div>
+<span class="material-symbols-outlined text-secondary text-[24px]">storefront</span>
+<div class="mt-xs flex flex-col">
+<span class="font-h1 text-h1 text-on-surface">342</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Supplier estimate</span>
+</div>
+</div>
+<!-- Coverage Stat Card -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-outline-variant/50 flex flex-col gap-xs relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-tertiary-fixed/30 rounded-full blur-xl"></div>
+<span class="material-symbols-outlined text-tertiary text-[24px]">radar</span>
+<div class="mt-xs flex flex-col">
+<span class="font-h1 text-h1 text-on-surface">92%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Coverage estimate</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action -->
+<div class="fixed bottom-0 w-full glass-panel border-t border-outline-variant/50 p-margin-mobile pb-[calc(16px+env(safe-area-inset-bottom))] z-50">
+<div class="max-w-2xl mx-auto">
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-[0_4px_12px_rgba(36,56,156,0.3)] flex items-center justify-center gap-sm transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+                Confirm Location Settings
+            </button>
+</div>
+</div>
+</body></html>

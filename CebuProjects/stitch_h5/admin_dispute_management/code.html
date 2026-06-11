@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Admin Dispute Triage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#6c3400",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#00105c",
+                    "outline": "#757684",
+                    "surface-variant": "#d3e4fe",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#bac3ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-tint": "#4355b9",
+                    "on-tertiary-container": "#ffc7a2",
+                    "secondary-container": "#abb7ff",
+                    "surface-container-high": "#dce9ff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c5c5d4",
+                    "surface": "#f8f9ff",
+                    "on-secondary-fixed": "#021355",
+                    "on-secondary-fixed-variant": "#354282",
+                    "surface-container-low": "#eff4ff",
+                    "tertiary-container": "#8f4700",
+                    "inverse-surface": "#213145",
+                    "secondary-fixed": "#dee1ff",
+                    "surface-container": "#e5eeff",
+                    "on-surface": "#0b1c30",
+                    "primary-container": "#3f51b5",
+                    "primary-fixed": "#dee0ff",
+                    "on-surface-variant": "#454652",
+                    "primary": "#24389c",
+                    "on-secondary-container": "#394687",
+                    "secondary-fixed-dim": "#b9c3ff",
+                    "background": "#f8f9ff",
+                    "secondary": "#4d5a9c",
+                    "inverse-primary": "#bac3ff",
+                    "surface-bright": "#f8f9ff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-background": "#0b1c30",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#cacfff",
+                    "surface-dim": "#cbdbf5",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed": "#301400",
+                    "on-primary-fixed-variant": "#293ca0",
+                    "tertiary-fixed": "#ffdcc6",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#713700",
+                    "tertiary-fixed-dim": "#ffb784"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "gutter-mobile": "12px",
+                    "margin-mobile": "16px",
+                    "md": "16px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "h3": ["Inter"],
+                    "label-md": ["Inter"],
+                    "h1": ["Inter"],
+                    "h2": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-fixed-dim selection:text-on-primary-fixed">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 shadow-sm font-['Inter'] antialiased">
+<div class="flex items-center justify-between px-4 h-16 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400" data-icon="swap_horizontal_circle">swap_horizontal_circle</span>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{{APP_NAME}}</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 rounded-full">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 rounded-full relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-20 pb-24 px-margin-mobile max-w-lg mx-auto">
+<!-- Dashboard Summary / Sticky Header -->
+<div class="mb-lg flex items-center justify-between">
+<div>
+<h2 class="font-h1 text-h1 text-on-surface">Active Disputes (4)</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Prioritizing high-value escalations</p>
+</div>
+<div class="bg-surface-container-high p-xs rounded-lg flex gap-base">
+<button class="bg-white px-3 py-1.5 rounded shadow-sm font-label-sm text-label-sm text-primary">Priority</button>
+<button class="px-3 py-1.5 font-label-sm text-label-sm text-outline">Recent</button>
+</div>
+</div>
+<!-- Disputes List -->
+<div class="flex flex-col gap-md">
+<!-- Dispute Card 1: Urgent -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant p-md relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="flex justify-between items-start mb-sm">
+<div class="bg-error-container text-on-error-container px-2 py-0.5 rounded font-label-sm text-[10px] uppercase tracking-wider">Urgent</div>
+<p class="font-label-sm text-label-sm text-outline">Ref: #DSP-8821</p>
+</div>
+<h3 class="font-h2 text-h2 mb-1">Bulk Industrial Wiring</h3>
+<div class="grid grid-cols-2 gap-y-2 mb-md">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-tight">Buyer</p>
+<p class="font-label-md text-label-md text-on-surface">ModernBuild Inc.</p>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-tight">Supplier</p>
+<p class="font-label-md text-label-md text-on-surface">TechLine Manila</p>
+</div>
+<div class="col-span-2">
+<p class="text-[10px] text-outline uppercase font-bold tracking-tight">Reason</p>
+<p class="font-body-md text-body-md text-on-surface">Incomplete Delivery - Missing components</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-md border-t border-slate-100">
+<div class="flex flex-col">
+<span class="text-h3 font-h3 text-tertiary">PHP 5,500.00</span>
+<span class="text-[10px] text-outline italic">Opened 2h ago</span>
+</div>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md shadow-sm active:scale-95 transition-all">Review Evidence</button>
+</div>
+</div>
+<!-- Dispute Card 2: Under Review -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant p-md">
+<div class="flex justify-between items-start mb-sm">
+<div class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded font-label-sm text-[10px] uppercase tracking-wider">Under Review</div>
+<p class="font-label-sm text-label-sm text-outline">Ref: #DSP-8794</p>
+</div>
+<h3 class="font-h2 text-h2 mb-1">Custom Office Furniture</h3>
+<div class="grid grid-cols-2 gap-y-2 mb-md">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-tight">Buyer</p>
+<p class="font-label-md text-label-md text-on-surface">Nexus Startup Lab</p>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-tight">Supplier</p>
+<p class="font-label-md text-label-md text-on-surface">CraftHaus PH</p>
+</div>
+<div class="col-span-2">
+<p class="text-[10px] text-outline uppercase font-bold tracking-tight">Reason</p>
+<p class="font-body-md text-body-md text-on-surface">Damaged on arrival - Scratched surfaces</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-md border-t border-slate-100">
+<div class="flex flex-col">
+<span class="text-h3 font-h3 text-on-surface">PHP 12,800.00</span>
+<span class="text-[10px] text-outline italic">Opened 1d ago</span>
+</div>
+<button class="border border-primary text-primary px-lg py-sm rounded-lg font-label-md active:scale-95 transition-all">Review Evidence</button>
+</div>
+</div>
+<!-- Dispute Card 3: Paused -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant p-md opacity-80">
+<div class="flex justify-between items-start mb-sm">
+<div class="bg-surface-dim text-on-surface-variant px-2 py-0.5 rounded font-label-sm text-[10px] uppercase tracking-wider">Paused</div>
+<p class="font-label-sm text-label-sm text-outline">Ref: #DSP-8752</p>
+</div>
+<h3 class="font-h2 text-h2 mb-1">Server Maintenance Pack</h3>
+<div class="grid grid-cols-2 gap-y-2 mb-md">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-tight">Buyer</p>
+<p class="font-label-md text-label-md text-on-surface">CloudBase Solutions</p>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-tight">Supplier</p>
+<p class="font-label-md text-label-md text-on-surface">Global IT Systems</p>
+</div>
+<div class="col-span-2">
+<p class="text-[10px] text-outline uppercase font-bold tracking-tight">Reason</p>
+<p class="font-body-md text-body-md text-on-surface">Wrong item shipped - Version mismatch</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-md border-t border-slate-100">
+<div class="flex flex-col">
+<span class="text-h3 font-h3 text-on-surface">PHP 8,200.00</span>
+<span class="text-[10px] text-outline italic">Awaiting Buyer Reply</span>
+</div>
+<button class="bg-surface-container text-on-surface-variant px-lg py-sm rounded-lg font-label-md active:scale-95 transition-all">Resume Review</button>
+</div>
+</div>
+<!-- Bento Card for Metrics -->
+<div class="grid grid-cols-2 gap-sm mt-md">
+<div class="bg-indigo-50 border border-indigo-100 p-md rounded-2xl flex flex-col justify-between aspect-square">
+<div class="bg-indigo-600 w-10 h-10 rounded-xl flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</div>
+<div>
+<p class="text-h1 font-h1 text-indigo-900">4.2h</p>
+<p class="text-[12px] text-indigo-700 font-medium">Avg Resolution Time</p>
+</div>
+</div>
+<div class="bg-amber-50 border border-amber-100 p-md rounded-2xl flex flex-col justify-between aspect-square">
+<div class="bg-amber-600 w-10 h-10 rounded-xl flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+</div>
+<div>
+<p class="text-h1 font-h1 text-amber-900">88%</p>
+<p class="text-[12px] text-amber-700 font-medium">Success Rate</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<div class="flex justify-around items-center h-16 px-2 w-full">
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 transition-transform active:scale-90">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-medium font-['Inter']">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 transition-transform active:scale-90">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="text-[10px] font-medium font-['Inter']">Verifications</span>
+</div>
+<!-- Active State: Disputes -->
+<div class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl py-1 px-3 transition-transform active:scale-90">
+<span class="material-symbols-outlined" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="text-[10px] font-medium font-['Inter']">Disputes</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 transition-transform active:scale-90">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="text-[10px] font-medium font-['Inter']">Risk</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 transition-transform active:scale-90">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-medium font-['Inter']">Settings</span>
+</div>
+</div>
+</nav>
+</body></html>

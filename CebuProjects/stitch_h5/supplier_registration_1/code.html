@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Supplier Registration</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Mobile safe area padding for sticky elements */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        
+        /* Hide scrollbar for cleaner look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<!-- Tailwind Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f8f9ff",
+                        "outline-variant": "#c5c5d4",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-secondary-fixed": "#021355",
+                        "on-primary-fixed": "#00105c",
+                        "outline": "#757684",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#6c3400",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "secondary-container": "#abb7ff",
+                        "surface-tint": "#4355b9",
+                        "surface-variant": "#d3e4fe",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-error-container": "#93000a",
+                        "secondary": "#4d5a9c",
+                        "inverse-primary": "#bac3ff",
+                        "background": "#f8f9ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary-container": "#cacfff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "secondary-fixed": "#dee1ff",
+                        "inverse-surface": "#213145",
+                        "tertiary-container": "#8f4700",
+                        "on-secondary-container": "#394687",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-surface-variant": "#454652",
+                        "primary": "#24389c",
+                        "primary-fixed": "#dee0ff",
+                        "primary-container": "#3f51b5",
+                        "on-surface": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "base": "4px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md h-[884px] flex flex-col pt-safe relative">
+<!-- Transactional Top Bar (Suppressed Main Nav) -->
+<header class="flex items-center justify-between px-margin-mobile h-16 w-full bg-surface/90 backdrop-blur-md sticky top-0 z-40">
+<button aria-label="Cancel registration" class="flex items-center justify-center w-10 h-10 -ml-2 text-on-surface hover:bg-surface-variant rounded-full transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<div class="flex-1 text-center">
+<h1 class="text-h3 font-h3 text-on-surface tracking-tight">Supplier Application</h1>
+</div>
+<div class="w-10"></div> <!-- Balancer -->
+</header>
+<!-- Main Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto no-scrollbar pb-[140px]">
+<!-- Intro Header -->
+<section class="px-margin-mobile py-lg text-center">
+<div class="inline-flex items-center justify-center w-12 h-12 bg-primary-container rounded-xl mb-md">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="storefront" style="font-variation-settings: 'FILL' 1;">storefront</span>
+</div>
+<h2 class="text-h1 font-h1 text-on-background mb-xs">Join our Network</h2>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-[280px] mx-auto">Provide your business details to initiate the institutional verification process.</p>
+</section>
+<!-- Form Container -->
+<form class="px-margin-mobile space-y-xl">
+<!-- Section: Business Identity -->
+<div class="space-y-md">
+<div class="flex items-center gap-sm border-b border-outline-variant/40 pb-xs mb-sm">
+<span class="material-symbols-outlined text-outline" data-icon="domain">domain</span>
+<h3 class="text-label-md font-label-md text-on-surface">Business Identity</h3>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant" for="companyName">Legal Company Name</label>
+<input class="h-[52px] px-md bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" id="companyName" placeholder="e.g. Acme Manufacturing Ltd." type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant" for="businessType">Business Entity Type</label>
+<div class="relative">
+<select class="w-full h-[52px] px-md appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="businessType">
+<option disabled="" selected="" value="">Select an entity type</option>
+<option value="manufacturer">Manufacturer</option>
+<option value="wholesaler">Wholesaler / Distributor</option>
+<option value="brand">Brand Owner</option>
+<option value="trading">Trading Company</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-outline pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Section: Point of Contact -->
+<div class="space-y-md">
+<div class="flex items-center gap-sm border-b border-outline-variant/40 pb-xs mb-sm">
+<span class="material-symbols-outlined text-outline" data-icon="person_outline">person_outline</span>
+<h3 class="text-label-md font-label-md text-on-surface">Point of Contact</h3>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant" for="contactName">Primary Contact Name</label>
+<input class="h-[52px] px-md bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="contactName" placeholder="Full Name" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant" for="contactEmail">Corporate Email Address</label>
+<input class="h-[52px] px-md bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="contactEmail" placeholder="name@company.com" type="email"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant" for="contactPhone">Business Phone Number</label>
+<input class="h-[52px] px-md bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="contactPhone" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+</div>
+<!-- Section: Location -->
+<div class="space-y-md">
+<div class="flex items-center gap-sm border-b border-outline-variant/40 pb-xs mb-sm">
+<span class="material-symbols-outlined text-outline" data-icon="location_on">location_on</span>
+<h3 class="text-label-md font-label-md text-on-surface">Headquarters Location</h3>
+</div>
+<div class="grid grid-cols-2 gap-gutter-mobile">
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant" for="country">Country</label>
+<div class="relative">
+<select class="w-full h-[52px] pl-md pr-8 appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="country">
+<option disabled="" selected="" value="">Select</option>
+<option value="us">United States</option>
+<option value="uk">United Kingdom</option>
+<option value="ca">Canada</option>
+<option value="au">Australia</option>
+</select>
+<span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 text-outline text-[20px] pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant" for="city">City</label>
+<input class="h-[52px] px-md bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="city" placeholder="City Name" type="text"/>
+</div>
+</div>
+</div>
+<!-- Section: Specialization (Tags) -->
+<div class="space-y-md">
+<div class="flex items-center gap-sm border-b border-outline-variant/40 pb-xs mb-sm">
+<span class="material-symbols-outlined text-outline" data-icon="category">category</span>
+<h3 class="text-label-md font-label-md text-on-surface">Main Categories</h3>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-xs">Select all that apply to your supply chain capabilities.</p>
+<div class="flex flex-wrap gap-sm">
+<!-- Selected Tag -->
+<label class="cursor-pointer">
+<input checked="" class="hidden peer" type="checkbox"/>
+<div class="px-md py-[10px] rounded-lg border border-transparent bg-secondary-container text-on-secondary-container font-label-sm text-label-sm transition-all peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-primary-container">
+                            Industrial Machinery
+                        </div>
+</label>
+<!-- Unselected Tags -->
+<label class="cursor-pointer">
+<input class="hidden peer" type="checkbox"/>
+<div class="px-md py-[10px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm transition-all peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-transparent">
+                            Raw Materials
+                        </div>
+</label>
+<label class="cursor-pointer">
+<input class="hidden peer" type="checkbox"/>
+<div class="px-md py-[10px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm transition-all peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-transparent">
+                            Consumer Electronics
+                        </div>
+</label>
+<label class="cursor-pointer">
+<input class="hidden peer" type="checkbox"/>
+<div class="px-md py-[10px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm transition-all peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-transparent">
+                            Apparel &amp; Textiles
+                        </div>
+</label>
+<label class="cursor-pointer">
+<input class="hidden peer" type="checkbox"/>
+<div class="px-md py-[10px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm transition-all peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-transparent">
+                            Automotive Parts
+                        </div>
+</label>
+<label class="cursor-pointer">
+<input class="hidden peer" type="checkbox"/>
+<div class="px-md py-[10px] rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm transition-all peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-transparent">
+                            Packaging
+                        </div>
+</label>
+</div>
+</div>
+</form>
+</main>
+<!-- Sticky Bottom Action Area -->
+<footer class="fixed bottom-0 left-0 w-full bg-surface/95 backdrop-blur-md border-t border-outline-variant/30 pb-safe z-50">
+<div class="px-margin-mobile py-md flex flex-col gap-sm">
+<!-- Trust Indicator -->
+<div class="flex items-center justify-center gap-xs bg-surface-container py-2 px-md rounded-lg mx-auto w-fit">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="text-label-sm font-label-sm text-on-surface">Next step: KYB Identity Verification</span>
+</div>
+<!-- Primary Action Button -->
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-lg flex items-center justify-center gap-2 shadow-sm hover:bg-primary/90 active:scale-[0.98] transition-all" type="button">
+<span class="text-label-md font-label-md">Continue to Verification</span>
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</footer>
+</body></html>

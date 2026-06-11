@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Supplier KYB Onboarding - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#1a1c1c",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#e4beba",
+                        "tertiary-fixed": "#ebe3c0",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-primary-fixed-variant": "#93000f",
+                        "surface": "#f9f9f9",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#ffb3ac",
+                        "surface-tint": "#ba1a1f",
+                        "on-primary-container": "#fffbff",
+                        "on-tertiary-container": "#fffbff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "tertiary-container": "#7a7558",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface-bright": "#f9f9f9",
+                        "secondary": "#00677d",
+                        "surface-dim": "#dadada",
+                        "secondary-container": "#8fe3ff",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "primary-container": "#da3432",
+                        "secondary-fixed": "#b4ebff",
+                        "on-primary-fixed": "#410003",
+                        "on-secondary-fixed": "#001f27",
+                        "surface-container-low": "#f3f3f4",
+                        "surface-container-highest": "#e2e2e2",
+                        "background": "#f9f9f9",
+                        "tertiary": "#615c41",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "primary": "#b6171d",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1a1c1c",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#ffdad6",
+                        "outline": "#8f6f6c",
+                        "on-surface-variant": "#5b403d",
+                        "on-secondary-container": "#00667c",
+                        "surface-container": "#eeeeee",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "surface-variant": "#e2e2e2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "sm": "16px",
+                        "lg": "40px",
+                        "base": "4px",
+                        "gutter": "24px",
+                        "xl": "64px",
+                        "container-max": "1280px",
+                        "xs": "8px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "display": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #f9f9f9; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased">
+<!-- TopNavBar Omitted: Transactional/Onboarding Intent -->
+<!-- Simple Header for Transactional Context -->
+<header class="w-full bg-white border-b border-surface-container-high py-4 px-lg flex justify-between items-center z-50">
+<div class="flex items-center">
+<span class="text-xl font-black tracking-tighter text-on-background">ProcurePing</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-body-sm font-body-sm text-on-surface-variant">Need help?</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="support_agent">support_agent</span>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center py-xl px-lg">
+<div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-xl">
+<!-- Left Side: Context & Image -->
+<div class="flex flex-col justify-center">
+<span class="inline-block px-3 py-1 bg-surface-container-high text-on-surface rounded-full text-label-caps font-label-caps w-max mb-6">Supplier Verification</span>
+<h1 class="text-display font-display text-on-background mb-6">Secure Your Global Reach</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant mb-8">
+                    To maintain the highest standards of trust and efficiency in our reverse marketplace, we require all suppliers to undergo a quick Know Your Business (KYB) verification process. This ensures rapid, secure transactions and premium buyer access.
+                </p>
+<div class="rounded-xl overflow-hidden shadow-lg h-64 relative">
+<img alt="Professional modern office environment" class="w-full h-full object-cover" data-alt="A bright, modern corporate office environment with glass walls and clean lines. The setting conveys professionalism, efficiency, and global business operations. The lighting is crisp and natural, illuminating a sleek, minimalist aesthetic dominated by crisp whites and subtle cool tones, perfectly aligning with a high-stakes enterprise procurement atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqN8KoCfKbH-eeaahiWspe34z2BAuq-y1VMO3YAjoKN0GTMLeXTo1I4_X4bdUbM6MGi1YKr11zmbEOs7l7Gr0Zkulyqs7CzODKra6oV-qaqJbmJm8I2Un9qrvQ9wqvHFxKZBs22_N5OXqvXSgJ5fJ9L2q1EtIwj-mX973kWa646xgoK2cYm5hr9o6P1Ou0GOtQBTo4nLpohqATcQ8DCiHfHSs7uiEgGnRwaGS-m15GTMjtdvGhTyXn08jUS_oOzZj00dgmevRyVrg9"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-white" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-white font-h3 text-h3">Enterprise Grade Security</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Checklist Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-container-high p-lg shadow-[0_12px_32px_rgba(0,0,0,0.05)] flex flex-col">
+<h2 class="text-h2 font-h2 text-on-background mb-2">What you'll need</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-8">Gather these documents before starting. The process takes about 5 minutes.</p>
+<div class="flex flex-col gap-6 flex-grow">
+<!-- Item 1 -->
+<div class="flex items-start gap-4 p-4 rounded-lg hover:bg-surface-container-low transition-colors duration-200 border border-transparent hover:border-surface-container-high">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-fixed" data-icon="description">description</span>
+</div>
+<div>
+<h3 class="text-body-md font-h3 text-on-background font-semibold">Business Registration</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Certificate of incorporation, articles of organization, or equivalent official document.</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-start gap-4 p-4 rounded-lg hover:bg-surface-container-low transition-colors duration-200 border border-transparent hover:border-surface-container-high">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-fixed" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h3 class="text-body-md font-h3 text-on-background font-semibold">Tax ID &amp; Payout Details</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Your company's Tax Identification Number and Bank or Payoneer account information.</p>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-start gap-4 p-4 rounded-lg hover:bg-surface-container-low transition-colors duration-200 border border-transparent hover:border-surface-container-high">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-fixed" data-icon="badge">badge</span>
+</div>
+<div>
+<h3 class="text-body-md font-h3 text-on-background font-semibold">Owner Representative ID</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Government-issued ID (Passport, Driver's License) of the primary account holder or legal representative.</p>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex items-start gap-4 p-4 rounded-lg hover:bg-surface-container-low transition-colors duration-200 border border-transparent hover:border-surface-container-high">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-fixed" data-icon="warehouse">warehouse</span>
+</div>
+<div>
+<h3 class="text-body-md font-h3 text-on-background font-semibold">Operational Proof</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Recent photos of your store, warehouse, or primary place of business operation.</p>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-surface-container-high flex flex-col items-center">
+<button class="w-full bg-primary text-on-primary py-4 px-6 rounded-lg font-h3 text-body-md hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 shadow-md">
+                        Start Verification
+                    </button>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="lock">lock</span>
+                        Your data is encrypted and stored securely.
+                    </p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Omitted: Transactional/Onboarding Intent -->
+</body></html>

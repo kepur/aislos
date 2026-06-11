@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Card Payment Placeholder</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#f8f9ff",
+                      "on-secondary-container": "#394687",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed": "#ffdcc6",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error": "#ffffff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "surface-tint": "#4355b9",
+                      "primary-container": "#3f51b5",
+                      "secondary-fixed-dim": "#b9c3ff",
+                      "on-secondary-fixed-variant": "#354282",
+                      "on-primary-fixed-variant": "#293ca0",
+                      "on-primary-fixed": "#00105c",
+                      "tertiary-fixed-dim": "#ffb784",
+                      "surface": "#f8f9ff",
+                      "surface-container": "#e5eeff",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "on-tertiary-container": "#ffc7a2",
+                      "secondary-fixed": "#dee1ff",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#abb7ff",
+                      "on-primary-container": "#cacfff",
+                      "on-surface": "#0b1c30",
+                      "surface-container-highest": "#d3e4fe",
+                      "on-surface-variant": "#454652",
+                      "secondary": "#4d5a9c",
+                      "inverse-surface": "#213145",
+                      "inverse-primary": "#bac3ff",
+                      "outline-variant": "#c5c5d4",
+                      "tertiary-container": "#8f4700",
+                      "on-background": "#0b1c30",
+                      "on-primary": "#ffffff",
+                      "surface-dim": "#cbdbf5",
+                      "tertiary": "#6c3400",
+                      "primary": "#24389c",
+                      "surface-variant": "#d3e4fe",
+                      "background": "#f8f9ff",
+                      "surface-container-high": "#dce9ff",
+                      "on-secondary-fixed": "#021355",
+                      "surface-container-low": "#eff4ff",
+                      "primary-fixed": "#dee0ff",
+                      "outline": "#757684",
+                      "on-error-container": "#93000a",
+                      "primary-fixed-dim": "#bac3ff",
+                      "on-tertiary-fixed": "#301400",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter-mobile": "12px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "margin-mobile": "16px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h3": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "h2": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h1": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Soft shadow for cards */
+        .shadow-soft {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        /* Sticky element shadow */
+        .shadow-sticky {
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-[100px] md:pb-0">
+<!-- Top Navigation (Transactional, no shell nav for checkout) -->
+<header class="bg-surface-container-lowest border-b border-surface-container-high h-16 flex items-center px-margin-mobile sticky top-0 z-50">
+<button class="p-2 -ml-2 text-on-surface-variant active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[24px]">close</span>
+</button>
+<div class="flex-1 text-center font-h3 text-h3 text-on-background">Secure Checkout</div>
+<div class="w-8"></div> <!-- Spacer for center alignment -->
+</header>
+<main class="max-w-2xl mx-auto px-margin-mobile pt-lg pb-xl">
+<!-- Order Summary & Total -->
+<section class="mb-xl">
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-soft border border-surface-container-high relative overflow-hidden">
+<!-- Decorative subtle gradient bg -->
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-low to-transparent opacity-50 pointer-events-none"></div>
+<div class="relative z-10">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs uppercase tracking-wider">Amount to Authorize</p>
+<div class="flex items-baseline gap-xs">
+<span class="font-h1 text-h1 text-on-background">$2,450.00</span>
+<span class="font-body-md text-body-md text-on-surface-variant">USD</span>
+</div>
+<div class="mt-md pt-md border-t border-surface-container flex items-start gap-sm">
+<div class="bg-surface-container-low p-2 rounded-full flex-shrink-0">
+<span class="material-symbols-outlined icon-fill text-primary text-[20px]">lock</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-background">Escrow Protection Active</p>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Funds are held securely until you confirm receipt of the item in described condition.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Payment Form -->
+<section>
+<h2 class="font-h3 text-h3 text-on-background mb-md">Payment Details</h2>
+<form class="space-y-md">
+<!-- Saved Cards (Placeholder for visual richness) -->
+<div class="mb-lg">
+<p class="font-label-md text-label-md text-on-surface-variant mb-sm">Saved Payment Methods</p>
+<div class="flex gap-sm overflow-x-auto pb-2 -mx-margin-mobile px-margin-mobile snap-x">
+<!-- Active Card -->
+<div class="snap-start flex-shrink-0 w-64 h-32 rounded-xl bg-gradient-to-tr from-primary to-primary-container p-md relative shadow-soft border border-transparent text-on-primary cursor-pointer active:scale-[0.98] transition-transform">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-[24px]">credit_card</span>
+<span class="font-label-sm text-label-sm bg-on-primary/20 px-2 py-1 rounded-full">Default</span>
+</div>
+<div class="absolute bottom-md left-md right-md flex justify-between items-end">
+<div>
+<p class="font-body-md text-body-md opacity-80 text-[12px]">•••• •••• •••• 4242</p>
+<p class="font-label-md text-label-md mt-xs">Visa</p>
+</div>
+<p class="font-body-md text-body-md opacity-80 text-[12px]">12/25</p>
+</div>
+</div>
+<!-- Add New Card Option -->
+<div class="snap-start flex-shrink-0 w-64 h-32 rounded-xl bg-surface-container-lowest border-2 border-dashed border-outline-variant p-md flex flex-col items-center justify-center text-on-surface-variant cursor-pointer hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[32px] mb-2">add_circle</span>
+<span class="font-label-md text-label-md">Add new card</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-soft border border-surface-container-high space-y-md">
+<!-- Card Number -->
+<div>
+<label class="block font-label-md text-label-md text-on-background mb-sm" for="cardNumber">Card Information</label>
+<div class="relative">
+<input class="w-full h-[52px] pl-lg pr-lg rounded-t-lg border-x border-t border-b-0 border-outline-variant bg-surface-container-lowest text-on-background focus:ring-2 focus:ring-primary focus:border-primary font-body-lg text-body-lg" id="cardNumber" placeholder="Card number" type="text" value="•••• •••• •••• 4242"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">credit_score</span>
+</div>
+<div class="flex -mt-px relative z-10">
+<input class="w-1/2 h-[52px] pl-md pr-md rounded-bl-lg border border-outline-variant bg-surface-container-lowest text-on-background focus:ring-2 focus:ring-primary focus:border-primary font-body-lg text-body-lg" id="expiry" placeholder="MM / YY" type="text" value="12/25"/>
+<input class="w-1/2 h-[52px] pl-md pr-md rounded-br-lg border-y border-r border-l-0 border-outline-variant bg-surface-container-lowest text-on-background focus:ring-2 focus:ring-primary focus:border-primary font-body-lg text-body-lg" id="cvc" placeholder="CVC" type="text" value="•••"/>
+</div>
+</div>
+<!-- Billing Country -->
+<div class="pt-sm">
+<label class="block font-label-md text-label-md text-on-background mb-sm" for="country">Billing Country</label>
+<select class="w-full h-[52px] px-md rounded-lg border border-outline-variant bg-surface-container-lowest text-on-background focus:ring-2 focus:ring-primary focus:border-primary font-body-lg text-body-lg appearance-none" id="country">
+<option>United States</option>
+<option>Canada</option>
+<option>United Kingdom</option>
+<option>Australia</option>
+</select>
+<div class="pointer-events-none absolute right-md top-[calc(100%-26px)] -translate-y-1/2 flex items-center px-2 text-on-surface-variant">
+<!-- Arrow handled by browser default mostly, but leaving room if needed to style native select further -->
+</div>
+</div>
+</div>
+<!-- Trust Badge -->
+<div class="flex items-center justify-center gap-sm mt-lg py-md text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+<span class="font-label-sm text-label-sm">Payments are secure and encrypted</span>
+</div>
+</form>
+</section>
+</main>
+<!-- Sticky Bottom Action Area -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest/95 backdrop-blur-md shadow-sticky pt-md pb-[max(env(safe-area-inset-bottom,24px),24px)] px-margin-mobile border-t border-surface-container-high z-50 md:sticky md:bg-transparent md:border-none md:shadow-none md:pt-lg md:pb-lg">
+<div class="max-w-2xl mx-auto">
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-xl font-label-md text-label-md flex items-center justify-center gap-sm active:bg-primary/90 active:scale-[0.98] transition-all shadow-soft">
+<span class="material-symbols-outlined">lock</span>
+                Pay into Escrow
+            </button>
+</div>
+</div>
+</body></html>

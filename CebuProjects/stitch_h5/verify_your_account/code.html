@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>OTP Verification - {{APP_NAME}}</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Design System Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#f8f9ff",
+                        "outline-variant": "#c5c5d4",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-secondary-fixed": "#021355",
+                        "on-primary-fixed": "#00105c",
+                        "outline": "#757684",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#6c3400",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "secondary-container": "#abb7ff",
+                        "surface-tint": "#4355b9",
+                        "surface-variant": "#d3e4fe",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-error-container": "#93000a",
+                        "secondary": "#4d5a9c",
+                        "inverse-primary": "#bac3ff",
+                        "background": "#f8f9ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary-container": "#cacfff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "secondary-fixed": "#dee1ff",
+                        "inverse-surface": "#213145",
+                        "tertiary-container": "#8f4700",
+                        "on-secondary-container": "#394687",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-surface-variant": "#454652",
+                        "primary": "#24389c",
+                        "primary-fixed": "#dee0ff",
+                        "primary-container": "#3f51b5",
+                        "on-surface": "#0b1c30"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "base": "4px",
+                        "margin-mobile": "16px"
+                    },
+                    fontFamily: {
+                        "label-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    fontSize: {
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+                        "h1": ["24px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0", fontWeight: "400" }],
+                        "h3": ["18px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "600" }],
+                        "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "400" }],
+                        "h2": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Safe area utilities for mobile */
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 24px); }
+        
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Header (Simplified for transactional flow) -->
+<header class="flex items-center px-margin-mobile h-16 w-full shrink-0 pt-safe relative z-10">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center -ml-2 rounded-full hover:bg-surface-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary">
+<span class="material-symbols-outlined text-on-surface text-[24px]">arrow_back</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col px-margin-mobile pt-lg pb-safe max-w-md w-full mx-auto relative z-10">
+<!-- Contextual Header -->
+<div class="flex flex-col items-center text-center mb-xl">
+<!-- Trust/Context Indicator -->
+<div class="w-16 h-16 rounded-2xl bg-surface-container-highest flex items-center justify-center mb-lg shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-surface-variant">
+<span class="material-symbols-outlined text-primary text-[32px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<h1 class="font-h1 text-h1 text-on-background mb-xs">Verification Code</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[280px]">
+                We've sent a 6-digit secure code to <br/>
+<span class="font-label-md text-label-md text-on-background mt-1 inline-block">alex.morgan@example.com</span>
+</p>
+</div>
+<!-- OTP Input Area -->
+<div class="w-full mb-xl">
+<div class="flex justify-between items-center gap-xs sm:gap-sm max-w-[340px] mx-auto">
+<!-- Box 1 -->
+<div class="relative w-[48px] h-[56px] sm:w-[52px] sm:h-[60px]">
+<input class="absolute inset-0 w-full h-full text-center font-h2 text-h2 text-on-background bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number" value="4"/>
+</div>
+<!-- Box 2 -->
+<div class="relative w-[48px] h-[56px] sm:w-[52px] sm:h-[60px]">
+<input class="absolute inset-0 w-full h-full text-center font-h2 text-h2 text-on-background bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number" value="9"/>
+</div>
+<!-- Box 3 (Active Focus State) -->
+<div class="relative w-[48px] h-[56px] sm:w-[52px] sm:h-[60px]">
+<input autofocus="" class="absolute inset-0 w-full h-full text-center font-h2 text-h2 text-on-background bg-surface-container-lowest border-2 border-primary rounded-lg focus:outline-none shadow-[0_4px_12px_rgba(63,81,181,0.1)] transition-all" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number"/>
+<!-- Fake cursor for active state visualization -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0.5 h-6 bg-primary animate-pulse pointer-events-none"></div>
+</div>
+<!-- Box 4 -->
+<div class="relative w-[48px] h-[56px] sm:w-[52px] sm:h-[60px]">
+<input class="absolute inset-0 w-full h-full text-center font-h2 text-h2 text-on-background bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number"/>
+</div>
+<!-- Box 5 -->
+<div class="relative w-[48px] h-[56px] sm:w-[52px] sm:h-[60px]">
+<input class="absolute inset-0 w-full h-full text-center font-h2 text-h2 text-on-background bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number"/>
+</div>
+<!-- Box 6 -->
+<div class="relative w-[48px] h-[56px] sm:w-[52px] sm:h-[60px]">
+<input class="absolute inset-0 w-full h-full text-center font-h2 text-h2 text-on-background bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number"/>
+</div>
+</div>
+</div>
+<!-- Secondary Action / Timer -->
+<div class="text-center mt-sm mb-auto">
+<p class="font-body-md text-body-md text-on-surface-variant flex flex-col items-center gap-1">
+<span>Didn't receive the code?</span>
+<!-- Timer state (disabled look) -->
+<button class="font-label-md text-label-md text-primary opacity-60 cursor-not-allowed hover:opacity-100 transition-opacity focus:outline-none" disabled="">
+                    Resend in <span class="font-variant-numeric tabular-nums">00:59</span>
+</button>
+</p>
+</div>
+<!-- Primary Action Area -->
+<div class="w-full mt-xl pt-lg border-t border-surface-container">
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-[0_4px_12px_rgba(36,56,156,0.2)] hover:bg-primary-container hover:shadow-[0_6px_16px_rgba(36,56,156,0.3)] active:bg-on-primary-fixed transition-all flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
+                Verify Account
+                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</main>
+</body></html>

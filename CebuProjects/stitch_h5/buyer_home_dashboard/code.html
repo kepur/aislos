@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>{{APP_NAME}} - Buyer Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#6c3400",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#00105c",
+                    "outline": "#757684",
+                    "surface-variant": "#d3e4fe",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#bac3ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-tint": "#4355b9",
+                    "on-tertiary-container": "#ffc7a2",
+                    "secondary-container": "#abb7ff",
+                    "surface-container-high": "#dce9ff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c5c5d4",
+                    "surface": "#f8f9ff",
+                    "on-secondary-fixed": "#021355",
+                    "on-secondary-fixed-variant": "#354282",
+                    "surface-container-low": "#eff4ff",
+                    "tertiary-container": "#8f4700",
+                    "inverse-surface": "#213145",
+                    "secondary-fixed": "#dee1ff",
+                    "surface-container": "#e5eeff",
+                    "on-surface": "#0b1c30",
+                    "primary-container": "#3f51b5",
+                    "primary-fixed": "#dee0ff",
+                    "on-surface-variant": "#454652",
+                    "primary": "#24389c",
+                    "on-secondary-container": "#394687",
+                    "secondary-fixed-dim": "#b9c3ff",
+                    "background": "#f8f9ff",
+                    "secondary": "#4d5a9c",
+                    "inverse-primary": "#bac3ff",
+                    "surface-bright": "#f8f9ff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-background": "#0b1c30",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#cacfff",
+                    "surface-dim": "#cbdbf5",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed": "#301400",
+                    "on-primary-fixed-variant": "#293ca0",
+                    "tertiary-fixed": "#ffdcc6",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#713700",
+                    "tertiary-fixed-dim": "#ffb784"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "gutter-mobile": "12px",
+                    "margin-mobile": "16px",
+                    "md": "16px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "h3": ["Inter"],
+                    "label-md": ["Inter"],
+                    "h1": ["Inter"],
+                    "h2": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm border-b border-slate-200/60 dark:border-slate-800/60">
+<div class="flex items-center justify-between px-4 h-16 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400" data-icon="swap_horizontal_circle">swap_horizontal_circle</span>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white font-h1">{{APP_NAME}}</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 relative">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200 dark:border-slate-800"></div>
+<button class="flex items-center gap-1 py-1 px-3 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-full font-label-md">
+<span class="text-label-sm">Buyer</span>
+<span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<main class="mt-16 pt-4">
+<!-- Hero Section -->
+<section class="px-margin-mobile mb-xl">
+<div class="relative overflow-hidden rounded-3xl bg-primary-container p-lg text-white shadow-lg">
+<div class="relative z-10">
+<h2 class="font-h1 text-white mb-sm">What do you need today?</h2>
+<p class="text-on-primary-container mb-lg opacity-90">Post a request and let verified suppliers come to you.</p>
+<div class="relative mb-md">
+<input class="w-full h-14 pl-12 pr-4 bg-white/10 border border-white/20 backdrop-blur-md rounded-xl text-white placeholder:text-white/60 focus:ring-2 focus:ring-white/40 focus:outline-none transition-all" placeholder="Search categories or services..." type="text"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/60" data-icon="search">search</span>
+</div>
+<button class="w-full h-[56px] bg-white text-primary font-label-md rounded-xl shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="add_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                        Post a Request
+                    </button>
+</div>
+<div class="absolute -right-8 -bottom-8 w-48 h-48 bg-indigo-400/20 rounded-full blur-3xl"></div>
+<div class="absolute -left-12 -top-12 w-48 h-48 bg-indigo-800/20 rounded-full blur-3xl"></div>
+</div>
+</section>
+<!-- Active Requests Section -->
+<section class="mb-xl">
+<div class="flex items-center justify-between px-margin-mobile mb-md">
+<h3 class="font-h2 text-on-surface">Your Active Requests</h3>
+<button class="text-indigo-600 font-label-md">See all</button>
+</div>
+<div class="flex overflow-x-auto hide-scrollbar gap-md px-margin-mobile">
+<!-- Request Card 1 -->
+<div class="min-w-[280px] bg-white rounded-xl p-md border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+<div class="flex justify-between items-start mb-sm">
+<span class="px-2 py-1 bg-surface-container-low text-indigo-600 text-[10px] font-bold rounded uppercase tracking-wider">Hardware</span>
+<div class="flex items-center gap-1 text-on-error-container bg-error-container px-2 py-0.5 rounded-full text-[10px] font-semibold">
+<span class="w-1.5 h-1.5 bg-error rounded-full"></span>
+                            Active
+                        </div>
+</div>
+<h4 class="font-h3 text-on-surface mb-xs line-clamp-1">100x Industrial Grade Steel Bolts</h4>
+<p class="text-label-sm text-slate-500 mb-md">PHP 5,000 - 7,000</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1 text-slate-600">
+<span class="material-symbols-outlined text-sm" data-icon="forum">forum</span>
+<span class="text-label-sm">12 offers received</span>
+</div>
+<span class="material-symbols-outlined text-slate-400" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Request Card 2 -->
+<div class="min-w-[280px] bg-white rounded-xl p-md border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] opacity-60">
+<div class="flex justify-between items-start mb-sm">
+<span class="px-2 py-1 bg-surface-container-low text-indigo-600 text-[10px] font-bold rounded uppercase tracking-wider">Logistics</span>
+<div class="flex items-center gap-1 text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                            Pending
+                        </div>
+</div>
+<h4 class="font-h3 text-on-surface mb-xs line-clamp-1">Bulk Shipping Manila to Cebu</h4>
+<p class="text-label-sm text-slate-500 mb-md">Budget: TBD</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1 text-slate-600">
+<span class="material-symbols-outlined text-sm" data-icon="forum">forum</span>
+<span class="text-label-sm">0 offers</span>
+</div>
+<span class="material-symbols-outlined text-slate-400" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Browse Categories -->
+<section class="px-margin-mobile mb-xl">
+<h3 class="font-h2 text-on-surface mb-md">Browse Categories</h3>
+<div class="grid grid-cols-4 gap-4">
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined" data-icon="construction">construction</span>
+</div>
+<span class="text-[10px] font-medium text-center text-slate-600">Hardware</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined" data-icon="electric_bolt">electric_bolt</span>
+</div>
+<span class="text-[10px] font-medium text-center text-slate-600">Electronics</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined" data-icon="package">package</span>
+</div>
+<span class="text-[10px] font-medium text-center text-slate-600">Packaging</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+</div>
+<span class="text-[10px] font-medium text-center text-slate-600">Logistics</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined" data-icon="print">print</span>
+</div>
+<span class="text-[10px] font-medium text-center text-slate-600">Printing</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined" data-icon="agriculture">agriculture</span>
+</div>
+<span class="text-[10px] font-medium text-center text-slate-600">Raw Mat</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+</div>
+<span class="text-[10px] font-medium text-center text-slate-600">Medical</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</div>
+<span class="text-[10px] font-medium text-center text-slate-600">More</span>
+</div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="px-margin-mobile mb-10">
+<div class="bg-white rounded-3xl p-lg border border-slate-100 shadow-sm">
+<h3 class="font-h2 text-on-surface mb-lg text-center">How it works</h3>
+<div class="space-y-lg relative">
+<div class="absolute left-[23px] top-6 bottom-6 w-[2px] bg-indigo-50"></div>
+<div class="flex gap-md relative z-10">
+<div class="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md">1</div>
+<div>
+<h4 class="font-h3 text-on-surface">Post your request</h4>
+<p class="text-body-md text-slate-500">Describe exactly what you need, your budget, and deadline.</p>
+</div>
+</div>
+<div class="flex gap-md relative z-10">
+<div class="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md">2</div>
+<div>
+<h4 class="font-h3 text-on-surface">Receive competitive offers</h4>
+<p class="text-body-md text-slate-500">Verified suppliers bid on your request with their best prices.</p>
+</div>
+</div>
+<div class="flex gap-md relative z-10">
+<div class="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md">3</div>
+<div>
+<h4 class="font-h3 text-on-surface">Escrow Payment</h4>
+<p class="text-body-md text-slate-500">Secure your funds in escrow and release only when you're satisfied.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust Section Info Card -->
+<section class="px-margin-mobile">
+<div class="bg-indigo-50/50 rounded-2xl p-md border border-indigo-100 flex items-center gap-md">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+<span class="material-symbols-outlined" data-icon="verified_user" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div>
+<h4 class="text-label-md text-indigo-900">Escrow Protected</h4>
+<p class="text-[12px] text-indigo-700/80 leading-snug">Every transaction on {{APP_NAME}} is secured by our enterprise-grade escrow system.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<div class="flex justify-around items-center h-16 px-2 w-full">
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl py-1 px-3 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[10px] font-medium font-['Inter']">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="text-[10px] font-medium font-['Inter']">Post</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="local_offer">local_offer</span>
+<span class="text-[10px] font-medium font-['Inter']">Offers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform relative" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-[10px] font-medium font-['Inter']">Orders</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-indigo-600 rounded-full"></span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 hover:text-indigo-500 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-medium font-['Inter']">Account</span>
+</a>
+</div>
+</nav>
+</body></html>

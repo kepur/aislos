@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Attribute Schema Builder - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#615c41",
+                    "surface-container": "#eeeeee",
+                    "on-surface": "#1a1c1c",
+                    "on-secondary-fixed": "#001f27",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary-fixed": "#b4ebff",
+                    "inverse-on-surface": "#f0f1f1",
+                    "primary-fixed": "#ffdad6",
+                    "surface-container-high": "#e8e8e8",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#004e5f",
+                    "surface-dim": "#dadada",
+                    "primary-fixed-dim": "#ffb3ac",
+                    "on-tertiary-fixed": "#1f1c06",
+                    "surface-variant": "#e2e2e2",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f9f9f9",
+                    "tertiary-fixed": "#ebe3c0",
+                    "secondary-container": "#8fe3ff",
+                    "secondary-fixed-dim": "#7dd2ee",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#fffbff",
+                    "on-tertiary-fixed-variant": "#4b472d",
+                    "inverse-primary": "#ffb3ac",
+                    "on-surface-variant": "#5b403d",
+                    "outline": "#8f6f6c",
+                    "surface": "#f9f9f9",
+                    "surface-container-low": "#f3f3f4",
+                    "tertiary-container": "#7a7558",
+                    "tertiary-fixed-dim": "#cec7a5",
+                    "on-primary-fixed-variant": "#93000f",
+                    "on-primary-fixed": "#410003",
+                    "background": "#f9f9f9",
+                    "secondary": "#00677d",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#da3432",
+                    "primary": "#b6171d",
+                    "surface-container-highest": "#e2e2e2",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "on-secondary-container": "#00667c",
+                    "surface-tint": "#ba1a1f",
+                    "inverse-surface": "#2f3131",
+                    "outline-variant": "#e4beba"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "40px",
+                    "base": "4px",
+                    "md": "24px",
+                    "sm": "16px",
+                    "xl": "64px",
+                    "gutter": "24px",
+                    "xs": "8px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "display": [
+                            "Inter"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "h1": [
+                            "Inter"
+                    ],
+                    "data-mono": [
+                            "Inter"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "h2": [
+                            "Inter"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "h3": [
+                            "Inter"
+                    ],
+                    "label-caps": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "display": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h1": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "data-mono": [
+                            "14px",
+                            {
+                                    "lineHeight": "1",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h2": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h3": [
+                            "20px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex bg-surface-container-lowest text-[#FF4F49] font-body-sm text-body-sm font-medium fixed left-0 h-screen w-64 rounded-none border-r border-surface-variant flat no shadows flex-col h-full py-[24px] pr-[16px] z-40">
+<div class="px-[24px] mb-[40px]">
+<div class="flex items-center gap-[16px]">
+<img alt="ProcurePing Logo" class="w-8 h-8 rounded" data-alt="A highly detailed, modern 3D rendered abstract logo representing corporate efficiency and global supply chains. The image features sleek geometric shapes in a bright, modern light-mode aesthetic, utilizing deep blacks, pristine whites, and vibrant red accents to convey institutional reliability and speed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCX4CiAbqTfYfnYL4vB9x0tirj2_W8mIKd0Xfhw4NhhGissqALW2nm6N5n7qUghG5MLika9P2Nsfvi5dhr7jp-xsAQl5Tukif9II0sVIGIMOuVmfiQUe_Y6lGOFOdaqQIzSs3HglPyFhT22kueR_DFBTtO723HjiXKKO3IWiWCsQtEvNwqNAJqjdLZoToxRroxRY-lP_kSKMNF3Ll7T656zPyustUCytLHi40_7MibZxDBA3fzCgXMDT_xKX4i9dCrm2fcA1mRsL0hQ"/>
+<div>
+<h1 class="font-h3 text-h3 font-black text-[#FF4F49]">ProcurePing</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Enterprise Buyer</p>
+</div>
+</div>
+</div>
+<ul class="flex flex-col gap-[8px] flex-grow">
+<li>
+<a class="flex items-center gap-[16px] px-[24px] py-[12px] text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-[16px] px-[24px] py-[12px] text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">gavel</span>
+<span>Active Bids</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-[16px] px-[24px] py-[12px] text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span>Suppliers</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-[16px] px-[24px] py-[12px] text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span>Market Insights</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-[16px] px-[24px] py-[12px] text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Archive</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-[16px] px-[24px] py-[12px] text-[#FF4F49] bg-surface-container-low rounded-r-full border-l-4 border-[#FF4F49] hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">schema</span>
+<span>Attribute Schema</span>
+</a>
+</li>
+</ul>
+<ul class="flex flex-col gap-[8px] mt-auto">
+<li>
+<a class="flex items-center gap-[16px] px-[24px] py-[12px] text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">help_center</span>
+<span>Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-[16px] px-[24px] py-[12px] text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col md:ml-64 relative min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest/90 backdrop-blur-md text-[#FF4F49] font-body-sm text-body-sm antialiased docked full-width top-0 sticky z-50 border-b border-surface-variant shadow-sm flex justify-between items-center w-full px-[40px] h-16">
+<div class="flex items-center gap-[24px]">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer md:hidden">menu</span>
+<h2 class="font-h2 text-h2 text-on-background md:hidden">ProcurePing</h2>
+<!-- Search Bar -->
+<div class="hidden md:flex items-center bg-surface-container-low rounded-DEFAULT px-[16px] py-[8px] border border-surface-variant focus-within:border-primary-container focus-within:ring-1 focus-within:ring-primary-container transition-all">
+<span class="material-symbols-outlined text-on-surface-variant mr-[8px]">search</span>
+<input class="bg-transparent border-none outline-none text-on-background font-body-sm text-body-sm w-64 placeholder:text-on-surface-variant/50" placeholder="Search categories..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-[24px]">
+<button class="text-on-surface-variant hover:text-[#FF4F49] transition-colors duration-200">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="text-on-surface-variant hover:text-[#FF4F49] transition-colors duration-200">
+<span class="material-symbols-outlined">currency_exchange</span>
+</button>
+<button class="text-on-surface-variant hover:text-[#FF4F49] transition-colors duration-200">
+<span class="material-symbols-outlined">public</span>
+</button>
+<button class="text-on-surface-variant hover:text-[#FF4F49] transition-colors duration-200 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-surface-variant">
+<img alt="Executive User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a corporate executive. The portrait is sharply focused with soft, modern high-key lighting indicative of a premium, secure business environment. The executive is wearing formal business attire, set against a pristine, minimalist white background, reflecting a clean, corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMiXNfum-rh3-bPmVZg0enLY3shzlMYSGOn0iVQFuhKa_8LD-6LoKDxhsy5p19a92nQpybLF-VIdo-CLrB95fmWIhOJh9AY1-miGcBk_D4qQZ8TzPtDGGDRZLfDi9pO2CCvSseYt1RLO1tD6ZJxCCyPaAUo_5btpeTXj_ITMxWUtcuEejHtQCmkv98kEdN3y-cLEIuvcVZdxvNcpQ7nCby9PKNz4azplVJ1V4BMMjDD3QZAHd3p61SBk2ORz5aK7TQKdo9bFYowHiL"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 overflow-y-auto p-[24px] md:p-[40px] bg-background">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-[40px] gap-[16px]">
+<div>
+<h1 class="font-h1 text-h1 text-on-background">Attribute Schema Builder</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-[8px]">Define structured fields for the <strong class="text-on-background">Cement - Grade</strong> category.</p>
+</div>
+<div class="flex gap-[16px]">
+<button class="px-[24px] py-[12px] font-body-sm text-body-sm font-semibold rounded-DEFAULT border border-secondary text-secondary hover:bg-surface-container-low transition-colors">
+                        Preview Form
+                    </button>
+<button class="px-[24px] py-[12px] font-body-sm text-body-sm font-semibold rounded-DEFAULT bg-primary text-on-primary hover:bg-surface-tint transition-colors shadow-sm flex items-center gap-[8px]">
+<span class="material-symbols-outlined text-[18px]">save</span> Save Schema
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-[24px]">
+<!-- Left Column: Current Attributes (List View) -->
+<div class="xl:col-span-5 flex flex-col gap-[24px]">
+<div class="bg-surface-container-lowest rounded-lg border border-surface-variant p-[24px]">
+<div class="flex justify-between items-center mb-[24px]">
+<h2 class="font-h3 text-h3 text-on-background">Current Attributes</h2>
+<span class="bg-surface-container text-on-surface-variant px-[12px] py-[4px] rounded-full font-data-mono text-data-mono text-[12px]">4 Fields</span>
+</div>
+<div class="flex flex-col gap-[12px]">
+<!-- Draggable Item 1 -->
+<div class="group flex items-center gap-[16px] p-[16px] bg-surface border border-surface-variant rounded-DEFAULT hover:border-primary-fixed-dim hover:shadow-sm transition-all cursor-grab">
+<span class="material-symbols-outlined text-on-surface-variant/50 group-hover:text-on-surface-variant cursor-grab">drag_indicator</span>
+<div class="flex-1">
+<div class="flex items-center gap-[8px]">
+<span class="font-body-sm text-body-sm font-semibold text-on-background">Compressive Strength</span>
+<span class="text-[10px] bg-error-container text-on-error-container px-[6px] py-[2px] rounded uppercase font-label-caps text-label-caps">Req</span>
+</div>
+<div class="flex items-center gap-[12px] mt-[4px]">
+<span class="font-data-mono text-data-mono text-on-surface-variant text-[12px]">Number</span>
+<span class="w-[4px] h-[4px] rounded-full bg-surface-variant"></span>
+<span class="font-data-mono text-data-mono text-on-surface-variant text-[12px]">MPa</span>
+</div>
+</div>
+<div class="flex items-center gap-[8px]">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-[8px] rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</div>
+<!-- Draggable Item 2 -->
+<div class="group flex items-center gap-[16px] p-[16px] bg-surface-container-lowest border border-primary border-l-4 shadow-[0px_4px_12px_rgba(0,0,0,0.05)] rounded-DEFAULT cursor-grab">
+<span class="material-symbols-outlined text-on-surface-variant cursor-grab">drag_indicator</span>
+<div class="flex-1">
+<div class="flex items-center gap-[8px]">
+<span class="font-body-sm text-body-sm font-semibold text-primary">Setting Time (Initial)</span>
+<span class="text-[10px] bg-surface-container text-on-surface-variant px-[6px] py-[2px] rounded uppercase font-label-caps text-label-caps">Opt</span>
+</div>
+<div class="flex items-center gap-[12px] mt-[4px]">
+<span class="font-data-mono text-data-mono text-on-surface-variant text-[12px]">Number</span>
+<span class="w-[4px] h-[4px] rounded-full bg-surface-variant"></span>
+<span class="font-data-mono text-data-mono text-on-surface-variant text-[12px]">Minutes</span>
+</div>
+</div>
+<div class="flex items-center gap-[8px]">
+<button class="text-primary p-[8px] rounded-full bg-primary-fixed/20">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</div>
+<!-- Draggable Item 3 -->
+<div class="group flex items-center gap-[16px] p-[16px] bg-surface border border-surface-variant rounded-DEFAULT hover:border-primary-fixed-dim hover:shadow-sm transition-all cursor-grab">
+<span class="material-symbols-outlined text-on-surface-variant/50 group-hover:text-on-surface-variant cursor-grab">drag_indicator</span>
+<div class="flex-1">
+<div class="flex items-center gap-[8px]">
+<span class="font-body-sm text-body-sm font-semibold text-on-background">Grade Type</span>
+<span class="text-[10px] bg-error-container text-on-error-container px-[6px] py-[2px] rounded uppercase font-label-caps text-label-caps">Req</span>
+</div>
+<div class="flex items-center gap-[12px] mt-[4px]">
+<span class="font-data-mono text-data-mono text-on-surface-variant text-[12px]">Dropdown</span>
+<span class="w-[4px] h-[4px] rounded-full bg-surface-variant"></span>
+<span class="font-data-mono text-data-mono text-on-surface-variant text-[12px]">OPC 43, OPC 53...</span>
+</div>
+</div>
+<div class="flex items-center gap-[8px]">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-[8px] rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</div>
+<button class="mt-[8px] w-full py-[16px] border-2 border-dashed border-surface-variant rounded-DEFAULT text-on-surface-variant font-body-sm text-body-sm font-medium hover:border-primary hover:text-primary hover:bg-primary-fixed/10 transition-all flex items-center justify-center gap-[8px]">
+<span class="material-symbols-outlined">add</span> Add New Attribute
+                            </button>
+</div>
+</div>
+</div>
+<!-- Right Column: Field Configuration Form -->
+<div class="xl:col-span-7">
+<div class="bg-surface-container-lowest rounded-lg border border-surface-variant p-[32px] shadow-[0px_4px_12px_rgba(0,0,0,0.05)] relative overflow-hidden">
+<!-- Top decorative accent -->
+<div class="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-primary-container to-secondary"></div>
+<div class="flex justify-between items-start mb-[32px]">
+<div>
+<h2 class="font-h2 text-h2 text-on-background">Configure Field</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-[4px]">Edit details for 'Setting Time (Initial)'</p>
+</div>
+<div class="flex items-center gap-[16px]">
+<label class="flex items-center cursor-pointer gap-[8px]">
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">Required</span>
+<div class="relative">
+<input class="sr-only" type="checkbox"/>
+<div class="block bg-surface-variant w-10 h-6 rounded-full border border-surface-variant transition"></div>
+<div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform translate-x-0 bg-surface-container-lowest border border-surface-variant"></div>
+</div>
+</label>
+</div>
+</div>
+<form class="flex flex-col gap-[24px]">
+<!-- Basic Info Group -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
+<div class="flex flex-col gap-[8px]">
+<label class="font-label-caps text-label-caps text-on-background uppercase tracking-wider">Field Name</label>
+<input class="bg-surface border border-surface-variant rounded-DEFAULT px-[16px] py-[12px] font-body-sm text-body-sm text-on-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors w-full" type="text" value="Setting Time (Initial)"/>
+</div>
+<div class="flex flex-col gap-[8px]">
+<label class="font-label-caps text-label-caps text-on-background uppercase tracking-wider">Field Type</label>
+<div class="relative">
+<select class="appearance-none bg-surface border border-surface-variant rounded-DEFAULT px-[16px] py-[12px] font-body-sm text-body-sm text-on-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors w-full cursor-pointer pr-[40px]">
+<option value="text">Text</option>
+<option selected="" value="number">Number</option>
+<option value="dropdown">Dropdown</option>
+<option value="boolean">Boolean (Yes/No)</option>
+</select>
+<span class="material-symbols-outlined absolute right-[12px] top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Data Specifications Group -->
+<div class="bg-surface rounded-DEFAULT p-[24px] border border-surface-variant flex flex-col gap-[24px]">
+<h3 class="font-body-md text-body-md font-semibold text-on-background border-b border-surface-variant pb-[12px]">Data Specifications</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
+<div class="flex flex-col gap-[8px]">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Unit of Measure</label>
+<input class="bg-surface-container-lowest border border-surface-variant rounded-DEFAULT px-[16px] py-[12px] font-body-sm text-body-sm text-on-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors w-full" placeholder="e.g. kg, MPa, mm" type="text" value="Minutes"/>
+</div>
+<div class="flex flex-col gap-[8px]">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Min Value</label>
+<input class="bg-surface-container-lowest border border-surface-variant rounded-DEFAULT px-[16px] py-[12px] font-data-mono text-data-mono text-on-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors w-full" type="number" value="30"/>
+</div>
+<div class="flex flex-col gap-[8px]">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Max Value</label>
+<input class="bg-surface-container-lowest border border-surface-variant rounded-DEFAULT px-[16px] py-[12px] font-data-mono text-data-mono text-on-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors w-full" placeholder="No limit" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-[8px]">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider flex items-center justify-between">
+<span>Validation Regex (Optional)</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant/70 cursor-help" title="Enter a regular expression to enforce specific formatting.">info</span>
+</label>
+<input class="bg-surface-container-lowest border border-surface-variant rounded-DEFAULT px-[16px] py-[12px] font-data-mono text-data-mono text-on-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors w-full font-mono text-[13px]" placeholder="^\\d+(\\.\\d+)?$" type="text"/>
+</div>
+</div>
+<!-- Visibility & Permissions -->
+<div class="flex flex-col gap-[16px]">
+<h3 class="font-body-md text-body-md font-semibold text-on-background border-b border-surface-variant pb-[12px]">Visibility &amp; Roles</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-[16px]">
+<div class="border border-surface-variant rounded-DEFAULT p-[16px] flex items-start gap-[12px] bg-surface-bright">
+<input checked="" class="mt-[4px] w-4 h-4 text-primary bg-surface-container-lowest border-surface-variant rounded focus:ring-primary focus:ring-2 cursor-pointer" type="checkbox"/>
+<div>
+<label class="font-body-sm text-body-sm font-semibold text-on-background block mb-[2px] cursor-pointer">Visible to Buyer</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[13px] leading-tight">Buyers can see and filter by this attribute in the marketplace.</p>
+</div>
+</div>
+<div class="border border-surface-variant rounded-DEFAULT p-[16px] flex items-start gap-[12px] bg-surface-bright">
+<input checked="" class="mt-[4px] w-4 h-4 text-primary bg-surface-container-lowest border-surface-variant rounded focus:ring-primary focus:ring-2 cursor-pointer" type="checkbox"/>
+<div>
+<label class="font-body-sm text-body-sm font-semibold text-on-background block mb-[2px] cursor-pointer">Supplier Editable</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[13px] leading-tight">Suppliers must provide this value when submitting a bid.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Form Actions -->
+<div class="flex justify-end gap-[16px] mt-[16px] pt-[24px] border-t border-surface-variant">
+<button class="px-[24px] py-[12px] font-body-sm text-body-sm font-semibold rounded-DEFAULT text-error hover:bg-error-container transition-colors" type="button">
+                                    Delete Field
+                                </button>
+<button class="px-[24px] py-[12px] font-body-sm text-body-sm font-semibold rounded-DEFAULT bg-surface-container hover:bg-surface-container-high text-on-background transition-colors" type="button">
+                                    Cancel
+                                </button>
+<button class="px-[24px] py-[12px] font-body-sm text-body-sm font-semibold rounded-DEFAULT bg-secondary text-on-secondary hover:bg-secondary-fixed-dim transition-colors shadow-sm" type="button">
+                                    Update Field
+                                </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

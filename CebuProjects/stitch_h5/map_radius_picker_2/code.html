@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Map Radius Picker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#213145",
+                        "background": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#454652",
+                        "surface-container": "#e5eeff",
+                        "on-surface": "#0b1c30",
+                        "on-primary-fixed": "#00105c",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary": "#6c3400",
+                        "primary-fixed-dim": "#bac3ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-container": "#cacfff",
+                        "secondary": "#4d5a9c",
+                        "tertiary-container": "#8f4700",
+                        "secondary-container": "#abb7ff",
+                        "surface-container-high": "#dce9ff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-secondary-container": "#394687",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#4355b9",
+                        "outline": "#757684",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f8f9ff",
+                        "surface-variant": "#d3e4fe",
+                        "primary-fixed": "#dee0ff",
+                        "primary": "#24389c",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "surface-container-highest": "#d3e4fe",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "secondary-fixed": "#dee1ff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "primary-container": "#3f51b5",
+                        "on-tertiary-fixed": "#301400",
+                        "surface-container-low": "#eff4ff",
+                        "inverse-primary": "#bac3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "gutter-mobile": "12px",
+                        "md": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #24389c; /* primary color */
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            border: 2px solid #ffffff;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #dee0ff; /* primary-fixed */
+            border-radius: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface h-screen w-screen overflow-hidden flex flex-col font-body-md antialiased relative">
+<!-- TopAppBar - JSON driven structure, but styled as floating for map overlay -->
+<header class="fixed top-0 w-full z-50 pt-safe px-4 mt-sm pointer-events-none">
+<div class="bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.08)] rounded-xl flex items-center justify-between h-14 w-full px-4 pointer-events-auto border border-surface-container-highest">
+<button aria-label="Back" class="text-on-surface-variant hover:bg-surface-container-low active:opacity-70 transition-all duration-200 rounded-full p-2 -ml-2 flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div class="flex-1 px-3">
+<div class="bg-surface-container-low rounded-lg h-10 flex items-center px-3 border border-outline-variant/30">
+<span class="material-symbols-outlined text-outline text-[20px] mr-2">search</span>
+<input class="bg-transparent border-none w-full p-0 font-body-md text-on-surface focus:ring-0 placeholder-outline" placeholder="Search location..." type="text" value="San Francisco, CA"/>
+</div>
+</div>
+<button aria-label="Help" class="text-on-surface-variant hover:bg-surface-container-low active:opacity-70 transition-all duration-200 rounded-full p-2 -mr-2 flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Full Screen Map Background -->
+<div class="absolute inset-0 z-0 bg-surface-variant">
+<img alt="Map Background" class="w-full h-full object-cover opacity-80 mix-blend-multiply" data-alt="A clean, modern digital map interface viewed from directly above, showing a stylized city grid. The map uses a light-mode color palette with soft whites, pale blues, and subtle greys, reflecting a professional corporate aesthetic. Roads are crisp and minimalist, avoiding visual clutter. The lighting is flat and even, ensuring high legibility typical of premium consumer applications." data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeZ_ZL0yJHKM48vg6tRmMkSi2CfZmrYUWqzkexAQpKblZ9PaIyWhclOd0-ar5IQ7zqsMRl2QMLndADWzekotQASXvKTdm_8u1WMg6Idojdzu-_nlRqRnzDKWqcGDeRi6ELUGefHQZr6NniIUgN2OUCpl67WUd-My84-y9uRuU5UZb7hVNUSFNxB-kHO0W-wVMGQvWNNhK-N8lfK1L3c8cL_IInU3XtcVzNZyp7RWfluGlvsksV2pJXPj2a8-BzLFFWaz79T56aWI0"/>
+<!-- Map Overlay Radius -->
+<div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none pb-32">
+<!-- Radius Circle -->
+<div class="w-64 h-64 bg-primary/10 border-2 border-primary rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(36,56,156,0.2)]">
+<!-- Center Pin -->
+<div class="relative">
+<span class="material-symbols-outlined text-[36px] text-primary" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<!-- Pulse animation effect via static CSS equivalent styling -->
+<div class="absolute top-full left-1/2 -translate-x-1/2 -mt-2 w-2 h-1 bg-on-surface/30 rounded-[100%] shadow-[0_0_10px_rgba(0,0,0,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Persistent Bottom Sheet -->
+<div class="absolute bottom-0 w-full z-40 bg-surface-container-lowest rounded-t-[24px] shadow-[0_-8px_30px_rgba(0,0,0,0.1)] flex flex-col border-t border-surface-container-highest">
+<!-- Drag Handle -->
+<div class="w-full flex justify-center pt-3 pb-1">
+<div class="w-12 h-1.5 bg-outline-variant rounded-full"></div>
+</div>
+<div class="px-margin-mobile pt-sm pb-pb-safe flex flex-col gap-lg">
+<!-- Header & Badge -->
+<div class="flex items-start justify-between">
+<div>
+<h2 class="font-h2 text-h2 text-on-surface">Radius: 10 km</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">San Francisco Metropolitan Area</p>
+</div>
+<!-- Trust Indicator / Supplier Count -->
+<div class="bg-surface-container-low border border-primary-fixed rounded-full px-3 py-1.5 flex items-center gap-1.5 shrink-0">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm text-primary">14 Verified</span>
+</div>
+</div>
+<!-- Slider Controls -->
+<div class="flex flex-col gap-md">
+<div class="px-2">
+<input class="w-full" max="50" min="1" type="range" value="10"/>
+</div>
+<!-- Quick Select Chips -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar" style="scrollbar-width: none;">
+<button class="shrink-0 px-4 py-2 rounded-lg border border-outline-variant font-label-md text-label-md text-on-surface-variant bg-surface-container-lowest hover:bg-surface-container-low transition-colors">1 km</button>
+<button class="shrink-0 px-4 py-2 rounded-lg border border-outline-variant font-label-md text-label-md text-on-surface-variant bg-surface-container-lowest hover:bg-surface-container-low transition-colors">5 km</button>
+<button class="shrink-0 px-4 py-2 rounded-lg border border-primary bg-primary-fixed-dim/20 font-label-md text-label-md text-primary transition-colors">10 km</button>
+<button class="shrink-0 px-4 py-2 rounded-lg border border-outline-variant font-label-md text-label-md text-on-surface-variant bg-surface-container-lowest hover:bg-surface-container-low transition-colors">25 km</button>
+<button class="shrink-0 px-4 py-2 rounded-lg border border-outline-variant font-label-md text-label-md text-on-surface-variant bg-surface-container-lowest hover:bg-surface-container-low transition-colors">50 km</button>
+</div>
+</div>
+<!-- Primary Action -->
+<div class="pt-sm pb-lg">
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-xl font-h3 text-h3 shadow-[0_4px_12px_rgba(36,56,156,0.2)] active:scale-[0.98] active:bg-primary-container transition-all flex items-center justify-center gap-2">
+                    Confirm Location
+                </button>
+</div>
+</div>
+</div>
+</body></html>

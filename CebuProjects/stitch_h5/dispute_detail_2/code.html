@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Dispute Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#eff4ff",
+                    "outline-variant": "#c5c5d4",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#021355",
+                    "tertiary-container": "#8f4700",
+                    "primary-fixed": "#dee0ff",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#f8f9ff",
+                    "secondary-fixed": "#dee1ff",
+                    "primary": "#24389c",
+                    "on-tertiary-container": "#ffc7a2",
+                    "on-primary-fixed-variant": "#293ca0",
+                    "surface-variant": "#d3e4fe",
+                    "surface-dim": "#cbdbf5",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "tertiary-fixed": "#ffdcc6",
+                    "on-surface": "#0b1c30",
+                    "inverse-surface": "#213145",
+                    "surface-container-high": "#dce9ff",
+                    "outline": "#757684",
+                    "background": "#f8f9ff",
+                    "on-primary-container": "#cacfff",
+                    "surface-tint": "#4355b9",
+                    "secondary-container": "#abb7ff",
+                    "primary-container": "#3f51b5",
+                    "on-secondary-container": "#394687",
+                    "secondary-fixed-dim": "#b9c3ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-container": "#e5eeff",
+                    "on-primary-fixed": "#00105c",
+                    "secondary": "#4d5a9c",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#bac3ff",
+                    "tertiary-fixed-dim": "#ffb784",
+                    "inverse-primary": "#bac3ff",
+                    "on-surface-variant": "#454652",
+                    "surface": "#f8f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#354282",
+                    "tertiary": "#6c3400",
+                    "on-tertiary-fixed-variant": "#713700",
+                    "on-background": "#0b1c30",
+                    "on-tertiary-fixed": "#301400",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "gutter-mobile": "12px",
+                    "xl": "32px",
+                    "margin-mobile": "16px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "base": "4px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "h3": ["Inter"],
+                    "h1": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "h2": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                    "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { background-color: #f8f9ff; }
+        .shadow-level-1 { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .shadow-level-2 { box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-4 h-16 w-full hidden md:flex">
+<div class="flex items-center gap-4">
+<button class="text-indigo-600 dark:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 active:opacity-70 transition-all p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-inter text-base font-semibold tracking-tight text-slate-900 dark:text-slate-50 text-xl font-extrabold text-indigo-600 dark:text-indigo-400">Marketplace Admin</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="flex items-center gap-6">
+<a class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 active:opacity-70 transition-all px-3 py-2 rounded-md" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 active:opacity-70 transition-all px-3 py-2 rounded-md" href="#">Verify</a>
+<a class="text-indigo-600 dark:text-indigo-400 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 active:opacity-70 transition-all px-3 py-2 rounded-md" href="#">Disputes</a>
+<a class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 active:opacity-70 transition-all px-3 py-2 rounded-md" href="#">Vault</a>
+<a class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 active:opacity-70 transition-all px-3 py-2 rounded-md" href="#">Audit</a>
+</nav>
+<div class="h-8 w-8 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden border border-outline-variant cursor-pointer">
+<img alt="Admin profile" class="h-full w-full object-cover" data-alt="A professional headshot of an administrative user, featuring a clean, well-lit portrait. The lighting is high-key and soft, fitting a modern corporate web application. The overall aesthetic implies trust, authority, and clarity within a light-mode interface context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAg27JvOSH_FXuzSHmZgdyDEopZG-XW92GtaFeiHgBFjYr7foGzs4loNF4dcKplk8rBhDw-SHtJxw1PpvUkWoDNMca5SLq5HJefJ4qNk2r6i-m5eUVP7HmR5l-RZtY2Gtog9Te4drikI1vGwwH9F5pW8G57qIPmf8NyconTx7npRZEFJIaF6zxE1LLUR45s4NtMagrJJboHcKjMbOkTZphvGHZc7gwTeDqlRFJ_m7JFgkdI4yRGmYABcHuKGUyZxkHLMo27qSiGRRc"/>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Mobile/Desktop Context) -->
+<aside class="bg-white dark:bg-slate-900 h-full w-80 rounded-r-2xl divide-y divide-slate-100 dark:divide-slate-800 shadow-2xl fixed left-0 top-0 h-full z-[60] flex flex-col hidden">
+<div class="p-6 left_align">
+<div class="flex items-center gap-4 mb-6">
+<img alt="Admin headshot" class="h-12 w-12 rounded-full object-cover border-2 border-indigo-100" data-alt="A professional headshot of an administrative user, featuring a clean, well-lit portrait. The lighting is high-key and soft, fitting a modern corporate web application. The overall aesthetic implies trust, authority, and clarity within a light-mode interface context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9BvZZmGApdLr-IZvECInxeCN5co-3hEB9bdo2QLFiF-wLxNSddNjopOwanN5GVdaw99k8CdJGv1OpyQCf_d0vyOs_wB06rL-3nkLoc583DWeXLI35L5o5upA01R1TcvOrbaGCAKHNFIPdLMfDazLXhn-kf7spOm6CGOQtf0Q6_4hB7_vnwMCMoplnE0pcixiwQk4taLNTfMCuRuHaaFcF1bNHcsugtRMxcuJ_mKIV71xNx2Sw_fnuc1Nfh6HzSqDb5vqV4_IrNj8"/>
+<div>
+<h2 class="font-inter text-sm font-medium text-slate-700 dark:text-slate-200">Marketplace Controller</h2>
+<p class="text-xs text-slate-500">Global Operations Node</p>
+</div>
+</div>
+<div class="text-2xl font-black text-indigo-600 mb-8">Admin Portal</div>
+</div>
+<nav class="flex-1 py-4">
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 mx-2 my-1 px-4 py-3 rounded-lg hover:translate-x-1 transition-transform active:bg-indigo-700 font-inter text-sm font-medium text-slate-700 dark:text-slate-200" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span> System Status
+             </a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 mx-2 my-1 px-4 py-3 rounded-lg hover:translate-x-1 transition-transform active:bg-indigo-700 font-inter text-sm font-medium text-slate-700 dark:text-slate-200" href="#">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span> Supplier Onboarding
+             </a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 mx-2 my-1 px-4 py-3 rounded-lg hover:translate-x-1 transition-transform active:bg-indigo-700 font-inter text-sm font-medium text-slate-700 dark:text-slate-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span> Fee Management
+             </a>
+<a class="flex items-center gap-3 bg-indigo-600 text-white rounded-lg mx-2 my-1 px-4 py-3 hover:translate-x-1 transition-transform active:bg-indigo-700 font-inter text-sm font-medium text-slate-700 dark:text-slate-200" href="#">
+<span class="material-symbols-outlined" data-icon="shield">shield</span> Conflict Resolution
+             </a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 mx-2 my-1 px-4 py-3 rounded-lg hover:translate-x-1 transition-transform active:bg-indigo-700 font-inter text-sm font-medium text-slate-700 dark:text-slate-200" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span> Security Logs
+             </a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 max-w-7xl mx-auto w-full px-margin-mobile md:px-lg py-lg pb-[120px] md:pb-lg flex flex-col gap-lg">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2.5 py-1 bg-error-container text-on-error-container rounded-full font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span> Escalated
+                    </span>
+<span class="font-body-md text-body-md text-outline">ID: #DSP-88392-A</span>
+</div>
+<h1 class="font-h1 text-h1 text-on-surface">Dispute Detail</h1>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Left Column: Details -->
+<div class="lg:col-span-8 flex flex-col gap-lg">
+<!-- Escrow Status Card -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-full bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-outline mb-1">Escrow Status</p>
+<p class="font-h2 text-h2 text-on-surface">$2,450.00 Held</p>
+</div>
+</div>
+<div class="text-left sm:text-right">
+<p class="font-body-md text-body-md text-on-surface-variant">Release Date Suspended</p>
+<p class="font-label-sm text-label-sm text-error mt-1 flex items-center justify-start sm:justify-end gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="gavel">gavel</span> Pending Admin Decision
+                        </p>
+</div>
+</div>
+<!-- Bento Grid for Claim/Response -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Buyer Claim -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container flex flex-col gap-4 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant font-bold">B</div>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Buyer Claim</h3>
+<p class="font-label-sm text-label-sm text-outline">Filed Oct 24, 2023</p>
+</div>
+</div>
+<div class="bg-error-container/30 rounded-lg p-3 inline-block self-start">
+<p class="font-label-md text-label-md text-on-error-container">Item not as described</p>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">The delivered industrial printer model does not match the specifications listed in the original auction. Missing automated feeder attachment.</p>
+</div>
+<!-- Supplier Response -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container flex flex-col gap-4 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">S</div>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Supplier Response</h3>
+<p class="font-label-sm text-label-sm text-outline">Filed Oct 25, 2023</p>
+</div>
+</div>
+<div class="bg-primary-container/10 rounded-lg p-3 inline-block self-start">
+<p class="font-label-md text-label-md text-primary">Evidence of delivery provided</p>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">The feeder attachment was shipped in a separate crate as per our standard logistics protocol. Tracking confirms delivery of both crates on Oct 23.</p>
+</div>
+</div>
+<!-- Evidence Gallery -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container">
+<h3 class="font-h3 text-h3 text-on-surface mb-4">Evidence Gallery</h3>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-sm">
+<div class="aspect-square rounded-lg bg-surface-container overflow-hidden relative group cursor-pointer border border-outline-variant">
+<img alt="Evidence photo 1" class="w-full h-full object-cover" data-alt="A detailed photograph showing a piece of industrial machinery, partially uncrated in a warehouse setting. The lighting is bright and even, typical of a modern logistics facility. The image is clear and focused, serving as documented evidence within a corporate web application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuvFbAE9ZKAMT7EmxirF-wb9BeT-T2OzKDw1JpvY0X5MXyVK7VXzQnAaoC5xxJGIRJekjEY3aejRJIUAZU1X4_IGgr0LYCB2PuMTvqB7BwYhUmmshdxEHBwFXVEgcBY9GnsG95i7126pSr2itLnXKTOKnvgLf2bpM6XHEswU6IWBXUWOCuLyylFYi4t4ntmh8b9ePfIoAzTDekiKSqoxWeaKeDVHCTvEmfSem5Gb-ZLu5wq16LCZ47nQmyOJw3cicuxaG0oMKPJoo"/>
+</div>
+<div class="aspect-square rounded-lg bg-surface-container overflow-hidden relative group cursor-pointer border border-outline-variant">
+<img alt="Evidence photo 2" class="w-full h-full object-cover" data-alt="A close-up photograph of a shipping manifest document taped to a wooden crate. The text is partially visible, indicating a tracking number. The lighting is functional warehouse lighting. The aesthetic is clean and serves as documentary evidence for a digital dispute resolution interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0Utcd0vDh1qXAJ62jtjKbg6dtvHAIZ7XQi7z5LPAOUWfxT5g8KpYWoD4ZnD-CbO_25DxqNPo1bgGzaK1nMbHmltQMP4iKuBE0dIhjAF6c_zTsAizWJwDidJaURFmKKef3rdY7QdejUPS3gfjoiSNniFA3tqSglVK6lLs7z9eUBi9AVDQFyPu8qPFwUWEEKUYVMBEIFLLIgfrmsHEmBFm7iPD9aAkx7P0m_mpxpsH433H1QmRaQ7X_UUGnNmv5iQhl116-cBkf534"/>
+</div>
+<div class="aspect-square rounded-lg bg-surface-container overflow-hidden relative group cursor-pointer border border-outline-variant flex items-center justify-center bg-surface-variant flex-col gap-2">
+<span class="material-symbols-outlined text-outline text-[32px]" data-icon="description">description</span>
+<span class="font-label-sm text-label-sm text-outline">logistics_pdf</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Timeline & Admin Panel -->
+<div class="lg:col-span-4 flex flex-col gap-lg">
+<!-- Admin Decision Panel (Sticky on Desktop) -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-2 border-2 border-primary/20 sticky top-24">
+<h3 class="font-h3 text-h3 text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="admin_panel_settings">admin_panel_settings</span> Decision Panel
+                    </h3>
+<div class="flex flex-col gap-3">
+<button class="w-full h-[56px] bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary-fixed-variant transition-colors shadow-sm">
+<span class="material-symbols-outlined" data-icon="done_all">done_all</span> Release to Supplier
+                        </button>
+<div class="flex gap-3">
+<button class="flex-1 h-[52px] bg-surface-container border border-outline-variant text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-container-high transition-colors">
+                                Partial Refund
+                            </button>
+<button class="flex-1 h-[52px] bg-error-container text-on-error-container rounded-lg font-label-md text-label-md hover:bg-error transition-colors hover:text-on-error">
+                                Full Refund
+                            </button>
+</div>
+<button class="w-full mt-4 h-[52px] bg-transparent border border-outline text-outline rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="escalator_warning">escalator_warning</span> Escalate
+                        </button>
+</div>
+</div>
+<!-- Order Timeline -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-level-1 border border-surface-container">
+<h3 class="font-h3 text-h3 text-on-surface mb-6">Order Timeline</h3>
+<div class="relative pl-6 border-l-2 border-surface-variant flex flex-col gap-6">
+<div class="relative">
+<div class="absolute -left-[31px] top-1 h-4 w-4 rounded-full bg-error border-4 border-white"></div>
+<p class="font-label-md text-label-md text-on-surface">Dispute Escalated</p>
+<p class="font-label-sm text-label-sm text-outline">Oct 26, 2023 - 09:14 AM</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[31px] top-1 h-4 w-4 rounded-full bg-surface-variant border-4 border-white"></div>
+<p class="font-body-md text-body-md text-on-surface-variant">Supplier Responded</p>
+<p class="font-label-sm text-label-sm text-outline">Oct 25, 2023 - 14:30 PM</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[31px] top-1 h-4 w-4 rounded-full bg-surface-variant border-4 border-white"></div>
+<p class="font-body-md text-body-md text-on-surface-variant">Buyer Claim Filed</p>
+<p class="font-label-sm text-label-sm text-outline">Oct 24, 2023 - 11:05 AM</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[31px] top-1 h-4 w-4 rounded-full bg-surface-variant border-4 border-white"></div>
+<p class="font-body-md text-body-md text-on-surface-variant">Funds Held in Escrow</p>
+<p class="font-label-sm text-label-sm text-outline">Oct 20, 2023 - 08:00 AM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg fixed bottom-0 w-full z-50 pb-safe border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex justify-around items-center h-20 px-2 md:hidden">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform font-inter text-[10px] font-medium" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span> Dashboard
+        </a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform font-inter text-[10px] font-medium" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="how_to_reg">how_to_reg</span> Verify
+        </a>
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform font-inter text-[10px] font-medium" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span> Disputes
+        </a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform font-inter text-[10px] font-medium" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="account_balance_wallet">account_balance_wallet</span> Vault
+        </a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform font-inter text-[10px] font-medium" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="history_edu">history_edu</span> Audit
+        </a>
+</nav>
+</body></html>

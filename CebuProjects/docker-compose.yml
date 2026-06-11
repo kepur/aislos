@@ -1,0 +1,81 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: procureping
+      POSTGRES_PASSWORD: procureping
+      POSTGRES_DB: procureping
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U procureping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://procureping:procureping@db:5432/procureping
+      PUBLIC_FILE_BASE_URL: http://localhost:8080/static/uploads
+    ports:
+      - "8080:8000"
+    volumes:
+      - uploads_data:/app/uploads
+    command: >
+      sh -c "
+        alembic upgrade head &&
+        python seed.py &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000
+      "
+
+  admin-backend:
+    build:
+      context: .
+      dockerfile: admin-backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://procureping:procureping@db:5432/procureping
+      CORS_ORIGINS: http://localhost:3012,http://localhost:5173
+    ports:
+      - "8012:8010"
+    command: >
+      sh -c "
+        cd /srv/backend &&
+        alembic upgrade head &&
+        cd /srv/admin-backend &&
+        uvicorn main:app --host 0.0.0.0 --port 8010
+      "
+
+  h5-frontend:
+    build:
+      context: ./h5-frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NUXT_PUBLIC_API_BASE: http://localhost:8080
+      NUXT_PUBLIC_APP_NAME: ProcurePing
+    ports:
+      - "3001:3001"
+
+volumes:
+  pg_data:
+  uploads_data:

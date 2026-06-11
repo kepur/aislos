@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Make Offer - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#00677d",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-primary-fixed-variant": "#93000f",
+                        "on-primary-fixed": "#410003",
+                        "background": "#f9f9f9",
+                        "tertiary-container": "#7a7558",
+                        "surface-container-low": "#f3f3f4",
+                        "surface": "#f9f9f9",
+                        "outline": "#8f6f6c",
+                        "outline-variant": "#e4beba",
+                        "surface-tint": "#ba1a1f",
+                        "inverse-surface": "#2f3131",
+                        "on-secondary-container": "#00667c",
+                        "on-background": "#1a1c1c",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-secondary": "#ffffff",
+                        "primary": "#b6171d",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#da3432",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#dadada",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "primary-fixed": "#ffdad6",
+                        "secondary-fixed": "#b4ebff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary": "#615c41",
+                        "surface-container": "#eeeeee",
+                        "on-surface": "#1a1c1c",
+                        "on-secondary-fixed": "#001f27",
+                        "on-surface-variant": "#5b403d",
+                        "inverse-primary": "#ffb3ac",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "on-primary-container": "#fffbff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "secondary-container": "#8fe3ff",
+                        "tertiary-fixed": "#ebe3c0",
+                        "surface-bright": "#f9f9f9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "sm": "16px",
+                        "md": "24px",
+                        "lg": "40px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "container-max": "1280px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md min-h-screen antialiased flex flex-col">
+<!-- Intent: TopNavBar (Suppressed as this is a task-focused "Make Offer" page) -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-gutter py-lg flex flex-col gap-lg">
+<!-- Header Section -->
+<header class="flex items-center justify-between border-b border-surface-variant pb-md">
+<div class="flex items-center gap-md">
+<button aria-label="Back" class="p-xs text-on-surface-variant hover:text-primary transition-colors focus:ring-2 focus:ring-primary rounded">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div>
+<h1 class="font-h1 text-h1 text-on-background">Make Offer</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-base">Bid #RFP-2024-892 • Enterprise Grade Networking Equipment</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="px-md py-sm border border-secondary text-secondary rounded font-body-md text-body-md hover:bg-surface-container-low transition-colors">Save Draft</button>
+</div>
+</header>
+<!-- Main Content Area: Form & Preview Panel -->
+<div class="flex flex-col lg:flex-row gap-lg">
+<!-- Left Side: Form -->
+<div class="flex-grow flex flex-col gap-md lg:w-2/3">
+<form class="bg-surface-container-lowest border border-surface-variant p-md rounded shadow-sm flex flex-col gap-md">
+<h2 class="font-h2 text-h2 text-on-background border-b border-surface-variant pb-sm">Offer Details</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Unit Price -->
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="unitPrice">Unit Price (USD)</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-sm text-on-surface-variant font-data-mono text-data-mono">$</span>
+<input class="w-full pl-lg pr-sm py-sm border border-surface-variant rounded bg-surface-bright text-on-background font-data-mono text-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-colors" id="unitPrice" name="unitPrice" placeholder="0.00" type="number"/>
+</div>
+</div>
+<!-- Quantity Available -->
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="quantity">Quantity Available</label>
+<input class="w-full px-sm py-sm border border-surface-variant rounded bg-surface-bright text-on-background font-data-mono text-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-colors" id="quantity" name="quantity" placeholder="100" type="number"/>
+</div>
+<!-- Delivery Fee -->
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="deliveryFee">Delivery Fee (USD)</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-sm text-on-surface-variant font-data-mono text-data-mono">$</span>
+<input class="w-full pl-lg pr-sm py-sm border border-surface-variant rounded bg-surface-bright text-on-background font-data-mono text-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-colors" id="deliveryFee" name="deliveryFee" placeholder="0.00" type="number"/>
+</div>
+</div>
+<!-- ETA -->
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="eta">Estimated Delivery (ETA)</label>
+<input class="w-full px-sm py-sm border border-surface-variant rounded bg-surface-bright text-on-background font-data-mono text-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-colors" id="eta" name="eta" type="date"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md mt-sm border-t border-surface-variant pt-md">
+<!-- Warranty -->
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="warranty">Warranty Period (Months)</label>
+<input class="w-full px-sm py-sm border border-surface-variant rounded bg-surface-bright text-on-background font-data-mono text-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-colors" id="warranty" name="warranty" placeholder="12" type="number"/>
+</div>
+<!-- Stock Confidence -->
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="stockConfidence">Stock Confidence (%)</label>
+<input class="w-full px-sm py-sm border border-surface-variant rounded bg-surface-bright text-on-background font-data-mono text-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-colors" id="stockConfidence" max="100" min="0" name="stockConfidence" placeholder="95" type="number"/>
+</div>
+<!-- Offer Expiry -->
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="expiry">Offer Expiry Date</label>
+<input class="w-full px-sm py-sm border border-surface-variant rounded bg-surface-bright text-on-background font-data-mono text-data-mono focus:border-primary focus:ring-1 focus:ring-primary transition-colors" id="expiry" name="expiry" type="date"/>
+</div>
+<!-- Tier Selection -->
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Product Tier</label>
+<div class="flex gap-sm h-full">
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="tier" type="radio" value="good"/>
+<div class="w-full h-full flex items-center justify-center border border-surface-variant rounded py-sm px-xs peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container text-on-surface-variant hover:bg-surface-container-low transition-all text-center">
+<span class="font-body-md text-body-md">Good</span>
+</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input checked="" class="peer sr-only" name="tier" type="radio" value="better"/>
+<div class="w-full h-full flex items-center justify-center border border-surface-variant rounded py-sm px-xs peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container text-on-surface-variant hover:bg-surface-container-low transition-all text-center">
+<span class="font-body-md text-body-md">Better</span>
+</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="tier" type="radio" value="best"/>
+<div class="w-full h-full flex items-center justify-center border border-surface-variant rounded py-sm px-xs peer-checked:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container text-on-surface-variant hover:bg-surface-container-low transition-all text-center">
+<span class="font-body-md text-body-md">Best</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+<!-- Notes -->
+<div class="flex flex-col gap-base mt-sm border-t border-surface-variant pt-md">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="notes">Additional Notes</label>
+<textarea class="w-full px-sm py-sm border border-surface-variant rounded bg-surface-bright text-on-background font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none" id="notes" name="notes" placeholder="Provide any additional details or terms here..." rows="3"></textarea>
+</div>
+<!-- File Upload -->
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Attachments (Spec Sheets, Compliance Docs)</label>
+<div class="border-2 border-dashed border-surface-variant rounded p-lg flex flex-col items-center justify-center bg-surface-bright hover:bg-surface-container-low transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-on-surface-variant mb-sm" style="font-size: 32px;">upload_file</span>
+<p class="font-body-md text-body-md text-on-background font-medium">Click to upload or drag and drop</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-base">PDF, DOCX, or ZIP up to 10MB</p>
+</div>
+</div>
+</form>
+</div>
+<!-- Right Side: Preview Panel -->
+<aside class="lg:w-1/3 flex flex-col gap-md">
+<div class="bg-surface-container-lowest border border-surface-variant p-md rounded shadow-sm sticky top-lg flex flex-col gap-md">
+<h3 class="font-h3 text-h3 text-on-background border-b border-surface-variant pb-sm">Offer Analysis</h3>
+<!-- Competitiveness Score -->
+<div class="bg-surface-bright p-sm rounded border border-surface-variant flex flex-col items-center gap-xs">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Competitiveness Score</span>
+<div class="flex items-end gap-base">
+<span class="font-display text-display text-primary">84</span>
+<span class="font-body-lg text-body-lg text-on-surface-variant pb-[6px]">/100</span>
+</div>
+<div class="w-full bg-surface-variant h-xs rounded-full mt-xs overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 84%;"></div>
+</div>
+</div>
+<div class="flex flex-col gap-sm">
+<!-- Total Landed Cost -->
+<div class="flex justify-between items-center py-xs border-b border-surface-variant border-dashed">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">account_balance_wallet</span>
+                                Total Landed Cost
+                            </span>
+<span class="font-data-mono text-data-mono text-on-background font-semibold">$0.00</span>
+</div>
+<!-- Buyer Budget Match -->
+<div class="flex justify-between items-center py-xs border-b border-surface-variant border-dashed">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                                Budget Match
+                            </span>
+<span class="font-body-sm text-body-sm text-secondary bg-secondary-fixed px-xs py-[2px] rounded font-medium">In Range</span>
+</div>
+<!-- Delivery Distance -->
+<div class="flex justify-between items-center py-xs">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">local_shipping</span>
+                                Delivery Distance
+                            </span>
+<span class="font-data-mono text-data-mono text-on-background">450 mi</span>
+</div>
+</div>
+<!-- Map / Location Context -->
+<div class="h-[120px] bg-surface-variant rounded overflow-hidden relative border border-surface-variant">
+<img alt="Map route" class="w-full h-full object-cover opacity-80" data-alt="A professional, minimalist map view showing a logistical route between two points. The map uses a sleek grayscale base with clean lines. A vibrant red pin marks the destination, while a deep teal cluster indicates the origin. The overall aesthetic is modern, corporate, and clean, fitting a secure global procurement platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2w8b7tQWjJrhkJst39VZr6IkVu70iRyJbUnwPwihhoCrzCtiOFWqtDGPVsF6BLFOC5np24t7A2hozONkPq_kESKGh95ohe9E-uTlqsttIlgobEMVjJizb8QsrpAKsnrs7qy2ACSg7kPnEtRpdOPMPyhejTxFUDO-VhhpENtgkiw03Lc-HIWvnX-yxg57H1-Y9JLP75cLhbGFN8FbScIA4NunlVeV-X_JbAfscdhHJFLUNlyBffT86a30rAPuKlMMmWP6E0CDCSfaI"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="bg-surface-container-lowest/90 px-sm py-xs rounded text-body-sm font-body-sm shadow-sm backdrop-blur-sm border border-surface-variant">Logistics Route Calculated</span>
+</div>
+</div>
+<button class="w-full mt-sm py-sm bg-primary text-on-primary rounded font-body-md text-body-md font-semibold hover:bg-surface-tint transition-colors focus:ring-2 focus:ring-primary focus:ring-offset-2 flex justify-center items-center gap-xs shadow-md">
+                        Submit Final Offer
+                        <span class="material-symbols-outlined">send</span>
+</button>
+<p class="text-center font-body-sm text-body-sm text-on-surface-variant">By submitting, you agree to the marketplace terms.</p>
+</div>
+</aside>
+</div>
+</main>
+<!-- Intent: Footer (Suppressed on transactional/task forms to keep focus on Canvas) -->
+</body></html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Buyer Notification Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#cacfff",
+                        "on-tertiary-container": "#ffc7a2",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#bac3ff",
+                        "surface-tint": "#4355b9",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary-fixed": "#301400",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#c5c5d4",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-background": "#0b1c30",
+                        "on-secondary-fixed-variant": "#354282",
+                        "primary-container": "#3f51b5",
+                        "secondary-fixed": "#dee1ff",
+                        "on-primary-fixed": "#00105c",
+                        "surface-dim": "#cbdbf5",
+                        "secondary-container": "#abb7ff",
+                        "primary-fixed-dim": "#bac3ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-bright": "#f8f9ff",
+                        "secondary": "#4d5a9c",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "tertiary-container": "#8f4700",
+                        "primary-fixed": "#dee0ff",
+                        "outline": "#757684",
+                        "inverse-surface": "#213145",
+                        "primary": "#24389c",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#6c3400",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#021355",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "background": "#f8f9ff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#454652",
+                        "on-secondary-container": "#394687",
+                        "surface-container": "#e5eeff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "gutter-mobile": "12px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h3": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #3f51b5;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3f51b5;
+        }
+        .toggle-checkbox:checked + .toggle-label:after {
+            transform: translateX(100%);
+            border-color: white;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-between px-4 h-14 transition-all duration-200">
+<button class="text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-full active:opacity-70 flex items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-indigo-600 font-bold text-xl font-['Inter'] font-semibold tracking-tight">Location</h1>
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-full active:opacity-70 flex items-center justify-center">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[72px] pb-[100px] px-margin-mobile flex flex-col gap-lg max-w-2xl mx-auto w-full">
+<div class="flex flex-col gap-xs">
+<h2 class="font-h1 text-h1 text-on-surface">Notifications</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage how you receive updates about your orders and offers.</p>
+</div>
+<!-- Communication Channels -->
+<section class="flex flex-col gap-sm">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2">Channels</h3>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+<!-- In-app -->
+<div class="flex items-center justify-between p-md border-b border-surface-container-high">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">smartphone</span>
+</div>
+<div>
+<p class="font-h3 text-h3 text-on-surface">In-app</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Push notifications within the app.</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-transform duration-200 ease-in-out border-outline" id="toggle1" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container cursor-pointer transition-colors duration-200 ease-in-out" for="toggle1"></label>
+</div>
+</div>
+<!-- Email -->
+<div class="flex items-center justify-between p-md border-b border-surface-container-high">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div>
+<p class="font-h3 text-h3 text-on-surface">Email</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Daily summaries and critical alerts.</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-transform duration-200 ease-in-out border-outline" id="toggle2" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container cursor-pointer transition-colors duration-200 ease-in-out" for="toggle2"></label>
+</div>
+</div>
+<!-- Telegram -->
+<div class="flex items-center justify-between p-md border-b border-surface-container-high">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">send</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<p class="font-h3 text-h3 text-on-surface">Telegram Bot</p>
+<span class="bg-error-container text-on-error-container font-label-sm text-label-sm px-2 py-0.5 rounded-full">Requires Connection</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Instant messaging updates.</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in opacity-50 pointer-events-none">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-transform duration-200 ease-in-out border-outline" id="toggle3" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container cursor-pointer transition-colors duration-200 ease-in-out" for="toggle3"></label>
+</div>
+</div>
+<!-- SMS (Disabled) -->
+<div class="flex items-center justify-between p-md border-b border-surface-container-high opacity-50">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">sms</span>
+</div>
+<div>
+<p class="font-h3 text-h3 text-on-surface">SMS</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Text messages (Currently unavailable).</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in pointer-events-none">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-transform duration-200 ease-in-out border-outline" disabled="" id="toggle4" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container cursor-pointer transition-colors duration-200 ease-in-out" for="toggle4"></label>
+</div>
+</div>
+<!-- Push (Disabled) -->
+<div class="flex items-center justify-between p-md opacity-50">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<div>
+<p class="font-h3 text-h3 text-on-surface">System Push</p>
+<p class="font-body-md text-body-md text-on-surface-variant">OS level notifications (Disabled in settings).</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in pointer-events-none">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-transform duration-200 ease-in-out border-outline" disabled="" id="toggle5" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container cursor-pointer transition-colors duration-200 ease-in-out" for="toggle5"></label>
+</div>
+</div>
+</div>
+</section>
+<!-- Event Triggers -->
+<section class="flex flex-col gap-sm">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2">Event Triggers</h3>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+<div class="flex items-center justify-between p-md border-b border-surface-container-high">
+<p class="font-body-lg text-body-lg text-on-surface">New offer received</p>
+<input checked="" class="w-5 h-5 text-primary bg-surface border-outline rounded focus:ring-primary focus:ring-2" type="checkbox"/>
+</div>
+<div class="flex items-center justify-between p-md border-b border-surface-container-high">
+<p class="font-body-lg text-body-lg text-on-surface">Offer expiring</p>
+<input checked="" class="w-5 h-5 text-primary bg-surface border-outline rounded focus:ring-primary focus:ring-2" type="checkbox"/>
+</div>
+<div class="flex items-center justify-between p-md border-b border-surface-container-high">
+<p class="font-body-lg text-body-lg text-on-surface">Order status update</p>
+<input checked="" class="w-5 h-5 text-primary bg-surface border-outline rounded focus:ring-primary focus:ring-2" type="checkbox"/>
+</div>
+<div class="flex items-center justify-between p-md border-b border-surface-container-high">
+<p class="font-body-lg text-body-lg text-on-surface">Delivery proof uploaded</p>
+<input class="w-5 h-5 text-primary bg-surface border-outline rounded focus:ring-primary focus:ring-2" type="checkbox"/>
+</div>
+<div class="flex items-center justify-between p-md border-b border-surface-container-high">
+<p class="font-body-lg text-body-lg text-on-surface">Dispute update</p>
+<input checked="" class="w-5 h-5 text-primary bg-surface border-outline rounded focus:ring-primary focus:ring-2" type="checkbox"/>
+</div>
+<div class="flex items-center justify-between p-md">
+<p class="font-body-lg text-body-lg text-on-surface">Payment update</p>
+<input checked="" class="w-5 h-5 text-primary bg-surface border-outline rounded focus:ring-primary focus:ring-2" type="checkbox"/>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Actions -->
+<div class="fixed bottom-0 w-full z-40 bg-surface-container-lowest/90 backdrop-blur-md border-t border-surface-container-high p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] pb-safe">
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-xl flex items-center justify-center active:scale-[0.98] transition-transform shadow-sm">
+            Save Changes
+        </button>
+</div>
+</body></html>

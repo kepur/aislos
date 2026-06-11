@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Live Offers Matrix | ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#00667c",
+                        "tertiary": "#615c41",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed": "#b4ebff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface-tint": "#ba1a1f",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "primary-fixed": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#da3432",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#5b403d",
+                        "on-background": "#1a1c1c",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "outline": "#8f6f6c",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-fixed-variant": "#93000f",
+                        "tertiary-container": "#7a7558",
+                        "secondary": "#00677d",
+                        "surface-dim": "#dadada",
+                        "outline-variant": "#e4beba",
+                        "surface": "#f9f9f9",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#410003",
+                        "inverse-surface": "#2f3131",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#8fe3ff",
+                        "background": "#f9f9f9",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e2e2e2",
+                        "primary": "#b6171d",
+                        "surface-container-low": "#f3f3f4",
+                        "on-secondary-fixed": "#001f27",
+                        "inverse-primary": "#ffb3ac",
+                        "tertiary-fixed": "#ebe3c0",
+                        "surface-bright": "#f9f9f9",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "sm": "16px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "lg": "40px",
+                        "container-max": "1280px",
+                        "base": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar (JSON Derived) -->
+<aside class="fixed left-0 h-screen w-64 rounded-none border-r border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col py-6 pr-4 z-40">
+<!-- Header -->
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center overflow-hidden shrink-0">
+<img alt="ProcurePing Logo" class="w-full h-full object-cover" data-alt="A minimalist, modern corporate logo symbol featuring an abstract geometric shape in vibrant coral and deep teal colors, set against a pure white background in a well-lit, professional design environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBxtFlXmknqLqKUz3kMMj1PnpZdMN1a7RHR6E71PFflTMelzkKz96fCtNaIgdJgeNM-t3WflCSKTYOj-ahJQMIBy1yzqjORtf8D2_NbiAUWNWsXCDJirOGIzdat2H9NAgEMJctVutPSkPdAeJx5RPGAM62A44cfmaA4nMHsRpanGQGgPniyE3_6kjt_68KIOJMjBLpje_K4zNX6EICc1feh1GgdGvxlUj8GbFCh4NDkAnS1ao8iBCugul1ynI3qLn6J2iO-uCoUTf1"/>
+</div>
+<div>
+<h1 class="text-lg font-black text-[#FF4F49]">ProcurePing</h1>
+<p class="font-label-caps text-label-caps text-slate-500 dark:text-slate-400 mt-1">Enterprise Buyer</p>
+</div>
+</div>
+<!-- Main Navigation -->
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- ACTIVE ITEM: Active Bids -->
+<a class="flex items-center gap-3 px-6 py-3 text-[#FF4F49] bg-slate-50 dark:bg-slate-800/50 rounded-r-full border-l-4 border-[#FF4F49] font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span>Active Bids</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="groups">groups</span>
+<span>Suppliers</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="monitoring">monitoring</span>
+<span>Market Insights</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="inventory_2">inventory_2</span>
+<span>Archive</span>
+</a>
+</nav>
+<!-- Footer Navigation -->
+<div class="mt-auto space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help_center">help_center</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Layout Area -->
+<div class="ml-64 flex-1 flex flex-col min-w-0">
+<!-- TopNavBar (JSON Derived) -->
+<header class="docked full-width top-0 sticky z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center w-full px-10 h-16">
+<div class="flex items-center gap-6">
+<!-- Search Bar Placeholder to satisfy 'on_left' instruction conceptually, though exact structure wasn't fully detailed, standard modern SaaS search -->
+<div class="relative hidden md:flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-slate-400 text-[20px]" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm font-inter w-64 focus:ring-1 focus:ring-[#FF4F49] text-on-surface" placeholder="Search bids, suppliers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:text-[#FF4F49] transition-colors duration-200 rounded-full hover:bg-slate-50">
+<span class="material-symbols-outlined text-[22px]" data-icon="language">language</span>
+</button>
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:text-[#FF4F49] transition-colors duration-200 rounded-full hover:bg-slate-50">
+<span class="material-symbols-outlined text-[22px]" data-icon="currency_exchange">currency_exchange</span>
+</button>
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:text-[#FF4F49] transition-colors duration-200 rounded-full hover:bg-slate-50">
+<span class="material-symbols-outlined text-[22px]" data-icon="public">public</span>
+</button>
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:text-[#FF4F49] transition-colors duration-200 rounded-full hover:bg-slate-50 relative">
+<span class="material-symbols-outlined text-[22px]" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-[#FF4F49] rounded-full border-2 border-white"></span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-slate-200 ml-2">
+<img alt="Executive User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a confident executive wearing a sharp suit, set against a neutral, high-key bright background. The lighting is soft and corporate, fitting a premium enterprise software profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHliEj9LI36gy_8e7FMxhJCCNgvzdB1qGOOHL9E3xoAh8lWRFO5R_jVnWk2gk5HyTfSN9xnlXoC1mxzjysS5Jt8zr7niaB0ndbKP0UAXsNl8uClr9uFTVhqZv1udKcbKZ5rbusOGXlEkYOELL8ni9kTVRTmvT4llCSq0pK56OOLJ3t5bEhEkpLSJA_8WfsrfPE2WXpnovuLqJQLb6IQEgv2S500Vk2sUC2a6GxfrsJXleDI81ViHhFH8_CmDqj1mQz_pcAzPUGCZg"/>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="p-lg flex-1 overflow-x-hidden">
+<div class="flex justify-between items-end mb-md">
+<div>
+<h2 class="font-h1 text-h1 text-on-surface mb-2">Live Offers Matrix</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Compare and evaluate active supplier bids for RFQ-2024-8991.</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-4 py-2 border border-secondary text-secondary rounded-DEFAULT font-label-caps text-label-caps hover:bg-secondary/5 transition-colors">Export CSV</button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-DEFAULT font-label-caps text-label-caps shadow-sm hover:bg-primary/90 transition-colors">Award Selected</button>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-sm mb-md shadow-sm">
+<div class="flex flex-wrap items-center gap-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]" data-icon="filter_list">filter_list</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">FILTERS:</span>
+</div>
+<div class="flex items-center gap-2 border-r border-surface-variant pr-md">
+<label class="font-body-sm text-body-sm text-on-surface-variant">Price:</label>
+<select class="bg-surface-container-low border-none rounded text-body-sm py-1 pl-2 pr-8 focus:ring-1 focus:ring-primary text-on-surface">
+<option>All Ranges</option>
+<option>&lt; $10,000</option>
+<option>$10k - $50k</option>
+</select>
+</div>
+<div class="flex items-center gap-2 border-r border-surface-variant pr-md">
+<label class="font-body-sm text-body-sm text-on-surface-variant">ETA:</label>
+<select class="bg-surface-container-low border-none rounded text-body-sm py-1 pl-2 pr-8 focus:ring-1 focus:ring-primary text-on-surface">
+<option>Any Time</option>
+<option>&lt; 7 Days</option>
+</select>
+</div>
+<div class="flex items-center gap-2 border-r border-surface-variant pr-md">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-primary border-outline-variant bg-surface-container-low" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Verified Only</span>
+</label>
+</div>
+<div class="flex items-center gap-2 border-r border-surface-variant pr-md">
+<label class="font-body-sm text-body-sm text-on-surface-variant">Risk:</label>
+<select class="bg-surface-container-low border-none rounded text-body-sm py-1 pl-2 pr-8 focus:ring-1 focus:ring-primary text-on-surface">
+<option>All Levels</option>
+<option>Low Risk Only</option>
+</select>
+</div>
+<button class="ml-auto text-primary font-label-caps text-label-caps hover:underline">Reset Filters</button>
+</div>
+</div>
+<!-- Comparison Matrix (Dense Data Table) -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg shadow-sm overflow-hidden overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[1200px]">
+<thead class="bg-surface-container-low border-b border-surface-variant">
+<tr>
+<th class="py-[12px] px-sm font-label-caps text-label-caps text-on-surface-variant font-semibold">Supplier</th>
+<th class="py-[12px] px-sm font-label-caps text-label-caps text-on-surface-variant font-semibold">Status</th>
+<th class="py-[12px] px-sm font-label-caps text-label-caps text-on-surface-variant font-semibold text-right">Unit Price</th>
+<th class="py-[12px] px-sm font-label-caps text-label-caps text-on-surface-variant font-semibold text-right">Delivery</th>
+<th class="py-[12px] px-sm font-label-caps text-label-caps text-on-surface-variant font-semibold text-right">Landed Cost</th>
+<th class="py-[12px] px-sm font-label-caps text-label-caps text-on-surface-variant font-semibold">ETA</th>
+<th class="py-[12px] px-sm font-label-caps text-label-caps text-on-surface-variant font-semibold">Stock</th>
+<th class="py-[12px] px-sm font-label-caps text-label-caps text-on-surface-variant font-semibold">Risk Flag</th>
+<th class="py-[12px] px-sm font-label-caps text-label-caps text-on-surface-variant font-semibold text-center">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant bg-surface-container-lowest">
+<!-- Row 1: TechGlobal -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-[12px] px-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded border border-surface-variant bg-white flex items-center justify-center p-1 shrink-0">
+<img alt="TechGlobal Logo" class="max-w-full max-h-full object-contain" data-alt="A small, crisp corporate logo for a technology manufacturing company, featuring sharp blue and grey geometric lines on a solid white background, styled for a dense data table presentation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB48UuuvQf0XRpivBJ5UyIMfCXNe74Qq0CpK82dHr_OWQgOPKpjTrzZ5KpdWeT8X9NuMqvIe6UdPqjgZZxGrcRVn4pyxLv7hPH80kLnZUfpv8dabZKKmcgInzHsctkl289BwrEBsvJJ4L2h6fYcCd3LqAWu3K8sIbUcdp3qSNJ1bIIMw01Td_1Bd2oENH-92EKEwdGIzcjyoHJEjIDQ2-IkNmZrgKeIYFwZUnaE6jQpHznyBHYGBnAbjgAiBZsoku4K-w9wD_OH3Ebt"/>
+</div>
+<div>
+<div class="font-body-md text-body-md font-medium text-on-surface leading-tight">TechGlobal Inc.</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-tertiary" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                            4.9 <span class="text-surface-variant mx-1">|</span> 12km away
+                                        </div>
+</div>
+</div>
+</td>
+<td class="py-[12px] px-sm">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-secondary-container/30 text-secondary border border-secondary/20 font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-[12px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                    Tier 1
+                                </span>
+</td>
+<td class="py-[12px] px-sm text-right font-data-mono text-data-mono text-on-surface">$1,245.00</td>
+<td class="py-[12px] px-sm text-right font-data-mono text-data-mono text-on-surface-variant">$150.00</td>
+<td class="py-[12px] px-sm text-right font-data-mono text-data-mono font-bold text-primary">$1,395.00</td>
+<td class="py-[12px] px-sm font-body-sm text-body-sm text-on-surface">3 Days</td>
+<td class="py-[12px] px-sm">
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mt-1">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 95%"></div>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant mt-1 block">High Confidence</span>
+</td>
+<td class="py-[12px] px-sm">
+<span class="inline-flex items-center gap-1 text-secondary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle">check_circle</span>
+                                    None
+                                </span>
+</td>
+<td class="py-[12px] px-sm text-center">
+<button class="text-primary hover:text-primary/80 font-body-sm text-body-sm font-medium pr-2 border-r border-surface-variant mr-2">View</button>
+<button class="text-secondary font-label-caps text-label-caps hover:underline">Award</button>
+</td>
+</tr>
+<!-- Row 2: SteelWorks -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-[12px] px-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded border border-surface-variant bg-white flex items-center justify-center p-1 shrink-0">
+<img alt="SteelWorks Logo" class="max-w-full max-h-full object-contain" data-alt="A minimalist industrial logo featuring a stylized steel beam and gear in dark metallic grey, set against a white background, designed for an enterprise supplier dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0p3ovhgpgg19BYUOTykbjOLENxxwmuTg5iZmxYnT3iNdeK-TU3AZ7S3_NUzAFU9aZ1ncd7Yij8W9OwKVxM-f-CY46hyNswfMKF_VpBJ6MP41cNhhJTH78K7RKQy9W5FNRXiDJGh7RszRbC5aSzr1v3ATIXdQBsECR-8uRQFfa8jPHRKBz4SSUvg-OcXKHkvAqMBq7eT0FMefiGRVk-y21H5bPqhq3N4OJ281qNcP-8gKqjUvH5L3pqP0iBR8SEQEIWUc-Kf7-uJeJ"/>
+</div>
+<div>
+<div class="font-body-md text-body-md font-medium text-on-surface leading-tight">SteelWorks Ltd.</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-tertiary" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                            4.2 <span class="text-surface-variant mx-1">|</span> 850km away
+                                        </div>
+</div>
+</div>
+</td>
+<td class="py-[12px] px-sm">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-surface-container text-on-surface-variant border border-surface-variant font-label-caps text-label-caps">
+                                    Standard
+                                </span>
+</td>
+<td class="py-[12px] px-sm text-right font-data-mono text-data-mono text-on-surface">$1,180.00</td>
+<td class="py-[12px] px-sm text-right font-data-mono text-data-mono text-on-surface-variant">$420.00</td>
+<td class="py-[12px] px-sm text-right font-data-mono text-data-mono font-bold text-primary">$1,600.00</td>
+<td class="py-[12px] px-sm font-body-sm text-body-sm text-on-surface">14 Days</td>
+<td class="py-[12px] px-sm">
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mt-1">
+<div class="bg-tertiary h-1.5 rounded-full" style="width: 60%"></div>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant mt-1 block">Medium</span>
+</td>
+<td class="py-[12px] px-sm">
+<span class="inline-flex items-center gap-1 text-tertiary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="warning">warning</span>
+                                    Logistics
+                                </span>
+</td>
+<td class="py-[12px] px-sm text-center">
+<button class="text-primary hover:text-primary/80 font-body-sm text-body-sm font-medium pr-2 border-r border-surface-variant mr-2">View</button>
+<button class="text-secondary font-label-caps text-label-caps hover:underline">Award</button>
+</td>
+</tr>
+<!-- Row 3: Apex Manufacturing -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-[12px] px-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded border border-surface-variant bg-white flex items-center justify-center p-1 shrink-0">
+<img alt="Apex Mfg Logo" class="max-w-full max-h-full object-contain" data-alt="A sleek corporate logo for a manufacturing company, utilizing a simple, modern letter 'A' intertwined with a factory silhouette in deep black and muted red, placed on a white square." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKw2fe2JXQXiN80ePKqLI1-LpWEFyPJKEVyS2921SoE_3ig1b7z35qyM4Dl5pPKGcHP5W0O6D_PMM6HU3pB9oHzCNF__PgPxdpMMwXd9Q-tq-o_BtM4h7_bPWT5QKQ8SUFoPtzC1_FD7D00bNJoXig5NQwk2ejuENJBVECAJx4y_l17EX2QWUNlr66s7usBXjAFatmYX4KmR-KbNXfv7An-GRFV4B3-10VgwJrROW9tCKTIFizKmaH0bYSC9q-ivR1tl9-v6wmet-5"/>
+</div>
+<div>
+<div class="font-body-md text-body-md font-medium text-on-surface leading-tight">Apex Mfg</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-tertiary" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                            4.7 <span class="text-surface-variant mx-1">|</span> 45km away
+                                        </div>
+</div>
+</div>
+</td>
+<td class="py-[12px] px-sm">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-secondary-container/30 text-secondary border border-secondary/20 font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-[12px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                    Tier 2
+                                </span>
+</td>
+<td class="py-[12px] px-sm text-right font-data-mono text-data-mono text-on-surface">$1,310.00</td>
+<td class="py-[12px] px-sm text-right font-data-mono text-data-mono text-on-surface-variant">$85.00</td>
+<td class="py-[12px] px-sm text-right font-data-mono text-data-mono font-bold text-primary">$1,395.00</td>
+<td class="py-[12px] px-sm font-body-sm text-body-sm text-on-surface">5 Days</td>
+<td class="py-[12px] px-sm">
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mt-1">
+<div class="bg-error h-1.5 rounded-full" style="width: 25%"></div>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant mt-1 block text-error">Low Stock</span>
+</td>
+<td class="py-[12px] px-sm">
+<span class="inline-flex items-center gap-1 text-error font-body-sm text-body-sm bg-error-container/20 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[16px]" data-icon="error">error</span>
+                                    Capacity
+                                </span>
+</td>
+<td class="py-[12px] px-sm text-center">
+<button class="text-primary hover:text-primary/80 font-body-sm text-body-sm font-medium pr-2 border-r border-surface-variant mr-2">View</button>
+<button class="text-secondary font-label-caps text-label-caps hover:underline">Award</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+</div>
+</body></html>

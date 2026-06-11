@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reverse Marketplace - Browse</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#0b1c30",
+                    "on-primary-fixed": "#00105c",
+                    "surface-dim": "#cbdbf5",
+                    "on-surface-variant": "#454652",
+                    "surface-container": "#e5eeff",
+                    "inverse-surface": "#213145",
+                    "background": "#f8f9ff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#8f4700",
+                    "secondary-container": "#abb7ff",
+                    "surface-container-high": "#dce9ff",
+                    "error": "#ba1a1a",
+                    "secondary": "#4d5a9c",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-primary-container": "#cacfff",
+                    "on-secondary-fixed": "#021355",
+                    "tertiary": "#6c3400",
+                    "primary-fixed-dim": "#bac3ff",
+                    "surface-tint": "#4355b9",
+                    "on-secondary-container": "#394687",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#b9c3ff",
+                    "tertiary-fixed": "#ffdcc6",
+                    "on-error-container": "#93000a",
+                    "outline": "#757684",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#d3e4fe",
+                    "primary-fixed": "#dee0ff",
+                    "surface-bright": "#f8f9ff",
+                    "on-tertiary-container": "#ffc7a2",
+                    "surface": "#f8f9ff",
+                    "on-background": "#0b1c30",
+                    "surface-container-lowest": "#ffffff",
+                    "primary": "#24389c",
+                    "outline-variant": "#c5c5d4",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#3f51b5",
+                    "tertiary-fixed-dim": "#ffb784",
+                    "secondary-fixed": "#dee1ff",
+                    "on-tertiary-fixed-variant": "#713700",
+                    "on-secondary-fixed-variant": "#354282",
+                    "on-primary-fixed-variant": "#293ca0",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-container-low": "#eff4ff",
+                    "inverse-primary": "#bac3ff",
+                    "on-tertiary-fixed": "#301400"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "base": "4px",
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "gutter-mobile": "12px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "h2": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "h1": ["Inter"],
+                    "h3": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                    "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                    "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                    "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                    "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                    "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                    "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        /* Level 1 Shadow */
+        .shadow-level-1 { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* Level 2 Shadow */
+        .shadow-level-2 { box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md min-h-screen pb-[140px] md:pb-0 antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- JSON Component: TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md font-['Inter'] antialiased border-b border-slate-200/60 dark:border-slate-800/60 shadow-sm flex items-center justify-between px-4 h-16">
+<button class="text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="swap_horizontal_circle">swap_horizontal_circle</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">ReverseMarket</h1>
+<button class="text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="pt-[88px] px-margin-mobile md:px-lg max-w-7xl mx-auto flex flex-col gap-xl">
+<!-- Search Section -->
+<section class="w-full flex flex-col gap-sm">
+<h2 class="font-h1 text-h1 text-on-surface">Find what you need.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-sm">Let suppliers come to you with their best offers.</p>
+<div class="relative w-full shadow-level-1 rounded-lg">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full h-[52px] bg-surface-container-lowest border border-outline-variant rounded-lg pl-[48px] pr-md font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow placeholder:text-outline/70" placeholder="Search categories or requests..." type="text"/>
+</div>
+</section>
+<!-- Category Grid Section (Bento Inspired) -->
+<section class="w-full">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-h2 text-h2 text-on-surface">Categories</h3>
+<button class="font-label-sm text-label-sm text-primary flex items-center gap-xs hover:text-primary-container transition-colors">
+                    View All <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter-mobile md:gap-md">
+<!-- Category Card: Construction -->
+<a class="group relative overflow-hidden bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-level-1 flex flex-col items-start gap-md hover:shadow-level-2 transition-all duration-300 active:scale-[0.98]" href="#">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">construction</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Construction</span>
+</a>
+<!-- Category Card: Marine -->
+<a class="group relative overflow-hidden bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-level-1 flex flex-col items-start gap-md hover:shadow-level-2 transition-all duration-300 active:scale-[0.98]" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">sailing</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Marine</span>
+</a>
+<!-- Category Card: Auto -->
+<a class="group relative overflow-hidden bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-level-1 flex flex-col items-start gap-md hover:shadow-level-2 transition-all duration-300 active:scale-[0.98]" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Auto</span>
+</a>
+<!-- Category Card: IT / Office -->
+<a class="group relative overflow-hidden bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-level-1 flex flex-col items-start gap-md hover:shadow-level-2 transition-all duration-300 active:scale-[0.98]" href="#">
+<div class="w-10 h-10 rounded-full bg-primary-fixed-dim flex items-center justify-center text-on-primary-fixed group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">computer</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">IT / Office</span>
+</a>
+<!-- Category Card: Electronics -->
+<a class="group relative overflow-hidden bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-level-1 flex flex-col items-start gap-md hover:shadow-level-2 transition-all duration-300 active:scale-[0.98]" href="#">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">devices</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Electronics</span>
+</a>
+<!-- Category Card: Home -->
+<a class="group relative overflow-hidden bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-level-1 flex flex-col items-start gap-md hover:shadow-level-2 transition-all duration-300 active:scale-[0.98]" href="#">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">house</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Home</span>
+</a>
+<!-- Category Card: Fashion -->
+<a class="group relative overflow-hidden bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-level-1 flex flex-col items-start gap-md hover:shadow-level-2 transition-all duration-300 active:scale-[0.98]" href="#">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-on-error-container group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">checkroom</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Fashion</span>
+</a>
+<!-- Category Card: Services -->
+<a class="group relative overflow-hidden bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-level-1 flex flex-col items-start gap-md hover:shadow-level-2 transition-all duration-300 active:scale-[0.98]" href="#">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">handyman</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Services</span>
+</a>
+<!-- Special Category Card: Custom Requests (Span 2 cols on mobile) -->
+<a class="col-span-2 md:col-span-1 lg:col-span-1 group relative overflow-hidden bg-primary-container rounded-xl p-md shadow-level-1 flex flex-row md:flex-col items-center md:items-start gap-md hover:shadow-level-2 transition-all duration-300 active:scale-[0.98]" href="#">
+<div class="w-10 h-10 rounded-full bg-on-primary/20 flex items-center justify-center text-on-primary flex-shrink-0">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">draw</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-primary">Custom Requests</span>
+<span class="font-body-md text-label-sm text-on-primary-container md:hidden mt-xs">Define your exact needs</span>
+</div>
+<span class="material-symbols-outlined text-on-primary ml-auto md:hidden">arrow_forward</span>
+</a>
+</div>
+</section>
+</main>
+<!-- Sticky CTA -->
+<div class="fixed bottom-[88px] md:bottom-lg left-0 w-full px-margin-mobile z-40 md:w-auto md:right-lg md:left-auto flex justify-center md:justify-end pointer-events-none">
+<button class="pointer-events-auto w-full md:w-auto h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-full shadow-level-2 flex items-center justify-center gap-sm px-xl active:scale-95 transition-transform hover:bg-surface-tint">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">add</span>
+            Post a Request
+        </button>
+</div>
+<!-- JSON Component: BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl text-[10px] font-medium font-['Inter'] border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex justify-around items-center h-16 px-2 md:hidden">
+<!-- Active Tab: Home -->
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl py-1 px-3 active:scale-90 transition-transform hover:text-indigo-500" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-[10px]">Home</span>
+</a>
+<!-- Inactive Tab: Post -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 active:scale-90 transition-transform hover:text-indigo-500" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="add_circle">add_circle</span>
+<span class="font-label-sm text-[10px]">Post</span>
+</a>
+<!-- Inactive Tab: Offers -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 active:scale-90 transition-transform hover:text-indigo-500" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="local_offer">local_offer</span>
+<span class="font-label-sm text-[10px]">Offers</span>
+</a>
+<!-- Inactive Tab: Orders -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 active:scale-90 transition-transform hover:text-indigo-500" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-[10px]">Orders</span>
+</a>
+<!-- Inactive Tab: Account -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-1 active:scale-90 transition-transform hover:text-indigo-500" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-sm text-[10px]">Account</span>
+</a>
+</nav>
+</body></html>

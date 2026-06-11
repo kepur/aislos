@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pricing Intelligence Dashboard - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#615c41",
+                        "surface-container": "#eeeeee",
+                        "on-surface": "#1a1c1c",
+                        "on-secondary-fixed": "#001f27",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary-fixed": "#b4ebff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "primary-fixed": "#ffdad6",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "surface-dim": "#dadada",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "surface-variant": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-fixed": "#ebe3c0",
+                        "secondary-container": "#8fe3ff",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fffbff",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "inverse-primary": "#ffb3ac",
+                        "on-surface-variant": "#5b403d",
+                        "outline": "#8f6f6c",
+                        "surface": "#f9f9f9",
+                        "surface-container-low": "#f3f3f4",
+                        "tertiary-container": "#7a7558",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-primary-fixed-variant": "#93000f",
+                        "on-primary-fixed": "#410003",
+                        "background": "#f9f9f9",
+                        "secondary": "#00677d",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#da3432",
+                        "primary": "#b6171d",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "on-secondary-container": "#00667c",
+                        "surface-tint": "#ba1a1f",
+                        "inverse-surface": "#2f3131",
+                        "outline-variant": "#e4beba"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "base": "4px",
+                        "md": "24px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "gutter": "24px",
+                        "xs": "8px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "display": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "h1": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen flex overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-lowest dark:bg-slate-900 fixed left-0 h-screen w-64 rounded-none border-r border-surface-container-high dark:border-slate-800 flat no shadows flex flex-col h-full py-6 pr-4 hidden md:flex z-40">
+<div class="px-6 mb-8 flex items-center gap-3">
+<img alt="ProcurePing Logo" class="w-8 h-8 rounded-full object-cover border border-surface-container-highest" data-alt="A highly stylized, minimalist logo for an enterprise software tool, featuring clean geometric lines in deep corporate reds and slate grays, set against a pristine white background. The design is modern, professional, and conveys security and speed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYI-_mK8060VKNm3R9lwCGkubkN5GXK7APFGDSbbmK1otE94pgUeALIyoBsfHTOYblNFafANOoOp8hSiTdcCSTcy68IGiwca9mr6SPAFK6mF0Sl7GZmNi4KSB8HImuIR0xV5w3haRMXfyTSQXgTyfBIqPExM58KQbN2HVVvAqsFV2kUz2joyjFnghIDMhyamuactGirR_9Qi6-hSiSbZ6Yt3iraYWpqlSR7ldkOy9gYbEbpG5Ru6lMOWbDvzb9lSOh2VgyA-CScPJq"/>
+<div>
+<h2 class="text-lg font-black text-primary font-display">ProcurePing</h2>
+<p class="font-body-sm text-on-surface-variant text-xs">Enterprise Buyer</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto mt-4 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200 group font-body-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-primary transition-colors">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200 group font-body-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-primary transition-colors">gavel</span>
+                Active Bids
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200 group font-body-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-primary transition-colors">groups</span>
+                Suppliers
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-primary bg-surface-container-low rounded-r-full border-l-4 border-primary font-body-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+                Market Insights
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-container-low hover:translate-x-1 transition-all duration-200 group font-body-sm font-medium" href="#">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-primary transition-colors">inventory_2</span>
+                Archive
+            </a>
+</div>
+<div class="mt-auto space-y-1 pt-4 border-t border-surface-container-high mx-4">
+<a class="flex items-center gap-3 px-2 py-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors group font-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">help_center</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-2 py-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors group font-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+                Settings
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 w-full bg-background overflow-hidden">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest/90 dark:bg-slate-900/90 backdrop-blur-md font-body-sm antialiased docked full-width top-0 sticky z-50 border-b border-surface-container-high dark:border-slate-800 shadow-sm flex justify-between items-center w-full px-10 h-16">
+<div class="flex items-center gap-6">
+<!-- Mobile Menu Trigger -->
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-2 border border-surface-container-high focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all w-80">
+<span class="material-symbols-outlined text-on-surface-variant mr-2 text-[18px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 outline-none w-full text-on-surface font-body-sm placeholder:text-on-surface-variant/50" placeholder="Search SKUs, Suppliers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-low" title="language">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-low" title="currency_exchange">
+<span class="material-symbols-outlined text-[20px]">currency_exchange</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-low" title="public">
+<span class="material-symbols-outlined text-[20px]">public</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-low relative" title="notifications">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full border border-surface-container-lowest"></span>
+</button>
+<div class="h-6 w-px bg-surface-container-high mx-2"></div>
+<button class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+<img alt="Executive User Profile" class="w-8 h-8 rounded-full object-cover border border-surface-container-highest" data-alt="A highly professional headshot of a corporate executive in a modern office setting. The lighting is bright and clean, emphasizing a serious, trustworthy demeanor. The aesthetic matches a high-end corporate application with neutral grays and sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDur5mF7vewU8e-P8iJvv2UsKCvBMyx5aBMWkRgk1R6KIZ85T4p_EmtSh_S-jfomHv2zvjWcgOg5293tajNiKWeBoJB2bwS9lFQCxoTZOrY-OQ5-Y4_iRdHarHV4f1jK5Y0bpRXBM5pVZ8693MMMQbxXWQCxUGAeq0oXQEdxWc1potido-ZNTOjimsqDon9Hu38snHsjXh6zBmM5y4sxIflb6sf_QpaY26zYwYuYhNFXneSImiIecA_zqZ2oEGpdlJfWd13gWhExmyB"/>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-4 md:p-lg">
+<div class="max-w-[container-max] mx-auto space-y-md">
+<!-- Page Header & Filters -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-xl">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface mb-2">Pricing Intelligence</h1>
+<p class="font-body-md text-on-surface-variant">Real-time market bands and outlier detection.</p>
+</div>
+<div class="flex flex-wrap items-center gap-3 bg-surface-container-lowest p-2 rounded-lg border border-surface-container-high shadow-sm">
+<div class="relative min-w-[150px]">
+<select class="w-full appearance-none bg-surface-container-low border border-transparent hover:border-surface-container-highest focus:border-primary focus:ring-1 focus:ring-primary rounded-md py-2 pl-3 pr-8 font-body-sm text-on-surface transition-colors cursor-pointer">
+<option>SKU: IC-10492</option>
+<option>SKU: IC-99321</option>
+<option>Category: Semiconductors</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
+</div>
+<div class="w-px h-6 bg-surface-container-high"></div>
+<div class="relative min-w-[120px]">
+<select class="w-full appearance-none bg-surface-container-low border border-transparent hover:border-surface-container-highest focus:border-primary focus:ring-1 focus:ring-primary rounded-md py-2 pl-3 pr-8 font-body-sm text-on-surface transition-colors cursor-pointer">
+<option>Region: Cebu</option>
+<option>Region: Mandaue</option>
+<option>Region: Global</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
+</div>
+<div class="w-px h-6 bg-surface-container-high"></div>
+<div class="relative min-w-[100px]">
+<select class="w-full appearance-none bg-surface-container-low border border-transparent hover:border-surface-container-highest focus:border-primary focus:ring-1 focus:ring-primary rounded-md py-2 pl-3 pr-8 font-body-sm text-on-surface transition-colors cursor-pointer">
+<option>USD ($)</option>
+<option>PHP (₱)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
+</div>
+<button class="bg-primary text-on-primary p-2 rounded-md hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm ml-2">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+<!-- Market Bands (P10, P50, P90) -->
+<div class="lg:col-span-1 flex flex-col gap-md">
+<div class="bg-surface-container-lowest rounded-xl border border-surface-container-high p-md shadow-sm relative overflow-hidden group">
+<div class="absolute right-0 top-0 w-2 h-full bg-secondary"></div>
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Median Price (P50)</h3>
+<span class="material-symbols-outlined text-secondary text-[20px]">balance</span>
+</div>
+<div class="font-data-mono text-h1 text-on-surface mb-1">$4.25<span class="text-body-sm text-on-surface-variant ml-1">/unit</span></div>
+<div class="flex items-center gap-1 text-secondary font-body-sm font-medium">
+<span class="material-symbols-outlined text-[16px]">trending_down</span>
+                                -1.2% vs last 30d
+                            </div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="bg-surface-container-lowest rounded-xl border border-surface-container-high p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase">P10 (Floor)</h3>
+</div>
+<div class="font-data-mono text-h2 text-on-surface mb-1">$3.90</div>
+<div class="text-xs text-on-surface-variant group relative cursor-help flex items-center gap-1">
+                                    High Risk Zone
+                                    <span class="material-symbols-outlined text-[14px] text-error">warning</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-surface-container-high p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase">P90 (Ceiling)</h3>
+</div>
+<div class="font-data-mono text-h2 text-on-surface mb-1">$4.85</div>
+<div class="text-xs text-on-surface-variant flex items-center gap-1">
+                                    Premium Tier
+                                </div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-surface-container-high p-md shadow-sm flex-1">
+<h3 class="font-h3 text-h3 text-on-surface mb-4">Band Definition</h3>
+<div class="space-y-4">
+<div class="relative pt-6 pb-2">
+<!-- Visual Band -->
+<div class="h-3 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="h-full bg-error/20 w-[15%]"></div>
+<div class="h-full bg-secondary/30 w-[20%]"></div>
+<div class="h-full bg-secondary w-[30%]"></div>
+<div class="h-full bg-secondary/30 w-[20%]"></div>
+<div class="h-full bg-primary/20 w-[15%]"></div>
+</div>
+<!-- Markers -->
+<div class="absolute top-1 left-[15%] -translate-x-1/2 text-xs font-data-mono text-on-surface-variant">P10</div>
+<div class="absolute top-1 left-[50%] -translate-x-1/2 text-xs font-data-mono text-on-surface font-bold">P50</div>
+<div class="absolute top-1 left-[85%] -translate-x-1/2 text-xs font-data-mono text-on-surface-variant">P90</div>
+<div class="absolute bottom-6 left-[15%] w-0.5 h-4 bg-error/50"></div>
+<div class="absolute bottom-6 left-[50%] w-0.5 h-4 bg-secondary"></div>
+<div class="absolute bottom-6 left-[85%] w-0.5 h-4 bg-primary/50"></div>
+</div>
+<p class="font-body-sm text-on-surface-variant mt-2 text-sm">
+                                    Offers below P10 often indicate counterfeit risk or unstable supply chains. Offers above P90 require justification via expedited shipping or premium SLAs.
+                                </p>
+</div>
+</div>
+</div>
+<!-- Chart Area -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-xl border border-surface-container-high p-md shadow-sm flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-h3 text-h3 text-on-surface">Historical Price Trend</h3>
+<p class="font-body-sm text-on-surface-variant text-sm">90-Day moving average vs actuals</p>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-xs font-medium rounded-md bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors">30D</button>
+<button class="px-3 py-1 text-xs font-medium rounded-md bg-secondary text-on-secondary shadow-sm">90D</button>
+<button class="px-3 py-1 text-xs font-medium rounded-md bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors">1Y</button>
+</div>
+</div>
+<!-- Pseudo-Chart Area (Using CSS Gradients/Layouts for visualization) -->
+<div class="flex-1 min-h-[300px] relative mt-4 border-l border-b border-surface-container-high flex items-end pt-8 pb-4 pl-4 pr-2">
+<!-- Y-Axis Labels -->
+<div class="absolute left-0 top-0 bottom-0 w-12 -ml-14 flex flex-col justify-between text-xs font-data-mono text-on-surface-variant text-right pb-4">
+<span>$5.00</span>
+<span>$4.50</span>
+<span>$4.00</span>
+<span>$3.50</span>
+</div>
+<!-- Grid Lines -->
+<div class="absolute left-0 right-0 top-[20%] h-px bg-surface-container-high/50 border-dashed border-b border-surface-container-high"></div>
+<div class="absolute left-0 right-0 top-[50%] h-px bg-surface-container-high/50 border-dashed border-b border-surface-container-high"></div>
+<div class="absolute left-0 right-0 top-[80%] h-px bg-surface-container-high/50 border-dashed border-b border-surface-container-high"></div>
+<!-- P90 Band Background -->
+<div class="absolute left-0 right-0 top-[15%] h-[15%] bg-primary/5 rounded-r-sm z-0 pointer-events-none"></div>
+<!-- P50 Band Background -->
+<div class="absolute left-0 right-0 top-[30%] h-[40%] bg-secondary/5 rounded-r-sm z-0 pointer-events-none"></div>
+<!-- P10 Band Background -->
+<div class="absolute left-0 right-0 top-[70%] h-[15%] bg-error/5 rounded-r-sm z-0 pointer-events-none"></div>
+<!-- The Line (SVG representation for crispness, standard practice for charts in pure HTML/CSS is tricky without it, but using inline SVG here as it's structurally part of the UI component) -->
+<svg class="absolute inset-0 w-full h-full p-4 overflow-visible z-10" preserveaspectratio="none" viewbox="0 0 100 100">
+<!-- Median Trend -->
+<path class="text-secondary" d="M0,60 C10,55 20,65 30,50 C40,35 50,45 60,40 C70,35 80,45 90,30 L100,25" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<!-- Data Points -->
+<circle class="text-secondary" cx="30" cy="50" fill="currentColor" r="3"></circle>
+<circle class="text-secondary" cx="60" cy="40" fill="currentColor" r="3"></circle>
+<circle class="text-secondary" cx="90" cy="30" fill="currentColor" r="3"></circle>
+<!-- Outlier Point -->
+<circle class="text-error animate-pulse" cx="75" cy="85" fill="currentColor" r="4"></circle>
+</svg>
+<!-- Tooltip for Outlier (Static positioned for demo) -->
+<div class="absolute bottom-[5%] left-[70%] bg-inverse-surface text-inverse-on-surface p-3 rounded-lg shadow-[0px_12px_32px_rgba(0,0,0,0.1)] text-xs w-48 z-20 pointer-events-none border border-surface-container-high">
+<div class="font-bold text-error-container mb-1">Outlier Detected</div>
+<div class="font-data-mono mb-1">$3.65 (Bid #8821)</div>
+<div class="text-inverse-on-surface/80 leading-tight">Price is below P10 floor. High risk of non-delivery.</div>
+<!-- Arrow -->
+<div class="absolute w-3 h-3 bg-inverse-surface border-b border-r border-surface-container-high transform rotate-45 -bottom-1.5 left-6"></div>
+</div>
+<!-- X-Axis Labels -->
+<div class="absolute bottom-0 left-4 right-0 flex justify-between text-xs font-data-mono text-on-surface-variant translate-y-6">
+<span>Sep</span>
+<span>Oct</span>
+<span>Nov</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Outlier Offers Table -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-container-high shadow-sm overflow-hidden">
+<div class="p-md border-b border-surface-container-high flex justify-between items-center bg-surface-bright">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error">warning</span>
+<h3 class="font-h3 text-h3 text-on-surface">Outlier Offers</h3>
+</div>
+<button class="text-sm font-medium text-secondary hover:text-secondary-container transition-colors">View All Bids</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="font-label-caps text-label-caps text-on-surface-variant px-md py-3 uppercase border-b border-surface-container-high">Supplier</th>
+<th class="font-label-caps text-label-caps text-on-surface-variant px-md py-3 uppercase border-b border-surface-container-high">Quote Price</th>
+<th class="font-label-caps text-label-caps text-on-surface-variant px-md py-3 uppercase border-b border-surface-container-high">Variance (vs P50)</th>
+<th class="font-label-caps text-label-caps text-on-surface-variant px-md py-3 uppercase border-b border-surface-container-high">Risk Assessment</th>
+<th class="font-label-caps text-label-caps text-on-surface-variant px-md py-3 uppercase border-b border-surface-container-high text-right">Action</th>
+</tr>
+</thead>
+<tbody class="font-body-sm">
+<tr class="border-b border-surface-container-high hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-md py-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold text-xs">AG</div>
+<div>
+<div class="font-medium text-on-surface">Apex Global Ltd.</div>
+<div class="text-xs text-on-surface-variant">ID: SUP-0092</div>
+</div>
+</div>
+</td>
+<td class="px-md py-sm font-data-mono font-medium text-error">$3.65</td>
+<td class="px-md py-sm text-error">-14.1%</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-1.5 text-xs font-medium text-error bg-error-container/30 w-fit px-2.5 py-1 rounded-full border border-error/20">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+                                            Sub-Floor (P10)
+                                        </div>
+</td>
+<td class="px-md py-sm text-right">
+<button class="p-2 text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="border-b border-surface-container-high hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-md py-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold text-xs">TI</div>
+<div>
+<div class="font-medium text-on-surface flex items-center gap-1">
+                                                    TechImports
+                                                    <span class="material-symbols-outlined text-[14px] text-secondary" title="Verified">verified</span>
+</div>
+<div class="text-xs text-on-surface-variant">ID: SUP-4410</div>
+</div>
+</div>
+</td>
+<td class="px-md py-sm font-data-mono font-medium text-primary">$5.10</td>
+<td class="px-md py-sm text-primary">+20.0%</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-1.5 text-xs font-medium text-primary bg-primary-container/10 w-fit px-2.5 py-1 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                                            Ceiling Breach (P90)
+                                        </div>
+</td>
+<td class="px-md py-sm text-right">
+<button class="p-2 text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

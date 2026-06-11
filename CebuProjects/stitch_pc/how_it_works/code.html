@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>How It Works - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"tertiary-fixed": "#ebe3c0", "surface-container": "#eeeeee", "tertiary-container": "#7a7558", error: "#ba1a1a", "surface-container-highest": "#e2e2e2", "primary-container": "#da3432", "surface-container-lowest": "#ffffff", "surface-container-high": "#e8e8e8", background: "#f9f9f9", "on-primary-container": "#fffbff", "inverse-on-surface": "#f0f1f1", "on-primary-fixed-variant": "#93000f", "on-tertiary": "#ffffff", "on-surface-variant": "#5b403d", surface: "#f9f9f9", "surface-container-low": "#f3f3f4", "on-background": "#1a1c1c", "inverse-surface": "#2f3131", "on-error": "#ffffff", "on-secondary-fixed": "#001f27", "inverse-primary": "#ffb3ac", "primary-fixed-dim": "#ffb3ac", "on-surface": "#1a1c1c", "on-secondary": "#ffffff", "on-secondary-fixed-variant": "#004e5f", "tertiary-fixed-dim": "#cec7a5", "on-primary": "#ffffff", "primary-fixed": "#ffdad6", primary: "#b6171d", "on-tertiary-container": "#fffbff", "secondary-fixed-dim": "#7dd2ee", "surface-bright": "#f9f9f9", "surface-dim": "#dadada", secondary: "#00677d", "on-error-container": "#93000a", tertiary: "#615c41", "secondary-container": "#8fe3ff", "surface-variant": "#e2e2e2", "on-primary-fixed": "#410003", "secondary-fixed": "#b4ebff", "on-tertiary-fixed": "#1f1c06", outline: "#8f6f6c", "surface-tint": "#ba1a1f", "on-secondary-container": "#00667c", "on-tertiary-fixed-variant": "#4b472d", "outline-variant": "#e4beba", "error-container": "#ffdad6"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}, spacing: {md: "24px", lg: "40px", "container-max": "1280px", xs: "8px", sm: "16px", base: "4px", xl: "64px", gutter: "24px"}, fontFamily: {"label-caps": ["Inter"], "body-sm": ["Inter"], display: ["Inter"], "data-mono": ["Inter"], h3: ["Inter"], h2: ["Inter"], h1: ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"], headline: ["Inter"], body: ["Inter"], label: ["Inter"]}, fontSize: {"label-caps": ["12px", {lineHeight: "1", letterSpacing: "0.05em", fontWeight: "700"}], "body-sm": ["14px", {lineHeight: "1.5", fontWeight: "400"}], display: ["48px", {lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "700"}], "data-mono": ["14px", {lineHeight: "1", fontWeight: "500"}], h3: ["20px", {lineHeight: "1.4", fontWeight: "600"}], h2: ["24px", {lineHeight: "1.3", fontWeight: "600"}], h1: ["32px", {lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "600"}], "body-md": ["16px", {lineHeight: "1.6", fontWeight: "400"}], "body-lg": ["18px", {lineHeight: "1.6", fontWeight: "400"}]}}}};</script>
+</head>
+<body class="bg-background text-on-background min-h-screen pt-20">
+<!-- TopAppBar from JSON -->
+<header class="fixed top-0 w-full z-50 border-b border-b border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
+<div class="flex items-center justify-between px-10 py-4 max-w-[1440px] mx-auto w-full">
+<div class="flex items-center gap-8">
+<div class="text-2xl font-black tracking-tighter text-blue-700 dark:text-blue-500 font-h2 text-h2">ProcurePing</div>
+<nav class="hidden md:flex gap-6 font-sans antialiased text-sm font-medium tracking-tight">
+<a class="text-blue-700 dark:text-blue-400 border-b-2 border-blue-700 pb-1 active:scale-95 transition-transform duration-150" href="#">How it Works</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300 active:scale-95 transition-transform duration-150" href="#">Categories</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors duration-200 hover:text-blue-700 dark:hover:text-blue-300 active:scale-95 transition-transform duration-150" href="#">Solutions</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex gap-2 text-blue-600 dark:text-blue-400">
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined">language</span></button>
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined">payments</span></button>
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors"><span class="material-symbols-outlined">public</span></button>
+</div>
+<button class="bg-surface-container text-primary font-body-sm text-body-sm px-4 py-2 rounded-DEFAULT border border-outline-variant hover:bg-surface-variant transition-colors">Become a Supplier</button>
+<button class="bg-primary text-on-primary font-body-sm text-body-sm px-4 py-2 rounded-DEFAULT hover:bg-on-primary-fixed-variant transition-colors shadow-sm">Post a Request</button>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto px-lg pb-xl">
+<!-- Hero Section -->
+<section class="py-xl border-b border-surface-variant mb-xl">
+<div class="max-w-4xl mx-auto text-center space-y-md">
+<h1 class="font-display text-display text-on-background">Engineered for Global Procurement.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">A secure, transparent, and highly efficient reverse marketplace designed for enterprise-grade transactions. See how ProcurePing protects both buyers and suppliers.</p>
+</div>
+</section>
+<!-- Stepper / Journey Section -->
+<section class="mb-xl">
+<h2 class="font-h1 text-h1 text-on-background mb-lg text-center">The Transaction Journey</h2>
+<div class="relative max-w-5xl mx-auto">
+<!-- Line connecting steps -->
+<div class="hidden md:block absolute top-1/2 left-0 w-full h-[2px] bg-surface-variant -translate-y-1/2 z-0"></div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md relative z-10">
+<!-- Step 1 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm relative group hover:border-primary transition-colors duration-300">
+<div class="w-12 h-12 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mb-sm absolute -top-6 left-1/2 -translate-x-1/2 shadow-md border-4 border-background">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">assignment</span>
+</div>
+<div class="pt-sm text-center">
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Request &amp; Bid</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Buyers post RFQs. Verified suppliers submit competitive bids.</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm relative group hover:border-primary transition-colors duration-300">
+<div class="w-12 h-12 bg-surface-container-high text-on-surface rounded-full flex items-center justify-center mb-sm absolute -top-6 left-1/2 -translate-x-1/2 shadow-md border-4 border-background">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<div class="pt-sm text-center">
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Escrow Funding</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Buyer funds are secured in our regulated escrow vault.</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm relative group hover:border-primary transition-colors duration-300">
+<div class="w-12 h-12 bg-surface-container-high text-on-surface rounded-full flex items-center justify-center mb-sm absolute -top-6 left-1/2 -translate-x-1/2 shadow-md border-4 border-background">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<div class="pt-sm text-center">
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Delivery &amp; Verify</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Supplier fulfills the order. Buyer verifies receipt and quality.</p>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm relative group hover:border-primary transition-colors duration-300">
+<div class="w-12 h-12 bg-surface-container-high text-on-surface rounded-full flex items-center justify-center mb-sm absolute -top-6 left-1/2 -translate-x-1/2 shadow-md border-4 border-background">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div class="pt-sm text-center">
+<h3 class="font-h3 text-h3 text-on-background mb-xs">Funds Released</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Payment is instantly released to the supplier's account.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Escrow Detail Section -->
+<section class="mb-xl grid grid-cols-1 lg:grid-cols-2 gap-lg items-center">
+<div class="space-y-md">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-highest rounded-full border border-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary">security</span>
+<span class="font-label-caps text-label-caps text-on-surface">Escrow Protection</span>
+</div>
+<h2 class="font-h1 text-h1 text-on-background">Zero-Risk Financial Flow.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Our institutional-grade escrow system ensures that neither party assumes counterparty risk. Funds are algorithmically locked and released only upon cryptographically verified milestones.</p>
+<ul class="space-y-sm mt-md">
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<div>
+<span class="font-h3 text-h3 text-on-background block mb-1">Authorization</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Buyer commits funds via SWIFT, ACH, or major credit rails.</span>
+</div>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<div>
+<span class="font-h3 text-h3 text-on-background block mb-1">Funds Held</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Capital is held in a bankruptcy-remote, top-tier banking institution.</span>
+</div>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<div>
+<span class="font-h3 text-h3 text-on-background block mb-1">Delivery Confirmation</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Multi-signature sign-off upon successful inspection.</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-md p-lg">
+<!-- abstract visualization of escrow -->
+<div class="h-64 rounded-lg bg-surface-container relative overflow-hidden flex items-center justify-center border border-outline-variant/30">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-low to-surface-container-highest"></div>
+<div class="relative z-10 flex items-center gap-4">
+<div class="w-16 h-16 rounded-full bg-white border border-surface-variant flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-secondary">person</span>
+</div>
+<div class="h-[2px] w-12 bg-primary"></div>
+<div class="w-20 h-24 rounded-lg bg-primary-container border-2 border-primary flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-on-primary-container text-3xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div class="h-[2px] w-12 bg-outline-variant border-dashed border-t-2"></div>
+<div class="w-16 h-16 rounded-full bg-white border border-surface-variant flex items-center justify-center shadow-sm opacity-50">
+<span class="material-symbols-outlined text-secondary">factory</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Dual Perspectives Bento -->
+<section class="mb-xl space-y-lg">
+<h2 class="font-h1 text-h1 text-on-background text-center">Built for Both Sides of the Market</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Buyer Panel -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-lg shadow-sm">
+<div class="flex items-center gap-3 mb-md">
+<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface">shopping_cart</span>
+</div>
+<h3 class="font-h2 text-h2 text-on-background">For Buyers</h3>
+</div>
+<div class="space-y-sm">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">verified_user</span>
+<p class="font-body-md text-body-md text-on-surface-variant"><strong class="text-on-background font-medium">Verified Network:</strong> Only interact with KYB-verified, vetted global suppliers.</p>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">trending_down</span>
+<p class="font-body-md text-body-md text-on-surface-variant"><strong class="text-on-background font-medium">Cost Reduction:</strong> The reverse auction model drives prices down organically.</p>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">inventory</span>
+<p class="font-body-md text-body-md text-on-surface-variant"><strong class="text-on-background font-medium">Consolidated Management:</strong> Track RFQs, bids, and communications in one clean dashboard.</p>
+</div>
+</div>
+</div>
+<!-- Supplier Panel -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-lg shadow-sm">
+<div class="flex items-center gap-3 mb-md">
+<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface">conveyor_belt</span>
+</div>
+<h3 class="font-h2 text-h2 text-on-background">For Suppliers</h3>
+</div>
+<div class="space-y-sm">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">travel_explore</span>
+<p class="font-body-md text-body-md text-on-surface-variant"><strong class="text-on-background font-medium">Global Reach:</strong> Access enterprise requests from international buyers instantly.</p>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">gavel</span>
+<p class="font-body-md text-body-md text-on-surface-variant"><strong class="text-on-background font-medium">Fair Bidding:</strong> Compete transparently on merit, capacity, and price.</p>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">payments</span>
+<p class="font-body-md text-body-md text-on-surface-variant"><strong class="text-on-background font-medium">Guaranteed Payouts:</strong> Escrow ensures you get paid immediately upon verified delivery.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing & Dispute -->
+<section class="mb-xl grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="bg-surface-container border border-surface-variant rounded-lg p-lg">
+<h3 class="font-h2 text-h2 text-on-background mb-sm">No Hidden Commissions.</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">We believe in transparent pricing for the enterprise market. What you bid is what you pay/receive.</p>
+<div class="bg-surface-container-lowest border border-outline-variant/50 p-4 rounded-DEFAULT font-data-mono text-data-mono flex justify-between items-center">
+<span class="text-on-surface">Standard Transaction Fee</span>
+<span class="text-primary font-bold">1.5%</span>
+</div>
+</div>
+<div class="bg-surface-container border border-surface-variant rounded-lg p-lg">
+<h3 class="font-h2 text-h2 text-on-background mb-sm">Dispute Resolution.</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">In the rare event of a disagreement, our independent arbitration team steps in to mediate based on platform data.</p>
+<button class="flex items-center gap-2 text-primary font-body-sm text-body-sm font-medium hover:underline">
+                    Read Arbitration Policy <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="mb-xl max-w-3xl mx-auto">
+<h2 class="font-h1 text-h1 text-on-background mb-lg text-center">Frequently Asked Questions</h2>
+<div class="space-y-4">
+<!-- FAQ Item 1 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm">
+<div class="flex justify-between items-center cursor-pointer">
+<h4 class="font-h3 text-h3 text-on-background">What is required for KYB (Know Your Business) verification?</h4>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</div>
+<!-- Hidden content for demo -->
+<div class="mt-sm hidden">
+<p class="font-body-md text-body-md text-on-surface-variant">We require standard incorporation documents, a list of ultimate beneficial owners (UBOs), and verified banking details. The process typically takes 24-48 hours.</p>
+</div>
+</div>
+<!-- FAQ Item 2 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm">
+<div class="flex justify-between items-center cursor-pointer">
+<h4 class="font-h3 text-h3 text-on-background">Which currencies do you support?</h4>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- FAQ Item 3 -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-md shadow-sm">
+<div class="flex justify-between items-center cursor-pointer">
+<h4 class="font-h3 text-h3 text-on-background">How long does Escrow hold the funds?</h4>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer from JSON -->
+<footer class="w-full border-t border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-10 py-20 max-w-[1440px] mx-auto text-blue-600 dark:text-blue-400 font-sans text-xs uppercase tracking-widest font-semibold">
+<div class="col-span-1 md:col-span-1">
+<div class="text-xl font-bold text-slate-900 dark:text-white mb-4">ProcurePing</div>
+<p class="text-slate-500 dark:text-slate-500 lowercase normal-case tracking-normal text-sm mb-6">© 2024 ProcurePing. Global Procurement Excellence.</p>
+</div>
+<div class="flex flex-col gap-3">
+<a class="text-blue-700 dark:text-blue-400 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">How it Works</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Categories</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Solutions</a>
+</div>
+<div class="flex flex-col gap-3">
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Language</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Currency</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Region</a>
+</div>
+<div class="flex flex-col gap-3">
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:underline transition-all focus:ring-2 focus:ring-blue-500" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>

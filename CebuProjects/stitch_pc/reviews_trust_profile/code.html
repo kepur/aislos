@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Supplier Reviews and Trust - ProcurePing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#8f6f6c",
+                        "on-secondary-container": "#00667c",
+                        "surface-dim": "#dadada",
+                        "secondary-container": "#8fe3ff",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "on-background": "#1a1c1c",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "primary": "#b6171d",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "surface-container-low": "#f3f3f4",
+                        "outline-variant": "#e4beba",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "surface": "#f9f9f9",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "on-secondary-fixed": "#001f27",
+                        "surface-container-high": "#e8e8e8",
+                        "tertiary-container": "#7a7558",
+                        "on-primary-fixed": "#410003",
+                        "surface-variant": "#e2e2e2",
+                        "primary-container": "#da3432",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#615c41",
+                        "surface-container": "#eeeeee",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#00677d",
+                        "primary-fixed": "#ffdad6",
+                        "on-primary-fixed-variant": "#93000f",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9f9",
+                        "on-primary-container": "#fffbff",
+                        "surface-tint": "#ba1a1f",
+                        "inverse-primary": "#ffb3ac",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "surface-container-highest": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#b4ebff",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-fixed": "#ebe3c0",
+                        "on-surface-variant": "#5b403d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "base": "4px",
+                        "lg": "40px",
+                        "gutter": "24px",
+                        "xl": "64px",
+                        "sm": "16px",
+                        "container-max": "1280px",
+                        "xs": "8px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "h2": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "display": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row antialiased">
+<!-- TopNavBar (Mobile only) -->
+<header class="md:hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center w-full px-10 h-16">
+<div class="flex items-center gap-xs">
+<span class="text-[#FF4F49] text-xl font-bold tracking-tight text-slate-900 dark:text-white">ProcurePing</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors duration-200 cursor-pointer" data-icon="language">language</span>
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors duration-200 cursor-pointer" data-icon="currency_exchange">currency_exchange</span>
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors duration-200 cursor-pointer" data-icon="public">public</span>
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors duration-200 cursor-pointer" data-icon="notifications">notifications</span>
+<img alt="Executive User Profile" class="w-8 h-8 rounded-full ml-xs border border-surface-variant" data-alt="A close up portrait of a professional corporate executive wearing a tailored suit, looking confident. The lighting is bright and clean, fitting a modern enterprise software application profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIwhtlu6HHFqnszvv-pV1Dg1ZtkJaLyOP1iLYNBHbq5_oKsrkd9AEuoAswfZRoGerGPSRvaojrPn8yw8xSgUaHzUl2Q8YndSMgd_j_o9CPau_f1M3r7O0v3S9dXqOh74HN-EL19FGudJ1uetVOykahjzjhZ_6BtO-BGrJWl9cJRsrQyDob_cMxWqu2XRNW-PwWErcJRhqTdw-G9fRCj6Mms8TewPVCYQjhGik_K1rdylnrnWGxowwq1QrWGsx34zmYwssHvzrwOqs9"/>
+</div>
+</header>
+<!-- SideNavBar (Desktop only) -->
+<nav class="hidden md:flex flex-col h-full py-6 pr-4 bg-white dark:bg-slate-900 fixed left-0 h-screen w-64 rounded-none border-r border-slate-100 dark:border-slate-800 z-40">
+<div class="px-md mb-lg">
+<div class="flex items-center gap-xs mb-base">
+<span class="text-lg font-black text-[#FF4F49]">ProcurePing</span>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Enterprise Buyer</p>
+</div>
+<ul class="flex flex-col gap-base flex-1">
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-[#FF4F49] bg-slate-50 dark:bg-slate-800/50 rounded-r-full border-l-4 border-[#FF4F49] hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" data-weight="fill" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                    Suppliers
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium rounded-r-full border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+                    Active Bids
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium rounded-r-full border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+                    Dashboard
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium rounded-r-full border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+                    Market Insights
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-md py-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium rounded-r-full border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                    Archive
+                </a>
+</li>
+</ul>
+<div class="mt-auto px-md">
+<ul class="flex flex-col gap-base">
+<li>
+<a class="flex items-center gap-sm py-xs text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium rounded-r-full px-xs" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="help_center">help_center</span>
+                        Support
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-sm py-xs text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/30 hover:translate-x-1 transition-transform duration-200 font-inter text-sm font-medium rounded-r-full px-xs" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="settings">settings</span>
+                        Settings
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 p-lg max-w-container-max mx-auto w-full">
+<!-- Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-xl gap-md">
+<div>
+<h1 class="font-h1 text-h1 text-on-background mb-xs">Supplier Reviews &amp; Trust</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Global Logistics Corp • ID: GLC-8824-A</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="bg-surface-container-lowest border border-[#00677d] text-[#00677d] px-md py-xs rounded font-label-caps text-label-caps hover:bg-surface-container transition-colors">
+                    DOWNLOAD REPORT
+                </button>
+<button class="bg-[#da3432] text-white px-md py-xs rounded font-label-caps text-label-caps hover:bg-[#ba1a1f] transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm" data-icon="mail">mail</span>
+                    MESSAGE SUPPLIER
+                </button>
+</div>
+</div>
+<!-- Trust Tier & Badges Section -->
+<section class="mb-xl grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Trust Level Progress -->
+<div class="lg:col-span-2 bg-surface-container-lowest border border-surface-variant rounded-xl p-md flex flex-col justify-center">
+<div class="flex justify-between items-end mb-sm">
+<div>
+<h2 class="font-h3 text-h3 text-on-background mb-base">Trust Tier: Verified</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Advancing toward Premium Tier.</p>
+</div>
+<span class="font-data-mono text-data-mono text-primary-container">850 / 1000 Pts</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2.5 mb-xs overflow-hidden">
+<div class="bg-primary-container h-2.5 rounded-full" style="width: 85%"></div>
+</div>
+<div class="flex justify-between font-label-caps text-label-caps text-on-surface-variant">
+<span>Standard</span>
+<span>Verified</span>
+<span>Premium</span>
+</div>
+</div>
+<!-- Badges -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-md uppercase tracking-wider">Active Verifications</h3>
+<div class="flex flex-col gap-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-[#dcfce7] flex items-center justify-center text-[#166534]">
+<span class="material-symbols-outlined text-sm" data-icon="shield">shield</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-on-background">KYB Verified</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Identity Confirmed</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-[#fef9c3] flex items-center justify-center text-[#854d0e]">
+<span class="material-symbols-outlined text-sm" data-icon="star">star</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-on-background">Top Rated 2023</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Top 5% Performers</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- KPI Grid -->
+<section class="mb-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Rating Average</span>
+<span class="material-symbols-outlined text-secondary" data-icon="reviews">reviews</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display text-display text-on-background">4.8</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ 5.0</span>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-sm">Based on 142 reviews</p>
+</div>
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">On-Time Delivery</span>
+<span class="material-symbols-outlined text-secondary" data-icon="local_shipping">local_shipping</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display text-display text-on-background">98.5</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">%</span>
+</div>
+<p class="font-label-caps text-label-caps text-[#166534] mt-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-xs" data-icon="arrow_upward">arrow_upward</span>
+                    2.1% YoY
+                </p>
+</div>
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Dispute Rate</span>
+<span class="material-symbols-outlined text-error" data-icon="gavel">gavel</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display text-display text-on-background">1.2</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">%</span>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-sm">Industry Avg: 3.5%</p>
+</div>
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Response Speed</span>
+<span class="material-symbols-outlined text-secondary" data-icon="timer">timer</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display text-display text-on-background">&lt; 2</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Hrs</span>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-sm">During business hours</p>
+</div>
+</section>
+<!-- Recent Reviews -->
+<section>
+<h2 class="font-h2 text-h2 text-on-background mb-md">Recent Buyer Reviews</h2>
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl overflow-hidden">
+<!-- Review Item 1 -->
+<div class="p-md border-b border-surface-variant last:border-b-0">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<div class="flex items-center gap-xs mb-base text-[#ca8a04]">
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<h4 class="font-body-md text-body-md font-semibold text-on-background">Exceptional turnaround on bulk raw materials.</h4>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Oct 12, 2023</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Global Logistics Corp delivered our Q3 order of specialized alloys two days ahead of schedule. Communication was crisp, and the documentation was flawless. Highly recommended for critical supply lines.</p>
+<div class="flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-label-caps text-[10px]">TA</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">TechAuto Manufacturing Inc. • Contract: $1.2M</span>
+</div>
+</div>
+<!-- Review Item 2 -->
+<div class="p-md border-b border-surface-variant last:border-b-0">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<div class="flex items-center gap-xs mb-base text-[#ca8a04]">
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm text-surface-dim" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<h4 class="font-body-md text-body-md font-semibold text-on-background">Solid performance, minor customs delay.</h4>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Sep 28, 2023</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Product quality is top tier. We experienced a minor hiccup at the port due to generic customs forms, but their support team resolved it within 4 hours. Will use again for standard components.</p>
+<div class="flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-caps text-[10px]">EP</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">EuroParts Ltd. • Contract: $450K</span>
+</div>
+</div>
+</div>
+<div class="mt-md text-center">
+<button class="font-label-caps text-label-caps text-secondary hover:text-on-secondary-container transition-colors uppercase tracking-wider">
+                    View All 142 Reviews
+                </button>
+</div>
+</section>
+</main>
+</body></html>

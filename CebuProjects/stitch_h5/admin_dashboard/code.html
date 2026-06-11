@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Marketplace Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#eff4ff",
+                        "outline-variant": "#c5c5d4",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary-container": "#8f4700",
+                        "primary-fixed": "#dee0ff",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-fixed": "#dee1ff",
+                        "primary": "#24389c",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "surface-variant": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-surface": "#0b1c30",
+                        "inverse-surface": "#213145",
+                        "surface-container-high": "#dce9ff",
+                        "outline": "#757684",
+                        "background": "#f8f9ff",
+                        "on-primary-container": "#cacfff",
+                        "surface-tint": "#4355b9",
+                        "secondary-container": "#abb7ff",
+                        "primary-container": "#3f51b5",
+                        "on-secondary-container": "#394687",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container": "#e5eeff",
+                        "on-primary-fixed": "#00105c",
+                        "secondary": "#4d5a9c",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#bac3ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "inverse-primary": "#bac3ff",
+                        "on-surface-variant": "#454652",
+                        "surface": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "tertiary": "#6c3400",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-background": "#0b1c30",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col pt-safe pb-safe">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-center px-4 h-16 w-full">
+<button class="text-indigo-600 dark:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 active:opacity-70 transition-all p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-inter text-base font-semibold tracking-tight text-slate-900 dark:text-slate-50 font-extrabold text-indigo-600 dark:text-indigo-400 text-xl">Marketplace Admin</h1>
+<button class="hover:bg-slate-100 dark:hover:bg-slate-800 active:opacity-70 transition-all rounded-full overflow-hidden w-8 h-8 flex items-center justify-center">
+<img alt="Admin profile" class="w-full h-full object-cover" data-alt="A professional corporate headshot of a person wearing a sharp suit, looking confidently at the camera. Soft, high-key lighting creates a bright and trustworthy modern aesthetic, with deep indigo and white tones prevalent. The background is a slightly blurred contemporary office setting to ensure a clean, corporate light-mode look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTuypFfLh2Q04aAbGEfzFU6ap6iplI_QkGncsZyKwGouy2aedEFrcZERuJKt9HGC1BHJEyRIg4kth5O55atcFC-nsLwLs3mWbBfM_1XMESVbvB6qyE9ky3L6towWhixmeKA4jlCV3kLyKGmqMBaSMGSiHLq5T_Q_k3oMVik98Fac3oApkvOPmu6c_KQYC6j6whvf6E0UYfNcMDisS8K-iZ6EKuJuyYcZM5wtQEZTTO6gO-n89Y3mIKJ4rOL9p96Mp3r6pa-5BUiRo"/>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 px-margin-mobile py-lg overflow-y-auto space-y-lg">
+<!-- Header -->
+<section>
+<h2 class="font-h2 text-h2 text-on-background mb-sm">Overview</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Real-time marketplace telemetry.</p>
+</section>
+<!-- Bento Grid: Main Stats -->
+<section class="grid grid-cols-2 gap-sm">
+<!-- Escrow Card (Full Width) -->
+<div class="col-span-2 bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex items-center justify-between">
+<div>
+<div class="flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="account_balance">account_balance</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Escrow Held</span>
+</div>
+<div class="font-h1 text-h1 text-on-background">$1.2M</div>
+</div>
+<div class="h-12 w-12 rounded-full bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+<!-- Active Intents -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col justify-between">
+<div class="flex items-center gap-xs mb-md">
+<div class="h-8 w-8 rounded-full bg-secondary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="target">target</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Active Intents</span>
+</div>
+<div class="font-h2 text-h2 text-on-background">42</div>
+</div>
+<!-- Orders in Progress -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col justify-between">
+<div class="flex items-center gap-xs mb-md">
+<div class="h-8 w-8 rounded-full bg-surface-tint/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-tint text-sm" data-icon="local_shipping">local_shipping</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">In Progress</span>
+</div>
+<div class="font-h2 text-h2 text-on-background">128</div>
+</div>
+</section>
+<!-- Urgent Action Row -->
+<section>
+<h3 class="font-h3 text-h3 text-on-background mb-md">Action Required</h3>
+<div class="flex flex-col gap-sm">
+<!-- Disputes -->
+<div class="bg-error-container/30 border border-error/20 rounded-xl p-md flex items-center justify-between active:bg-error-container/50 transition-colors">
+<div class="flex items-center gap-md">
+<div class="h-10 w-10 rounded-full bg-error/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-error-container">Disputes Open</div>
+<div class="font-body-md text-body-md text-error/80">Requires immediate mediation</div>
+</div>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-h3 text-h3 text-error">14</span>
+<span class="material-symbols-outlined text-error/60" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Risk Alerts -->
+<div class="bg-tertiary-container/10 border border-tertiary/20 rounded-xl p-md flex items-center justify-between active:bg-tertiary-container/20 transition-colors">
+<div class="flex items-center gap-md">
+<div class="h-10 w-10 rounded-full bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-tertiary-container">Risk Alerts</div>
+<div class="font-body-md text-body-md text-tertiary/80">High-value flag review</div>
+</div>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-h3 text-h3 text-tertiary">5</span>
+<span class="material-symbols-outlined text-tertiary/60" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Verification Pending -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md flex items-center justify-between active:bg-surface-container-low transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+<div class="flex items-center gap-md">
+<div class="h-10 w-10 rounded-full bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="how_to_reg">how_to_reg</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface">Verification Pending</div>
+<div class="font-body-md text-body-md text-outline">Supplier KYC review</div>
+</div>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-h3 text-h3 text-secondary">29</span>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg fixed bottom-0 w-full z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t border-slate-100 dark:border-slate-800 hidden md:hidden block">
+<div class="flex justify-around items-center h-20 px-2">
+<button class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-[10px] font-medium mt-1">Dashboard</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="how_to_reg">how_to_reg</span>
+<span class="font-inter text-[10px] font-medium mt-1">Verify</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span class="font-inter text-[10px] font-medium mt-1">Disputes</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-inter text-[10px] font-medium mt-1">Vault</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-inter text-[10px] font-medium mt-1">Audit</span>
+</button>
+</div>
+</nav>
+<div class="h-20 block md:hidden"></div>
+</body></html>

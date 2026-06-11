@@ -1,0 +1,111 @@
+from fastapi import APIRouter
+
+from app.api.v1.endpoints import (
+    admin,
+    agents,
+    agent_missions,
+    ai_chat,
+    ai_reviews,
+    ai_workflows,
+    assets,
+    auth,
+    business_brain,
+    cases,
+    certifications,
+    costing,
+    crm,
+    demo_mode,
+    documents,
+    esign,
+    ecosystem,
+    files,
+    finance,
+    inquiries,
+    integration_events,
+    integrations,
+    knowledge,
+    leads,
+    payments,
+    partner_portal,
+    rfqs,
+    lifecycle,
+    lifecycle_ops,
+    marketing,
+    media_integration,
+    notifications,
+    portal,
+    procurement,
+    product_categories,
+    product_compatibility,
+    products,
+    projects,
+    proposals,
+    quotes,
+    regions,
+    seo,
+    service_packages,
+    service_partners,
+    showroom,
+    solutions,
+    telegram,
+    tickets,
+    users,
+    vendors,
+    warranty_policies,
+)
+
+api_router = APIRouter()
+api_router.include_router(auth.router)
+api_router.include_router(demo_mode.router)
+api_router.include_router(solutions.router)
+api_router.include_router(products.router)
+api_router.include_router(product_categories.router)
+api_router.include_router(leads.router)
+api_router.include_router(vendors.router)
+api_router.include_router(service_packages.router)
+api_router.include_router(projects.router)
+api_router.include_router(quotes.router)
+api_router.include_router(tickets.router)
+api_router.include_router(inquiries.router)
+api_router.include_router(service_partners.router)
+api_router.include_router(regions.router)
+api_router.include_router(files.router)
+api_router.include_router(users.router)
+api_router.include_router(admin.router)
+api_router.include_router(certifications.router)
+api_router.include_router(warranty_policies.router)
+api_router.include_router(product_compatibility.router)
+api_router.include_router(proposals.router)
+api_router.include_router(integration_events.router)
+api_router.include_router(lifecycle.router)
+api_router.include_router(lifecycle_ops.router)
+api_router.include_router(finance.router)
+api_router.include_router(crm.router)
+api_router.include_router(marketing.router)
+api_router.include_router(marketing.admin_brief_router)
+api_router.include_router(media_integration.router)
+api_router.include_router(media_integration.admin_router)
+api_router.include_router(portal.router)
+api_router.include_router(procurement.router)
+api_router.include_router(notifications.router)
+api_router.include_router(telegram.router)
+api_router.include_router(integrations.router)
+api_router.include_router(knowledge.router)
+api_router.include_router(ai_reviews.router)
+api_router.include_router(ai_chat.router)
+api_router.include_router(costing.router)
+api_router.include_router(rfqs.router)
+api_router.include_router(payments.router)
+api_router.include_router(partner_portal.router)
+api_router.include_router(assets.router)
+api_router.include_router(cases.router)
+api_router.include_router(ai_workflows.router)
+api_router.include_router(business_brain.router)
+api_router.include_router(seo.router)
+api_router.include_router(documents.router)
+api_router.include_router(esign.router)
+api_router.include_router(agents.router)
+api_router.include_router(agent_missions.router)
+api_router.include_router(ecosystem.router)
+api_router.include_router(showroom.router)
+api_router.include_router(showroom.admin_router)

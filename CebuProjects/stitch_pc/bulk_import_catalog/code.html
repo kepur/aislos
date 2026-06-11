@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bulk Import Catalog - ProcurePing</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#00677d",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#ffb3ac",
+                        "secondary-fixed-dim": "#7dd2ee",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-container": "#eeeeee",
+                        "on-primary-fixed": "#410003",
+                        "surface": "#f9f9f9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#cec7a5",
+                        "inverse-primary": "#ffb3ac",
+                        "on-surface-variant": "#5b403d",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004e5f",
+                        "on-tertiary-fixed": "#1f1c06",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#615c41",
+                        "on-tertiary-fixed-variant": "#4b472d",
+                        "on-background": "#1a1c1c",
+                        "primary-fixed": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f3f3f4",
+                        "outline-variant": "#e4beba",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#001f27",
+                        "tertiary-container": "#7a7558",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-fixed-variant": "#93000f",
+                        "surface-variant": "#e2e2e2",
+                        "surface-dim": "#dadada",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f9f9f9",
+                        "secondary-fixed": "#b4ebff",
+                        "primary": "#b6171d",
+                        "on-surface": "#1a1c1c",
+                        "inverse-surface": "#2f3131",
+                        "surface-container-high": "#e8e8e8",
+                        "outline": "#8f6f6c",
+                        "background": "#f9f9f9",
+                        "inverse-on-surface": "#f0f1f1",
+                        "tertiary-fixed": "#ebe3c0",
+                        "primary-container": "#da3432",
+                        "on-secondary-container": "#00667c",
+                        "on-primary-container": "#fffbff",
+                        "surface-tint": "#ba1a1f",
+                        "secondary-container": "#8fe3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "lg": "40px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "gutter": "24px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Inter"],
+                        "h2": ["Inter"],
+                        "h1": ["Inter"],
+                        "display": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "data-mono": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md flex antialiased">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-screen w-64 border-r border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950 flex flex-col py-4 z-50">
+<div class="text-lg font-bold text-slate-900 dark:text-white px-6 py-8">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-rose-500" data-weight="fill">hub</span>
+<span>ProcurePing</span>
+</div>
+<div class="font-body-sm text-body-sm text-slate-500 mt-1 font-normal">Enterprise Portal</div>
+</div>
+<div class="flex flex-col flex-1 gap-1 px-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">gavel</span>
+                Active Bids
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">request_quote</span>
+                My Offers
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+                Orders
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium bg-slate-50 dark:bg-slate-900 text-rose-500 border-r-4 border-rose-500 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-weight="fill">inventory_2</span>
+                Catalog
+            </a>
+</div>
+<div class="flex flex-col gap-1 px-4 mt-auto">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+                Support
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-[calc(100%-16rem)] z-40 border-b border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm h-16 flex items-center justify-between px-10">
+<div class="flex items-center gap-4">
+<span class="text-xl font-black tracking-tight text-slate-900 dark:text-white">ProcurePing</span>
+<div class="relative hidden md:flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-slate-400">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent w-64 text-slate-900 dark:text-white placeholder-slate-400" placeholder="Search catalog..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-slate-600 dark:text-slate-400">
+<button class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-200 p-2 rounded-full active:opacity-80 flex items-center justify-center">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-200 p-2 rounded-full active:opacity-80 flex items-center justify-center">
+<span class="material-symbols-outlined">payments</span>
+</button>
+<button class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-200 p-2 rounded-full active:opacity-80 flex items-center justify-center relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
+</button>
+</div>
+<div class="h-8 w-8 rounded-full bg-slate-200 border border-slate-300 overflow-hidden">
+<img alt="Supplier User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a confident corporate user in a modern office environment. Soft natural lighting highlights a friendly but serious expression, typical of a professional avatar in a sleek, enterprise B2B SaaS platform. The color palette features neutral tones to match the minimal UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCslB7tnEHd1U3SSXlvdtJ7Uy70GVG8N7F9m7zAZHiKONnC2ASvjx8AmMoP-iYSh2X46fBUlIXgUe1Is43NX8_qReDq74kgt2zfXoKWJXHTqLX_Zd_kQ7EZvNudiOPllpBSzd3ysl_G_dMHCnprydXlxkQPJrUR4hBTgnGFciaHtPLy6f_6YDqjjqb6mIYnam5tmXNMVXO9-_227GYpVYcFBs6nbNWwyPrYevn9sNiUCkr6A7t8_i-DUpHop7dMdP5CxkrK-IkF_tIl"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 mt-16 p-lg bg-surface">
+<div class="max-w-5xl mx-auto space-y-md">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface mb-2">Bulk Import Catalog Items</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Upload a CSV file to add or update multiple products simultaneously. Download our template to ensure your data is formatted correctly for smooth processing.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 border border-secondary text-secondary rounded-lg font-h3 text-h3 hover:bg-surface-container-low transition-colors duration-200">
+<span class="material-symbols-outlined">download</span>
+                        Download Template
+                    </button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-md">
+<!-- Upload Zone (Takes full width if needed, or part of a grid) -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest border border-surface-variant rounded-xl p-md">
+<h2 class="font-h3 text-h3 text-on-surface mb-4">Upload File</h2>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-10 flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container-high transition-colors duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-outline mb-4">cloud_upload</span>
+<p class="font-h3 text-h3 text-on-surface mb-1">Drag and drop your CSV file here</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Maximum file size: 50MB</p>
+<button class="px-6 py-2 bg-primary text-on-primary rounded-lg font-h3 text-h3 hover:bg-primary-container transition-colors duration-200 shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+                                Browse Files
+                            </button>
+</div>
+</div>
+<!-- Import Summary Panel -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-md">
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md flex-1">
+<h2 class="font-h3 text-h3 text-on-surface mb-4">Import Status</h2>
+<div class="space-y-4">
+<div class="flex justify-between items-center py-2 border-b border-surface-variant">
+<span class="font-body-md text-body-md text-on-surface-variant">Total Rows</span>
+<span class="font-data-mono text-data-mono text-on-surface">1,245</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-surface-variant">
+<span class="font-body-md text-body-md text-on-surface-variant">Ready to Import</span>
+<span class="font-data-mono text-data-mono text-secondary">1,200</span>
+</div>
+<div class="flex justify-between items-center py-2">
+<span class="font-body-md text-body-md text-on-surface-variant">Errors Found</span>
+<span class="font-data-mono text-data-mono text-error">45</span>
+</div>
+</div>
+<button class="w-full mt-6 px-4 py-3 bg-surface-container-highest text-on-surface-variant rounded-lg font-h3 text-h3 cursor-not-allowed opacity-70">
+                                Proceed with Import
+                            </button>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 text-center">Resolve errors to proceed</p>
+</div>
+</div>
+<!-- Mapping Preview -->
+<div class="col-span-12 bg-surface-container-lowest border border-surface-variant rounded-xl p-md">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-h3 text-h3 text-on-surface">Data Mapping Preview</h2>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-caps text-label-caps uppercase tracking-wider">Automapped: 6/8</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b-2 border-surface-variant">
+<th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">CSV Column Header</th>
+<th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Platform Field</th>
+<th class="py-3 px-4 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Sample Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-surface-variant">
+<td class="py-3 px-4 font-body-sm text-body-sm text-on-surface">SKU_ID</td>
+<td class="py-3 px-4">
+<select class="w-full bg-surface-container border border-outline-variant rounded p-2 font-body-sm text-body-sm focus:border-primary focus:ring-1 focus:ring-primary">
+<option selected="">Product SKU</option>
+<option>Manufacturer Part #</option>
+</select>
+</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-on-surface-variant">SKU-99482-A</td>
+</tr>
+<tr class="border-b border-surface-variant">
+<td class="py-3 px-4 font-body-sm text-body-sm text-on-surface">Item_Name</td>
+<td class="py-3 px-4">
+<select class="w-full bg-surface-container border border-outline-variant rounded p-2 font-body-sm text-body-sm focus:border-primary focus:ring-1 focus:ring-primary">
+<option selected="">Product Name</option>
+</select>
+</td>
+<td class="py-3 px-4 font-body-sm text-body-sm text-on-surface-variant">Industrial Grade Ball Bearing</td>
+</tr>
+<tr class="border-b border-surface-variant bg-error-container/20">
+<td class="py-3 px-4 font-body-sm text-body-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-sm">error</span>
+                                            Category_Code
+                                        </td>
+<td class="py-3 px-4">
+<select class="w-full bg-surface-container border border-error rounded p-2 font-body-sm text-body-sm focus:border-error focus:ring-1 focus:ring-error text-error">
+<option disabled="" selected="">Unmapped</option>
+<option>Product Category</option>
+<option>Tax Code</option>
+</select>
+</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-on-surface-variant">CAT-IND-04</td>
+</tr>
+<tr class="border-b border-surface-variant">
+<td class="py-3 px-4 font-body-sm text-body-sm text-on-surface">Unit_Price_USD</td>
+<td class="py-3 px-4">
+<select class="w-full bg-surface-container border border-outline-variant rounded p-2 font-body-sm text-body-sm focus:border-primary focus:ring-1 focus:ring-primary">
+<option selected="">Base Price (USD)</option>
+</select>
+</td>
+<td class="py-3 px-4 font-data-mono text-data-mono text-on-surface-variant">$45.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Validation Report -->
+<div class="col-span-12 bg-error-container/10 border border-error-container rounded-xl p-md">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-error" data-weight="fill">warning</span>
+<h2 class="font-h3 text-h3 text-error">Validation Issues (45)</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">The following errors must be corrected before the import can proceed. You can fix these in your file and re-upload.</p>
+<div class="space-y-2">
+<div class="flex gap-4 p-3 bg-surface-container-lowest border border-outline-variant rounded-lg items-start">
+<span class="font-data-mono text-data-mono text-on-surface-variant pt-0.5">Row 42</span>
+<div>
+<div class="font-h3 text-sm font-semibold text-on-surface">Invalid Price Format</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Expected numeric value in 'Unit_Price_USD', found 'TBD'.</div>
+</div>
+</div>
+<div class="flex gap-4 p-3 bg-surface-container-lowest border border-outline-variant rounded-lg items-start">
+<span class="font-data-mono text-data-mono text-on-surface-variant pt-0.5">Row 108</span>
+<div>
+<div class="font-h3 text-sm font-semibold text-on-surface">Missing Required Field</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">'SKU_ID' cannot be blank.</div>
+</div>
+</div>
+<div class="flex gap-4 p-3 bg-surface-container-lowest border border-outline-variant rounded-lg items-start">
+<span class="font-data-mono text-data-mono text-on-surface-variant pt-0.5">Row 215</span>
+<div>
+<div class="font-h3 text-sm font-semibold text-on-surface">Duplicate Entry</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">SKU 'SKU-5521' already exists in the catalog and update flag is not set.</div>
+</div>
+</div>
+</div>
+<button class="mt-4 text-secondary font-h3 text-sm hover:underline flex items-center gap-1">
+                            View all 45 issues <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

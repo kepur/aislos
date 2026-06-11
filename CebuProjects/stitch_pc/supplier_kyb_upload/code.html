@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProcurePing - KYB Upload</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-container": "#fffbff",
+                      "secondary-container": "#8fe3ff",
+                      "secondary": "#00677d",
+                      "on-tertiary-fixed": "#1f1c06",
+                      "on-tertiary-container": "#fffbff",
+                      "surface-bright": "#f9f9f9",
+                      "tertiary": "#615c41",
+                      "on-tertiary-fixed-variant": "#4b472d",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-surface": "#2f3131",
+                      "surface-variant": "#e2e2e2",
+                      "tertiary-container": "#7a7558",
+                      "surface-tint": "#ba1a1f",
+                      "tertiary-fixed": "#ebe3c0",
+                      "surface-dim": "#dadada",
+                      "on-surface-variant": "#5b403d",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed-variant": "#93000f",
+                      "error": "#ba1a1a",
+                      "on-primary": "#ffffff",
+                      "primary-container": "#da3432",
+                      "surface": "#f9f9f9",
+                      "background": "#f9f9f9",
+                      "primary": "#b6171d",
+                      "on-secondary-container": "#00667c",
+                      "surface-container-low": "#f3f3f4",
+                      "outline-variant": "#e4beba",
+                      "inverse-on-surface": "#f0f1f1",
+                      "surface-container-highest": "#e2e2e2",
+                      "secondary-fixed": "#b4ebff",
+                      "on-surface": "#1a1c1c",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#004e5f",
+                      "inverse-primary": "#ffb3ac",
+                      "tertiary-fixed-dim": "#cec7a5",
+                      "surface-container-high": "#e8e8e8",
+                      "error-container": "#ffdad6",
+                      "outline": "#8f6f6c",
+                      "on-background": "#1a1c1c",
+                      "primary-fixed-dim": "#ffb3ac",
+                      "on-primary-fixed": "#410003",
+                      "secondary-fixed-dim": "#7dd2ee",
+                      "on-secondary-fixed": "#001f27",
+                      "primary-fixed": "#ffdad6",
+                      "surface-container": "#eeeeee",
+                      "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "8px",
+                      "lg": "40px",
+                      "base": "4px",
+                      "xl": "64px",
+                      "md": "24px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "sm": "16px"
+              },
+              "fontFamily": {
+                      "h1": ["Inter"],
+                      "data-mono": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "display": ["Inter"],
+                      "h2": ["Inter"],
+                      "h3": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "data-mono": ["14px", {"lineHeight": "1", "fontWeight": "500"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "h2": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "h3": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen overflow-hidden flex flex-col md:flex-row">
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col h-full p-4 gap-2 bg-white dark:bg-slate-900 h-screen w-64 border-r border-slate-100 dark:border-slate-800 flat no shadows left-0 top-0 z-40">
+<div class="flex items-center gap-sm mb-md px-2">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-h3">
+<img alt="Organization Logo" class="w-full h-full object-cover rounded-full" data-alt="A clean, modern corporate logo symbol featuring an abstract geometric shape in a professional setting. The image is crisp and conveys trust and security, suitable for an enterprise procurement platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw5XNYz4I8tA-pJxh0Bp6SjBtTMMLOApHTtK_00kcdPp8zGiNUxSTtqqA4PQpJd1DaXTjFdRwyY519Ojjgwc7YepNdNkhB5jmaFUdVknV0lxbg1y7WAAI7bJIL6Y6cd2s2VZsNQ9vExYBWOXx6fWNjDy9HRLDyuVW-H4koY5dEJ3IPqlVfcVpZhJyaOB-qgxddBTHoUzrujpqEjY22FlgQ0FSJNmwp4DCBFH3T15dfxxBfCbRrsJYwQ67a-2I7UPIUQ0gf1sF-xLom"/>
+</div>
+<div>
+<div class="font-bold text-slate-900 dark:text-white font-body-md text-sm">Supplier Portal</div>
+<div class="text-on-surface-variant font-body-sm text-xs">Global Procurement</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto flex flex-col gap-xs">
+<a class="flex items-center gap-xs px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+<span class="font-body-md text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">gavel</span>
+<span class="font-body-md text-sm">Active Bids</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">groups</span>
+<span class="font-body-md text-sm">Suppliers</span>
+</a>
+<!-- Active State for KYB Status -->
+<a class="flex items-center gap-xs px-3 py-2 bg-slate-50 dark:bg-slate-800 text-[#FF4F49] font-semibold rounded-lg hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-body-md text-sm">KYB Status</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">description</span>
+<span class="font-body-md text-sm">Documents</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200 focus:ring-2 focus:ring-[#FF4F49]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+<span class="font-body-md text-sm">Settings</span>
+</a>
+</div>
+<div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-xs">
+<button class="w-full py-2 px-4 rounded border border-secondary text-secondary font-label-caps hover:bg-secondary hover:text-white transition-colors mb-2">Upgrade Account</button>
+<a class="flex items-center gap-xs px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-sm text-sm">Support</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:pl-2 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-sm text-sm">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col overflow-hidden relative">
+<!-- TopNavBar (Responsive) -->
+<header class="flex items-center justify-between px-10 py-4 w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm md:hidden">
+<div class="flex items-center gap-md">
+<span class="text-xl font-black tracking-tight text-slate-900 dark:text-white">ProcurePing</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs text-slate-500">
+<span class="material-symbols-outlined hover:text-[#FF4F49] transition-colors cursor-pointer active:scale-95 duration-150">language</span>
+<span class="material-symbols-outlined hover:text-[#FF4F49] transition-colors cursor-pointer active:scale-95 duration-150">payments</span>
+<span class="material-symbols-outlined hover:text-[#FF4F49] transition-colors cursor-pointer active:scale-95 duration-150">notifications</span>
+</div>
+<button class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#FF4F49] transition-colors text-sm">Login</button>
+<button class="bg-[#FF4F49] text-white px-4 py-2 rounded font-label-caps hover:opacity-90 transition-opacity">Create RFP</button>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-slate-200" data-alt="A professional headshot of a corporate user, indicating the profile section of an enterprise software interface. Clean lighting and sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwxMw98gtnv09Fyr3PO-QGpmL2PbjbwScUsIsKzeb29bb1CWvnlFr48EmaD873oMCPl_SSfnjMcwnIg2UeX9bZ7ks0BZ2qdJ51KQ-8TYju2U8gHzJfaOnTk0xwZ15NxDLHhrA3Vo798z24BJi2XE6SPJEPulC7Q2zIT6tDsSyqBjLwpNQAUekHkMIHftE75rhPPupw46wjlklF1DZIOCvfVgd18LdLPItSN9Ch9ZA2LXZdpruvv9CqyJwNW0JDXomixvT4nONEiQsP"/>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-4 md:p-lg">
+<div class="max-w-container-max mx-auto space-y-lg">
+<!-- Header Section -->
+<div>
+<h1 class="font-h1 text-h1 text-on-surface mb-xs">Verify Your Business</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Complete your Know Your Business (KYB) profile to unlock global bidding and fast-track payments. All documents are securely encrypted.</p>
+</div>
+<!-- Progress Tracker -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-md flex flex-col md:flex-row items-center justify-between gap-md relative">
+<!-- Connective Line -->
+<div class="hidden md:block absolute top-1/2 left-[10%] right-[10%] h-[2px] bg-surface-variant -z-10 -translate-y-1/2"></div>
+<div class="flex flex-col items-center gap-xs z-10 bg-surface-container-lowest px-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-[20px]">check</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface">Business Info</span>
+</div>
+<div class="flex flex-col items-center gap-xs z-10 bg-surface-container-lowest px-4">
+<div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-caps text-label-caps shadow-[0px_4px_12px_rgba(0,0,0,0.1)] ring-4 ring-primary-fixed">
+                             2
+                         </div>
+<span class="font-label-caps text-label-caps text-primary font-bold">Documents</span>
+</div>
+<div class="flex flex-col items-center gap-xs z-10 bg-surface-container-lowest px-4 opacity-50">
+<div class="w-10 h-10 rounded-full border-2 border-surface-dim text-on-surface-variant flex items-center justify-center font-label-caps text-label-caps">
+                             3
+                         </div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Review</span>
+</div>
+</div>
+<!-- Document Upload Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg border border-surface-variant p-md flex flex-col gap-sm hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-xs text-on-surface font-h3 text-h3">
+<span class="material-symbols-outlined text-primary">description</span>
+                                Business Registration
+                            </div>
+<span class="bg-error-container text-on-error-container font-label-caps text-label-caps px-2 py-1 rounded">Required</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1">Official certificate of incorporation or business registration document. (.pdf, .jpg)</p>
+<div class="mt-auto pt-4 border-t border-surface-variant flex items-center justify-between">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">pending</span>
+<span class="font-label-caps text-label-caps">Pending Upload</span>
+</div>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded font-label-caps text-label-caps hover:bg-surface-variant transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">upload</span> Upload
+                            </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg border border-surface-variant p-md flex flex-col gap-sm hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-xs text-on-surface font-h3 text-h3">
+<span class="material-symbols-outlined text-primary">receipt_long</span>
+                                Tax ID / VAT
+                            </div>
+<span class="bg-error-container text-on-error-container font-label-caps text-label-caps px-2 py-1 rounded">Required</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1">Official tax identification certificate or VAT registration document.</p>
+<div class="mt-auto pt-4 border-t border-surface-variant flex items-center justify-between">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">pending</span>
+<span class="font-label-caps text-label-caps">Pending Upload</span>
+</div>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded font-label-caps text-label-caps hover:bg-surface-variant transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">upload</span> Upload
+                            </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg border border-surface-variant p-md flex flex-col gap-sm hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-xs text-on-surface font-h3 text-h3">
+<span class="material-symbols-outlined text-primary">badge</span>
+                                Owner ID
+                            </div>
+<span class="bg-error-container text-on-error-container font-label-caps text-label-caps px-2 py-1 rounded">Required</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1">Government-issued ID (Passport or Driver's License) of the primary representative.</p>
+<div class="mt-auto pt-4 border-t border-surface-variant flex items-center justify-between">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">pending</span>
+<span class="font-label-caps text-label-caps">Pending Upload</span>
+</div>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded font-label-caps text-label-caps hover:bg-surface-variant transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">upload</span> Upload
+                            </button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-lg border border-surface-variant p-md flex flex-col gap-sm hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-xs text-on-surface font-h3 text-h3">
+<span class="material-symbols-outlined text-secondary">warehouse</span>
+                                Operational Proof
+                            </div>
+<span class="bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-2 py-1 rounded">Optional</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1">Photos of your warehouse, storefront, or primary operational facility to boost trust.</p>
+<div class="mt-auto pt-4 border-t border-surface-variant flex items-center justify-between">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span class="font-label-caps text-label-caps">Empty</span>
+</div>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded font-label-caps text-label-caps hover:bg-surface-variant transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">upload</span> Upload
+                            </button>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-surface-container-lowest rounded-lg border border-surface-variant p-md flex flex-col gap-sm hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-xs text-on-surface font-h3 text-h3">
+<span class="material-symbols-outlined text-secondary">account_balance</span>
+                                Financial Payout
+                            </div>
+<span class="bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-2 py-1 rounded">Optional</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1">Bank statement or Payoneer details to verify payout destination accounts.</p>
+<div class="mt-auto pt-4 border-t border-surface-variant flex items-center justify-between">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span class="font-label-caps text-label-caps">Empty</span>
+</div>
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded font-label-caps text-label-caps hover:bg-surface-variant transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">upload</span> Upload
+                            </button>
+</div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="flex justify-end pt-lg border-t border-surface-variant">
+<button class="bg-surface-dim text-on-surface-variant px-8 py-3 rounded-lg font-label-caps text-label-caps cursor-not-allowed opacity-50 flex items-center gap-xs" disabled="">
+<span class="material-symbols-outlined">lock</span> Submit for Review
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

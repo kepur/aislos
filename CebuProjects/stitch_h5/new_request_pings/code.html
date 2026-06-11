@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Supplier Ping Inbox</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+            .pt-safe { padding-top: env(safe-area-inset-top); }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dee0ff",
+                        "primary-container": "#3f51b5",
+                        "surface-container-high": "#dce9ff",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "inverse-on-surface": "#eaf1ff",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#d3e4fe",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "secondary-fixed": "#dee1ff",
+                        "on-surface-variant": "#454652",
+                        "on-surface": "#0b1c30",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#8f4700",
+                        "background": "#f8f9ff",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "primary-fixed-dim": "#bac3ff",
+                        "outline-variant": "#c5c5d4",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary-fixed": "#301400",
+                        "inverse-primary": "#bac3ff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#021355",
+                        "surface-container": "#e5eeff",
+                        "on-primary-container": "#cacfff",
+                        "secondary-container": "#abb7ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "on-secondary-fixed-variant": "#354282",
+                        "on-secondary-container": "#394687",
+                        "on-error-container": "#93000a",
+                        "secondary": "#4d5a9c",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "primary": "#24389c",
+                        "on-background": "#0b1c30",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-tertiary-container": "#ffc7a2",
+                        "outline": "#757684",
+                        "surface-dim": "#cbdbf5",
+                        "on-primary-fixed": "#00105c",
+                        "tertiary": "#6c3400",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#4355b9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "lg": "24px",
+                        "gutter-mobile": "12px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h2": ["Inter"],
+                        "h1": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased pt-safe pb-safe md:bg-surface-container-low min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between px-4 h-14 w-full max-w-screen-md mx-auto">
+<div class="tap-highlight-transparent cursor-pointer text-slate-500 dark:text-slate-400 active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
+</div>
+<div class="font-['Inter'] text-sm font-medium tracking-tight text-lg font-bold text-indigo-600 dark:text-indigo-400">
+                Inbox
+            </div>
+<div class="tap-highlight-transparent cursor-pointer text-slate-500 dark:text-slate-400 active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pt-[72px] pb-[88px] px-margin-mobile max-w-screen-md mx-auto flex flex-col gap-md">
+<!-- Filters -->
+<section class="flex gap-sm overflow-x-auto no-scrollbar py-2 -mx-margin-mobile px-margin-mobile">
+<button class="flex items-center gap-xs px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant text-on-surface font-label-md text-label-md whitespace-nowrap active:bg-surface-dim transition-colors">
+                Distance: <span class="text-primary">&lt; 50 mi</span>
+<span class="material-symbols-outlined text-[16px] ml-1" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+<button class="flex items-center gap-xs px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant text-on-surface font-label-md text-label-md whitespace-nowrap active:bg-surface-dim transition-colors">
+                Budget: <span class="text-primary">$5k+</span>
+<span class="material-symbols-outlined text-[16px] ml-1" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+<button class="flex items-center gap-xs px-3 py-1.5 rounded-full bg-surface-container border border-outline-variant text-on-surface font-label-md text-label-md whitespace-nowrap active:bg-surface-dim transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="tune">tune</span>
+                More Filters
+            </button>
+</section>
+<!-- Match Cards List -->
+<div class="flex flex-col gap-md">
+<!-- Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col gap-md relative overflow-hidden">
+<!-- Top Row: Category & Status -->
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-flex items-center gap-xs text-primary font-label-sm text-label-sm uppercase tracking-wider mb-xs">
+<span class="material-symbols-outlined text-[14px]" data-icon="inventory_2">inventory_2</span>
+                            Industrial Equipment
+                        </span>
+<h2 class="font-h2 text-h2 text-on-surface">12 Pallets of C1 Grade Steel Pipe</h2>
+</div>
+<div class="flex flex-col items-end gap-xs">
+<!-- Match Score -->
+<div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary-container text-on-primary font-label-md text-label-md shadow-sm">
+                            98%
+                        </div>
+</div>
+</div>
+<!-- Middle Row: Details Grid -->
+<div class="grid grid-cols-2 gap-sm bg-surface-container-low rounded-lg p-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Budget</span>
+<span class="font-label-md text-label-md text-on-surface">$12,500</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Quantity</span>
+<span class="font-label-md text-label-md text-on-surface">12 Units</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Location</span>
+<span class="font-label-md text-label-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px] text-outline" data-icon="location_on">location_on</span>
+                            Within 25 mi
+                        </span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Deadline</span>
+<span class="font-label-md text-label-md text-on-surface">48 Hours</span>
+</div>
+</div>
+<!-- Trust Indicators -->
+<div class="flex gap-sm">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded bg-[#e6f4ea] text-[#137333] font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified_user">verified_user</span>
+                        Pre-funded Escrow
+                    </span>
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded bg-surface-variant text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="history">history</span>
+                        New Buyer
+                    </span>
+</div>
+<!-- Action Row -->
+<div class="pt-sm border-t border-outline-variant/30 flex justify-end gap-sm">
+<button class="px-4 py-2 rounded-lg font-label-md text-label-md text-primary hover:bg-primary-fixed/50 active:bg-primary-fixed transition-colors">
+                        Ignore
+                    </button>
+<button class="px-6 py-2 rounded-lg font-label-md text-label-md bg-primary text-on-primary shadow-sm active:shadow-inner active:opacity-90 transition-all flex items-center gap-xs">
+                        Make Offer
+                        <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col gap-md relative overflow-hidden opacity-90">
+<!-- Top Row: Category & Status -->
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-flex items-center gap-xs text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-xs">
+<span class="material-symbols-outlined text-[14px]" data-icon="devices">devices</span>
+                            Electronics Bulk
+                        </span>
+<h2 class="font-h2 text-h2 text-on-surface">Refurbished Office Laptops (i7)</h2>
+</div>
+<div class="flex flex-col items-end gap-xs">
+<!-- Match Score -->
+<div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-secondary text-secondary font-label-md text-label-md shadow-sm">
+                            85%
+                        </div>
+</div>
+</div>
+<!-- Middle Row: Details Grid -->
+<div class="grid grid-cols-2 gap-sm bg-surface-container-low rounded-lg p-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Budget</span>
+<span class="font-label-md text-label-md text-on-surface">$8,000</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Quantity</span>
+<span class="font-label-md text-label-md text-on-surface">50 Units</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Location</span>
+<span class="font-label-md text-label-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px] text-outline" data-icon="location_on">location_on</span>
+                            Within 100 mi
+                        </span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Deadline</span>
+<span class="font-label-md text-label-md text-error">12 Hours</span>
+</div>
+</div>
+<!-- Trust Indicators -->
+<div class="flex gap-sm">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded bg-[#e6f4ea] text-[#137333] font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified_user">verified_user</span>
+                        Pre-funded Escrow
+                    </span>
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="star">star</span>
+                        Top Buyer
+                    </span>
+</div>
+<!-- Action Row -->
+<div class="pt-sm border-t border-outline-variant/30 flex justify-end gap-sm">
+<button class="px-4 py-2 rounded-lg font-label-md text-label-md text-primary hover:bg-primary-fixed/50 active:bg-primary-fixed transition-colors">
+                        Ignore
+                    </button>
+<button class="px-6 py-2 rounded-lg font-label-md text-label-md bg-primary text-on-primary shadow-sm active:shadow-inner active:opacity-90 transition-all flex items-center gap-xs">
+                        Make Offer
+                        <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 border-t rounded-t-xl border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)] bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg pb-safe h-16 touch-none md:hidden">
+<div class="flex justify-around items-center w-full max-w-screen-md mx-auto h-full">
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider mt-1">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 scale-105 transition-transform active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full relative">
+<!-- Unread Indicator -->
+<span class="absolute top-2 right-6 w-2 h-2 rounded-full bg-error"></span>
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider mt-1">Post</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full">
+<span class="material-symbols-outlined" data-icon="local_offer">local_offer</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider mt-1">Offers</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider mt-1">Orders</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors w-full h-full">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider mt-1">Account</span>
+</button>
+</div>
+</nav>
+</body></html>

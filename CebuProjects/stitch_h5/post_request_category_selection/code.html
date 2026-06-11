@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Post Request Step 1 — Category Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#4d5a9c",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "on-background": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "surface-container": "#e5eeff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-surface-variant": "#454652",
+                        "on-secondary-container": "#394687",
+                        "primary": "#24389c",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-low": "#eff4ff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#dee1ff",
+                        "on-surface": "#0b1c30",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#00105c",
+                        "primary-fixed": "#dee0ff",
+                        "on-tertiary-fixed": "#301400",
+                        "secondary-container": "#abb7ff",
+                        "outline": "#757684",
+                        "on-primary-container": "#cacfff",
+                        "inverse-surface": "#213145",
+                        "background": "#f8f9ff",
+                        "tertiary-container": "#8f4700",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-primary": "#bac3ff",
+                        "surface-tint": "#4355b9",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#6c3400",
+                        "error": "#ba1a1a",
+                        "primary-container": "#3f51b5",
+                        "surface-dim": "#cbdbf5",
+                        "surface": "#f8f9ff",
+                        "primary-fixed-dim": "#bac3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased pb-[80px]">
+<!-- TopAppBar (Simulated as specific flow header) -->
+<header class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100 flex items-center justify-between px-4 h-14">
+<button aria-label="Close" class="text-slate-500 active:opacity-70 transition-opacity tap-highlight-transparent cursor-pointer p-2 -ml-2">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="font-h2 text-h2 text-on-surface">Post a Request</h1>
+<div class="w-10"></div> <!-- Spacer for center alignment -->
+</header>
+<main class="pt-16 px-margin-mobile pb-lg max-w-screen-md mx-auto">
+<!-- Progress Stepper -->
+<div class="flex items-center justify-center mb-lg pt-sm">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md">1</div>
+<div class="w-12 h-1 bg-surface-variant rounded-full"></div>
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-label-md text-label-md">2</div>
+<div class="w-12 h-1 bg-surface-variant rounded-full"></div>
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-label-md text-label-md">3</div>
+</div>
+</div>
+<h2 class="font-h1 text-h1 text-on-surface mb-2">What do you need?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Select a category for your reverse auction request.</p>
+<!-- Search Input -->
+<div class="relative mb-xl">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full h-[52px] pl-12 pr-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors shadow-sm" placeholder="Search categories..." type="text"/>
+</div>
+<!-- Recent Categories -->
+<div class="mb-xl">
+<div class="flex justify-between items-end mb-md">
+<h3 class="font-h3 text-h3 text-on-surface">Recent Categories</h3>
+</div>
+<div class="flex gap-sm overflow-x-auto pb-2 snap-x hide-scrollbar">
+<button class="snap-start shrink-0 flex items-center gap-2 px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full active:bg-surface-variant transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+<span class="material-symbols-outlined text-primary text-[20px]">architecture</span>
+<span class="font-label-md text-label-md text-on-surface">Construction</span>
+</button>
+<button class="snap-start shrink-0 flex items-center gap-2 px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full active:bg-surface-variant transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+<span class="material-symbols-outlined text-primary text-[20px]">directions_boat</span>
+<span class="font-label-md text-label-md text-on-surface">Marine</span>
+</button>
+</div>
+</div>
+<!-- Popular Categories Grid -->
+<div class="mb-xl">
+<h3 class="font-h3 text-h3 text-on-surface mb-md">Popular Categories</h3>
+<div class="grid grid-cols-2 gap-gutter-mobile">
+<!-- Category Card: Construction -->
+<button class="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)] active:bg-surface-variant transition-all aspect-square relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-[40px] text-primary mb-sm">architecture</span>
+<span class="font-label-md text-label-md text-on-surface text-center">Construction</span>
+</button>
+<!-- Category Card: Marine -->
+<button class="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)] active:bg-surface-variant transition-all aspect-square relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-[40px] text-primary mb-sm">directions_boat</span>
+<span class="font-label-md text-label-md text-on-surface text-center">Marine</span>
+</button>
+<!-- Category Card: Auto -->
+<button class="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)] active:bg-surface-variant transition-all aspect-square relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-[40px] text-primary mb-sm">directions_car</span>
+<span class="font-label-md text-label-md text-on-surface text-center">Auto</span>
+</button>
+<!-- Category Card: IT/Office -->
+<button class="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)] active:bg-surface-variant transition-all aspect-square relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-[40px] text-primary mb-sm">computer</span>
+<span class="font-label-md text-label-md text-on-surface text-center">IT/Office</span>
+</button>
+<!-- Category Card: Electronics -->
+<button class="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)] active:bg-surface-variant transition-all aspect-square relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-[40px] text-primary mb-sm">devices</span>
+<span class="font-label-md text-label-md text-on-surface text-center">Electronics</span>
+</button>
+<!-- Category Card: Home -->
+<button class="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)] active:bg-surface-variant transition-all aspect-square relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-[40px] text-primary mb-sm">chair</span>
+<span class="font-label-md text-label-md text-on-surface text-center">Home</span>
+</button>
+<!-- Category Card: Fashion -->
+<button class="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)] active:bg-surface-variant transition-all aspect-square relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-[40px] text-primary mb-sm">styler</span>
+<span class="font-label-md text-label-md text-on-surface text-center">Fashion</span>
+</button>
+<!-- Category Card: Services -->
+<button class="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.05)] active:bg-surface-variant transition-all aspect-square relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-[40px] text-primary mb-sm">handyman</span>
+<span class="font-label-md text-label-md text-on-surface text-center">Services</span>
+</button>
+</div>
+</div>
+<!-- Custom Request Section -->
+<div class="bg-surface-container p-md rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant flex items-center justify-between mb-xl">
+<div>
+<h4 class="font-h3 text-h3 text-on-surface mb-1">Can't find it?</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Describe what you need manually.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md active:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+                Custom
+            </button>
+</div>
+</main>
+<!-- BottomNavBar (Shared Component JSON) -->
+<nav class="md:hidden bg-white/98 dark:bg-slate-900/98 backdrop-blur-lg fixed bottom-0 w-full z-50 border-t rounded-t-xl shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)] pb-safe h-16 touch-none">
+<div class="flex justify-around items-center w-full max-w-screen-md mx-auto h-full">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors flex-1 h-full" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'wght' 400;">home</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Home</span>
+</a>
+<!-- Active State: Post -->
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 scale-105 transition-transform active:bg-slate-50 dark:active:bg-slate-800 flex-1 h-full" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Post</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors flex-1 h-full" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'wght' 400;">local_offer</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Offers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors flex-1 h-full" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'wght' 400;">receipt_long</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 opacity-80 active:bg-slate-50 dark:active:bg-slate-800 transition-colors flex-1 h-full" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'wght' 400;">person</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Account</span>
+</a>
+</div>
+</nav>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .pb-safe {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
+                height: calc(64px + env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</body></html>

@@ -1,0 +1,322 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-slate-200 antialiased bg-transparent;
+  }
+}
+
+@layer components {
+  /* === Shared === */
+  .glass-panel {
+    @apply bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-xl;
+  }
+  .btn-primary {
+    @apply bg-primary-600 text-white px-6 py-3 rounded-lg font-medium
+           hover:bg-primary-700 transition-colors duration-200;
+  }
+  .btn-secondary {
+    @apply border border-primary-500 text-primary-400 px-6 py-3 rounded-lg font-medium
+           hover:bg-white/5 transition-colors duration-200;
+  }
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-16 lg:py-24;
+  }
+  .container-main {
+    @apply max-w-7xl mx-auto;
+  }
+  .input-field {
+    @apply w-full text-sm bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2
+           focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none placeholder-slate-500;
+  }
+
+  /* === Admin Panel Cards === */
+  .admin-card {
+    @apply rounded-xl border border-white/[0.06] p-5;
+    background: rgba(15,23,42,0.6);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset, 0 4px 24px rgba(0,0,0,0.2);
+  }
+  .admin-card:hover {
+    border-color: rgba(255,255,255,0.08);
+  }
+
+  /* === Admin Table Styles === */
+  .admin-table {
+    @apply w-full text-sm;
+  }
+  .admin-table thead tr {
+    @apply border-b border-white/5;
+  }
+  .admin-table th {
+    @apply text-left py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider;
+  }
+  .admin-table tbody tr {
+    @apply border-b border-white/[0.03] hover:bg-white/[0.02] cursor-pointer transition-colors;
+  }
+  .admin-table td {
+    @apply py-3 px-4 text-slate-400;
+  }
+
+  /* === Portal Cards === */
+  .portal-card {
+    @apply rounded-2xl border border-slate-200/60 p-6 bg-white shadow-sm;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .portal-card:hover {
+    @apply shadow-md border-slate-300/80;
+  }
+
+  /* === Portal Input === */
+  .portal-input {
+    @apply w-full text-sm bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-4 py-2.5
+           focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none placeholder-slate-400
+           transition-colors;
+  }
+
+  /* === Light Theme Overrides === */
+  .theme-light.admin-layout {
+    background: #f8fafc !important;
+  }
+  .theme-light .admin-topbar {
+    background: rgba(255,255,255,0.92) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+  .theme-light .admin-sidebar {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+    border-right: 1px solid #e2e8f0 !important;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.03) !important;
+  }
+
+  /* Text colors */
+  .theme-light .text-white {
+    color: #0f172a !important;
+  }
+  .theme-light .text-slate-200 {
+    color: #1e293b !important;
+  }
+  .theme-light .text-slate-300 {
+    color: #334155 !important;
+  }
+  .theme-light .text-slate-400 {
+    color: #475569 !important;
+  }
+  .theme-light .text-slate-500 {
+    color: #64748b !important;
+  }
+  .theme-light .text-slate-600 {
+    color: #475569 !important;
+  }
+  .theme-light .text-cyan-400 {
+    color: #2563eb !important;
+  }
+  .theme-light .text-cyan-400\/80 {
+    color: rgba(37,99,235,0.8) !important;
+  }
+  .theme-light .hover\:text-cyan-300:hover {
+    color: #1d4ed8 !important;
+  }
+
+  /* Backgrounds */
+  .theme-light .bg-white\/5 {
+    background-color: #f1f5f9 !important;
+  }
+  .theme-light .bg-white\/\[0\.02\] {
+    background-color: #f8fafc !important;
+  }
+  .theme-light .hover\:bg-white\/5:hover {
+    background-color: #e2e8f0 !important;
+  }
+  .theme-light .hover\:bg-white\/\[0\.02\]:hover {
+    background-color: #f1f5f9 !important;
+  }
+
+  /* Borders */
+  .theme-light .border-white\/5 {
+    border-color: #e2e8f0 !important;
+  }
+  .theme-light .border-white\/10 {
+    border-color: #cbd5e1 !important;
+  }
+  .theme-light .border-white\/\[0\.03\] {
+    border-color: #f1f5f9 !important;
+  }
+  .theme-light .border-white\/\[0\.04\] {
+    border-color: #e2e8f0 !important;
+  }
+  .theme-light .border-white\/\[0\.06\] {
+    border-color: #e2e8f0 !important;
+  }
+  .theme-light .hover\:border-white\/10:hover {
+    border-color: #cbd5e1 !important;
+  }
+
+  /* Admin card */
+  .theme-light .admin-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02) !important;
+    backdrop-filter: none !important;
+  }
+  .theme-light .admin-card:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.03) !important;
+  }
+
+  /* Admin table */
+  .theme-light .admin-table thead tr {
+    border-bottom-color: #e2e8f0 !important;
+  }
+  .theme-light .admin-table tbody tr {
+    border-bottom-color: #f1f5f9 !important;
+  }
+  .theme-light .admin-table tbody tr:hover {
+    background-color: #f8fafc !important;
+  }
+  .theme-light .admin-table td {
+    color: #475569 !important;
+  }
+
+  /* Sidebar nav items */
+  .theme-light .admin-nav-item {
+    color: #475569 !important;
+  }
+  .theme-light .admin-nav-item:hover {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+  }
+  .theme-light .admin-nav-item.router-link-active,
+  .theme-light .admin-nav-item.active {
+    background-color: #eff6ff !important;
+    color: #2563eb !important;
+    box-shadow: inset 0 0 0 1px rgba(37,99,235,0.15) !important;
+  }
+
+  /* Sidebar logo glow → subtle blue in light */
+  .theme-light .shadow-\[0_0_20px_rgba\(6\,182\,212\,0\.4\)\] {
+    box-shadow: 0 0 10px rgba(37,99,235,0.15) !important;
+  }
+
+  /* Notification dot */
+  .theme-light .bg-cyan-400 {
+    background-color: #3b82f6 !important;
+  }
+  .theme-light .shadow-\[0_0_6px_rgba\(6\,182\,212\,0\.6\)\] {
+    box-shadow: 0 0 6px rgba(59,130,246,0.4) !important;
+  }
+
+  /* System Online dot */
+  .theme-light .bg-emerald-400 {
+    background-color: #22c55e !important;
+  }
+  .theme-light .shadow-\[0_0_6px_rgba\(52\,211\,153\,0\.6\)\] {
+    box-shadow: 0 0 4px rgba(34,197,94,0.3) !important;
+  }
+
+  /* Status badge backgrounds stay semi-transparent but visible on white */
+  .theme-light .bg-emerald-500\/15 {
+    background-color: rgba(16,185,129,0.1) !important;
+  }
+  .theme-light .bg-blue-500\/15 {
+    background-color: rgba(59,130,246,0.1) !important;
+  }
+  .theme-light .bg-amber-500\/15 {
+    background-color: rgba(245,158,11,0.1) !important;
+  }
+  .theme-light .bg-purple-500\/15 {
+    background-color: rgba(168,85,247,0.1) !important;
+  }
+  .theme-light .bg-red-500\/15 {
+    background-color: rgba(239,68,68,0.1) !important;
+  }
+  .theme-light .bg-slate-500\/15 {
+    background-color: rgba(100,116,139,0.1) !important;
+  }
+  .theme-light .bg-orange-500\/15 {
+    background-color: rgba(249,115,22,0.1) !important;
+  }
+  /* Status badge text → darker for light bg */
+  .theme-light .text-emerald-400 {
+    color: #059669 !important;
+  }
+  .theme-light .text-blue-400 {
+    color: #2563eb !important;
+  }
+  .theme-light .text-amber-400 {
+    color: #d97706 !important;
+  }
+  .theme-light .text-purple-400 {
+    color: #7c3aed !important;
+  }
+  .theme-light .text-red-400 {
+    color: #dc2626 !important;
+  }
+  .theme-light .text-orange-400 {
+    color: #ea580c !important;
+  }
+
+  /* Stat card icon backgrounds */
+  .theme-light .bg-blue-500\/10 {
+    background-color: rgba(59,130,246,0.08) !important;
+  }
+  .theme-light .bg-amber-500\/10 {
+    background-color: rgba(245,158,11,0.08) !important;
+  }
+  .theme-light .bg-orange-500\/10 {
+    background-color: rgba(249,115,22,0.08) !important;
+  }
+  .theme-light .bg-emerald-500\/10 {
+    background-color: rgba(16,185,129,0.08) !important;
+  }
+  .theme-light .bg-red-500\/10 {
+    background-color: rgba(239,68,68,0.08) !important;
+  }
+
+  /* Scrollbar in light mode */
+  .theme-light .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.12) !important;
+  }
+
+  /* Input fields inside admin */
+  .theme-light .input-field {
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+  }
+  .theme-light .input-field::placeholder {
+    color: #94a3b8 !important;
+  }
+  .theme-light .input-field:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.15) !important;
+  }
+
+  /* Gradient avatar ring stays the same on both themes */
+  .theme-light .from-cyan-400 {
+    --tw-gradient-from: #3b82f6 !important;
+  }
+  .theme-light .to-blue-600 {
+    --tw-gradient-to: #1d4ed8 !important;
+  }
+
+  /* Hover text on logout */
+  .theme-light .hover\:text-red-400:hover {
+    color: #dc2626 !important;
+  }
+  .theme-light .hover\:text-white:hover {
+    color: #0f172a !important;
+  }
+
+  /* Smooth theme transition */
+  .admin-layout,
+  .admin-layout .admin-sidebar,
+  .admin-layout .admin-topbar,
+  .admin-layout .admin-card,
+  .admin-layout .admin-nav-item {
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  }
+}
+

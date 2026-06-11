@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Order Tracking &amp; Escrow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#6c3400",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#00105c",
+                        "outline": "#757684",
+                        "surface-variant": "#d3e4fe",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#bac3ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#4355b9",
+                        "on-tertiary-container": "#ffc7a2",
+                        "secondary-container": "#abb7ff",
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c5c5d4",
+                        "surface": "#f8f9ff",
+                        "on-secondary-fixed": "#021355",
+                        "on-secondary-fixed-variant": "#354282",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary-container": "#8f4700",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed": "#dee1ff",
+                        "surface-container": "#e5eeff",
+                        "on-surface": "#0b1c30",
+                        "primary-container": "#3f51b5",
+                        "primary-fixed": "#dee0ff",
+                        "on-surface-variant": "#454652",
+                        "primary": "#24389c",
+                        "on-secondary-container": "#394687",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "background": "#f8f9ff",
+                        "secondary": "#4d5a9c",
+                        "inverse-primary": "#bac3ff",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-background": "#0b1c30",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#cacfff",
+                        "surface-dim": "#cbdbf5",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#301400",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "tertiary-fixed-dim": "#ffb784"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter-mobile": "12px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body-md text-on-background antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/60 shadow-sm flex items-center justify-between px-4 h-16 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-indigo-600" data-icon="swap_horizontal_circle">swap_horizontal_circle</span>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 font-h2">Order #12345</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-slate-50 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-slate-500" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-32 px-margin-mobile max-w-md mx-auto space-y-6">
+<!-- Status & Escrow Badge Section -->
+<div class="bg-surface-container-highest rounded-xl p-4 shadow-sm border border-outline-variant/30">
+<div class="flex items-center justify-between mb-3">
+<span class="text-label-sm uppercase tracking-wider text-primary font-bold">100x Steel Bolts</span>
+<div class="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                    ESCROW PROTECTED
+                </div>
+</div>
+<h2 class="text-h2 text-on-surface mb-1">Supplier Delivering</h2>
+<p class="text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+                Estimated arrival: Oct 24, 2023
+            </p>
+</div>
+<!-- Progress Tracker (Vertical/Asymmetric) -->
+<div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+<h3 class="text-h3 mb-6">Delivery Timeline</h3>
+<div class="relative space-y-8">
+<!-- Line -->
+<div class="absolute left-3 top-2 bottom-2 w-0.5 bg-slate-100"></div>
+<!-- Steps -->
+<div class="relative flex items-start gap-4">
+<div class="z-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[14px]" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Order Paid</p>
+<p class="text-[12px] text-slate-400">Oct 20, 09:30 AM</p>
+</div>
+</div>
+<div class="relative flex items-start gap-4">
+<div class="z-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[14px]" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Funds in Escrow</p>
+<p class="text-[12px] text-slate-400">Oct 20, 09:35 AM</p>
+</div>
+</div>
+<div class="relative flex items-start gap-4">
+<div class="z-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[14px]" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Supplier Dispatched</p>
+<p class="text-[12px] text-slate-400">Oct 21, 02:15 PM</p>
+</div>
+</div>
+<div class="relative flex items-start gap-4">
+<div class="z-10 w-6 h-6 rounded-full bg-primary ring-4 ring-primary/20 flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[14px]" data-icon="local_shipping">local_shipping</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-primary font-bold">Delivery (Current)</p>
+<p class="text-[12px] text-primary/70">In transit to distribution hub</p>
+</div>
+</div>
+<div class="relative flex items-start gap-4 opacity-40">
+<div class="z-10 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="handshake">handshake</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Confirm Receipt</p>
+</div>
+</div>
+<div class="relative flex items-start gap-4 opacity-40">
+<div class="z-10 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="payments">payments</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Funds Released</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Map Progress View -->
+<div class="relative w-full h-48 rounded-2xl overflow-hidden shadow-sm border border-slate-100">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist digital map interface showing a logistics route through an urban landscape. A glowing blue line indicates the delivery path between two points, with a truck icon currently positioned halfway. The map features soft gray tones for streets and buildings, creating a high-end corporate data visualization aesthetic that matches the app's indigo and white color palette." data-location="Chicago" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY4lzO3q0DTGvID4TkoiwMawVlduVjGijmv_RrsM88kp7isQ5Z41fGalEvNjUvyk51CfcSaGE1AJmNyvLp9OZ-iLwre04LzsbrLnLrPq8ac3v8jFyg01CzYDKpA7-GmZ9xOrbsykgf5s1sFHuNgHLVqe8Z20nB6MtW3ZlnEfg1nJTgb7V4Jnx2A8_-PHS5J5YHSy2yaQW-Svz4HLwArtfcTxspkio7W_eJJ5l_gjKbf-A9jIKBgRLPgFC-Bw-D3E4EoruM8fA2yVU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
+<div class="absolute bottom-3 left-3 flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="distance">distance</span>
+<span class="text-label-sm font-bold">12.4 miles away</span>
+</div>
+</div>
+<!-- Supplier Info Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-slate-100">
+<img class="w-full h-full object-cover" data-alt="A professional corporate logo for Global Tools Corp displayed on a clean white background. The logo features minimalist geometric shapes and bold sans-serif typography in shades of deep indigo and slate gray. The overall design conveys industrial reliability and global logistics expertise in a modern financial context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjhUa7pkqlCku8q807X4SJob0A2n_slc4ovxGbddMGyEoUZB8q7im_VpNwZRYrd03VfcJWql-A1od-_tpW48isaPzRtiIi6BeU__bW_GPMq16K0DpuMcFfnnbF9YyIpp8dLHEIrqMo8e446TX1mVlDUDBfs0z2co-HgQtb_0-UyLdurXDDleRmxtkEHt9O6uVfwsiHt96A7Kj00TmpweBHxouzeeFUFNhYtvBKFe3Jrz7itxsmMuCy700sOS1gbA7F7c97LdBm7q4"/>
+</div>
+<div>
+<h4 class="font-label-md text-on-surface">Global Tools Corp</h4>
+<p class="text-[12px] text-slate-500">Verified Platinum Supplier</p>
+</div>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-primary border border-slate-200 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+</button>
+</div>
+<!-- Trust Badges -->
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-indigo-50/50 rounded-lg p-3 flex flex-col items-center text-center gap-1 border border-indigo-100/50">
+<span class="material-symbols-outlined text-indigo-600" data-icon="shield" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span class="text-[11px] font-bold text-indigo-800">Secure Payment</span>
+</div>
+<div class="bg-indigo-50/50 rounded-lg p-3 flex flex-col items-center text-center gap-1 border border-indigo-100/50">
+<span class="material-symbols-outlined text-indigo-600" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="text-[11px] font-bold text-indigo-800">Dispute Protection</span>
+</div>
+</div>
+<!-- Dispute Link -->
+<div class="text-center pb-4">
+<a class="text-error text-label-sm font-semibold hover:underline flex items-center justify-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]" data-icon="report_problem">report_problem</span>
+                Something wrong? Open a Dispute
+            </a>
+</div>
+</main>
+<!-- Bottom Action Area -->
+<div class="fixed bottom-0 w-full bg-white/90 backdrop-blur-xl border-t border-slate-100 px-margin-mobile pt-4 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50">
+<button class="w-full h-14 bg-slate-200 text-slate-400 rounded-xl font-h3 cursor-not-allowed flex items-center justify-center gap-2" disabled="">
+<span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
+            Confirm Receipt
+        </button>
+<p class="text-center text-[11px] text-slate-400 mt-2 pb-2">Enabled once carrier confirms delivery</p>
+</div>
+<!-- Persistent Navigation (BottomNavBar) -->
+<!-- Not visible as this is a transactional sub-page per the Shell Visibility rules -->
+</body></html>

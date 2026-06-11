@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Admin Escrow Transaction Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#eff4ff",
+                      "outline-variant": "#c5c5d4",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed": "#021355",
+                      "tertiary-container": "#8f4700",
+                      "primary-fixed": "#dee0ff",
+                      "on-error-container": "#93000a",
+                      "surface-bright": "#f8f9ff",
+                      "secondary-fixed": "#dee1ff",
+                      "primary": "#24389c",
+                      "on-tertiary-container": "#ffc7a2",
+                      "on-primary-fixed-variant": "#293ca0",
+                      "surface-variant": "#d3e4fe",
+                      "surface-dim": "#cbdbf5",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "tertiary-fixed": "#ffdcc6",
+                      "on-surface": "#0b1c30",
+                      "inverse-surface": "#213145",
+                      "surface-container-high": "#dce9ff",
+                      "outline": "#757684",
+                      "background": "#f8f9ff",
+                      "on-primary-container": "#cacfff",
+                      "surface-tint": "#4355b9",
+                      "secondary-container": "#abb7ff",
+                      "primary-container": "#3f51b5",
+                      "on-secondary-container": "#394687",
+                      "secondary-fixed-dim": "#b9c3ff",
+                      "surface-container-highest": "#d3e4fe",
+                      "surface-container": "#e5eeff",
+                      "on-primary-fixed": "#00105c",
+                      "secondary": "#4d5a9c",
+                      "error-container": "#ffdad6",
+                      "primary-fixed-dim": "#bac3ff",
+                      "tertiary-fixed-dim": "#ffb784",
+                      "inverse-primary": "#bac3ff",
+                      "on-surface-variant": "#454652",
+                      "surface": "#f8f9ff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#354282",
+                      "tertiary": "#6c3400",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "on-background": "#0b1c30",
+                      "on-tertiary-fixed": "#301400",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "gutter-mobile": "12px",
+                      "xl": "32px",
+                      "margin-mobile": "16px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "label-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "h3": ["Inter"],
+                      "h1": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "h2": ["Inter"]
+              },
+              "fontSize": {
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                      "h3": ["18px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+                      "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                      "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-safe">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-4 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="text-indigo-600 dark:text-indigo-400 active:opacity-70 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu" data-weight="fill" style="font-variation-settings: 'FILL' 1;">menu</span>
+</button>
+<h1 class="font-inter text-base font-semibold tracking-tight text-slate-900 dark:text-slate-50">Marketplace Admin</h1>
+</div>
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary font-label-md">
+                A
+            </div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-margin-mobile md:px-lg py-lg space-y-lg">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-h1 text-h1 text-on-background">TXN-8924-A</span>
+<span class="px-2 py-1 bg-surface-container-high text-primary font-label-sm text-label-sm rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+                        Funds Held
+                    </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Created Oct 24, 2023, 14:32 UTC</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-lg h-[44px] bg-white border border-outline-variant text-on-surface font-label-md text-label-md rounded shadow-sm hover:bg-surface-container-lowest flex items-center gap-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="gavel">gavel</span>
+                    Dispute
+                </button>
+<button class="px-lg h-[44px] bg-primary text-on-primary font-label-md text-label-md rounded shadow-sm hover:bg-on-primary-fixed-variant flex items-center gap-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span>
+                    Release Funds
+                </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Financial Breakdown (Spans 2 columns on web) -->
+<div class="md:col-span-2 bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md border border-outline-variant/30 flex flex-col">
+<h2 class="font-h3 text-h3 text-on-background mb-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="account_balance_wallet" data-weight="fill" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+                    Financial Breakdown
+                </h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-md mb-lg flex-grow">
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-md">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Authorization</p>
+<p class="font-h2 text-h2 text-on-background">$1,250.00</p>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-green-600" data-icon="verified">verified</span>
+                            Secured
+                        </p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-md">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Captured</p>
+<p class="font-h2 text-h2 text-primary">$1,250.00</p>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="lock_clock">lock_clock</span>
+                            In Escrow
+                        </p>
+</div>
+</div>
+<div class="pt-md border-t border-outline-variant/30">
+<div class="flex justify-between items-center py-sm">
+<span class="font-body-md text-body-md text-on-surface-variant">Item Subtotal</span>
+<span class="font-label-md text-label-md text-on-background">$1,200.00</span>
+</div>
+<div class="flex justify-between items-center py-sm">
+<span class="font-body-md text-body-md text-on-surface-variant">Platform Fee (2%)</span>
+<span class="font-label-md text-label-md text-on-background">$24.00</span>
+</div>
+<div class="flex justify-between items-center py-sm">
+<span class="font-body-md text-body-md text-on-surface-variant">Network Fee (TRC20)</span>
+<span class="font-label-md text-label-md text-on-background">$26.00</span>
+</div>
+</div>
+</div>
+<!-- Payment Provider Info -->
+<div class="bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md border border-outline-variant/30 flex flex-col">
+<h2 class="font-h3 text-h3 text-on-background mb-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="credit_card" data-weight="fill" style="font-variation-settings: 'FILL' 1;">credit_card</span>
+                    Payment Provider
+                </h2>
+<div class="flex items-center gap-md mb-lg">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="currency_bitcoin">currency_bitcoin</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-background">USDT</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Tron TRC20 Network</p>
+</div>
+</div>
+<div class="space-y-md">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">TxHash</p>
+<p class="font-body-md text-body-md text-on-background font-mono text-sm break-all">T9x...jL2p</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Sender Address</p>
+<p class="font-body-md text-body-md text-on-background font-mono text-sm break-all">TAq...4RmD</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Escrow Contract</p>
+<p class="font-body-md text-body-md text-on-background font-mono text-sm break-all">TR7...1kPq</p>
+</div>
+</div>
+</div>
+<!-- Webhook Timeline (Spans full width) -->
+<div class="md:col-span-3 bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md border border-outline-variant/30">
+<h2 class="font-h3 text-h3 text-on-background mb-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="timeline" data-weight="fill" style="font-variation-settings: 'FILL' 1;">timeline</span>
+                    Webhook Event Timeline
+                </h2>
+<div class="relative pl-6 space-y-md before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-container-high">
+<!-- Event 1 -->
+<div class="relative">
+<div class="absolute -left-[30px] top-1 w-5 h-5 rounded-full bg-white border-2 border-primary flex items-center justify-center z-10">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-sm">
+<div class="flex justify-between items-start mb-xs">
+<p class="font-label-md text-label-md text-on-background">Callback Received</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">14:35 UTC</p>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Provider confirmed network block confirmation.</p>
+<div class="mt-sm p-sm bg-surface rounded text-xs font-mono text-on-surface-variant overflow-x-auto">
+                                { "event": "payment.success", "confirmations": 24 }
+                            </div>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="relative">
+<div class="absolute -left-[30px] top-1 w-5 h-5 rounded-full bg-white border-2 border-primary flex items-center justify-center z-10">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-sm">
+<div class="flex justify-between items-start mb-xs">
+<p class="font-label-md text-label-md text-on-background">Captured</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">14:33 UTC</p>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Funds locked in escrow contract TR7...1kPq.</p>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="relative">
+<div class="absolute -left-[30px] top-1 w-5 h-5 rounded-full bg-white border-2 border-outline-variant flex items-center justify-center z-10">
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-sm opacity-70">
+<div class="flex justify-between items-start mb-xs">
+<p class="font-label-md text-label-md text-on-background">Authorized</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">14:32 UTC</p>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Initial transaction request generated and signed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg fixed bottom-0 w-full z-50 pb-safe border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] md:hidden flex justify-around items-center h-20 px-2">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-[10px] font-medium mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="how_to_reg">how_to_reg</span>
+<span class="font-inter text-[10px] font-medium mt-1">Verify</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span class="font-inter text-[10px] font-medium mt-1">Disputes</span>
+</a>
+<a class="flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet" data-weight="fill" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-inter text-[10px] font-medium mt-1">Vault</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1 hover:text-indigo-500 transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-inter text-[10px] font-medium mt-1">Audit</span>
+</a>
+</nav>
+</body></html>

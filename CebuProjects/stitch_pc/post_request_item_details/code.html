@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post Request: Structured Item Details - ProcureGlobal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#2f3131",
+                      "surface-tint": "#ba1a1f",
+                      "primary-fixed-dim": "#ffb3ac",
+                      "on-primary-fixed": "#410003",
+                      "on-primary-fixed-variant": "#93000f",
+                      "error-container": "#ffdad6",
+                      "surface-dim": "#dadada",
+                      "surface-container-high": "#e8e8e8",
+                      "on-surface": "#1a1c1c",
+                      "inverse-primary": "#ffb3ac",
+                      "primary-fixed": "#ffdad6",
+                      "on-tertiary-fixed": "#1f1c06",
+                      "surface-bright": "#f9f9f9",
+                      "outline-variant": "#e4beba",
+                      "on-tertiary-fixed-variant": "#4b472d",
+                      "background": "#f9f9f9",
+                      "outline": "#8f6f6c",
+                      "secondary-fixed": "#b4ebff",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#004e5f",
+                      "on-secondary-fixed": "#001f27",
+                      "tertiary": "#615c41",
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-on-surface": "#f0f1f1",
+                      "surface-variant": "#e2e2e2",
+                      "secondary": "#00677d",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#ebe3c0",
+                      "tertiary-container": "#7a7558",
+                      "secondary-container": "#8fe3ff",
+                      "primary-container": "#da3432",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed-dim": "#cec7a5",
+                      "on-tertiary-container": "#fffbff",
+                      "on-secondary-container": "#00667c",
+                      "on-primary-container": "#fffbff",
+                      "surface-container-low": "#f3f3f4",
+                      "primary": "#b6171d",
+                      "on-error": "#ffffff",
+                      "surface-container": "#eeeeee",
+                      "secondary-fixed-dim": "#7dd2ee",
+                      "on-surface-variant": "#5b403d",
+                      "surface": "#f9f9f9",
+                      "on-background": "#1a1c1c",
+                      "surface-container-highest": "#e2e2e2"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "64px",
+                      "base": "4px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "lg": "40px",
+                      "xs": "8px",
+                      "sm": "16px",
+                      "md": "24px"
+              },
+              "fontFamily": {
+                      "h2": [
+                              "Inter"
+                      ],
+                      "display": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "data-mono": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "h3": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "h2": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "data-mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "h3": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h1": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen overflow-hidden flex flex-col md:flex-row">
+<!-- Mobile Nav (Hidden on Desktop) - TopAppBar component suppressed for transactional flow, but keeping a simplified header for context -->
+<header class="md:hidden flex items-center justify-between px-sm py-sm bg-surface-container-lowest border-b border-surface-container shadow-sm z-40">
+<div class="flex items-center gap-xs">
+<button class="text-on-surface-variant hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<span class="font-h3 text-h3 text-on-surface font-bold tracking-tight">Post Request</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</header>
+<!-- SideNavBar (Hidden for Transactional flow, showing minimal sidebar for layout purposes if needed, but per rules, suppress for linear/transactional) -->
+<!-- SUPPRESSED: Linear/Transactional Flow -->
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto w-full relative">
+<!-- Top App Bar for Desktop - Simplified for Transactional -->
+<div class="hidden md:flex fixed top-0 right-0 w-full justify-between items-center px-lg h-16 bg-surface-container-lowest/80 backdrop-blur-md border-b border-surface-container z-40">
+<div class="flex items-center gap-sm">
+<span class="font-h2 text-h2 font-black text-on-surface tracking-tighter">ProcureGlobal</span>
+<span class="text-surface-variant">|</span>
+<span class="font-h3 text-h3 text-on-surface font-semibold tracking-tight">Create RFQ</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-xs font-body-sm text-body-sm" type="button">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+                Exit
+            </button>
+</div>
+<div class="max-w-3xl mx-auto px-sm md:px-lg py-sm md:py-xl md:mt-16 pb-32">
+<!-- Progress Stepper -->
+<div class="mb-lg">
+<div class="flex items-center justify-between relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-0.5 bg-surface-container -z-10"></div>
+<!-- Step 1: Completed -->
+<div class="flex flex-col items-center gap-xs bg-background px-xs">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]" data-icon="check" data-weight="fill">check</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Basics</span>
+</div>
+<!-- Step 2: Active -->
+<div class="flex flex-col items-center gap-xs bg-background px-xs">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-data-mono text-data-mono font-bold">
+                            2
+                        </div>
+<span class="font-label-caps text-label-caps text-primary uppercase font-bold">Details</span>
+</div>
+<!-- Step 3: Pending -->
+<div class="flex flex-col items-center gap-xs bg-background px-xs">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-data-mono text-data-mono font-bold">
+                            3
+                        </div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Location</span>
+</div>
+<!-- Step 4: Pending -->
+<div class="flex flex-col items-center gap-xs bg-background px-xs">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-data-mono text-data-mono font-bold">
+                            4
+                        </div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Review</span>
+</div>
+</div>
+</div>
+<!-- Page Title -->
+<div class="mb-lg">
+<h1 class="font-h1 text-h1 text-on-surface mb-xs">Item Details</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Provide specific details about the items you need to source.</p>
+</div>
+<!-- Form Container -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-container p-md md:p-lg shadow-sm">
+<form class="space-y-lg">
+<!-- Basic Info Section -->
+<div class="space-y-sm">
+<h2 class="font-h3 text-h3 text-on-surface border-b border-surface-container pb-xs">Core Information</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<div class="col-span-1 md:col-span-2">
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Request Title</label>
+<input class="w-full bg-surface border border-surface-container rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="e.g., 500 Industrial Laptops for Q4" type="text"/>
+</div>
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Category</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border border-surface-container rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface-variant appearance-none opacity-80" disabled="">
+<option>IT Hardware</option>
+</select>
+<span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" data-icon="lock">lock</span>
+</div>
+</div>
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Condition</label>
+<select class="w-full bg-surface border border-surface-container rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none">
+<option>New</option>
+<option>Refurbished</option>
+<option>Used - Good</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Quantity & Budget Section -->
+<div class="space-y-sm">
+<h2 class="font-h3 text-h3 text-on-surface border-b border-surface-container pb-xs">Quantity &amp; Budget</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Quantity Required</label>
+<div class="flex gap-xs">
+<input class="flex-1 bg-surface border border-surface-container rounded-lg px-sm py-xs font-data-mono text-data-mono text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="e.g., 500" type="number"/>
+<select class="w-24 bg-surface border border-surface-container rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none">
+<option>Units</option>
+<option>Boxes</option>
+<option>Pallets</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Target Budget Range (Total)</label>
+<div class="flex gap-xs items-center">
+<select class="w-24 bg-surface border border-surface-container rounded-lg px-sm py-xs font-data-mono text-data-mono text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none">
+<option>USD</option>
+<option>EUR</option>
+<option>GBP</option>
+</select>
+<input class="flex-1 bg-surface border border-surface-container rounded-lg px-sm py-xs font-data-mono text-data-mono text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Min" type="number"/>
+<span class="text-on-surface-variant font-data-mono text-data-mono">-</span>
+<input class="flex-1 bg-surface border border-surface-container rounded-lg px-sm py-xs font-data-mono text-data-mono text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Max" type="number"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Specifications Section -->
+<div class="space-y-sm bg-surface-container-low p-sm rounded-lg border border-surface-container">
+<h2 class="font-h3 text-h3 text-on-surface pb-xs flex justify-between items-center">
+                            Technical Specifications
+                            <button class="font-body-sm text-body-sm text-primary hover:text-primary-container font-semibold transition-colors" type="button">Add Field</button>
+</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Brand Preference</label>
+<input class="w-full bg-surface-container-lowest border border-surface-container rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="e.g., Lenovo, Dell" type="text"/>
+</div>
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Model</label>
+<input class="w-full bg-surface-container-lowest border border-surface-container rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="e.g., ThinkPad T14" type="text"/>
+</div>
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Processor <span class="text-error">*</span></label>
+<input class="w-full bg-surface-container-lowest border border-surface-container rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="e.g., Intel Core i7 12th Gen" type="text"/>
+</div>
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">RAM <span class="text-error">*</span></label>
+<input class="w-full bg-surface-container-lowest border border-surface-container rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="e.g., 16GB DDR4" type="text"/>
+</div>
+<div class="col-span-1 md:col-span-2">
+<label class="flex items-center gap-xs cursor-pointer">
+<input class="w-4 h-4 text-primary bg-surface-container-lowest border-surface-container rounded focus:ring-primary focus:ring-2" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">Accept alternative brands/models if specifications match</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Additional Details Section -->
+<div class="space-y-sm">
+<div class="grid grid-cols-1 gap-sm">
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Description &amp; Special Requirements</label>
+<textarea class="w-full bg-surface border border-surface-container rounded-lg px-sm py-xs font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Describe any specific needs, certifications required, packaging instructions, etc." rows="4"></textarea>
+</div>
+<div>
+<label class="block font-body-sm text-body-sm font-semibold text-on-surface mb-base">Attachments &amp; Photos</label>
+<div class="border-2 border-dashed border-surface-container rounded-lg p-lg text-center hover:border-primary hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex flex-col items-center gap-xs">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-primary transition-colors" data-icon="cloud_upload">cloud_upload</span>
+<div class="font-body-md text-body-md text-on-surface">
+<span class="font-semibold text-primary">Click to upload</span> or drag and drop
+                                        </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">PDF, JPG, PNG or DOCX (max. 10MB)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</form>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Actions for Transactional Flow -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-surface-container p-sm md:px-lg md:py-md z-40 flex justify-between items-center shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+<button class="px-sm py-xs md:px-md md:py-sm border border-secondary text-secondary font-body-md text-body-md font-semibold rounded-lg hover:bg-surface-container-low transition-colors" type="button">
+            Back
+        </button>
+<button class="px-sm py-xs md:px-md md:py-sm bg-primary text-on-primary font-body-md text-body-md font-semibold rounded-lg hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm flex items-center gap-xs" type="button">
+            Next: Location
+            <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</body></html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Upload Proof of Delivery - ProcurePing</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#00677d",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#ffb3ac",
+                    "secondary-fixed-dim": "#7dd2ee",
+                    "surface-container-highest": "#e2e2e2",
+                    "surface-container": "#eeeeee",
+                    "on-primary-fixed": "#410003",
+                    "surface": "#f9f9f9",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#cec7a5",
+                    "inverse-primary": "#ffb3ac",
+                    "on-surface-variant": "#5b403d",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#004e5f",
+                    "on-tertiary-fixed": "#1f1c06",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#615c41",
+                    "on-tertiary-fixed-variant": "#4b472d",
+                    "on-background": "#1a1c1c",
+                    "primary-fixed": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f3f3f4",
+                    "outline-variant": "#e4beba",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#001f27",
+                    "tertiary-container": "#7a7558",
+                    "on-tertiary-container": "#fffbff",
+                    "on-primary-fixed-variant": "#93000f",
+                    "surface-variant": "#e2e2e2",
+                    "surface-dim": "#dadada",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f9f9f9",
+                    "secondary-fixed": "#b4ebff",
+                    "primary": "#b6171d",
+                    "on-surface": "#1a1c1c",
+                    "inverse-surface": "#2f3131",
+                    "surface-container-high": "#e8e8e8",
+                    "outline": "#8f6f6c",
+                    "background": "#f9f9f9",
+                    "inverse-on-surface": "#f0f1f1",
+                    "tertiary-fixed": "#ebe3c0",
+                    "primary-container": "#da3432",
+                    "on-secondary-container": "#00667c",
+                    "on-primary-container": "#fffbff",
+                    "surface-tint": "#ba1a1f",
+                    "secondary-container": "#8fe3ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "24px",
+                    "lg": "40px",
+                    "base": "4px",
+                    "xs": "8px",
+                    "sm": "16px",
+                    "xl": "64px",
+                    "gutter": "24px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "h3": ["Inter"],
+                    "h2": ["Inter"],
+                    "h1": ["Inter"],
+                    "display": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "data-mono": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "h3": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h2": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "data-mono": ["14px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- Task-Focused Header (Navigation Shell Suppressed) -->
+<header class="bg-surface-container-lowest border-b border-surface-variant px-lg py-sm flex items-center justify-between sticky top-0 z-30 shadow-sm">
+<div class="flex items-center gap-md">
+<button aria-label="Go back" class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div>
+<h1 class="font-h2 text-h2 text-on-surface">Upload Proof of Delivery</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs">
+                    Order <span class="font-data-mono text-data-mono text-secondary">#ORD-2023-8891</span>
+</p>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-sm">
+<span class="font-label-caps text-label-caps text-outline px-sm py-xs border border-surface-variant rounded bg-surface">Draft Saved</span>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-sm md:px-lg py-lg">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Column: Form & Uploads -->
+<div class="col-span-1 lg:col-span-8 flex flex-col gap-gutter">
+<!-- Consignment Details -->
+<section class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md shadow-sm">
+<h2 class="font-h3 text-h3 text-on-surface mb-md">Consignment Details</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Courier Service</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">local_shipping</span>
+<input class="w-full bg-surface border border-outline-variant rounded-lg py-sm pl-xl pr-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors font-body-md text-body-md text-on-surface" placeholder="e.g., DHL, FedEx, Maersk" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-base">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Tracking Number</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">barcode_scanner</span>
+<input class="w-full bg-surface border border-outline-variant rounded-lg py-sm pl-xl pr-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors font-body-md text-body-md text-on-surface" placeholder="Enter tracking code" type="text"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Document Upload Zone -->
+<section class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md shadow-sm">
+<div class="mb-sm">
+<h2 class="font-h3 text-h3 text-on-surface">Delivery Documentation</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Upload signed waybills, packing slips, and visual proof of goods.</p>
+</div>
+<!-- Dropzone -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center bg-surface hover:bg-surface-container-low transition-colors cursor-pointer mb-md group">
+<div class="w-12 h-12 rounded-full bg-secondary-container/30 flex items-center justify-center mb-sm group-hover:bg-secondary-container/50 transition-colors">
+<span class="material-symbols-outlined text-secondary text-2xl" style="font-variation-settings: 'FILL' 1;">cloud_upload</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface mb-base text-center">Click to upload or drag files here</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-center">Supported formats: PDF, JPG, PNG (Max 10MB per file)</span>
+</div>
+<!-- Uploaded Items List -->
+<div class="flex flex-col gap-xs">
+<div class="flex items-center justify-between p-sm border border-surface-variant rounded-lg bg-surface group">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">description</span>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface font-medium">signed_waybill_ORD8891.pdf</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-base">1.2 MB • Upload Complete</p>
+</div>
+</div>
+<button aria-label="Remove file" class="text-outline hover:text-error hover:bg-error-container p-xs rounded transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-sm border border-surface-variant rounded-lg bg-surface group">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">image</span>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface font-medium">pallet_photo_dock4.jpg</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-base">4.5 MB • Upload Complete</p>
+</div>
+</div>
+<button aria-label="Remove file" class="text-outline hover:text-error hover:bg-error-container p-xs rounded transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</section>
+<!-- GPS Proof Section -->
+<section class="bg-surface-container-lowest border border-surface-variant rounded-xl p-md shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-sm mb-md">
+<div>
+<h2 class="font-h3 text-h3 text-on-surface">GPS Proof of Location</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Capture precise coordinates to verify physical delivery.</p>
+</div>
+<button class="bg-surface-container-high hover:bg-surface-variant text-on-surface border border-outline-variant px-sm py-xs rounded-lg font-body-md text-body-md transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[20px]">my_location</span> Update Location
+                        </button>
+</div>
+<div class="relative h-[240px] w-full rounded-lg overflow-hidden border border-surface-variant bg-surface">
+<img alt="Map showing delivery location" class="w-full h-full object-cover grayscale opacity-90" data-alt="A highly detailed, professional grayscale map interface showing a specific industrial port location in Europe. The map uses a minimalist, modern aesthetic with subtle terrain features, precise typographic labels, and clean geometric road lines. A single, sharp vibrant coral-red map pin highlights the delivery destination, surrounded by a faint glowing halo to indicate a recent GPS coordinate capture. The overall mood conveys precision, enterprise security, and corporate efficiency, perfectly suited for a high-stakes logistics dashboard." data-location="Rotterdam Industrial Port" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUm8ddR2_FKW4u142e4EcgxQubOl3-ml3WW9EakUjFcXdzfYgt7PkU7wVtb3iygU2Vek97llpeNXlbe4VPgPwG_K8gxxRZGFY5eJ8vTLZtmvnPjyM6fY6x6yg791fLJFpZuhBCP25-KpYrK8NSHiYd0147DuF1T_3aMy0lttJfGWHHSemkWRMuuyYzU2b0ADLGAiS5VFl0Lb9Yiqo6mxxALP2OKmRgsqsyVOaKbFXXqubTA8HmoxEa3Z9E7Q0ryh4Tk_lLkZt4Skl2"/>
+<!-- Map Overlay / Coordinates -->
+<div class="absolute bottom-sm left-sm bg-surface-container-lowest/95 backdrop-blur-md p-sm rounded-lg shadow-sm border border-surface-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-2xl" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<div>
+<p class="font-data-mono text-data-mono text-on-surface font-medium">51.9225° N, 4.4791° E</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-base">Captured: 14:32 GMT</p>
+</div>
+</div>
+<div class="absolute top-sm right-sm bg-primary/10 text-primary border border-primary/20 px-sm py-base rounded-full flex items-center gap-base">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-caps text-label-caps">Verified</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Summary & Actions -->
+<div class="col-span-1 lg:col-span-4 flex flex-col gap-gutter lg:sticky lg:top-[100px]">
+<section class="bg-surface-container-lowest border border-surface-variant rounded-xl shadow-sm overflow-hidden">
+<div class="p-md border-b border-surface-variant bg-surface-container-low/50">
+<h3 class="font-h3 text-h3 text-on-surface">Order Summary</h3>
+</div>
+<div class="p-md flex flex-col gap-sm">
+<div class="flex justify-between items-start gap-md pb-sm border-b border-surface-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Destination</span>
+<span class="font-body-sm text-body-sm text-on-surface text-right">Warehouse B, Gate 4<br/>Rotterdam, Netherlands</span>
+</div>
+<div class="flex justify-between items-start gap-md pb-sm border-b border-surface-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Items</span>
+<span class="font-body-sm text-body-sm text-on-surface text-right">24x Industrial Grade Valves<br/>12x Flange Fittings</span>
+</div>
+<div class="flex justify-between items-center gap-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">SLA Deadline</span>
+<span class="font-body-sm text-body-sm text-error font-medium flex items-center gap-base">
+<span class="material-symbols-outlined text-[16px]">schedule</span> Today, 17:00 CET
+                            </span>
+</div>
+</div>
+</section>
+<section class="bg-surface-container-lowest border border-surface-variant rounded-xl shadow-sm p-md flex flex-col gap-sm">
+<button class="w-full border-2 border-secondary text-secondary bg-transparent hover:bg-secondary-container/10 font-body-md text-body-md font-medium rounded-lg px-sm py-sm transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[20px]">local_shipping</span> Mark as Dispatched
+                    </button>
+<button class="w-full bg-primary text-on-primary font-body-md text-body-md font-medium rounded-lg px-sm py-sm hover:bg-primary-container hover:shadow-md transition-all flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span> Mark as Delivered
+                    </button>
+<div class="mt-xs pt-sm border-t border-surface-variant flex items-center justify-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+<span class="font-label-caps text-label-caps">Secure Transaction Record</span>
+</div>
+</section>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Post Request Step 3 — Location &amp; Radius</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#4d5a9c",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "secondary-fixed-dim": "#b9c3ff",
+                        "on-primary-fixed-variant": "#293ca0",
+                        "on-background": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "on-tertiary-container": "#ffc7a2",
+                        "on-secondary-fixed": "#021355",
+                        "tertiary-fixed-dim": "#ffb784",
+                        "surface-container": "#e5eeff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#713700",
+                        "on-surface-variant": "#454652",
+                        "on-secondary-container": "#394687",
+                        "primary": "#24389c",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-low": "#eff4ff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#354282",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#dee1ff",
+                        "on-surface": "#0b1c30",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#00105c",
+                        "primary-fixed": "#dee0ff",
+                        "on-tertiary-fixed": "#301400",
+                        "secondary-container": "#abb7ff",
+                        "outline": "#757684",
+                        "on-primary-container": "#cacfff",
+                        "inverse-surface": "#213145",
+                        "background": "#f8f9ff",
+                        "tertiary-container": "#8f4700",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-primary": "#bac3ff",
+                        "surface-tint": "#4355b9",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#6c3400",
+                        "error": "#ba1a1a",
+                        "primary-container": "#3f51b5",
+                        "surface-dim": "#cbdbf5",
+                        "surface": "#f8f9ff",
+                        "primary-fixed-dim": "#bac3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter-mobile": "12px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Inter"],
+                        "h3": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h1": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "h3": ["18px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #24389c; /* primary */
+            cursor: pointer;
+            margin-top: -10px; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #dee0ff; /* primary-fixed */
+            border-radius: 2px;
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 24px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col pb-safe">
+<!-- TopAppBar: Transactional (Linear Flow), Suppress Nav Shells -->
+<header class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md fixed top-0 w-full z-50 shadow-sm border-b border-slate-100 flex items-center justify-between px-4 h-14 w-full">
+<button class="text-indigo-600 active:opacity-70 transition-opacity tap-highlight-transparent cursor-pointer flex items-center justify-center p-2 -ml-2">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<div class="font-['Inter'] text-sm font-medium tracking-tight font-bold text-indigo-600">
+            Step 3 of 3
+        </div>
+<div class="w-8"></div> <!-- Spacer for center alignment -->
+</header>
+<!-- Progress Stepper -->
+<div class="fixed top-14 left-0 w-full z-40 bg-white border-b border-slate-100 px-margin-mobile py-sm">
+<div class="flex items-center gap-2">
+<div class="h-1 flex-1 bg-primary rounded-full"></div>
+<div class="h-1 flex-1 bg-primary rounded-full"></div>
+<div class="h-1 flex-1 bg-primary rounded-full"></div>
+</div>
+</div>
+<!-- Main Canvas -->
+<main class="flex-1 mt-24 mb-[88px] px-margin-mobile flex flex-col gap-md">
+<section class="flex flex-col gap-sm">
+<h1 class="font-h1 text-h1 text-on-surface">Location &amp; Radius</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Suppliers within this radius can receive your request.</p>
+</section>
+<!-- Location Search Input & Current Location -->
+<section class="bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md flex flex-col gap-md">
+<div class="relative">
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-xs" for="locationSearch">Search Location</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline" data-icon="search">search</span>
+<input class="w-full h-[52px] pl-10 pr-4 rounded-md border border-outline-variant bg-surface-lowest text-on-surface font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none" id="locationSearch" placeholder="Enter city, postal code, or address" type="text" value="San Francisco, CA"/>
+</div>
+</div>
+<button class="flex items-center gap-sm text-primary font-label-md text-label-md py-sm active:bg-surface-container rounded-md px-2 -mx-2 transition-colors w-max">
+<span class="material-symbols-outlined text-primary" data-icon="my_location">my_location</span>
+                Use Current Location
+            </button>
+</section>
+<!-- Map Preview -->
+<section class="relative w-full h-[200px] rounded-lg overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.05)] bg-surface-variant border border-outline-variant">
+<!-- Simulated Map Background -->
+<img class="w-full h-full object-cover opacity-80" data-alt="A clean, modern top-down map interface illustrating a precise geographic location. The map style is bright and minimalist, utilizing light mode aesthetics with pale blues, soft grays, and white tones to represent streets and water. It reflects a corporate modern design system focused on clarity and utility." data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJT6rTfJUi6W_PTTG3kIyI-Yio_zSn0FhdhQjwrNQlq-xFaDRbDfntwlnVDUkYvqQJpb1yjbnerkW9j5W1-hRdfQZouCJqzl0RjFKYBfI8DcydUlrxdGBFDz2vEewBke49ncOTeYHJWC4nBf1YRlty4ZGkxDDsZYxw2TCpv_yrHQVTEehr9TVnvNW7NSgu4kWFpY87Fa5qTVF52EZeqh9DcIoKbF83KH9R4uEkeFjtaKNgsVrSv6Hk9cGXSc9lwImXW2rQdDo8h7g"/>
+<!-- Radius Overlay (Simulated) -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-[120px] h-[120px] rounded-full bg-primary/20 border-2 border-primary/50 flex items-center justify-center">
+<!-- Draggable Pin -->
+<div class="relative -top-3">
+<span class="material-symbols-outlined text-error text-[32px]" data-icon="location_on" data-weight="fill">location_on</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Radius Selection -->
+<section class="bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-md flex flex-col gap-md">
+<div class="flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-on-surface">Search Radius</h3>
+<span class="font-label-md text-label-md text-primary">10 km</span>
+</div>
+<!-- Chips -->
+<div class="flex flex-wrap gap-sm">
+<button class="px-3 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-md text-label-md bg-white active:bg-surface-container">1km</button>
+<button class="px-3 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-md text-label-md bg-white active:bg-surface-container">3km</button>
+<button class="px-3 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-md text-label-md bg-white active:bg-surface-container">5km</button>
+<button class="px-3 py-1.5 rounded-full border border-primary text-primary font-label-md text-label-md bg-primary/10">10km</button>
+<button class="px-3 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-md text-label-md bg-white active:bg-surface-container">25km</button>
+<button class="px-3 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-md text-label-md bg-white active:bg-surface-container">50km</button>
+</div>
+<!-- Slider -->
+<div class="pt-sm pb-xs">
+<input class="w-full appearance-none bg-transparent focus:outline-none" max="100" min="1" type="range" value="10"/>
+</div>
+</section>
+<!-- Supplier Coverage Estimate & Delivery Options -->
+<section class="flex flex-col gap-md mb-xl">
+<!-- Trust Indicator / Estimate -->
+<div class="flex items-center gap-sm bg-surface-container-low p-sm rounded-md border border-outline-variant/30">
+<span class="material-symbols-outlined text-secondary" data-icon="storefront">storefront</span>
+<span class="font-label-md text-label-md text-secondary">Estimated 12 suppliers in range</span>
+</div>
+<!-- Delivery Methods -->
+<div class="flex flex-col gap-xs mt-sm">
+<h3 class="font-label-md text-label-md text-on-surface mb-xs">Delivery Method</h3>
+<label class="flex items-start gap-md p-md rounded-lg border border-outline-variant bg-white cursor-pointer hover:bg-surface-container-lowest transition-colors">
+<input checked="" class="mt-1 w-4 h-4 text-primary focus:ring-primary border-outline" name="delivery" type="radio"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Supplier Delivery</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Supplier delivers to your specified address.</span>
+</div>
+</label>
+<label class="flex items-start gap-md p-md rounded-lg border border-outline-variant bg-white cursor-pointer hover:bg-surface-container-lowest transition-colors">
+<input class="mt-1 w-4 h-4 text-primary focus:ring-primary border-outline" name="delivery" type="radio"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Local Pickup</span>
+<span class="font-body-md text-body-md text-on-surface-variant">You will travel to the supplier's location.</span>
+</div>
+</label>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action -->
+<div class="fixed bottom-0 w-full z-50 bg-white/98 backdrop-blur-lg border-t border-slate-200 px-margin-mobile py-md pb-safe shadow-[0_-4px_20px_0px_rgba(0,0,0,0.08)]">
+<button class="w-full h-[56px] bg-primary text-on-primary font-label-md text-label-md rounded-lg flex items-center justify-center active:bg-primary/90 transition-colors shadow-sm">
+            Publish Request
+        </button>
+</div>
+</body></html>
