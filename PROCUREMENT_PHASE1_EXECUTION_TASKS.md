@@ -1635,8 +1635,10 @@ npm run build
 
 **Phase 1 采购栏目（C00–C09）已全部 `VERIFIED`。**
 
+**Shared Platform（SP00–SP06）已全部 `VERIFIED`**（见 `SHARED_PLATFORM_MIDDLEWARE_PLAN.md`）。
+
 后续工作（Phase 1 范围外）：
 
-- 目录合并：按 `INTEGRATION_ASSESSMENT.md` / `SHARED_PLATFORM_MIDDLEWARE_PLAN.md` 整合 `CebuProjects/`
-- 运维：SP02 重建 Docker bind mount，使 `:4099` dev 与 monorepo 路径一致
+- Cebu 交易域模块迁入 Core（Intent/Offer/Order 等，按 `INTEGRATION_ASSESSMENT.md` Phase 2）
+- Legacy `cebu` database 只读观察后退役 `:8100` profile
 - Phase 1.5：Office procurement 等（见 §6）
