@@ -183,27 +183,36 @@ def test_outbox_relay_publishes_to_redis_stream():
                 await db.commit()
                 event_id = event.id
 
-                published = await publish_pending_events(db, redis_client)
-                assert published >= 1
+            # Shared test DB may have a large unpublished backlog; relay in
+            # batches until this event is marked published.
+            refreshed = None
+            for _ in range(50):
+                async with async_session_factory() as db:
+                    published = await publish_pending_events(db, redis_client)
+                    refreshed = await db.get(IntegrationEvent, event_id)
+                    if refreshed is not None and refreshed.published_at is not None:
+                        break
+                    assert published >= 0
+            assert refreshed is not None and refreshed.published_at is not None
 
-                refreshed = await db.get(IntegrationEvent, event_id)
-                assert refreshed is not None and refreshed.published_at is not None
+            entries = await redis_client.xrange(EVENT_STREAM_KEY)
+            ours = [
+                (entry_id, fields)
+                for entry_id, fields in entries
+                if fields.get(b"id") == str(event_id).encode()
+            ]
+            assert len(ours) == 1
+            _, fields = ours[0]
+            assert fields[b"type"] == EventType.KNOWLEDGE_UPLOADED.encode()
+            assert json.loads(fields[b"payload"]) == {"marker": marker}
 
-                entries = await redis_client.xrange(EVENT_STREAM_KEY)
-                ours = [
-                    (entry_id, fields)
-                    for entry_id, fields in entries
-                    if fields.get(b"id") == str(event_id).encode()
-                ]
-                assert len(ours) == 1
-                _, fields = ours[0]
-                assert fields[b"type"] == EventType.KNOWLEDGE_UPLOADED.encode()
-                assert json.loads(fields[b"payload"]) == {"marker": marker}
-
-                # cleanup: remove our stream entry and the outbox row
-                await redis_client.xdel(EVENT_STREAM_KEY, ours[0][0])
-                await db.delete(refreshed)
-                await db.commit()
+            # cleanup: remove our stream entry and the outbox row
+            await redis_client.xdel(EVENT_STREAM_KEY, ours[0][0])
+            async with async_session_factory() as db:
+                row = await db.get(IntegrationEvent, event_id)
+                if row is not None:
+                    await db.delete(row)
+                    await db.commit()
         finally:
             await redis_client.aclose()
 

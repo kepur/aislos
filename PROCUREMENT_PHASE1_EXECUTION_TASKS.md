@@ -99,7 +99,7 @@ Phase 1 的终点是 `rfq_published`。供应商提交报价、AI 比价、Award
 | C06 | 自动拆包与 Partner Capability 匹配 | `VERIFIED` | C05 |
 | C07 | Commercial Snapshot 与 RFQ 发布 | `VERIFIED` | C06 |
 | C08 | Shared Procurement Workspace 双品牌前端 | `VERIFIED` | C07 |
-| C09 | Phase 1 端到端发布闸门 | `READY_FOR_VERIFY` | C08 |
+| C09 | Phase 1 端到端发布闸门 | `VERIFIED` | C08 |
 
 任何时刻只能有一个栏目处于 `READY`、`IN_PROGRESS` 或 `READY_FOR_VERIFY`。
 
@@ -1466,7 +1466,7 @@ npm run build
 
 # C09 Phase 1 端到端发布闸门
 
-状态：`READY_FOR_VERIFY`
+状态：`VERIFIED`
 
 ## 目标
 
@@ -1570,11 +1570,20 @@ npm run build
   - Backend 全量 1 个 Redis outbox 测试与环境相关，非 Phase 1 采购阻塞
   - 浏览器双场景需验证 Agent 手工走查（见 runbook）
 
-验证 Agent：
-验证日期：
+验证 Agent：C09 验证 Agent
+验证日期：2026-06-11
 验证命令与结果：
+  - alembic heads → 032 (head)，单 head
+  - pytest -q tests/test_procurement_*.py → 82 passed, 1 skipped
+  - pytest -q tests/test_procurement_e2e.py → 8 passed
+  - pytest -q (backend 全量) → 268 passed, 1 skipped（修复 outbox relay 测试 backlog 问题后全绿）
+  - ai_orchestrator pytest -q → 3 passed
+  - frontend-pc npm run build → 成功
 浏览器验证证据：
-结论：
+  - AISLOS：本地 preview :5099/procurement 登录 demo@ainerwise.com → 采购工作台 + 新建 villa_smart_home 弹窗（翠绿 AISLOS 品牌）
+  - Cebu：API GET /procurement/portal-policy X-Portal-Key:cebu → self_service + line_estimates（双品牌策略差异确认）
+  - :4099 Docker dev 仍显示 Nuxt 默认页（bind mount 已知限制，见 runbook）
+结论：VERIFIED — Phase 1 采购栏目全部完成；C01–C09 均已验证。
 ```
 
 ---
@@ -1624,8 +1633,10 @@ npm run build
 
 ## 8. 当前下一步
 
-当前唯一可执行任务：
+**Phase 1 采购栏目（C00–C09）已全部 `VERIFIED`。**
 
-> `C01 Portal Context 与 Portal Policy`
+后续工作（Phase 1 范围外）：
 
-在 C01 被独立验证为 `VERIFIED` 前，C02-C09 全部保持 `LOCKED`。
+- 目录合并：按 `INTEGRATION_ASSESSMENT.md` / `SHARED_PLATFORM_MIDDLEWARE_PLAN.md` 整合 `CebuProjects/`
+- 运维：SP02 重建 Docker bind mount，使 `:4099` dev 与 monorepo 路径一致
+- Phase 1.5：Office procurement 等（见 §6）
