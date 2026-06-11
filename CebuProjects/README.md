@@ -12,7 +12,7 @@ cd ../Ainerwise
 ./scripts/shared-platform/init-cebu-legacy-db.sh  # 首次在已有 postgres 卷上建库
 ```
 
-环境模板：`backend/.env.legacy-shared.example`（勿提交真实 `.env`）。
+环境模板：`backend/legacy-shared.env.example`（勿提交真实 `.env`）。
 
 ---
 

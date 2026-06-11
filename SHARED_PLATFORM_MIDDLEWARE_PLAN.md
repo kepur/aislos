@@ -481,7 +481,7 @@ correlation_id
 - `docker/postgres/init/02-cebu-legacy-database.sh`
 - `scripts/shared-platform/*.sh`
 - `docs/shared-platform/LOCAL_DEV_PROFILES.md`
-- `CebuProjects/backend/.env.legacy-shared.example`
+- `CebuProjects/backend/legacy-shared.env.example`
 - Celery Redis prefix `ainerwise:celery:`
 - Monorepo `README.md`
 

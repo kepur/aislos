@@ -9,7 +9,7 @@ services:
       context: ../CebuProjects/backend
       dockerfile: Dockerfile
     env_file:
-      - ../CebuProjects/backend/.env.legacy-shared.example
+      - ../CebuProjects/backend/legacy-shared.env.example
     ports:
       - "8100:8000"
     volumes:
