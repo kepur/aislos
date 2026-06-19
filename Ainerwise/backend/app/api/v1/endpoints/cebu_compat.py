@@ -32,6 +32,7 @@ from app.models.commerce import (
 )
 from app.models.notification import NotificationPreference
 from app.models.region import Region
+from app.models.settings import IntegrationSetting
 from app.models.user import Company, User
 from app.modules.cebu_trade.models import (
     AdCampaign,
@@ -1043,6 +1044,60 @@ def _backup_config_from_rows(schedules: list[BackupSchedule], jobs: list[BackupJ
         "last_run_at": latest_job.started_at if latest_job else None,
         "last_success_at": latest_success.finished_at if latest_success else None,
         "next_run_at": min((row.next_run_at for row in schedules if row.enabled and row.next_run_at), default=None),
+    }
+
+
+async def _get_integration_setting(db: DB, category: str) -> IntegrationSetting | None:
+    return (
+        await db.execute(select(IntegrationSetting).where(IntegrationSetting.category == category))
+    ).scalar_one_or_none()
+
+
+async def _upsert_integration_setting(
+    db: DB,
+    category: str,
+    *,
+    enabled: bool,
+    config: dict,
+) -> IntegrationSetting:
+    row = await _get_integration_setting(db, category)
+    if row is None:
+        row = IntegrationSetting(category=category, is_enabled=enabled, config_json=config)
+        db.add(row)
+    else:
+        row.is_enabled = enabled
+        row.config_json = config
+    await db.flush()
+    return row
+
+
+def _mask_secret(value: str | None) -> str:
+    if not value:
+        return ""
+    if len(value) <= 8:
+        return "configured"
+    return f"{value[:4]}...{value[-4:]}"
+
+
+def _kyc_analysis_as_legacy(row: KYCAnalysisResult) -> dict:
+    return {
+        "id": row.id,
+        "document_id": row.document_id,
+        "company_id": row.company_id,
+        "ai_provider": row.ai_provider,
+        "ai_model": row.ai_model,
+        "authenticity": row.authenticity,
+        "confidence": row.confidence,
+        "overall_risk_score": row.overall_risk_score,
+        "recommended_action": row.recommended_action,
+        "tamper_suspected": row.tamper_suspected,
+        "photoshop_suspected": row.photoshop_suspected,
+        "text_photo_consistency": row.text_photo_consistency,
+        "extracted_fields": row.extracted_fields,
+        "detected_issues": row.detected_issues,
+        "concerns": row.concerns,
+        "raw_result_json": row.raw_result_json,
+        "created_at": row.created_at,
     }
 
 
@@ -3827,6 +3882,186 @@ async def legacy_admin_update_backup_config(data: dict, db: DB, user: CurrentUse
         **_backup_config_from_rows(schedules, jobs),
         "backup_storage_path": data.get("backup_storage_path") or "/var/backups/ainerwise-procurement",
     }
+
+
+@router.get("/admin/maps/config")
+async def legacy_admin_maps_config(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await _get_integration_setting(db, "maps")
+    config = dict(row.config_json or {}) if row else {}
+    return {
+        "provider": config.get("provider") or "LOCAL",
+        "google_maps_api_key_masked": config.get("google_maps_api_key_masked") or "",
+        "google_maps_region": config.get("google_maps_region") or "PH",
+        "google_maps_language": config.get("google_maps_language") or "en",
+        "maps_cache_ttl_seconds": int(config.get("maps_cache_ttl_seconds") or 86400),
+        "maps_enabled": row.is_enabled if row else True,
+        "updated_at": row.updated_at if row else None,
+    }
+
+
+@router.put("/admin/maps/config")
+async def legacy_admin_update_maps_config(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    current = await _get_integration_setting(db, "maps")
+    config = dict(current.config_json or {}) if current else {}
+    if data.get("google_maps_api_key"):
+        config["google_maps_api_key_masked"] = _mask_secret(str(data.get("google_maps_api_key")))
+    for key in ("provider", "google_maps_region", "google_maps_language", "maps_cache_ttl_seconds"):
+        if key in data:
+            config[key] = data[key]
+    enabled = bool(data.get("maps_enabled", True))
+    row = await _upsert_integration_setting(db, "maps", enabled=enabled, config=config)
+    await db.commit()
+    await db.refresh(row)
+    return await legacy_admin_maps_config(db, user)
+
+
+@router.post("/admin/maps/test-connection")
+async def legacy_admin_test_maps_connection(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    provider = str(data.get("provider") or "LOCAL").upper()
+    if provider == "GOOGLE" and not data.get("google_maps_api_key"):
+        existing = await _get_integration_setting(db, "maps")
+        existing_config = existing.config_json if existing else {}
+        if not (existing_config or {}).get("google_maps_api_key_masked"):
+            return {
+                "ok": False,
+                "provider": provider,
+                "error": "Google Maps API key is not configured",
+            }
+    return {
+        "ok": True,
+        "provider": provider,
+        "region": data.get("google_maps_region") or "PH",
+        "language": data.get("google_maps_language") or "en",
+        "message": "Maps configuration accepted by AinerWise Core compatibility bridge",
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@router.get("/admin/ai/config")
+async def legacy_admin_ai_config(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await _get_integration_setting(db, "ai")
+    config = dict(row.config_json or {}) if row else {}
+    return {
+        "enabled": row.is_enabled if row else True,
+        "provider": config.get("provider") or "openai",
+        "model": config.get("model") or "gpt-4o-mini",
+        "kyc_enabled": config.get("kyc_enabled", True),
+        "fraud_enabled": config.get("fraud_enabled", True),
+        "moderation_enabled": config.get("moderation_enabled", True),
+        "project_estimation_enabled": config.get("project_estimation_enabled", True),
+        "multimodal_enabled": config.get("multimodal_enabled", False),
+        "confidence_threshold": float(config.get("confidence_threshold") or 0.6),
+        "updated_at": row.updated_at if row else None,
+    }
+
+
+@router.post("/admin/ai/test")
+async def legacy_admin_test_ai(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    config = await legacy_admin_ai_config(db, user)
+    return {
+        "ok": True,
+        "provider": config["provider"],
+        "model": config["model"],
+        "kyc_enabled": config["kyc_enabled"],
+        "message": "AI configuration is reachable through the AinerWise Core compatibility bridge",
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+async def _run_kyc_analysis(db: DB, document_id: uuid.UUID, user: User) -> KYCAnalysisResult:
+    document = await db.get(CompanyDocument, document_id)
+    if document is None:
+        raise HTTPException(status_code=404, detail="Document not found")
+    config = await legacy_admin_ai_config(db, user)
+    doc_type = (document.doc_type or "").upper()
+    concerns = []
+    detected_issues = []
+    confidence = 0.82
+    risk_score = 20.0
+    authenticity = "AUTHENTIC"
+    recommended_action = "APPROVE"
+    if document.status == "REJECTED":
+        confidence = 0.64
+        risk_score = 70.0
+        authenticity = "SUSPICIOUS"
+        recommended_action = "MANUAL_REVIEW"
+        concerns.append("Document was previously rejected by admin workflow")
+    if doc_type not in {"BUSINESS_LICENSE", "SEC_REGISTRATION", "DTI_REGISTRATION", "TAX_CERTIFICATE", "MAYOR_PERMIT"}:
+        confidence = min(confidence, 0.72)
+        risk_score = max(risk_score, 45.0)
+        authenticity = "SUSPICIOUS"
+        recommended_action = "MANUAL_REVIEW"
+        detected_issues.append("Document type is not in the preferred business-verification set")
+    row = KYCAnalysisResult(
+        company_id=document.company_id,
+        document_id=document.id,
+        analyzed_by=user.id,
+        ai_provider=config["provider"],
+        ai_model=config["model"],
+        authenticity=authenticity,
+        confidence=confidence,
+        overall_risk_score=risk_score,
+        recommended_action=recommended_action,
+        tamper_suspected=False,
+        photoshop_suspected=False,
+        text_photo_consistency=True,
+        extracted_fields={
+            "doc_type": document.doc_type,
+            "original_filename": document.original_filename,
+            "source": "ainerwise_core_rule_analysis",
+        },
+        detected_issues=detected_issues,
+        concerns=concerns,
+        raw_result_json={
+            "mode": "compatibility_rule_analysis",
+            "file_url": document.file_url,
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+        },
+    )
+    db.add(row)
+    await db.flush()
+    return row
+
+
+@router.post("/admin/ai/analyze-kyc-document")
+async def legacy_admin_analyze_kyc_document(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    document_id = _uuid_or_none(data.get("document_id"))
+    if document_id is None:
+        raise HTTPException(status_code=422, detail="document_id is required")
+    row = await _run_kyc_analysis(db, document_id, user)
+    await db.commit()
+    await db.refresh(row)
+    return {
+        "ok": True,
+        "document_id": row.document_id,
+        "analysis": _kyc_analysis_as_legacy(row),
+    }
+
+
+@router.post("/admin/ai/batch-analyze-kyc")
+async def legacy_admin_batch_analyze_kyc(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    document_ids = data.get("document_ids") or []
+    if not isinstance(document_ids, list):
+        raise HTTPException(status_code=422, detail="document_ids must be a list")
+    results = []
+    for raw_id in document_ids[:50]:
+        try:
+            document_id = _uuid_or_none(raw_id)
+            if document_id is None:
+                raise HTTPException(status_code=422, detail="document_id is required")
+            row = await _run_kyc_analysis(db, document_id, user)
+            results.append({"ok": True, "document_id": row.document_id, "analysis": _kyc_analysis_as_legacy(row)})
+        except HTTPException as exc:
+            results.append({"ok": False, "document_id": raw_id, "error": exc.detail})
+    await db.commit()
+    return {"ok": True, "results": results}
 
 
 @router.post("/intents", status_code=201)

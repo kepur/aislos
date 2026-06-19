@@ -50,6 +50,12 @@ export default defineConfig({
       '/api/admin/backups/config': coreProxy((p) =>
         p.replace(/^\/api\/admin\/backups\/config/, '/api/v1/cebu-compat/admin/backups/config')
       ),
+      '/api/admin/ai': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/ai/, '/api/v1/cebu-compat/admin/ai')
+      ),
+      '/api/admin/maps': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/maps/, '/api/v1/cebu-compat/admin/maps')
+      ),
       '/api/admin/ad-campaigns': coreProxy((p) =>
         p.replace(/^\/api\/admin\/ad-campaigns/, '/api/v1/cebu-compat/admin/ad-campaigns')
       ),
