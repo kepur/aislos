@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 from pydantic import BaseModel
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 
 from app.api.deps import CurrentUser, DB
 from app.api.v1.endpoints.files import BUCKET_NAME, get_minio_client
@@ -276,6 +276,7 @@ def _legacy_status(status: str | None, *, kind: str) -> str:
             "matching": "ACTIVE",
             "offer_received": "ACTIVE",
             "awarded": "AWARDED",
+            "expired": "EXPIRED",
             "closed": "CLOSED",
             "cancelled": "CANCELED",
         },
@@ -284,6 +285,7 @@ def _legacy_status(status: str | None, *, kind: str) -> str:
             "submitted": "SUBMITTED",
             "withdrawn": "WITHDRAWN",
             "awarded": "AWARDED",
+            "expired": "EXPIRED",
             "rejected": "REJECTED",
         },
         "order": {
@@ -638,7 +640,7 @@ def _ad_campaign_as_legacy(row: AdCampaign) -> dict:
     }
 
 
-def _intent_as_legacy(row: ProcurementRequest) -> dict:
+def _intent_as_legacy(row: ProcurementRequest, offer_count: int | None = None) -> dict:
     requirements = row.requirements_json or {}
     attrs = {**(row.attrs_json or {}), **requirements}
     return {
@@ -666,8 +668,38 @@ def _intent_as_legacy(row: ProcurementRequest) -> dict:
         "project_id": row.lead_id,
         "project_line_item_id": None,
         "created_at": row.created_at,
-        "offer_count": None,
+        "offer_count": offer_count,
     }
+
+
+async def _intent_as_legacy_with_offer_count(db: DB, row: ProcurementRequest) -> dict:
+    count = (
+        await db.execute(
+            select(func.count())
+            .select_from(SupplierOffer)
+            .where(SupplierOffer.procurement_request_id == row.id)
+        )
+    ).scalar() or 0
+    return _intent_as_legacy(row, offer_count=int(count))
+
+
+def _intent_status_to_core_filter(status: str | None) -> set[str] | None:
+    if not status:
+        return None
+    value = status.upper()
+    maps = {
+        "DRAFT": {"draft"},
+        "ACTIVE": {"published", "matching", "offer_received"},
+        "PUBLISHED": {"published"},
+        "MATCHING": {"matching"},
+        "OFFER_RECEIVED": {"offer_received"},
+        "AWARDED": {"awarded"},
+        "EXPIRED": {"expired"},
+        "CLOSED": {"closed"},
+        "CANCELED": {"cancelled"},
+        "CANCELLED": {"cancelled"},
+    }
+    return maps.get(value, {status.lower()})
 
 
 def _offer_as_legacy(row: SupplierOffer) -> dict:
@@ -697,6 +729,35 @@ def _offer_as_legacy(row: SupplierOffer) -> dict:
         "expires_at": terms.get("expires_at"),
         "created_at": row.created_at,
     }
+
+
+def _offer_status_to_core_filter(status: str | None) -> set[str] | None:
+    if not status:
+        return None
+    value = status.upper()
+    maps = {
+        "DRAFT": {"draft"},
+        "SUBMITTED": {"submitted"},
+        "WITHDRAWN": {"withdrawn"},
+        "AWARDED": {"awarded"},
+        "EXPIRED": {"expired"},
+        "REJECTED": {"rejected"},
+    }
+    return maps.get(value, {status.lower()})
+
+
+async def _legacy_offer_visible_to_user(db: DB, row: SupplierOffer, user: User) -> None:
+    if user.role in ("admin", "super_admin", "finance"):
+        return
+    if user.company_id and row.supplier_company_id == user.company_id:
+        return
+    request = await db.get(ProcurementRequest, row.procurement_request_id)
+    if request and (
+        request.buyer_user_id == user.id
+        or (user.company_id and request.buyer_company_id == user.company_id)
+    ):
+        return
+    raise HTTPException(status_code=403, detail="Not allowed to view this offer")
 
 
 def _escrow_as_legacy(row: EscrowTransaction | None) -> dict | None:
@@ -2509,6 +2570,127 @@ async def legacy_admin_pause_ad_campaign(campaign_id: uuid.UUID, db: DB, user: C
         raise HTTPException(status_code=404, detail=str(exc)) from None
 
 
+@router.get("/admin/intents")
+async def legacy_admin_intents(
+    db: DB,
+    user: CurrentUser,
+    status: str | None = None,
+    limit: int = Query(default=100, le=500),
+    offset: int = 0,
+):
+    _require_legacy_admin(user)
+    stmt = select(ProcurementRequest).order_by(ProcurementRequest.created_at.desc()).limit(limit).offset(offset)
+    statuses = _intent_status_to_core_filter(status)
+    if statuses:
+        stmt = stmt.where(ProcurementRequest.status.in_(statuses))
+    rows = list((await db.execute(stmt)).scalars())
+    return [await _intent_as_legacy_with_offer_count(db, row) for row in rows]
+
+
+@router.get("/admin/intents/{intent_id}")
+async def legacy_admin_get_intent(intent_id: uuid.UUID, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(ProcurementRequest, intent_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Intent not found")
+    return await _intent_as_legacy_with_offer_count(db, row)
+
+
+@router.post("/admin/intents/{intent_id}/moderate")
+async def legacy_admin_moderate_intent(intent_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(ProcurementRequest, intent_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Intent not found")
+    action = str(data.get("action") or "").lower()
+    reason = data.get("reason")
+    before = row.status
+    attrs = dict(row.attrs_json or {})
+    events = list(attrs.get("moderation_events") or [])
+    events.append(
+        {
+            "action": action,
+            "reason": reason,
+            "actor_user_id": str(user.id),
+            "at": datetime.now(timezone.utc).isoformat(),
+            "before": before,
+        }
+    )
+    attrs["moderation_events"] = events[-50:]
+    if action == "cancel":
+        row.status = "cancelled"
+    elif action == "expire":
+        row.status = "expired"
+    elif action == "restore":
+        row.status = "published"
+        attrs["moderation_flagged"] = False
+    elif action == "flag":
+        attrs["moderation_flagged"] = True
+    elif action == "close":
+        row.status = "closed"
+    else:
+        raise HTTPException(status_code=422, detail="Unsupported moderation action")
+    row.attrs_json = attrs
+    await db.commit()
+    await db.refresh(row)
+    data_out = await _intent_as_legacy_with_offer_count(db, row)
+    data_out["before_status"] = _legacy_status(before, kind="intent")
+    data_out["moderation_flagged"] = attrs.get("moderation_flagged", False)
+    return data_out
+
+
+@router.get("/admin/offers")
+async def legacy_admin_offers(
+    db: DB,
+    user: CurrentUser,
+    status: str | None = None,
+    limit: int = Query(default=100, le=500),
+):
+    _require_legacy_admin(user)
+    stmt = select(SupplierOffer).order_by(SupplierOffer.created_at.desc()).limit(limit)
+    statuses = _offer_status_to_core_filter(status)
+    if statuses:
+        stmt = stmt.where(SupplierOffer.status.in_(statuses))
+    rows = list((await db.execute(stmt)).scalars())
+    return [_offer_as_legacy(row) for row in rows]
+
+
+@router.get("/admin/offers/{offer_id}")
+async def legacy_admin_get_offer(offer_id: uuid.UUID, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(SupplierOffer, offer_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Offer not found")
+    return _offer_as_legacy(row)
+
+
+@router.post("/admin/offers/{offer_id}/remove")
+async def legacy_admin_remove_offer(offer_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(SupplierOffer, offer_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Offer not found")
+    if row.status == "awarded":
+        raise HTTPException(status_code=409, detail="Awarded offers cannot be removed")
+    terms = dict(row.terms_json or {})
+    events = list(terms.get("moderation_events") or [])
+    events.append(
+        {
+            "action": "remove",
+            "reason": data.get("reason"),
+            "actor_user_id": str(user.id),
+            "at": datetime.now(timezone.utc).isoformat(),
+            "before": row.status,
+        }
+    )
+    terms["moderation_events"] = events[-50:]
+    row.terms_json = terms
+    row.status = "rejected"
+    await db.commit()
+    await db.refresh(row)
+    return _offer_as_legacy(row)
+
+
 @router.get("/admin/disputes")
 async def legacy_admin_disputes(db: DB, user: CurrentUser, status: str | None = None):
     _require_legacy_admin(user)
@@ -2893,7 +3075,7 @@ async def legacy_create_intent(data: dict, db: DB, user: CurrentUser):
     )
     await db.commit()
     await db.refresh(row)
-    return _intent_as_legacy(row)
+    return _intent_as_legacy(row, offer_count=0)
 
 
 @router.get("/intents/my")
@@ -2911,7 +3093,7 @@ async def legacy_my_intents(db: DB, user: CurrentUser):
             )
         ).scalars()
     )
-    return [_intent_as_legacy(row) for row in rows]
+    return [await _intent_as_legacy_with_offer_count(db, row) for row in rows]
 
 
 @router.get("/supplier/intents/matching")
@@ -2930,7 +3112,7 @@ async def legacy_supplier_matching_intents(db: DB, user: CurrentUser):
             )
         ).scalars()
     )
-    return [_intent_as_legacy(row) for row in rows]
+    return [await _intent_as_legacy_with_offer_count(db, row) for row in rows]
 
 
 @router.get("/intents/{intent_id}")
@@ -2943,7 +3125,7 @@ async def legacy_get_intent(intent_id: uuid.UUID, db: DB, user: CurrentUser):
             raise HTTPException(status_code=403, detail="Intent is not visible to suppliers")
     else:
         await _owned_intent(db, user, intent_id)
-    return _intent_as_legacy(row)
+    return await _intent_as_legacy_with_offer_count(db, row)
 
 
 @router.patch("/intents/{intent_id}")
@@ -2972,7 +3154,7 @@ async def legacy_update_intent(intent_id: uuid.UUID, data: dict, db: DB, user: C
     row.requirements_json = requirements
     await db.commit()
     await db.refresh(row)
-    return _intent_as_legacy(row)
+    return await _intent_as_legacy_with_offer_count(db, row)
 
 
 @router.post("/intents/{intent_id}/cancel")
@@ -2983,7 +3165,7 @@ async def legacy_cancel_intent(intent_id: uuid.UUID, db: DB, user: CurrentUser):
     row.status = "cancelled"
     await db.commit()
     await db.refresh(row)
-    return _intent_as_legacy(row)
+    return await _intent_as_legacy_with_offer_count(db, row)
 
 
 @router.post("/intents/{intent_id}/publish")
@@ -2993,7 +3175,7 @@ async def legacy_publish_intent(intent_id: uuid.UUID, db: DB, user: CurrentUser)
         row = await publish_request(db, intent_id)
         await db.commit()
         await db.refresh(row)
-        return _intent_as_legacy(row)
+        return await _intent_as_legacy_with_offer_count(db, row)
     except CommerceTradeError as exc:
         await db.rollback()
         raise HTTPException(status_code=409, detail=str(exc)) from None
@@ -3084,6 +3266,15 @@ async def legacy_supplier_offers(db: DB, user: CurrentUser):
         ).scalars()
     )
     return [_offer_as_legacy(row) for row in rows]
+
+
+@router.get("/offers/{offer_id}")
+async def legacy_get_offer(offer_id: uuid.UUID, db: DB, user: CurrentUser):
+    row = await db.get(SupplierOffer, offer_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Offer not found")
+    await _legacy_offer_visible_to_user(db, row, user)
+    return _offer_as_legacy(row)
 
 
 @router.post("/offers/{offer_id}/withdraw")

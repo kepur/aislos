@@ -32,6 +32,12 @@ export default defineConfig({
       '/api/admin/ad-campaigns': coreProxy((p) =>
         p.replace(/^\/api\/admin\/ad-campaigns/, '/api/v1/cebu-compat/admin/ad-campaigns')
       ),
+      '/api/admin/intents': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/intents/, '/api/v1/cebu-compat/admin/intents')
+      ),
+      '/api/admin/offers': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/offers/, '/api/v1/cebu-compat/admin/offers')
+      ),
       '/api/admin/disputes': coreProxy((p) =>
         p.replace(/^\/api\/admin\/disputes/, '/api/v1/cebu-compat/admin/disputes')
       ),
