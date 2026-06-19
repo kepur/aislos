@@ -16,24 +16,31 @@ from app.api.v1.endpoints.files import BUCKET_NAME, get_minio_client
 from app.core.object_storage import new_user_upload_key
 from app.models.commerce import (
     CommerceOrder,
+    OrderDelivery,
     ProcurementRequest,
     SupplierListing,
     SupplierOffer,
+    TransactionReview,
     TradeCategorySchema,
 )
 from app.models.notification import NotificationPreference
 from app.models.user import Company, User
-from app.modules.cebu_trade.models import RegionPaymentConfig, WalletDeposit
+from app.modules.cebu_trade.models import EscrowTransaction, RegionPaymentConfig, WalletDeposit, WalletTransaction
 from app.modules.cebu_trade.schemas import (
     WalletDepositRead,
     WalletRead,
     WalletTransactionRead,
 )
 from app.modules.cebu_trade.service import (
+    CebuTradeError,
+    capture_escrow,
     create_deposit,
+    create_escrow,
     get_or_create_wallet,
+    get_escrow_for_order,
     list_deposits,
     list_wallet_transactions,
+    release_escrow,
     wallet_balance,
 )
 from app.modules.buyer_project.models import (
@@ -85,17 +92,20 @@ from app.schemas.commerce import (
 from app.schemas.user import UserRead, UserUpdate
 from app.services.commerce_trade import (
     CommerceTradeError,
+    advance_delivery,
     award_offer,
     bind_listing_to_request,
     complete_order,
     create_delivery,
     create_procurement_request,
+    list_deliveries,
     list_orders_for_user,
     match_supplier_candidates,
     open_dispute,
     publish_request,
     submit_offer,
 )
+from app.services.commerce_trust import CommerceTrustError, submit_transaction_review
 from app.services.commerce_messaging import (
     CommerceMessagingError,
     list_user_notifications,
@@ -358,8 +368,84 @@ def _offer_as_legacy(row: SupplierOffer) -> dict:
     }
 
 
+def _escrow_as_legacy(row: EscrowTransaction | None) -> dict | None:
+    if row is None:
+        return None
+    status_map = {
+        "AUTH_PENDING": "PENDING",
+        "AUTH_HELD": "AUTHORIZED",
+        "CAPTURED": "CAPTURED",
+        "RELEASED": "RELEASED",
+        "REFUNDED": "REFUNDED",
+        "PARTIALLY_REFUNDED": "REFUNDED",
+        "FAILED": "FAILED",
+    }
+    return {
+        "id": row.id,
+        "order_id": row.order_id,
+        "provider": row.provider,
+        "provider_reference": row.provider_reference,
+        "amount_minor": row.auth_amount_minor,
+        "auth_amount_minor": row.auth_amount_minor,
+        "captured_amount_minor": row.captured_amount_minor,
+        "released_amount_minor": row.released_amount_minor,
+        "refunded_amount_minor": row.refunded_amount_minor,
+        "currency": row.currency,
+        "status": status_map.get(row.status, row.status),
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _delivery_as_legacy(row: OrderDelivery | None, *, actor_id: uuid.UUID | None = None) -> dict | None:
+    if row is None:
+        return None
+    proof_json = row.proof_json or {}
+    return {
+        "id": row.id,
+        "order_id": row.commerce_order_id,
+        "status": _legacy_status(row.status, kind="delivery"),
+        "tracking_number": row.tracking_number,
+        "carrier": row.carrier,
+        "notes": proof_json.get("notes"),
+        "proofs": proof_json.get("proofs") or [],
+        "ship_from_json": row.ship_from_json,
+        "ship_to_json": row.ship_to_json,
+        "estimated_at": row.estimated_at,
+        "shipped_at": row.shipped_at,
+        "delivered_at": row.delivered_at,
+        "accepted_at": row.accepted_at,
+        "actor_id": actor_id,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+async def _order_latest_delivery(db: DB, row: CommerceOrder) -> OrderDelivery | None:
+    deliveries = await list_deliveries(db, row)
+    return deliveries[-1] if deliveries else None
+
+
+async def _order_escrow(db: DB, row: CommerceOrder) -> EscrowTransaction | None:
+    try:
+        return await get_escrow_for_order(db, row.id)
+    except CebuTradeError:
+        return (
+            await db.execute(select(EscrowTransaction).where(EscrowTransaction.order_id == row.id))
+        ).scalar_one_or_none()
+
+
 async def _order_as_legacy(db: DB, row: CommerceOrder) -> dict:
     request = await db.get(ProcurementRequest, row.procurement_request_id)
+    escrow = await _order_escrow(db, row)
+    latest_delivery = await _order_latest_delivery(db, row)
+    status = _legacy_status(row.status, kind="order")
+    if row.status == "confirmed" and escrow is None:
+        status = "AWAITING_PAYMENT"
+    elif row.status == "confirmed" and escrow.status in ("AUTH_HELD", "CAPTURED"):
+        status = "PAID_IN_ESCROW"
+    elif row.status == "in_delivery" and latest_delivery and latest_delivery.status == "delivered":
+        status = "DELIVERED"
     return {
         "id": row.id,
         "intent_id": row.procurement_request_id,
@@ -370,13 +456,184 @@ async def _order_as_legacy(db: DB, row: CommerceOrder) -> dict:
         "branch_id": None,
         "total_amount_minor": row.total_minor,
         "currency": row.currency,
-        "status": _legacy_status(row.status, kind="order"),
+        "status": status,
         "notes": None,
         "created_at": row.created_at,
         "updated_at": row.updated_at,
-        "escrow": None,
-        "delivery": row.delivery_json,
+        "escrow": _escrow_as_legacy(escrow),
+        "delivery": _delivery_as_legacy(latest_delivery) or row.delivery_json,
     }
+
+
+async def _require_legacy_order_party(
+    db: DB,
+    user: User,
+    order_id: uuid.UUID,
+    *,
+    allowed: set[str] | None = None,
+) -> tuple[CommerceOrder, str]:
+    row = await db.get(CommerceOrder, order_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+    party = await user_is_order_party(db, user, row)
+    if party is None:
+        raise HTTPException(status_code=403, detail="Not a party to this order")
+    if allowed and party not in allowed:
+        label = " or ".join(sorted(allowed))
+        raise HTTPException(status_code=403, detail=f"Operation requires {label}")
+    return row, party
+
+
+_LEGACY_DELIVERY_TO_CORE = {
+    "PENDING": "scheduled",
+    "READY_FOR_PICKUP": "scheduled",
+    "DISPATCHED": "shipped",
+    "DELIVERED": "delivered",
+    "ACCEPTED": "accepted",
+    "FAILED": "failed",
+}
+
+
+async def _advance_delivery_to_legacy_status(
+    db: DB,
+    delivery: OrderDelivery,
+    legacy_status: str | None,
+    *,
+    proof_json: dict | None = None,
+) -> OrderDelivery:
+    target = _LEGACY_DELIVERY_TO_CORE.get((legacy_status or "PENDING").upper(), "scheduled")
+    if delivery.status == target:
+        if proof_json:
+            delivery.proof_json = proof_json
+            await db.flush()
+        return delivery
+
+    if target == "failed":
+        return await advance_delivery(db, delivery.id, new_status="failed", proof_json=proof_json)
+
+    path = ["scheduled", "shipped", "in_transit", "delivered", "accepted"]
+    if delivery.status not in path or target not in path:
+        return await advance_delivery(db, delivery.id, new_status=target, proof_json=proof_json)
+
+    current_index = path.index(delivery.status)
+    target_index = path.index(target)
+    if target_index <= current_index:
+        return delivery
+
+    row = delivery
+    for next_status in path[current_index + 1 : target_index + 1]:
+        row = await advance_delivery(
+            db,
+            row.id,
+            new_status=next_status,
+            proof_json=proof_json if next_status == target else None,
+        )
+    return row
+
+
+def _wallet_transaction(
+    *,
+    wallet_id: uuid.UUID,
+    owner_user_id: uuid.UUID,
+    tx_type: str,
+    amount_delta_minor: int,
+    currency: str,
+    available_after: int,
+    locked_after: int,
+    reference_type: str,
+    reference_id: uuid.UUID,
+    note: str,
+) -> WalletTransaction:
+    return WalletTransaction(
+        wallet_id=wallet_id,
+        owner_user_id=owner_user_id,
+        tx_type=tx_type,
+        amount_delta_minor=amount_delta_minor,
+        available_balance_after_minor=available_after,
+        locked_balance_after_minor=locked_after,
+        currency=currency,
+        reference_type=reference_type,
+        reference_id=reference_id,
+        note=note,
+    )
+
+
+async def _wallet_tx_exists(
+    db: DB,
+    *,
+    owner_user_id: uuid.UUID,
+    tx_type: str,
+    reference_id: uuid.UUID,
+) -> bool:
+    return (
+        await db.execute(
+            select(WalletTransaction.id).where(
+                WalletTransaction.owner_user_id == owner_user_id,
+                WalletTransaction.tx_type == tx_type,
+                WalletTransaction.reference_id == reference_id,
+            )
+        )
+    ).first() is not None
+
+
+async def _credit_supplier_wallet_from_escrow(
+    db: DB,
+    *,
+    order: CommerceOrder,
+    escrow: EscrowTransaction,
+) -> None:
+    if not order.supplier_company_id:
+        return
+    supplier_user = (
+        await db.execute(
+            select(User)
+            .where(User.company_id == order.supplier_company_id)
+            .order_by(User.created_at.asc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if supplier_user is None:
+        return
+    if await _wallet_tx_exists(
+        db,
+        owner_user_id=supplier_user.id,
+        tx_type="ESCROW_RELEASED_TO_SUPPLIER",
+        reference_id=escrow.id,
+    ):
+        return
+    amount = escrow.released_amount_minor or escrow.captured_amount_minor or escrow.auth_amount_minor
+    if amount <= 0:
+        return
+    wallet = await get_or_create_wallet(db, supplier_user.id, escrow.currency)
+    wallet.available_balance_minor += amount
+    db.add(
+        _wallet_transaction(
+            wallet_id=wallet.id,
+            owner_user_id=supplier_user.id,
+            tx_type="ESCROW_RELEASED_TO_SUPPLIER",
+            amount_delta_minor=amount,
+            currency=escrow.currency,
+            available_after=wallet.available_balance_minor,
+            locked_after=wallet.locked_balance_minor,
+            reference_type="escrow_transaction",
+            reference_id=escrow.id,
+            note=f"Escrow released for order {order.id}",
+        )
+    )
+
+
+def _rating_average(*values: object) -> int:
+    ratings = []
+    for value in values:
+        try:
+            number = int(value)
+        except (TypeError, ValueError):
+            continue
+        if 1 <= number <= 5:
+            ratings.append(number)
+    if not ratings:
+        return 5
+    return max(1, min(5, round(sum(ratings) / len(ratings))))
 
 
 def _notification_as_legacy(row) -> dict:
@@ -1812,40 +2069,96 @@ async def legacy_my_orders(db: DB, user: CurrentUser):
 
 @router.get("/orders/{order_id}")
 async def legacy_get_order(order_id: uuid.UUID, db: DB, user: CurrentUser):
-    row = await db.get(CommerceOrder, order_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Order not found")
-    if user.role not in ("admin", "super_admin") and not await user_is_order_party(db, user, row):
-        raise HTTPException(status_code=403, detail="Not a party to this order")
+    row, _party = await _require_legacy_order_party(db, user, order_id)
     return await _order_as_legacy(db, row)
+
+
+@router.post("/orders/{order_id}/pay-from-wallet")
+async def legacy_pay_order_from_wallet(order_id: uuid.UUID, db: DB, user: CurrentUser):
+    row, _party = await _require_legacy_order_party(db, user, order_id, allowed={"buyer"})
+    if row.status in ("completed", "cancelled", "disputed"):
+        raise HTTPException(status_code=409, detail="Order cannot be paid in current status")
+    if row.total_minor <= 0:
+        raise HTTPException(status_code=409, detail="Order amount must be greater than zero")
+
+    try:
+        existing = await _order_escrow(db, row)
+        if existing is not None:
+            if existing.status in ("AUTH_HELD", "CAPTURED", "RELEASED"):
+                return await _order_as_legacy(db, row)
+            raise HTTPException(status_code=409, detail=f"Escrow is already in {existing.status}")
+
+        wallet = await get_or_create_wallet(db, user.id, row.currency)
+        if wallet.available_balance_minor < row.total_minor:
+            raise HTTPException(status_code=409, detail="Insufficient wallet balance")
+        wallet.available_balance_minor -= row.total_minor
+
+        escrow = await create_escrow(
+            db,
+            order_id=row.id,
+            auth_amount_minor=row.total_minor,
+            currency=row.currency,
+            provider="AINERWISE_WALLET",
+        )
+        escrow.status = "AUTH_HELD"
+        await db.flush()
+        escrow = await capture_escrow(db, escrow.id, row.total_minor)
+        row.status = "confirmed"
+        db.add(
+            _wallet_transaction(
+                wallet_id=wallet.id,
+                owner_user_id=user.id,
+                tx_type="ESCROW_CAPTURED_FROM_WALLET",
+                amount_delta_minor=-row.total_minor,
+                currency=row.currency,
+                available_after=wallet.available_balance_minor,
+                locked_after=wallet.locked_balance_minor,
+                reference_type="escrow_transaction",
+                reference_id=escrow.id,
+                note=f"Wallet payment captured for order {row.id}",
+            )
+        )
+        await db.commit()
+        await db.refresh(row)
+        return await _order_as_legacy(db, row)
+    except HTTPException:
+        await db.rollback()
+        raise
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
 
 
 @router.post("/orders/{order_id}/accept")
 async def legacy_accept_order(order_id: uuid.UUID, db: DB, user: CurrentUser):
-    row = await db.get(CommerceOrder, order_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Order not found")
-    party = await user_is_order_party(db, user, row)
-    if party not in ("buyer", "admin"):
-        raise HTTPException(status_code=403, detail="Only buyer can accept order")
+    row, _party = await _require_legacy_order_party(db, user, order_id, allowed={"admin", "buyer"})
     try:
         updated = await complete_order(db, order_id=order_id)
+        escrow = await _order_escrow(db, updated)
+        if escrow is not None and escrow.status in ("AUTH_HELD", "CAPTURED"):
+            escrow = await release_escrow(db, escrow.id)
+            await _credit_supplier_wallet_from_escrow(db, order=updated, escrow=escrow)
         await db.commit()
         await db.refresh(updated)
         return await _order_as_legacy(db, updated)
     except CommerceTradeError as exc:
         await db.rollback()
         raise HTTPException(status_code=409, detail=str(exc)) from None
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.get("/orders/{order_id}/delivery")
+async def legacy_order_deliveries(order_id: uuid.UUID, db: DB, user: CurrentUser):
+    row, _party = await _require_legacy_order_party(db, user, order_id)
+    deliveries = await list_deliveries(db, row)
+    return [_delivery_as_legacy(delivery) for delivery in deliveries]
 
 
 @router.post("/orders/{order_id}/delivery", status_code=201)
 async def legacy_create_delivery(order_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
-    row = await db.get(CommerceOrder, order_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Order not found")
-    party = await user_is_order_party(db, user, row)
-    if party not in ("supplier", "admin"):
-        raise HTTPException(status_code=403, detail="Only supplier can create delivery")
+    row, _party = await _require_legacy_order_party(db, user, order_id, allowed={"admin", "supplier"})
     payload = OrderDeliveryCreate(
         carrier=data.get("carrier"),
         tracking_number=data.get("tracking_number"),
@@ -1853,22 +2166,34 @@ async def legacy_create_delivery(order_id: uuid.UUID, data: dict, db: DB, user: 
         ship_to_json=data.get("ship_to_json"),
         estimated_at=data.get("estimated_at"),
     )
+    proof_json = None
+    if data.get("proofs") or data.get("notes"):
+        proof_json = {"proofs": data.get("proofs") or [], "notes": data.get("notes")}
     try:
-        delivery = await create_delivery(db, order_id, **payload.model_dump())
+        deliveries = await list_deliveries(db, row)
+        if deliveries:
+            delivery = deliveries[-1]
+            update_values = payload.model_dump()
+            for key, value in update_values.items():
+                if value is not None:
+                    setattr(delivery, key, value)
+            if proof_json:
+                delivery.proof_json = proof_json
+            await db.flush()
+        else:
+            delivery = await create_delivery(db, order_id, **payload.model_dump())
+            if proof_json:
+                delivery.proof_json = proof_json
+                await db.flush()
+        delivery = await _advance_delivery_to_legacy_status(
+            db,
+            delivery,
+            data.get("status"),
+            proof_json=proof_json,
+        )
         await db.commit()
         await db.refresh(delivery)
-        return {
-            "id": delivery.id,
-            "order_id": delivery.commerce_order_id,
-            "status": _legacy_status(delivery.status, kind="delivery"),
-            "tracking_number": delivery.tracking_number,
-            "carrier": delivery.carrier,
-            "notes": None,
-            "proofs": (delivery.proof_json or {}).get("proofs") if delivery.proof_json else [],
-            "actor_id": user.id,
-            "created_at": delivery.created_at,
-            "updated_at": delivery.updated_at,
-        }
+        return _delivery_as_legacy(delivery, actor_id=user.id)
     except CommerceTradeError as exc:
         await db.rollback()
         raise HTTPException(status_code=409, detail=str(exc)) from None
@@ -1911,6 +2236,172 @@ async def legacy_open_dispute(order_id: uuid.UUID, data: dict, db: DB, user: Cur
     except CommerceTradeError as exc:
         await db.rollback()
         raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.post("/orders/{order_id}/reviews/seller", status_code=201)
+async def legacy_review_seller(order_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    row, _party = await _require_legacy_order_party(db, user, order_id, allowed={"admin", "buyer"})
+    rating = _rating_average(
+        data.get("overall_rating"),
+        data.get("product_quality_rating"),
+        data.get("logistics_rating"),
+        data.get("communication_rating"),
+    )
+    try:
+        review = await submit_transaction_review(
+            db,
+            order_id=order_id,
+            user=user,
+            rating=rating,
+            comment=data.get("comment"),
+        )
+        await db.refresh(review)
+        delivery_json = dict(row.delivery_json or {})
+        reviews = dict(delivery_json.get("seller_review_details") or {})
+        reviews[str(review.id)] = {
+            "id": str(review.id),
+            "reviewer_id": str(user.id),
+            "transaction_channel": data.get("transaction_channel") or "ONLINE",
+            "overall_rating": rating,
+            "product_quality_rating": data.get("product_quality_rating"),
+            "logistics_rating": data.get("logistics_rating"),
+            "communication_rating": data.get("communication_rating"),
+            "comment": data.get("comment"),
+            "created_at": review.created_at.isoformat() if review.created_at else None,
+        }
+        delivery_json["seller_review_details"] = reviews
+        row.delivery_json = delivery_json
+        await db.commit()
+        await db.refresh(review)
+        return {
+            "id": review.id,
+            "order_id": review.commerce_order_id,
+            "reviewer_id": review.reviewer_user_id,
+            "supplier_company_id": review.supplier_company_id,
+            "overall_rating": review.rating,
+            "product_quality_rating": data.get("product_quality_rating"),
+            "logistics_rating": data.get("logistics_rating"),
+            "communication_rating": data.get("communication_rating"),
+            "transaction_channel": data.get("transaction_channel") or "ONLINE",
+            "comment": review.comment,
+            "status": review.status,
+            "created_at": review.created_at,
+        }
+    except CommerceTrustError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.post("/orders/{order_id}/reviews/buyer", status_code=201)
+async def legacy_review_buyer(order_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    row, _party = await _require_legacy_order_party(db, user, order_id, allowed={"admin", "supplier"})
+    if row.status != "completed":
+        raise HTTPException(status_code=409, detail="Order must be completed before review")
+    delivery_json = dict(row.delivery_json or {})
+    reviews = dict(delivery_json.get("buyer_review_details") or {})
+    for item in reviews.values():
+        if item.get("reviewer_id") == str(user.id):
+            raise HTTPException(status_code=409, detail="review already submitted")
+    review_id = str(uuid.uuid4())
+    rating = _rating_average(data.get("buyer_rating"), data.get("communication_rating"))
+    review = {
+        "id": review_id,
+        "order_id": str(order_id),
+        "reviewer_id": str(user.id),
+        "buyer_company_id": str(row.buyer_company_id) if row.buyer_company_id else None,
+        "transaction_channel": data.get("transaction_channel") or "ONLINE",
+        "overall_rating": rating,
+        "buyer_rating": data.get("buyer_rating"),
+        "communication_rating": data.get("communication_rating"),
+        "comment": data.get("comment"),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    reviews[review_id] = review
+    delivery_json["buyer_review_details"] = reviews
+    row.delivery_json = delivery_json
+    await db.commit()
+    return review
+
+
+@router.get("/reviews/company/me")
+async def legacy_my_company_reviews(db: DB, user: CurrentUser):
+    try:
+        company_id = require_supplier_company(user, requested_company_id=None)
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    rows = list(
+        (
+            await db.execute(
+                select(TransactionReview)
+                .where(
+                    TransactionReview.supplier_company_id == company_id,
+                    TransactionReview.status == "published",
+                )
+                .order_by(TransactionReview.created_at.desc())
+                .limit(100)
+            )
+        ).scalars()
+    )
+    items = []
+    product_ratings: list[int] = []
+    logistics_ratings: list[int] = []
+    communication_ratings: list[int] = []
+    online_reviews = 0
+    offline_reviews = 0
+    for review in rows:
+        order = await db.get(CommerceOrder, review.commerce_order_id)
+        details = {}
+        if order is not None:
+            details = (order.delivery_json or {}).get("seller_review_details", {}).get(str(review.id), {})
+        channel = details.get("transaction_channel") or "ONLINE"
+        if channel == "OFFLINE":
+            offline_reviews += 1
+        else:
+            online_reviews += 1
+        product = details.get("product_quality_rating")
+        logistics = details.get("logistics_rating")
+        communication = details.get("communication_rating")
+        for value, bucket in (
+            (product, product_ratings),
+            (logistics, logistics_ratings),
+            (communication, communication_ratings),
+        ):
+            try:
+                number = int(value)
+            except (TypeError, ValueError):
+                continue
+            if 1 <= number <= 5:
+                bucket.append(number)
+        items.append(
+            {
+                "id": review.id,
+                "order_id": review.commerce_order_id,
+                "reviewer_id": review.reviewer_user_id,
+                "overall_rating": review.rating,
+                "product_quality_rating": product,
+                "logistics_rating": logistics,
+                "communication_rating": communication,
+                "transaction_channel": channel,
+                "comment": review.comment,
+                "created_at": review.created_at,
+            }
+        )
+
+    def avg(values: list[int]) -> float | None:
+        return round(sum(values) / len(values), 2) if values else None
+
+    return {
+        "total_reviews": len(items),
+        "average_overall_rating": round(sum(item["overall_rating"] for item in items) / len(items), 2)
+        if items
+        else 0,
+        "average_product_quality_rating": avg(product_ratings),
+        "average_logistics_rating": avg(logistics_ratings),
+        "average_communication_rating": avg(communication_ratings),
+        "online_reviews": online_reviews,
+        "offline_reviews": offline_reviews,
+        "reviews": items,
+    }
 
 
 @router.get("/notifications/my")

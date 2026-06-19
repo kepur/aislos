@@ -59,6 +59,7 @@ Principle:
 | PZL.8 | Full admin/KYC/wallet/payment/message parity with positive and negative permission tests | IN_PROGRESS | Do not mark complete until every original Cebu workflow is tested against Core APIs |
 | PZL.9 | Wallet and deposit legacy API compatibility through AinerWise Core | READY_FOR_VERIFY | `/api/wallets/me`, `/transactions`, `/deposits`, and `/deposits/{id}/submit-tx` route to Core wallet/deposit tables; PC/H5 wallet APIs pass; unauthenticated wallet is 401; cross-user deposit submit is 404 |
 | PZL.10 | Buyer Projects / AI Project Forge main chain through AinerWise Core | READY_FOR_VERIFY | `/api/buyer/projects*` compatibility writes to Core buyer project tables; create, chat, rule-based Core analysis, line items, report, confirm, publish-to-procurement-request, PC/H5 entrypoints, and cross-user 404 verified |
+| PZL.11 | Orders / Escrow / Delivery / Reviews compatibility through AinerWise Core | READY_FOR_VERIFY | `/api/orders/*` now supports order detail with real escrow/delivery, wallet payment, supplier delivery status progression, buyer acceptance, escrow release, supplier wallet credit, seller review, buyer review, supplier review summary, and cross-supplier 403 verified |
 
 Follow-up agents:
 
