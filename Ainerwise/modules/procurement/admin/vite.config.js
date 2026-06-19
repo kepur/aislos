@@ -77,6 +77,21 @@ export default defineConfig({
       '/api/admin/kyc-media': coreProxy((p) =>
         p.replace(/^\/api\/admin\/kyc-media/, '/api/v1/cebu-compat/admin/kyc-media')
       ),
+      '/api/admin/orders': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/orders/, '/api/v1/cebu-compat/admin/orders')
+      ),
+      '/api/admin/users': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/users/, '/api/v1/cebu-compat/admin/users')
+      ),
+      '/api/admin/staff': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/staff/, '/api/v1/cebu-compat/admin/staff')
+      ),
+      '/api/admin/companies': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/companies/, '/api/v1/cebu-compat/admin/companies')
+      ),
+      '/api/admin/settings': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/settings/, '/api/v1/cebu-compat/admin/settings')
+      ),
       '/api/admin': coreProxy((p) => p.replace(/^\/api\/admin/, '/api/v1/admin/cebu')),
       '/api': coreProxy((p) => p.replace(/^\/api/, '/api/v1/cebu-compat'))
     }

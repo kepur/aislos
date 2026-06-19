@@ -3,8 +3,9 @@
 Frontends can point `NUXT_PUBLIC_API_BASE` at `/api/v1/cebu-compat` for a
 drop-in migration window. New work should call `/api/v1/commerce/*` directly.
 """
-import uuid
 import io
+import secrets
+import uuid
 from datetime import date, datetime, timezone
 
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
@@ -12,8 +13,11 @@ from pydantic import BaseModel
 from sqlalchemy import func, or_, select
 
 from app.api.deps import CurrentUser, DB
+from app.core.permissions import STAFF_ROLES
+from app.core.security import hash_password
 from app.api.v1.endpoints.files import BUCKET_NAME, get_minio_client
 from app.core.object_storage import new_user_upload_key
+from app.models.admin_config import PlatformSetting
 from app.models.backup import BackupJob, BackupSchedule
 from app.models.commerce import (
     CommerceMessage,
@@ -155,7 +159,9 @@ from app.services.commerce_messaging import (
     mark_notification_read,
     post_thread_message,
 )
-from app.services.demo_mode import is_demo_mode_enabled
+from app.services.audit import append_audit_event
+from app.services.demo_mode import is_demo_mode_enabled, set_demo_mode_enabled
+from app.services.portal_access import suspend_user_portal_access, sync_role_portal_access
 
 router = APIRouter(prefix="/cebu-compat", tags=["cebu-legacy-compat"])
 
@@ -341,20 +347,145 @@ def _legacy_role(role: str | None) -> str:
         return value.upper()
     if value == "finance":
         return "FINANCE_OFFICER"
+    if value == "project_manager":
+        return "OPS_MANAGER"
+    if value == "sales_manager":
+        return "SUPPORT_AGENT"
+    if value == "marketing_operator":
+        return "ADMIN"
     return (role or "").upper()
 
 
 def _user_as_legacy(user: User) -> dict:
-    data = UserRead.model_validate(user).model_dump()
-    data["role"] = _legacy_role(user.role)
-    data["status"] = "ACTIVE" if user.is_active else "INACTIVE"
-    data["two_fa_enabled"] = False
-    return data
+    return {
+        "id": user.id,
+        "email": user.email,
+        "phone": user.phone,
+        "full_name": user.full_name,
+        "role": _legacy_role(user.role),
+        "language": user.language,
+        "country": user.country,
+        "company_id": user.company_id,
+        "is_active": user.is_active,
+        "status": "ACTIVE" if user.is_active else "INACTIVE",
+        "two_fa_enabled": False,
+        "created_at": user.created_at,
+        "updated_at": user.updated_at,
+    }
 
 
 def _require_legacy_admin(user: User) -> None:
     if user.role not in ("admin", "super_admin", "finance"):
         raise HTTPException(status_code=403, detail="Admin privileges required")
+
+
+_LEGACY_STAFF_ROLE_TO_CORE = {
+    "ADMIN": "admin",
+    "SUPER_ADMIN": "super_admin",
+    "OPS_MANAGER": "project_manager",
+    "PROJECT_MANAGER": "project_manager",
+    "SALES_MANAGER": "sales_manager",
+    "SUPPORT_AGENT": "sales_manager",
+    "FINANCE_OFFICER": "finance",
+    "RISK_ANALYST": "admin",
+    "DISPUTE_AGENT": "admin",
+    "VERIFICATION_OFFICER": "admin",
+    "AUDITOR": "admin",
+    "MARKETING_OPERATOR": "marketing_operator",
+}
+
+
+def _core_staff_role(role: str | None) -> str:
+    requested = (role or "").strip()
+    requested_upper = requested.upper()
+    core_role = _LEGACY_STAFF_ROLE_TO_CORE.get(requested_upper, requested.lower())
+    allowed_roles = {item.value for item in STAFF_ROLES}
+    if core_role not in allowed_roles:
+        raise HTTPException(status_code=422, detail="Role must be an internal staff role")
+    return core_role
+
+
+def _legacy_admin_status(value: str | None) -> str:
+    normalized = (value or "").strip().upper()
+    if normalized in {"ACTIVE", "ENABLED", "TRUE", "1"}:
+        return "ACTIVE"
+    if normalized in {"SUSPENDED", "INACTIVE", "DISABLED", "FALSE", "0"}:
+        return "SUSPENDED"
+    raise HTTPException(status_code=422, detail="Invalid status")
+
+
+def _legacy_order_status_to_core(status: str | None) -> str:
+    normalized = (status or "").strip().upper()
+    mapping = {
+        "CREATED": "pending",
+        "AWAITING_PAYMENT": "confirmed",
+        "PAID_IN_ESCROW": "confirmed",
+        "IN_PROGRESS": "in_delivery",
+        "DELIVERED": "in_delivery",
+        "ACCEPTED": "completed",
+        "PAYOUT_RELEASED": "completed",
+        "DISPUTED": "disputed",
+        "CANCELED": "cancelled",
+        "CANCELLED": "cancelled",
+        "REFUNDED": "cancelled",
+    }
+    if normalized not in mapping:
+        raise HTTPException(status_code=422, detail="Invalid order status")
+    return mapping[normalized]
+
+
+def _legacy_verification_level(value: str | None, *, strict: bool = False) -> str:
+    normalized = (value or "").strip().upper()
+    if normalized in {"NONE", "BASIC", "BUSINESS", "PREMIUM"}:
+        return normalized
+    if normalized in {"PENDING", "SUBMITTED", "NEEDS_INFO"}:
+        return "BASIC"
+    if normalized in {"APPROVED", "VERIFIED"}:
+        return "BUSINESS"
+    if normalized in {"REJECTED", "DENIED"}:
+        return "NONE"
+    if strict:
+        raise HTTPException(status_code=422, detail="Invalid verification level")
+    return "BASIC"
+
+
+def _verification_level_to_core_status(level: str, current: str | None = None) -> str:
+    current_value = (current or "").strip().lower()
+    if level == "NONE":
+        return "rejected"
+    if level == "BASIC":
+        return "pending"
+    if level in {"BUSINESS", "PREMIUM"}:
+        if current_value in {"approved", "verified"}:
+            return current_value
+        return "approved"
+    return current_value or "pending"
+
+
+async def _append_legacy_admin_audit(
+    db: DB,
+    user: User,
+    *,
+    action: str,
+    entity_type: str,
+    entity_id: uuid.UUID | None,
+    before: object | None,
+    after: object | None,
+    reason: str | None = None,
+) -> None:
+    await append_audit_event(
+        db,
+        actor_type="user",
+        actor_user_id=user.id,
+        portal_key="procurement_admin",
+        action=action,
+        entity_type=entity_type,
+        entity_id=entity_id,
+        before={"value": before},
+        after={"value": after},
+        reason=reason,
+        source="cebu.compat.admin",
+    )
 
 
 def _uuid_or_none(value: object | None) -> uuid.UUID | None:
@@ -370,6 +501,8 @@ def _uuid_or_none(value: object | None) -> uuid.UUID | None:
 
 def _company_as_legacy(row: Company) -> dict:
     contact_info = row.contact_info or {}
+    verification_level = contact_info.get("verification_level") or _legacy_verification_level(row.verification_status)
+    operational_status = str(contact_info.get("operational_status") or "ACTIVE").upper()
     return {
         "id": row.id,
         "name": row.name,
@@ -382,6 +515,9 @@ def _company_as_legacy(row: Company) -> dict:
         "website": row.website,
         "description": row.description,
         "verification_status": row.verification_status,
+        "verification_level": verification_level,
+        "operational_status": operational_status,
+        "status": operational_status,
         "contact_info": contact_info,
         "logo_url": row.logo_url,
         "created_at": row.created_at,
@@ -1047,6 +1183,65 @@ def _backup_config_from_rows(schedules: list[BackupSchedule], jobs: list[BackupJ
     }
 
 
+def _platform_setting_value(row: PlatformSetting) -> object | None:
+    payload = row.value_json or {}
+    if isinstance(payload, dict) and "value" in payload:
+        return payload.get("value")
+    return payload
+
+
+def _platform_setting_as_admin_legacy(row: PlatformSetting) -> dict:
+    value = _platform_setting_value(row)
+    return {
+        "id": row.id,
+        "key": row.key,
+        "value": value,
+        "value_json": row.value_json,
+        "description": row.description,
+        "updated_by": row.updated_by,
+        "updated_at": row.updated_at,
+    }
+
+
+async def _ensure_legacy_admin_default_settings(db: DB) -> list[PlatformSetting]:
+    defaults = {
+        "DEMO_MODE": {
+            "value": "true" if await is_demo_mode_enabled(db) else "false",
+            "description": "Show demo procurement credentials and allow demo buyer/supplier login.",
+        },
+        "ai_enabled": {"value": "true", "description": "Enable AI helpers in Procurement Admin."},
+        "ai_provider": {"value": "openai", "description": "Default AI provider name for the Admin bridge."},
+        "ai_model": {"value": "gpt-4o-mini", "description": "Default AI model for compatibility smoke checks."},
+        "ai_providers_json": {"value": "[]", "description": "Saved AI provider presets for the copied Admin UI."},
+    }
+    existing_rows = list(
+        (
+            await db.execute(
+                select(PlatformSetting).where(
+                    PlatformSetting.portal_key == "admin_cebu",
+                    PlatformSetting.key.in_(defaults.keys()),
+                )
+            )
+        ).scalars()
+    )
+    existing = {row.key: row for row in existing_rows}
+    created: list[PlatformSetting] = []
+    for key, payload in defaults.items():
+        if key in existing:
+            continue
+        row = PlatformSetting(
+            portal_key="admin_cebu",
+            key=key,
+            value_json={"value": payload["value"]},
+            description=payload["description"],
+        )
+        db.add(row)
+        created.append(row)
+    if created:
+        await db.flush()
+    return list(existing.values()) + created
+
+
 async def _get_integration_setting(db: DB, category: str) -> IntegrationSetting | None:
     return (
         await db.execute(select(IntegrationSetting).where(IntegrationSetting.category == category))
@@ -1140,9 +1335,12 @@ async def _order_escrow(db: DB, row: CommerceOrder) -> EscrowTransaction | None:
 
 
 async def _order_as_legacy(db: DB, row: CommerceOrder) -> dict:
+    await db.refresh(row)
     request = await db.get(ProcurementRequest, row.procurement_request_id)
     escrow = await _order_escrow(db, row)
+    await db.refresh(row)
     latest_delivery = await _order_latest_delivery(db, row)
+    await db.refresh(row)
     status = _legacy_status(row.status, kind="order")
     if row.status == "confirmed" and escrow is None:
         status = "AWAITING_PAYMENT"
@@ -1167,6 +1365,38 @@ async def _order_as_legacy(db: DB, row: CommerceOrder) -> dict:
         "escrow": _escrow_as_legacy(escrow),
         "delivery": _delivery_as_legacy(latest_delivery) or row.delivery_json,
     }
+
+
+async def _ensure_admin_order_delivery_marker(
+    db: DB,
+    row: CommerceOrder,
+    legacy_status: str,
+    user: User,
+) -> None:
+    normalized = legacy_status.upper()
+    if normalized not in {"DELIVERED", "ACCEPTED", "PAYOUT_RELEASED"}:
+        return
+    latest_delivery = await _order_latest_delivery(db, row)
+    if latest_delivery is None:
+        latest_delivery = OrderDelivery(
+            workspace_id=row.workspace_id,
+            commerce_order_id=row.id,
+            status="scheduled",
+            proof_json={
+                "notes": "Created by Procurement Admin compatibility status update",
+                "actor_id": str(user.id),
+            },
+        )
+        db.add(latest_delivery)
+        await db.flush()
+    now = datetime.now(timezone.utc)
+    if normalized == "DELIVERED":
+        latest_delivery.status = "delivered"
+        latest_delivery.delivered_at = latest_delivery.delivered_at or now
+    else:
+        latest_delivery.status = "accepted"
+        latest_delivery.delivered_at = latest_delivery.delivered_at or now
+        latest_delivery.accepted_at = latest_delivery.accepted_at or now
 
 
 async def _require_legacy_order_party(
@@ -2828,6 +3058,349 @@ async def legacy_pause_merchant_ad_campaign(campaign_id: uuid.UUID, db: DB, user
     except CebuTradeError as exc:
         await db.rollback()
         raise HTTPException(status_code=404, detail=str(exc)) from None
+
+
+@router.get("/admin/users")
+async def legacy_admin_users(
+    db: DB,
+    user: CurrentUser,
+    role: str | None = None,
+    active: bool | None = None,
+    limit: int = Query(default=200, ge=1, le=500),
+):
+    _require_legacy_admin(user)
+    stmt = select(User).order_by(User.created_at.desc()).limit(limit)
+    if role:
+        requested = role.strip().upper()
+        if requested in _LEGACY_STAFF_ROLE_TO_CORE:
+            stmt = stmt.where(User.role == _core_staff_role(requested))
+        else:
+            stmt = stmt.where(User.role == requested.lower())
+    if active is not None:
+        stmt = stmt.where(User.is_active.is_(active))
+    rows = list((await db.execute(stmt)).scalars())
+    return [_user_as_legacy(row) for row in rows]
+
+
+@router.post("/admin/users/{target_user_id}/status")
+async def legacy_admin_update_user_status(
+    target_user_id: uuid.UUID,
+    data: dict,
+    db: DB,
+    user: CurrentUser,
+):
+    _require_legacy_admin(user)
+    status = _legacy_admin_status(str(data.get("status") or ""))
+    target = await db.get(User, target_user_id)
+    if target is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    if target.id == user.id and status != "ACTIVE":
+        raise HTTPException(status_code=409, detail="Admin cannot deactivate own account")
+    if target.role == "super_admin" and user.role != "super_admin":
+        raise HTTPException(status_code=403, detail="Only a super admin can manage super admin accounts")
+    before = target.is_active
+    target.is_active = status == "ACTIVE"
+    if target.is_active:
+        await sync_role_portal_access(db, user_id=target.id, role=target.role, company_id=target.company_id)
+    else:
+        await suspend_user_portal_access(db, user_id=target.id)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.user_status_changed",
+        entity_type="user",
+        entity_id=target.id,
+        before=before,
+        after=target.is_active,
+        reason=data.get("reason_text") or data.get("reason_code"),
+    )
+    await db.commit()
+    await db.refresh(target)
+    return _user_as_legacy(target)
+
+
+@router.get("/admin/staff")
+async def legacy_admin_staff(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    allowed_roles = {role.value for role in STAFF_ROLES}
+    rows = list(
+        (
+            await db.execute(
+                select(User)
+                .where(User.role.in_(allowed_roles))
+                .order_by(User.created_at.desc())
+            )
+        ).scalars()
+    )
+    return [_user_as_legacy(row) for row in rows]
+
+
+@router.post("/admin/staff/invite", status_code=201)
+async def legacy_admin_invite_staff(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    core_role = _core_staff_role(str(data.get("role") or "ADMIN"))
+    if core_role == "super_admin" and user.role != "super_admin":
+        raise HTTPException(status_code=403, detail="Only a super admin can invite a super admin")
+    email = str(data.get("email") or "").strip().lower()
+    if not email or "@" not in email:
+        raise HTTPException(status_code=422, detail="Valid email is required")
+    if (await db.execute(select(User).where(User.email == email))).scalar_one_or_none():
+        raise HTTPException(status_code=409, detail="Email already registered")
+    password = str(data.get("password") or "")
+    password_reset_required = False
+    if len(password) < 8:
+        password = secrets.token_urlsafe(18)
+        password_reset_required = True
+    row = User(
+        email=email,
+        full_name=data.get("full_name"),
+        role=core_role,
+        password_hash=hash_password(password),
+        is_active=True,
+    )
+    db.add(row)
+    await db.flush()
+    await sync_role_portal_access(db, user_id=row.id, role=row.role, company_id=None)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.staff_invited",
+        entity_type="user",
+        entity_id=row.id,
+        before=None,
+        after=row.role,
+        reason="Procurement Admin staff invite",
+    )
+    await db.commit()
+    await db.refresh(row)
+    return {**_user_as_legacy(row), "password_reset_required": password_reset_required}
+
+
+@router.put("/admin/staff/{staff_id}/role")
+async def legacy_admin_update_staff_role(
+    staff_id: uuid.UUID,
+    data: dict,
+    db: DB,
+    user: CurrentUser,
+):
+    _require_legacy_admin(user)
+    core_role = _core_staff_role(str(data.get("role") or ""))
+    target = await db.get(User, staff_id)
+    allowed_roles = {role.value for role in STAFF_ROLES}
+    if target is None or target.role not in allowed_roles:
+        raise HTTPException(status_code=404, detail="Staff user not found")
+    if target.id == user.id:
+        raise HTTPException(status_code=409, detail="Admin cannot change own role")
+    if (target.role == "super_admin" or core_role == "super_admin") and user.role != "super_admin":
+        raise HTTPException(status_code=403, detail="Only a super admin can manage super admin roles")
+    before = target.role
+    target.role = core_role
+    await sync_role_portal_access(db, user_id=target.id, role=target.role, company_id=target.company_id)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.staff_role_changed",
+        entity_type="user",
+        entity_id=target.id,
+        before=before,
+        after=target.role,
+        reason=data.get("reason"),
+    )
+    await db.commit()
+    await db.refresh(target)
+    return _user_as_legacy(target)
+
+
+@router.get("/admin/companies")
+async def legacy_admin_companies(
+    db: DB,
+    user: CurrentUser,
+    type: str | None = None,
+    verification_status: str | None = None,
+    limit: int = Query(default=200, ge=1, le=500),
+):
+    _require_legacy_admin(user)
+    stmt = select(Company).order_by(Company.created_at.desc()).limit(limit)
+    if type:
+        stmt = stmt.where(Company.type == type)
+    if verification_status:
+        stmt = stmt.where(Company.verification_status == verification_status)
+    rows = list((await db.execute(stmt)).scalars())
+    return [_company_as_legacy(row) for row in rows]
+
+
+@router.patch("/admin/companies/{company_id}/verification")
+async def legacy_admin_update_company_verification(
+    company_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    level: str | None = None,
+    data: dict | None = None,
+):
+    _require_legacy_admin(user)
+    data = data or {}
+    legacy_level = _legacy_verification_level(
+        level or data.get("level") or data.get("verification_status"),
+        strict=True,
+    )
+    row = await db.get(Company, company_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    before = row.verification_status
+    contact = dict(row.contact_info or {})
+    contact["verification_level"] = legacy_level
+    row.contact_info = contact
+    row.verification_status = _verification_level_to_core_status(legacy_level, row.verification_status)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.company_verification_changed",
+        entity_type="company",
+        entity_id=row.id,
+        before=before,
+        after=row.verification_status,
+        reason=data.get("reason"),
+    )
+    await db.commit()
+    await db.refresh(row)
+    return _company_as_legacy(row)
+
+
+@router.patch("/admin/companies/{company_id}/status")
+async def legacy_admin_update_company_status(
+    company_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    status: str | None = None,
+    data: dict | None = None,
+):
+    _require_legacy_admin(user)
+    data = data or {}
+    legacy_status = _legacy_admin_status(status or data.get("status") or "")
+    row = await db.get(Company, company_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    contact = dict(row.contact_info or {})
+    before = contact.get("operational_status", "ACTIVE")
+    contact["operational_status"] = legacy_status
+    contact["operational_status_reason"] = data.get("reason") or data.get("reason_text")
+    row.contact_info = contact
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.company_status_changed",
+        entity_type="company",
+        entity_id=row.id,
+        before=before,
+        after=legacy_status,
+        reason=contact.get("operational_status_reason"),
+    )
+    await db.commit()
+    await db.refresh(row)
+    return _company_as_legacy(row)
+
+
+@router.get("/admin/orders")
+async def legacy_admin_orders(
+    db: DB,
+    user: CurrentUser,
+    status: str | None = None,
+    limit: int = Query(default=200, ge=1, le=500),
+):
+    _require_legacy_admin(user)
+    stmt = select(CommerceOrder).order_by(CommerceOrder.created_at.desc()).limit(limit)
+    if status:
+        stmt = stmt.where(CommerceOrder.status == _legacy_order_status_to_core(status))
+    rows = list((await db.execute(stmt)).scalars())
+    return [await _order_as_legacy(db, row) for row in rows]
+
+
+@router.post("/admin/orders/{order_id}/status")
+async def legacy_admin_update_order_status(
+    order_id: uuid.UUID,
+    data: dict,
+    db: DB,
+    user: CurrentUser,
+):
+    _require_legacy_admin(user)
+    legacy_status = str(data.get("status") or "").strip().upper()
+    core_status = _legacy_order_status_to_core(legacy_status)
+    row = await db.get(CommerceOrder, order_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+    before = row.status
+    row.status = core_status
+    if core_status == "completed" and row.completed_at is None:
+        row.completed_at = datetime.now(timezone.utc)
+    await _ensure_admin_order_delivery_marker(db, row, legacy_status, user)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.order_status_changed",
+        entity_type="commerce_order",
+        entity_id=row.id,
+        before=before,
+        after=row.status,
+        reason=data.get("reason"),
+    )
+    await db.commit()
+    await db.refresh(row)
+    return await _order_as_legacy(db, row)
+
+
+@router.get("/admin/settings")
+async def legacy_admin_settings(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    await _ensure_legacy_admin_default_settings(db)
+    rows = list(
+        (
+            await db.execute(
+                select(PlatformSetting)
+                .where(PlatformSetting.portal_key == "admin_cebu")
+                .order_by(PlatformSetting.key.asc())
+            )
+        ).scalars()
+    )
+    return [_platform_setting_as_admin_legacy(row) for row in rows]
+
+
+@router.put("/admin/settings/{key}")
+async def legacy_admin_upsert_setting(key: str, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    normalized_key = key.strip()
+    if not normalized_key:
+        raise HTTPException(status_code=422, detail="Setting key is required")
+    row = (
+        await db.execute(
+            select(PlatformSetting).where(
+                PlatformSetting.portal_key == "admin_cebu",
+                PlatformSetting.key == normalized_key,
+            )
+        )
+    ).scalar_one_or_none()
+    before = row.value_json if row else None
+    if row is None:
+        row = PlatformSetting(portal_key="admin_cebu", key=normalized_key, value_json={})
+        db.add(row)
+    value = data.get("value")
+    row.value_json = {"value": value}
+    row.description = data.get("description", row.description)
+    row.updated_by = user.id
+    if normalized_key == "DEMO_MODE":
+        await set_demo_mode_enabled(db, str(value).lower() in {"true", "1", "yes", "on"})
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.platform_setting_updated",
+        entity_type="platform_setting",
+        entity_id=row.id,
+        before=before,
+        after=row.value_json,
+        reason=normalized_key,
+    )
+    await db.commit()
+    await db.refresh(row)
+    return _platform_setting_as_admin_legacy(row)
 
 
 @router.get("/admin/ad-campaigns")
