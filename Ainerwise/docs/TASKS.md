@@ -1,8 +1,43 @@
 # AinerWise Task Tracker
 
-Status legend: `TODO` | `DONE` | `VERIFIED`
+Status legend: `TODO` | `IN_PROGRESS` | `READY_FOR_VERIFY` | `DONE` | `VERIFIED` | `FAILED_VERIFY` | `BLOCKED`
 
 ---
+
+## Shared Auth & SSO Middleware V1
+
+Principle:
+
+> One AinerWise account can move across PC, H5, Admin, Marketing, and Procurement surfaces without creating another account. Physical backoffice stays as one `frontend-admin`; Marketing, Cebu Admin, Access Center, AI Supervisor, Finance, Field Ops, and other panels are logical workbenches controlled by Membership, Portal Grant, Manifest, Route, Menu, and Permission.
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| SSO.1 | Write shared auth/SSO/access-control task rules for other agents | READY_FOR_VERIFY | This section is the handoff contract; implementation agents still cannot mark `VERIFIED` |
+| SSO.2 | Extract PC/H5/Admin duplicated `useAuth` into shared SDK | READY_FOR_VERIFY | `Ainerwise/shared/auth/useSharedAuth.ts`; wrappers remain in each frontend for local policies |
+| SSO.3 | Keep one physical admin frontend and expose Access Center logical workbench | READY_FOR_VERIFY | `/access-center` in `frontend-admin`; route is governed by `admin_audit` manifest |
+| SSO.4 | Access Center shows account role, active state, available portal/workspace context, and role-to-portal policy | READY_FOR_VERIFY | Reads real `/users` and `/auth/me/portals`; role editing stays in `/users` |
+| SSO.5 | Verify cross-port login reuse for `localhost:4099`, `4098`, `4097`, `4094` | TODO | Needs Browser/E2E verification with real login cookies |
+| SSO.6 | Add formal cross-subdomain SSO bridge for `*.localhost` and future production domains | TODO | Host-only cookies work across same `localhost` ports, not across `procurement.localhost` aliases |
+| SSO.7 | Add fine-grained Portal Grant admin editor with workspace/region isolation | TODO | Must write positive/negative permission tests before implementation |
+| SSO.8 | Cut Procurement copied module auth to AinerWise Core SSO | TODO | Keep copied Cebu baseline running until Core API/auth parity is verified |
+
+Strict rules for follow-up agents:
+
+- Do not create separate user tables or isolated login systems for Marketing, Cebu Admin, Procurement, Field Ops, or AI Supervisor.
+- Do not add another physical admin app unless the architecture constitution is amended first.
+- Do not use static grants in the UI to bypass `/auth/me/portals` and `/auth/portal-switch`.
+- Implementation agents may mark only `READY_FOR_VERIFY`; independent verification agents mark `VERIFIED`.
+
+Verification evidence recorded by implementation agent on 2026-06-19:
+
+- `npm run build` passed in `Ainerwise/frontend-pc`.
+- `npm run build` passed in `Ainerwise/frontend-h5`.
+- `npm run build` passed in `Ainerwise/frontend-admin`.
+- `python3 -m py_compile Ainerwise/backend/app/core/portal_registry.py` passed.
+- Unauthenticated `http://localhost:4097/access-center` returns `302 /login?redirect=/access-center`.
+- Admin Core cookie can load `http://localhost:4097/access-center` with `HTTP 200` and page markers `Access Center`, `Shared Auth`, `Manage User Roles`.
+- Same Admin Core cookie can load `http://localhost:4094/marketing` with `HTTP 200`.
+- `/api/v1/auth/me/portals` returned `HTTP 200`, `19` portal grants, and `1` membership for the demo admin account.
 
 ## Phase 1: Foundation
 
@@ -347,7 +382,7 @@ Execution rule:
 | D.2 | Route RFQ Partner invitations through channel-gateway | DONE | Admin invite creates durable invitation, sends Telegram deep link to Partner H5, records delivery path, and emits `rfq.partner_invited`; direct backend Telegram call removed |
 | D.3 | Add Partner role view in frontend-h5 | DONE | Service-partner registration creates pending Partner profile; role-aware navigation; Partner dashboard, RFQ inbox/detail, decline, and one-time bid submission in en/zh/sr |
 | D.4 | Add Partner calendar and task dispatch | DONE | Admin-confirmed project dispatch reuses `maintenance_schedules`; Partner H5 task inbox/detail/status flow + calendar combines awarded project start dates and dispatched task due dates; Channel Gateway deep-link notification + outbox/audit trail included. Automatic award-to-task dispatch remains Phase E |
-| D.5 | Add WhatsApp Business and email adapters | TODO | Reuse the channel-gateway adapter contract after Telegram production verification |
+| D.5 | Add WhatsApp Business and email adapters | READY_FOR_VERIFY | Shared channel-gateway adapters, signed inbound webhooks, durable outbound delivery, Admin configuration, and focused adapter/backend tests; requires independent provider replay |
 
 ### Phase G Agent Runtime Hardening
 
@@ -373,7 +408,7 @@ Execution rule:
 | H.7 | Add Phase H regression coverage | DONE | Object-grant enforcement, Mission plan/grant/run/review gate, Support triage, Marketing report and customer ticket coverage-boundary tests |
 | H.8 | Verify migration, tests, builds and live services | VERIFIED | Migration 021 at head; 137 backend tests pass; PC/Admin/H5 production builds pass; services restarted healthy; live Mission + Store + Marketplace verification records present |
 | H.9 | Build Smart Building/Solar/Security industry Agent packs | WAITING | Unlock only from the first real customer scope; do not build empty packs |
-| H.10 | Deliver full five-ring + tenant/private isolation | TODO | Phase I release gate; Phase H only enforces exact-project object grants |
+| H.10 | Deliver full five-ring + tenant/private isolation | READY_FOR_VERIFY | ZL16-ZL30 bind prior tenant roots/children; ZL31 binds remaining AI Conversation, Marketing child, Field Operations and Delivery children with migration 078. Independent verifier must replay cross-Workspace bypass checks before VERIFIED |
 
 ### V3 Independent Portal Status
 
@@ -398,6 +433,6 @@ Execution rule:
 | I.3 | Agent Marketplace install lifecycle | VERIFIED | Official Agent seed + install/uninstall records |
 | I.4 | Third-party default-deny boundary | VERIFIED | Approved third-party Agent remains paused; all eight grants denied; installation grants nothing |
 | I.5 | Portal physical split | VERIFIED | 9 independent Portal processes reuse 3 Nuxt codebases and one Core API; browser-verified brand/menu/route and role boundaries |
-| I.6 | Tenant/private isolation + data export/delete | TODO | Required before third-party Agent execution or commercial SaaS claim |
-| I.7 | Third-party Agent execution sandbox | TODO | Marketplace catalog/install record is live; execution remains blocked |
+| I.6 | Tenant/private isolation + data export/delete | READY_FOR_VERIFY | ZL14-ZL31 cover privacy, primary tenant roots, Lead/Showroom children, Procurement/RFQ deep children, Commerce transaction children, Payment ledger children, Cebu payment/fulfillment children, and remaining inherited AI/Marketing/Field/Delivery child gaps. Independent verifier must confirm before VERIFIED |
+| I.7 | Third-party Agent execution sandbox | TODO | Delivery Projects now have explicit Workspace binding, but third-party activation and Project grants remain fail-closed until the execution sandbox release gate is complete |
 | I.8 | PSP subscriptions and revenue-share settlement | TODO | Never own customer money |

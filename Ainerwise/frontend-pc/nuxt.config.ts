@@ -1,12 +1,17 @@
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
   experimental: { appManifest: false },
 
+  alias: {
+    '@ainerwise/shared-auth': fileURLToPath(new URL('../shared/auth/useSharedAuth.ts', import.meta.url)),
+  },
+
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
-    '@pinia/nuxt',
     '@vueuse/nuxt',
   ],
 
@@ -58,19 +63,5 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: ['naive-ui', 'vueuc', 'date-fns-tz/formatInTimeZone'],
     },
-    plugins: [
-      {
-        name: 'fix-pinia-should-hydrate',
-        enforce: 'pre' as const,
-        transform(code: string, id: string) {
-          if (id.includes('pinia') && id.endsWith('.mjs') && code.includes('obj.hasOwnProperty')) {
-            return code.replace(
-              /!isPlainObject\(obj\) \|\| !obj\.hasOwnProperty\(skipHydrateSymbol\)/g,
-              '!isPlainObject(obj) || !Object.prototype.hasOwnProperty.call(obj, skipHydrateSymbol)'
-            )
-          }
-        },
-      },
-    ],
   },
 })

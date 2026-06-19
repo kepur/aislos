@@ -10,11 +10,15 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        INSTALL_DEV: "true"
     env_file: .env
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      - ./docs:/docs:ro
+      - ./nginx:/nginx:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -24,6 +28,7 @@ services:
         condition: service_healthy
     environment:
       - PYTHONPATH=/app
+      - PROCUREMENT_DEFAULT_PORTAL_KEY=${PROCUREMENT_DEFAULT_PORTAL_KEY:-aislos}
     command: >
       sh -c "cd /app && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
@@ -111,6 +116,7 @@ services:
       - "4099:4099"
     volumes:
       - ./frontend-pc:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:
@@ -136,6 +142,7 @@ services:
       - "4096:4096"
     volumes:
       - ./frontend-pc:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:
@@ -161,6 +168,7 @@ services:
       - "4092:4092"
     volumes:
       - ./frontend-pc:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:
@@ -182,6 +190,7 @@ services:
       - "4098:4098"
     volumes:
       - ./frontend-h5:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:
@@ -203,6 +212,7 @@ services:
       - "4091:4091"
     volumes:
       - ./frontend-h5:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:
@@ -224,6 +234,7 @@ services:
       - "4090:4090"
     volumes:
       - ./frontend-h5:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:
@@ -246,6 +257,7 @@ services:
       - "4097:4097"
     volumes:
       - ./frontend-admin:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:
@@ -268,6 +280,7 @@ services:
       - "4095:4095"
     volumes:
       - ./frontend-admin:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:
@@ -290,6 +303,7 @@ services:
       - "4094:4094"
     volumes:
       - ./frontend-admin:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:
@@ -312,6 +326,7 @@ services:
       - "4093:4093"
     volumes:
       - ./frontend-admin:/app
+      - ./shared:/shared:ro
       - /app/node_modules
       - /app/.nuxt
     depends_on:

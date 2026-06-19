@@ -63,7 +63,13 @@
 <script setup lang="ts">
 import { h } from 'vue'
 const { t } = useI18n({ useScope: 'global' })
-const { portal, isPathAllowed } = usePortalMode()
+const { portal: legacyPortal } = usePortalMode()
+const { manifest, isRouteAllowed } = usePortalManifest()
+const portal = computed(() => ({
+  shortName: manifest.value?.display_name || legacyPortal.shortName,
+  name: manifest.value?.portal_key || legacyPortal.name,
+}))
+const isPathAllowed = (path: string) => isRouteAllowed(path)
 
 const collapsed = ref(false)
 
@@ -162,6 +168,30 @@ const allMenuSections = computed(() => [
     ],
   },
   {
+    key: 'cebuAdmin', title: 'Cebu Administration',
+    items: [
+      { to: '/cebu-admin', label: 'Cebu Dashboard', icon: IconDashboard },
+      { to: '/cebu-admin/migrations', label: 'Historical Migration', icon: IconEvent },
+      { to: '/cebu-admin/users', label: 'Users & Staff', icon: IconUser },
+      { to: '/cebu-admin/companies', label: 'Companies & KYC', icon: IconCompany },
+      { to: '/cebu-admin/intents', label: 'Procurement Intents', icon: IconProposal },
+      { to: '/cebu-admin/offers', label: 'Supplier Offers', icon: IconQuote },
+      { to: '/cebu-admin/orders', label: 'Commerce Orders', icon: IconPkg },
+      { to: '/cebu-admin/disputes', label: 'Disputes', icon: IconShield },
+      { to: '/cebu-admin/risk', label: 'Risk Flags', icon: IconPulse },
+      { to: '/cebu-admin/kyc-media', label: 'KYC Media Review', icon: IconShield },
+      { to: '/cebu-admin/project-metric-templates', label: 'Project Metrics', icon: IconAI },
+      { to: '/cebu-admin/regions', label: 'Coverage & Branches', icon: IconGlobe },
+      { to: '/cebu-admin/payments', label: 'Payments & Reconciliation', icon: IconQuote },
+      { to: '/cebu-admin/trade', label: 'Trade Operations', icon: IconGlobe },
+      { to: '/cebu-admin/backups', label: 'Backups', icon: IconPkg },
+      { to: '/cebu-admin/notifications', label: 'Notifications', icon: IconEvent },
+      { to: '/cebu-admin/settings', label: 'Cebu Settings', icon: IconGear },
+      { to: '/cebu-admin/integrations', label: 'Integrations', icon: IconLink },
+      { to: '/cebu-admin/audit', label: 'Cebu Audit', icon: IconAudit },
+    ],
+  },
+  {
     key: 'network', title: t('admin.sectionNetwork'),
     items: [
       { to: '/vendors', label: t('admin.vendors'), icon: IconVendor },
@@ -175,6 +205,7 @@ const allMenuSections = computed(() => [
   {
     key: 'users', title: t('admin.sectionUsers'),
     items: [
+      { to: '/access-center', label: t('admin.accessCenter'), icon: IconShield },
       { to: '/users', label: t('admin.users'), icon: IconUser },
       { to: '/companies', label: t('admin.companies'), icon: IconCompany },
     ],
@@ -195,6 +226,7 @@ const allMenuSections = computed(() => [
       { to: '/certifications', label: t('admin.certifications'), icon: IconCert },
       { to: '/regions', label: t('admin.regions'), icon: IconGlobe },
       { to: '/audit-logs', label: t('admin.auditLogs'), icon: IconAudit },
+      { to: '/privacy', label: 'Privacy Requests', icon: IconAudit },
       { to: '/settings', label: t('admin.settings'), icon: IconGear },
     ],
   },
