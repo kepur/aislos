@@ -15,7 +15,9 @@ from app.api.deps import CurrentUser, DB
 from app.api.v1.endpoints.files import BUCKET_NAME, get_minio_client
 from app.core.object_storage import new_user_upload_key
 from app.models.commerce import (
+    CommerceMessage,
     CommerceOrder,
+    CommerceThread,
     OrderDelivery,
     ProcurementRequest,
     SupplierListing,
@@ -107,10 +109,14 @@ from app.services.commerce_trade import (
 )
 from app.services.commerce_trust import CommerceTrustError, submit_transaction_review
 from app.services.commerce_messaging import (
+    CommerceMessagingAccessDenied,
     CommerceMessagingError,
+    get_or_create_thread_for_order,
+    list_thread_messages,
     list_user_notifications,
     mark_all_notifications_read,
     mark_notification_read,
+    post_thread_message,
 )
 from app.services.demo_mode import is_demo_mode_enabled
 
@@ -636,13 +642,52 @@ def _rating_average(*values: object) -> int:
     return max(1, min(5, round(sum(ratings) / len(ratings))))
 
 
+def _message_as_legacy(row: CommerceMessage) -> dict:
+    attachments = row.attachments_json or {}
+    if isinstance(attachments, dict):
+        attachment_list = attachments.get("attachments") or []
+    elif isinstance(attachments, list):
+        attachment_list = attachments
+    else:
+        attachment_list = []
+    return {
+        "id": row.id,
+        "thread_type": "ORDER",
+        "thread_id": row.thread_id,
+        "sender_id": row.sender_user_id,
+        "sender_role": row.sender_role,
+        "body": row.body,
+        "attachments": attachment_list,
+        "read_at": row.read_at,
+        "created_at": row.created_at,
+    }
+
+
+def _notification_type_as_legacy(event_type: str | None) -> str:
+    maps = {
+        "commerce.message.received": "MESSAGE_RECEIVED",
+        "procurement.offer.submitted": "OFFER_RECEIVED",
+        "procurement.offer.awarded": "OFFER_AWARDED_SUPPLIER",
+        "commerce.order.awarded": "ORDER_CREATED",
+        "commerce.delivery.shipped": "DELIVERY_UPDATED_SUPPLIER",
+        "commerce.delivery.delivered": "DELIVERY_UPDATED_SUPPLIER",
+        "commerce.dispute.opened": "DISPUTE_OPENED",
+        "commerce.order.completed": "ORDER_ACCEPTED_SUPPLIER",
+        "cebu.admin.test": "ADMIN_TEST",
+    }
+    if not event_type:
+        return "SYSTEM"
+    return maps.get(event_type, event_type.upper().replace(".", "_"))
+
+
 def _notification_as_legacy(row) -> dict:
     status = "READ" if row.status == "read" else "UNREAD"
     return {
         "id": row.id,
         "user_id": row.user_id,
         "channel": "IN_APP",
-        "notification_type": row.event_type,
+        "notification_type": _notification_type_as_legacy(row.event_type),
+        "event_type": row.event_type,
         "subject": row.title,
         "body": row.body or "",
         "status": status,
@@ -2402,6 +2447,53 @@ async def legacy_my_company_reviews(db: DB, user: CurrentUser):
         "offline_reviews": offline_reviews,
         "reviews": items,
     }
+
+
+@router.get("/threads/order/{order_id}/messages")
+async def legacy_order_thread_messages(order_id: uuid.UUID, db: DB, user: CurrentUser):
+    order, _party = await _require_legacy_order_party(db, user, order_id)
+    try:
+        thread = await get_or_create_thread_for_order(db, order)
+        await db.commit()
+        await db.refresh(thread)
+    except CommerceMessagingError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+    rows = await list_thread_messages(db, thread)
+    return [_message_as_legacy(row) for row in rows]
+
+
+@router.post("/threads/order/{order_id}/messages", status_code=201)
+async def legacy_post_order_thread_message(order_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    order, _party = await _require_legacy_order_party(db, user, order_id)
+    body = str(data.get("body") or data.get("message") or "").strip()
+    if not body:
+        raise HTTPException(status_code=422, detail="body is required")
+    raw_attachments = data.get("attachments_json") or data.get("attachments")
+    if isinstance(raw_attachments, dict):
+        attachments_json = raw_attachments
+    elif isinstance(raw_attachments, list):
+        attachments_json = {"attachments": raw_attachments}
+    else:
+        attachments_json = None
+    try:
+        thread = await get_or_create_thread_for_order(db, order)
+        message = await post_thread_message(
+            db,
+            thread_id=thread.id,
+            user=user,
+            body=body,
+            attachments_json=attachments_json,
+        )
+        await db.commit()
+        await db.refresh(message)
+        return _message_as_legacy(message)
+    except CommerceMessagingAccessDenied as exc:
+        await db.rollback()
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    except CommerceMessagingError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
 
 
 @router.get("/notifications/my")
