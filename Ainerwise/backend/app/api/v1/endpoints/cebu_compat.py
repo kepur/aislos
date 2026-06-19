@@ -19,7 +19,19 @@ from app.models.commerce import (
 )
 from app.models.notification import NotificationPreference
 from app.models.user import Company, User
-from app.modules.cebu_trade.models import RegionPaymentConfig
+from app.modules.cebu_trade.models import RegionPaymentConfig, WalletDeposit
+from app.modules.cebu_trade.schemas import (
+    WalletDepositRead,
+    WalletRead,
+    WalletTransactionRead,
+)
+from app.modules.cebu_trade.service import (
+    create_deposit,
+    get_or_create_wallet,
+    list_deposits,
+    list_wallet_transactions,
+    wallet_balance,
+)
 from app.modules.commerce.access import (
     CommerceAccessDenied,
     CommerceResourceNotFound,
@@ -74,6 +86,24 @@ class LegacyNotificationPreferencesUpdate(BaseModel):
     reports_enabled: bool | None = None
     maintenance_enabled: bool | None = None
     renewal_enabled: bool | None = None
+
+
+class LegacyWalletDepositCreate(BaseModel):
+    amount_minor: int
+    currency: str = "PHP"
+    network: str = "LOCAL_BANK"
+    provider: str = "MANUAL_BANK"
+    payment_method: str = "PHP_MANUAL_BANK"
+    source_currency: str | None = None
+    target_currency: str | None = None
+    deposit_address: str | None = None
+    tx_hash: str | None = None
+    submitter_note: str | None = None
+
+
+class LegacyWalletSubmitTx(BaseModel):
+    tx_hash: str | None = None
+    submitter_note: str | None = None
 
 
 @router.get("/system-mode")
@@ -304,6 +334,17 @@ def _category_as_legacy(row: TradeCategorySchema) -> dict:
     }
 
 
+def _wallet_instruction_address(data: LegacyWalletDepositCreate, user: CurrentUser) -> str:
+    provided = (data.deposit_address or "").strip()
+    if provided:
+        return provided
+    currency = (data.currency or "PHP").upper()
+    network = (data.network or "LOCAL_BANK").upper()
+    method = (data.payment_method or "PHP_MANUAL_BANK").upper()
+    user_ref = str(user.id).replace("-", "")[:10].upper()
+    return f"AINERWISE-PROCUREMENT-{currency}-{network}-{method}-{user_ref}"
+
+
 async def _owned_intent(db: DB, user: CurrentUser, intent_id: uuid.UUID):
     try:
         return await require_procurement_request_owner(db, user=user, request_id=intent_id)
@@ -426,6 +467,101 @@ async def legacy_payment_region_config(db: DB, country: str = Query(default="PH"
         )
     ).scalar_one_or_none()
     return _payment_region_config_as_legacy(row, normalized)
+
+
+@router.get("/wallets/me")
+async def legacy_wallets_me(
+    db: DB,
+    user: CurrentUser,
+    currency: str = Query(default="PHP"),
+):
+    normalized_currency = (currency or "PHP").upper()
+    await get_or_create_wallet(db, user.id, normalized_currency)
+    await db.commit()
+    wallets = await wallet_balance(db, user.id)
+    wallets.sort(key=lambda wallet: (wallet.currency != normalized_currency, wallet.currency))
+    items = [WalletRead.model_validate(wallet).model_dump() for wallet in wallets]
+    return {"wallets": items, "items": items, "total": len(items)}
+
+
+@router.get("/wallets/transactions")
+async def legacy_wallet_transactions(
+    db: DB,
+    user: CurrentUser,
+    currency: str | None = None,
+    limit: int = Query(default=50, ge=1, le=200),
+):
+    normalized_currency = currency.upper() if currency else None
+    wallets = await wallet_balance(db, user.id)
+    txs = []
+    for wallet in wallets:
+        if normalized_currency and wallet.currency != normalized_currency:
+            continue
+        txs.extend(await list_wallet_transactions(db, wallet.id, limit=limit))
+    txs.sort(key=lambda tx: tx.created_at.isoformat() if tx.created_at else "", reverse=True)
+    return [WalletTransactionRead.model_validate(tx).model_dump() for tx in txs[:limit]]
+
+
+@router.get("/wallets/deposits")
+async def legacy_wallet_deposits(
+    db: DB,
+    user: CurrentUser,
+    status: str | None = None,
+    limit: int = Query(default=50, ge=1, le=200),
+):
+    items = await list_deposits(db, user_id=user.id, status=status, limit=limit)
+    data = [WalletDepositRead.model_validate(deposit).model_dump() for deposit in items]
+    return {"items": data, "total": len(data)}
+
+
+@router.post("/wallets/deposits", status_code=201)
+async def legacy_create_wallet_deposit(
+    data: LegacyWalletDepositCreate,
+    db: DB,
+    user: CurrentUser,
+):
+    if data.amount_minor <= 0:
+        raise HTTPException(status_code=422, detail="amount_minor must be greater than 0")
+    currency = (data.currency or "PHP").upper()
+    wallet = await get_or_create_wallet(db, user.id, currency)
+    fields = data.model_dump()
+    fields["currency"] = currency
+    fields["network"] = (fields.get("network") or "LOCAL_BANK").upper()
+    fields["provider"] = fields.get("provider") or "MANUAL_BANK"
+    fields["payment_method"] = fields.get("payment_method") or "PHP_MANUAL_BANK"
+    fields["deposit_address"] = _wallet_instruction_address(data, user)
+    deposit = await create_deposit(
+        db,
+        wallet_id=wallet.id,
+        owner_user_id=user.id,
+        **fields,
+    )
+    await db.commit()
+    await db.refresh(deposit)
+    return WalletDepositRead.model_validate(deposit)
+
+
+@router.post("/wallets/deposits/{deposit_id}/submit-tx")
+async def legacy_submit_wallet_deposit_tx(
+    deposit_id: uuid.UUID,
+    data: LegacyWalletSubmitTx,
+    db: DB,
+    user: CurrentUser,
+):
+    tx_hash = (data.tx_hash or "").strip()
+    if not tx_hash:
+        raise HTTPException(status_code=422, detail="tx_hash is required")
+    deposit = await db.get(WalletDeposit, deposit_id)
+    if deposit is None or deposit.owner_user_id != user.id:
+        raise HTTPException(status_code=404, detail="Deposit not found")
+    if deposit.status not in ("PENDING_TX", "SUBMITTED", "UNDER_REVIEW"):
+        raise HTTPException(status_code=409, detail=f"Cannot submit tx in status {deposit.status}")
+    deposit.tx_hash = tx_hash
+    deposit.submitter_note = data.submitter_note
+    deposit.status = "SUBMITTED"
+    await db.commit()
+    await db.refresh(deposit)
+    return WalletDepositRead.model_validate(deposit)
 
 
 @router.get("/marketplace/feed")

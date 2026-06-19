@@ -51,6 +51,8 @@ Verification evidence recorded on 2026-06-19:
 - `http://procurement.localhost/api/marketplace/feed` returns Core supplier listing data.
 - Unauthenticated `http://procurement.localhost/api/intents/my` returns `401 Not authenticated`.
 - Demo login through `http://procurement.localhost/api/auth/login` with `demo@ainerwise.com / demo123` returns a Core buyer JWT; `/api/auth/me`, `/api/users/me`, and `/api/intents/my` work with that token.
+- `http://procurement.localhost/api/wallets/me`, `/api/wallets/transactions`, `/api/wallets/deposits`, and `/api/wallets/deposits/{id}/submit-tx` now use the Core wallet/deposit tables through the compatibility adapter.
+- Demo buyer can create and submit a PHP deposit through the PC API; another Core user token receives `404 Deposit not found` when trying to submit the buyer deposit.
 
 ## Physical Entrypoints
 
@@ -86,7 +88,7 @@ Current status: READY_FOR_VERIFY.
 | Brand Rename | User-visible `ProcurePing` renamed to `AinerWise Procurement` in copied module | READY_FOR_VERIFY | `rg "ProcurePing|>PP<|procureping.local"` only leaves intentional demo credential cases |
 | Standalone Entrypoints | Add procurement compose, ports, Nginx host routing, legacy alias redirects | READY_FOR_VERIFY | `Ainerwise/docker-compose.procurement-standalone.yml`, `Ainerwise/nginx/default.conf` |
 | Main Site Link | AinerWise PC header/home links to standalone Procurement PC | READY_FOR_VERIFY | `http://procurement.localhost` external link added |
-| Core API Migration | Replace transitional Cebu API with AinerWise Core compatible API | IN_PROGRESS | Core bridge V1 is READY_FOR_VERIFY for auth, users, categories, marketplace feed, payment region config, buyer intents, supplier offers/orders/notifications adapters; full admin/KYC/wallet parity still requires ledger gates |
+| Core API Migration | Replace transitional Cebu API with AinerWise Core compatible API | IN_PROGRESS | Core bridge V1 is READY_FOR_VERIFY for auth, users, categories, marketplace feed, payment region config, buyer intents, supplier offers/orders/notifications adapters, and wallet/deposit compatibility; full admin/KYC/order/escrow/message parity still requires ledger gates |
 | Ledger-Based Migration | Migrate Marketplace, Project Forge, RFQ, Order, Wallet, Message, KYC, Dispute, Admin panels | IN_PROGRESS | Legacy UI copied; public marketplace/auth/intent bridge verified; remaining workflows continue module by module |
 
 ## Status Rules
@@ -175,7 +177,7 @@ Global final acceptance:
 | Public marketplace | PC/H5 | `/marketplace`, `/categories` | Guest, Buyer, Supplier | Browse categories/products/suppliers | `Ainerwise/modules/procurement/pc`, `h5` | Core `/api/v1/cebu-compat/categories`, `/marketplace/feed`, `/marketplace/items/*` | READY_FOR_VERIFY for UI copy and public Core read bridge | `curl http://procurement.localhost/api/marketplace/feed` | `HTTP 200`, Core listing JSON |
 | Buyer Projects / AI Project Forge | PC/H5 | `/projects`, `/intents`, AI analysis endpoints | Buyer | Create project/request, AI analysis, requirements, compare offers | `Ainerwise/modules/procurement/pc/pages/buyer/projects`, `h5/pages/buyer/projects` | Core buyer project APIs plus `/api/v1/cebu-compat/intents/*` | IN_PROGRESS | `find .../buyer/projects` and authenticated `/api/intents/my` | UI copy present; demo buyer token returns Core intent list |
 | RFQ / Intent / Offer | PC/H5/Admin | `/intents`, `/offers`, `/requests` | Buyer, Supplier, Admin | Request, match supplier, submit offer, award | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/intents`, `/offers`, `/orders` | IN_PROGRESS | `rg "offers|requests|intents" Ainerwise/modules/procurement` | UI copy present; main buyer intent read path verified |
-| Orders / Escrow / Wallet | PC/H5/Admin | `/orders`, `/wallet`, admin payments/escrow | Buyer, Supplier, Finance/Admin | Create order, escrow, release, payout | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/orders/*` and `/api/v1/cebu-trade/wallet/*` | IN_PROGRESS | `rg "orders|wallet|escrow|payments" Ainerwise/modules/procurement` | UI copy present; payment region config verified |
+| Orders / Escrow / Wallet | PC/H5/Admin | `/orders`, `/wallet`, admin payments/escrow | Buyer, Supplier, Finance/Admin | Create order, escrow, release, payout | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/orders/*`, `/api/v1/cebu-compat/wallets/*`, and admin `/api/v1/admin/cebu-trade/deposits` | IN_PROGRESS; Wallet/Deposit bridge READY_FOR_VERIFY | `curl http://procurement.localhost/api/wallets/me -H "Authorization: Bearer $token"` | PC/H5 wallet API, deposit create, submit tx, admin deposits read, and cross-user submit denial verified |
 | Messages / Notifications | PC/H5/Admin | `/messages`, `/notifications` | Buyer, Supplier, Support/Admin | Chat, notification center, admin notification ops | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/notifications/*` plus commerce messaging services | IN_PROGRESS | `rg "messages|notifications" Ainerwise/modules/procurement` | UI copy present; compatibility adapter implemented |
 | Supplier Catalog / Ads | PC/H5/Admin | `/catalog`, `/ads`, admin campaigns | Supplier, Admin | Manage products/services, supplier ads | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/supplier/*`, `/api/v1/cebu-trade/ads/*` | IN_PROGRESS | `rg "catalog|ads|campaign" Ainerwise/modules/procurement` | UI copy present; public listing read verified |
 | Dispute / KYC / Risk | PC/H5/Admin | `/disputes`, `/verification`, `/risk`, KYC/KYB APIs | Buyer, Supplier, Admin, Risk, Verification | Submit dispute, verify company/docs, risk review | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/orders/*/dispute`, KYC/Core admin APIs | IN_PROGRESS | `rg "disputes|verification|risk|KYC|KYB" Ainerwise/modules/procurement` | UI copy present; dispute adapter implemented; KYC parity still needs verification |
@@ -429,6 +431,19 @@ In-app browser opened the three standalone hosts and read visible DOM text.
 | Marketplace feed | `curl -sS http://procurement.localhost/api/marketplace/feed` | `HTTP 200`, returns Core supplier listing data |
 | Unauthenticated buyer data | `curl -sS http://procurement.localhost/api/intents/my` | `HTTP 401`, not a failed fetch or legacy backend outage |
 | Unauthenticated admin data | `curl -sS http://procurement-admin.localhost/api/admin/dashboard` | `HTTP 401`, Core-protected admin route |
+
+### Wallet And Deposit Compatibility Evidence
+
+| Check | Command | Result |
+| --- | --- | --- |
+| Unauthenticated wallet | `curl -sS -o /tmp/proc_wallet_unauth.json -w '%{http_code}' http://procurement.localhost/api/wallets/me` | `401` |
+| Buyer wallet | `curl -sS http://procurement.localhost/api/wallets/me -H "Authorization: Bearer $buyer_token"` | `HTTP 200`, returns `wallets[0].currency=PHP` |
+| Buyer transactions | `curl -sS http://procurement.localhost/api/wallets/transactions -H "Authorization: Bearer $buyer_token"` | `HTTP 200`, returns legacy flat transaction array |
+| Create PHP deposit | `curl -sS -X POST http://procurement.localhost/api/wallets/deposits -H 'Content-Type: application/json' -H "Authorization: Bearer $buyer_token" -d '{"amount_minor":12345,"currency":"PHP","network":"LOCAL_BANK","provider":"MANUAL_BANK","payment_method":"PHP_MANUAL_BANK"}'` | `HTTP 201`, returns Core `wallet_deposits` row with generated AinerWise payment instruction |
+| Submit deposit reference | `curl -sS -X POST http://procurement.localhost/api/wallets/deposits/$deposit_id/submit-tx -H 'Content-Type: application/json' -H "Authorization: Bearer $buyer_token" -d '{"tx_hash":"TEST-PHP-REF-20260619"}'` | `HTTP 200`, status becomes `SUBMITTED` |
+| Cross-user submit denial | `curl -sS -o /tmp/proc_wallet_admin_cross.json -w '%{http_code}' -X POST http://procurement.localhost/api/wallets/deposits/$deposit_id/submit-tx -H 'Content-Type: application/json' -H "Authorization: Bearer $admin_token" -d '{"tx_hash":"ADMIN-SHOULD-NOT-OWN"}'` | `404`, `Deposit not found` |
+| H5 wallet host | `curl -sS http://procurement-h5.localhost/api/wallets/me -H "Authorization: Bearer $buyer_token"` | `HTTP 200`, same Core wallet data |
+| Admin deposits | `curl -sS http://procurement-admin.localhost/api/admin/deposits -H "Authorization: Bearer $admin_token"` | `HTTP 200`, Core admin finance deposit list |
 
 ### Clean Baseline Evidence
 
