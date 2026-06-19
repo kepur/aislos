@@ -216,7 +216,7 @@ async function confirmReceipt() {
 async function submitDispute() {
   actionLoading.value = true;
   try {
-    await orderStore.openDispute(id, disputeReason.value);
+    await orderStore.openDispute(id, disputeReason.value, disputeDesc.value);
     openDisputeSheet.value = false;
     showToast({ type: "success", message: "Dispute submitted. Our team will review it." });
     router.push("/buyer/orders");

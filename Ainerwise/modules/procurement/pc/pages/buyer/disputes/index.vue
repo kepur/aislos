@@ -15,7 +15,7 @@
         <USelect :options="['All Statuses', 'Open', 'In Review', 'Resolved', 'Closed']" />
       </div>
 
-      <UTable :columns="columns" :rows="disputes">
+      <UTable :columns="columns" :rows="disputes" :loading="loading">
         <template #status-data="{ row }">
           <UBadge :color="getStatusColor(row.status)" variant="subtle">{{ row.status }}</UBadge>
         </template>
@@ -23,7 +23,7 @@
           <span class="font-medium text-slate-900">{{ row.amount }}</span>
         </template>
         <template #actions-data="{ row }">
-          <UButton size="xs" color="indigo" variant="soft" icon="i-heroicons-eye">View Case</UButton>
+          <UButton size="xs" color="indigo" variant="soft" icon="i-heroicons-eye" :to="`/buyer/orders/${row.rawOrderId}`">View Order</UButton>
         </template>
       </UTable>
     </UCard>
@@ -46,10 +46,33 @@ const columns = [
   { key: 'actions', label: 'Actions' }
 ]
 
-const disputes = [
-  { caseId: 'CAS-4412', orderId: 'ORD-82800', supplier: 'Global Build Supply Co.', reason: 'Item Not as Described', amount: '$4,500.00', status: 'In Review', date: '2023-10-25' },
-  { caseId: 'CAS-3901', orderId: 'ORD-81105', supplier: 'TechWholesale Inc', reason: 'Late Delivery', amount: '$1,200.00', status: 'Resolved', date: '2023-10-10' }
-]
+const loading = ref(true)
+const disputes = ref<any[]>([])
+const { getDisputes } = useApi()
+
+function fmtDate(value?: string) {
+  if (!value) return '—'
+  return new Date(value).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+}
+
+onMounted(async () => {
+  const { data, error } = await getDisputes()
+  if (error) {
+    disputes.value = []
+  } else {
+    disputes.value = ((data as any[]) || []).map((item) => ({
+      caseId: `CAS-${String(item.id).slice(0, 8).toUpperCase()}`,
+      orderId: `ORD-${String(item.order_id || item.commerce_order_id).slice(0, 8).toUpperCase()}`,
+      rawOrderId: item.order_id || item.commerce_order_id,
+      supplier: item.opened_by_role === 'SUPPLIER' ? 'Opened by supplier' : 'Supplier',
+      reason: String(item.reason || item.reason_code || 'OTHER').replace(/_/g, ' '),
+      amount: item.refund_amount_minor ? `$${(Number(item.refund_amount_minor) / 100).toLocaleString()}` : '—',
+      status: String(item.status || 'OPEN').replace(/_/g, ' '),
+      date: fmtDate(item.created_at),
+    }))
+  }
+  loading.value = false
+})
 
 const getStatusColor = (status: string) => {
   const map: Record<string, string> = {

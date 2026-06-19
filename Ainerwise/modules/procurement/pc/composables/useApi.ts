@@ -55,6 +55,6 @@ export const useApi = () => {
 
     // Disputes
     openDispute: (orderId: string, data: any) => fetchApi(`/orders/${orderId}/dispute`, { method: 'POST', body: data }),
-    getDisputes: () => fetchApi('/admin/disputes'),
+    getDisputes: () => fetchApi('/disputes/my'),
   }
 }

@@ -1,10 +1,10 @@
 <template>
   <div class="max-w-3xl mx-auto space-y-6 py-6">
     <div class="flex items-center space-x-4 mb-6">
-      <UButton to="/buyer/orders/1" color="gray" variant="ghost" icon="i-heroicons-arrow-left" size="sm" />
+      <UButton :to="orderId ? `/buyer/orders/${orderId}` : '/buyer/orders'" color="gray" variant="ghost" icon="i-heroicons-arrow-left" size="sm" />
       <div>
         <h1 class="text-2xl font-bold text-slate-900">Open a Dispute</h1>
-        <p class="text-sm text-slate-500 mt-1">Order #ORD-82910 • 500 bags Portland Cement</p>
+        <p class="text-sm text-slate-500 mt-1">{{ orderId ? `Order #${orderId.slice(0, 8).toUpperCase()}` : 'Select an order before opening a dispute' }}</p>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
     <UCard>
       <form class="space-y-6" @submit.prevent="submitDispute">
         <UFormGroup label="Reason for Dispute" required>
-          <USelect v-model="form.reason" :options="['Items not delivered', 'Items damaged or defective', 'Incorrect items received', 'Quantity mismatch', 'Other']" size="lg" />
+          <USelect v-model="form.reason" :options="reasonOptions" size="lg" />
         </UFormGroup>
 
         <UFormGroup label="Requested Resolution" required>
@@ -62,7 +62,7 @@
 
         <div class="pt-4 border-t border-slate-200 flex justify-end space-x-4">
           <UButton color="gray" variant="ghost" size="lg" to="/buyer/disputes">Cancel</UButton>
-          <UButton type="submit" color="red" size="lg" class="px-8 font-bold">Submit Dispute</UButton>
+          <UButton type="submit" color="red" size="lg" class="px-8 font-bold" :loading="submitting" :disabled="!orderId">Submit Dispute</UButton>
         </div>
       </form>
     </UCard>
@@ -78,6 +78,19 @@ definePageMeta({
 })
 
 const router = useRouter()
+const route = useRoute()
+const { openDispute } = useApi()
+const orderId = computed(() => String(route.query.order_id || ''))
+const submitting = ref(false)
+const reasonOptions = [
+  'ITEM_NOT_RECEIVED',
+  'ITEM_DAMAGED',
+  'ITEM_WRONG',
+  'QUANTITY_MISMATCH',
+  'QUALITY_ISSUE',
+  'DELIVERY_DELAY',
+  'OTHER'
+]
 const form = ref({
   reason: '',
   resolution: 'full_refund',
@@ -85,10 +98,28 @@ const form = ref({
   details: ''
 })
 
-const submitDispute = () => {
-  if(confirm('Are you sure you want to open this dispute? Escrow funds will be frozen.')) {
+const submitDispute = async () => {
+  if (!orderId.value) {
+    alert('Missing order id.')
+    return
+  }
+  if (!confirm('Are you sure you want to open this dispute? Escrow funds will be frozen.')) return
+  submitting.value = true
+  const amount = form.value.amount ? Math.round(Number(form.value.amount) * 100) : null
+  const { error } = await openDispute(orderId.value, {
+    reason: form.value.reason,
+    reason_code: form.value.reason,
+    description: form.value.details,
+    requested_resolution: form.value.resolution,
+    refund_amount_minor: amount,
+    evidence: [],
+  })
+  submitting.value = false
+  if (error) {
+    alert(error.detail || error.message || 'Failed to open dispute')
+  } else {
     alert('Dispute opened. Our admin team will review this shortly.')
-    router.push('/buyer/dashboard')
+    router.push('/buyer/disputes')
   }
 }
 </script>

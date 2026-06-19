@@ -30,7 +30,19 @@ export default defineConfig({
         p.replace(/^\/api\/admin\/payouts/, '/api/v1/admin/cebu-trade/payouts')
       ),
       '/api/admin/ad-campaigns': coreProxy((p) =>
-        p.replace(/^\/api\/admin\/ad-campaigns/, '/api/v1/admin/cebu-trade/ads/campaigns')
+        p.replace(/^\/api\/admin\/ad-campaigns/, '/api/v1/cebu-compat/admin/ad-campaigns')
+      ),
+      '/api/admin/disputes': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/disputes/, '/api/v1/cebu-compat/admin/disputes')
+      ),
+      '/api/admin/risk-flags': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/risk-flags/, '/api/v1/cebu-compat/admin/risk-flags')
+      ),
+      '/api/admin/verification': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/verification/, '/api/v1/cebu-compat/admin/verification')
+      ),
+      '/api/admin/kyc-media': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/kyc-media/, '/api/v1/cebu-compat/admin/kyc-media')
       ),
       '/api/admin': coreProxy((p) => p.replace(/^\/api\/admin/, '/api/v1/admin/cebu')),
       '/api': coreProxy((p) => p.replace(/^\/api/, '/api/v1/cebu-compat'))

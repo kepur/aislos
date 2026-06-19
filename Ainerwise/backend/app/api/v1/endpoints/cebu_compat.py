@@ -18,8 +18,10 @@ from app.models.commerce import (
     CommerceMessage,
     CommerceOrder,
     CommerceThread,
+    OrderDispute,
     OrderDelivery,
     ProcurementRequest,
+    RiskFlag,
     SupplierListing,
     SupplierOffer,
     TransactionReview,
@@ -86,6 +88,16 @@ from app.modules.buyer_project.service import (
     update_project as update_buyer_project,
     update_report_row as update_buyer_project_report_row,
 )
+from app.modules.kyc.models import CompanyDocument, KYCAnalysisResult, VerificationReview
+from app.modules.kyc.schemas import CompanyDocumentCreate, CompanyDocumentRead, VerificationReviewRead
+from app.modules.kyc.service import (
+    KYCError,
+    decide_verification,
+    list_documents as list_kyc_documents,
+    list_verification_queue,
+    submit_for_verification,
+    upload_document as upload_kyc_document,
+)
 from app.modules.commerce.access import (
     CommerceAccessDenied,
     CommerceResourceNotFound,
@@ -115,6 +127,7 @@ from app.services.commerce_trade import (
     match_supplier_candidates,
     open_dispute,
     publish_request,
+    resolve_dispute as resolve_commerce_dispute,
     submit_offer,
 )
 from app.services.commerce_trust import CommerceTrustError, submit_transaction_review
@@ -355,6 +368,164 @@ def _company_as_legacy(row: Company) -> dict:
         "verification_status": row.verification_status,
         "contact_info": contact_info,
         "logo_url": row.logo_url,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _dispute_evidence(row: OrderDispute) -> list:
+    data = row.resolution_json or {}
+    evidence = data.get("evidence_json") or data.get("evidence") or []
+    return evidence if isinstance(evidence, list) else []
+
+
+def _dispute_status_as_legacy(status: str | None) -> str:
+    maps = {
+        "open": "OPEN",
+        "under_review": "UNDER_REVIEW",
+        "resolved_buyer": "RESOLVED",
+        "resolved_supplier": "RESOLVED",
+        "closed": "DISMISSED",
+        "withdrawn": "DISMISSED",
+    }
+    return maps.get((status or "").lower(), (status or "").upper())
+
+
+def _dispute_status_to_core(status: str | None) -> set[str] | None:
+    if not status:
+        return None
+    maps = {
+        "OPEN": {"open"},
+        "OPENED": {"open"},
+        "UNDER_REVIEW": {"under_review"},
+        "IN_REVIEW": {"under_review"},
+        "RESOLVED": {"resolved_buyer", "resolved_supplier"},
+        "RESOLVED_REFUND": {"resolved_buyer"},
+        "RESOLVED_RELEASE": {"resolved_supplier"},
+        "DISMISSED": {"closed", "withdrawn"},
+        "CLOSED": {"closed"},
+    }
+    return maps.get(str(status).upper(), {str(status).lower()})
+
+
+def _dispute_as_legacy(row: OrderDispute) -> dict:
+    data = row.resolution_json or {}
+    return {
+        "id": row.id,
+        "order_id": row.commerce_order_id,
+        "commerce_order_id": row.commerce_order_id,
+        "opened_by_user_id": row.opened_by_user_id,
+        "filed_by_role": row.opened_by_role.upper(),
+        "opened_by_role": row.opened_by_role.upper(),
+        "reason": row.reason_code,
+        "reason_code": row.reason_code,
+        "description": row.description,
+        "evidence_json": _dispute_evidence(row),
+        "admin_notes": data.get("admin_notes"),
+        "status": _dispute_status_as_legacy(row.status),
+        "core_status": row.status,
+        "resolution": data.get("resolution") or data.get("admin_reason"),
+        "refund_amount_minor": data.get("refund_amount_minor"),
+        "resolved_at": row.resolved_at,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _risk_status_to_core(status: str | None) -> str:
+    value = (status or "OPEN").upper()
+    if value in {"OPEN", "IN_REVIEW"}:
+        return "open"
+    if value in {"MITIGATED", "ACTION_TAKEN", "CLOSED", "RESOLVED"}:
+        return "resolved"
+    if value in {"FALSE_POSITIVE", "DISMISSED"}:
+        return "dismissed"
+    return value.lower()
+
+
+def _risk_status_as_legacy(row: RiskFlag) -> str:
+    details = row.details_json or {}
+    legacy_status = details.get("legacy_status")
+    if legacy_status:
+        return str(legacy_status).upper()
+    maps = {"open": "OPEN", "resolved": "MITIGATED", "dismissed": "FALSE_POSITIVE"}
+    return maps.get((row.status or "").lower(), (row.status or "").upper())
+
+
+def _risk_flag_as_legacy(row: RiskFlag) -> dict:
+    details = row.details_json or {}
+    admin_actions = details.get("admin_actions") or []
+    last_action = admin_actions[-1] if admin_actions else None
+    return {
+        "id": row.id,
+        "entity_type": row.subject_type.upper(),
+        "entity_id": row.subject_id,
+        "subject_type": row.subject_type,
+        "subject_id": row.subject_id,
+        "company_id": row.company_id,
+        "risk_type": row.reason_code.upper(),
+        "reason_code": row.reason_code,
+        "risk_level": row.severity.upper(),
+        "severity": row.severity,
+        "description": details.get("description"),
+        "details_json": details,
+        "status": _risk_status_as_legacy(row),
+        "core_status": row.status,
+        "action_taken": last_action.get("action_taken") if isinstance(last_action, dict) else None,
+        "last_action": last_action,
+        "source_event": row.source_event,
+        "resolved_at": row.resolved_at,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _kyc_doc_as_legacy(row: CompanyDocument, latest_analysis: KYCAnalysisResult | None = None) -> dict:
+    data = {
+        "id": row.id,
+        "company_id": row.company_id,
+        "doc_type": row.doc_type,
+        "file_url": row.file_url,
+        "original_filename": row.original_filename,
+        "status": row.status,
+        "reviewer_note": row.reviewer_note,
+        "reviewed_by": row.reviewed_by,
+        "reviewed_at": row.reviewed_at,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+    if latest_analysis is not None:
+        data["latest_analysis"] = {
+            "id": latest_analysis.id,
+            "authenticity": latest_analysis.authenticity,
+            "confidence": latest_analysis.confidence,
+            "risk_score": latest_analysis.overall_risk_score,
+            "overall_risk_score": latest_analysis.overall_risk_score,
+            "recommended_action": latest_analysis.recommended_action,
+            "tamper_suspected": latest_analysis.tamper_suspected,
+            "photoshop_suspected": latest_analysis.photoshop_suspected,
+            "text_photo_consistency": latest_analysis.text_photo_consistency,
+            "created_at": latest_analysis.created_at,
+        }
+    return data
+
+
+def _verification_review_as_legacy(row: VerificationReview) -> dict:
+    status = row.status
+    status_map = {
+        "APPROVED_BASIC": "APPROVED",
+        "APPROVED_BUSINESS": "APPROVED",
+        "NEEDS_MORE_INFO": "NEEDS_INFO",
+    }
+    return {
+        "id": row.id,
+        "company_id": row.company_id,
+        "status": status_map.get(status, status),
+        "core_status": row.status,
+        "decision": row.decision,
+        "decision_reason": row.decision_reason,
+        "user_facing_note": row.user_facing_note,
+        "decided_at": row.decided_at,
         "created_at": row.created_at,
         "updated_at": row.updated_at,
     }
@@ -1159,6 +1330,72 @@ async def legacy_get_my_company(db: DB, user: CurrentUser):
     if company is None:
         raise HTTPException(status_code=404, detail="Company not found")
     return _company_as_legacy(company)
+
+
+@router.get("/companies/me/documents")
+async def legacy_get_my_company_documents(db: DB, user: CurrentUser):
+    if not user.company_id:
+        raise HTTPException(status_code=403, detail="Company required")
+    rows = await list_kyc_documents(db, user.company_id)
+    return [_kyc_doc_as_legacy(row) for row in rows]
+
+
+@router.post("/companies/me/documents", status_code=201)
+async def legacy_create_my_company_document(data: CompanyDocumentCreate, db: DB, user: CurrentUser):
+    if not user.company_id:
+        raise HTTPException(status_code=403, detail="Company required")
+    row = await upload_kyc_document(
+        db,
+        company_id=user.company_id,
+        doc_type=data.doc_type,
+        file_url=data.file_url,
+        original_filename=data.original_filename,
+    )
+    await db.commit()
+    await db.refresh(row)
+    return _kyc_doc_as_legacy(row)
+
+
+@router.get("/companies/me/verification/status")
+async def legacy_get_my_company_verification_status(db: DB, user: CurrentUser):
+    if not user.company_id:
+        raise HTTPException(status_code=403, detail="Company required")
+    row = (
+        await db.execute(
+            select(VerificationReview)
+            .where(VerificationReview.company_id == user.company_id)
+            .order_by(VerificationReview.created_at.desc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if row is None:
+        return {
+            "company_id": user.company_id,
+            "status": "NOT_STARTED",
+            "core_status": "NOT_STARTED",
+            "created_at": None,
+        }
+    return _verification_review_as_legacy(row)
+
+
+@router.post("/companies/me/verification/submit", status_code=201)
+async def legacy_submit_my_company_verification(db: DB, user: CurrentUser):
+    if not user.company_id:
+        raise HTTPException(status_code=403, detail="Company required")
+    docs = await list_kyc_documents(db, user.company_id)
+    if not docs:
+        raise HTTPException(status_code=400, detail="Upload at least one KYB document before submitting")
+    try:
+        row = await submit_for_verification(db, user.company_id)
+        company = await db.get(Company, user.company_id)
+        if company is not None and company.verification_status == "verified":
+            company.verification_status = "pending"
+        await db.commit()
+        await db.refresh(row)
+        return _verification_review_as_legacy(row)
+    except KYCError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
 
 
 @router.patch("/users/me")
@@ -2272,6 +2509,344 @@ async def legacy_admin_pause_ad_campaign(campaign_id: uuid.UUID, db: DB, user: C
         raise HTTPException(status_code=404, detail=str(exc)) from None
 
 
+@router.get("/admin/disputes")
+async def legacy_admin_disputes(db: DB, user: CurrentUser, status: str | None = None):
+    _require_legacy_admin(user)
+    stmt = select(OrderDispute).order_by(OrderDispute.created_at.desc()).limit(200)
+    statuses = _dispute_status_to_core(status)
+    if statuses:
+        stmt = stmt.where(OrderDispute.status.in_(statuses))
+    rows = list((await db.execute(stmt)).scalars())
+    return [_dispute_as_legacy(row) for row in rows]
+
+
+@router.get("/admin/disputes/{dispute_id}")
+async def legacy_admin_get_dispute(dispute_id: uuid.UUID, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(OrderDispute, dispute_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Dispute not found")
+    return _dispute_as_legacy(row)
+
+
+@router.post("/admin/disputes/{dispute_id}/request-evidence")
+async def legacy_admin_request_dispute_evidence(
+    dispute_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    from_party: str | None = None,
+):
+    _require_legacy_admin(user)
+    row = await db.get(OrderDispute, dispute_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Dispute not found")
+    before = row.status
+    row.status = "under_review"
+    data = dict(row.resolution_json or {})
+    requests = list(data.get("evidence_requests") or [])
+    requests.append(
+        {
+            "from_party": (from_party or "UNKNOWN").upper(),
+            "requested_by": str(user.id),
+            "requested_at": datetime.now(timezone.utc).isoformat(),
+        }
+    )
+    data["evidence_requests"] = requests[-50:]
+    row.resolution_json = data
+    await db.commit()
+    await db.refresh(row)
+    return {"id": row.id, "status": _dispute_status_as_legacy(row.status), "before": before}
+
+
+@router.post("/admin/disputes/{dispute_id}/resolve")
+async def legacy_admin_resolve_dispute(
+    dispute_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    decision: str | None = None,
+    resolution: str | None = None,
+    refund_amount_minor: int | None = None,
+    data: dict | None = None,
+):
+    _require_legacy_admin(user)
+    body = data or {}
+    decision_value = str(decision or body.get("decision") or body.get("resolution_code") or "").upper()
+    resolution_text = resolution or body.get("resolution") or body.get("reason")
+    refund_minor = refund_amount_minor if refund_amount_minor is not None else body.get("refund_amount_minor")
+    if decision_value in {"BUYER_FAVOR", "FULL_REFUND", "PARTIAL_REFUND", "RESOLVED_REFUND"}:
+        core_resolution = "resolved_buyer"
+    elif decision_value in {"SUPPLIER_FAVOR", "RELEASE_TO_SUPPLIER", "RESOLVED_RELEASE"}:
+        core_resolution = "resolved_supplier"
+    elif decision_value in {"DISMISSED", "CLOSED", "SPLIT"}:
+        core_resolution = "closed"
+    else:
+        raise HTTPException(status_code=422, detail="Unsupported dispute decision")
+    try:
+        row = await resolve_commerce_dispute(
+            db,
+            dispute_id,
+            resolution=core_resolution,
+            resolution_json={
+                **(body.get("resolution_json") or {}),
+                "decision": decision_value,
+                "resolution": resolution_text,
+                "admin_reason": resolution_text,
+                "refund_amount_minor": refund_minor,
+                "resolved_by_user_id": str(user.id),
+            },
+        )
+        await db.commit()
+        await db.refresh(row)
+        return _dispute_as_legacy(row)
+    except CommerceTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.get("/admin/risk-flags")
+async def legacy_admin_risk_flags(
+    db: DB,
+    user: CurrentUser,
+    status: str | None = None,
+    entity_type: str | None = None,
+):
+    _require_legacy_admin(user)
+    stmt = select(RiskFlag).order_by(RiskFlag.created_at.desc()).limit(200)
+    if entity_type:
+        stmt = stmt.where(RiskFlag.subject_type == entity_type.lower())
+    if status:
+        core_status = _risk_status_to_core(status)
+        stmt = stmt.where(RiskFlag.status == core_status)
+    rows = list((await db.execute(stmt)).scalars())
+    if status and status.upper() in {"IN_REVIEW", "MITIGATED", "FALSE_POSITIVE", "ACTION_TAKEN", "CLOSED"}:
+        rows = [row for row in rows if _risk_status_as_legacy(row) == status.upper()]
+    return [_risk_flag_as_legacy(row) for row in rows]
+
+
+@router.post("/admin/risk-flags", status_code=201)
+async def legacy_admin_create_risk_flag(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    subject_id = _uuid_or_none(data.get("subject_id") or data.get("entity_id"))
+    if subject_id is None:
+        raise HTTPException(status_code=422, detail="entity_id is required")
+    legacy_status = str(data.get("status") or "OPEN").upper()
+    severity = str(data.get("severity") or data.get("risk_level") or "MEDIUM").lower()
+    if severity not in {"low", "medium", "high", "critical"}:
+        raise HTTPException(status_code=422, detail="Invalid risk level")
+    row = RiskFlag(
+        subject_type=str(data.get("subject_type") or data.get("entity_type") or "USER").lower(),
+        subject_id=subject_id,
+        company_id=_uuid_or_none(data.get("company_id")),
+        reason_code=str(data.get("reason_code") or data.get("risk_type") or "OTHER").lower(),
+        severity=severity,
+        status=_risk_status_to_core(legacy_status),
+        source_event="cebu.admin.manual",
+        details_json={
+            "description": data.get("description"),
+            "legacy_status": legacy_status,
+            **(data.get("details_json") or {}),
+        },
+    )
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    return _risk_flag_as_legacy(row)
+
+
+@router.post("/admin/risk-flags/{flag_id}/action")
+async def legacy_admin_risk_flag_action(flag_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(RiskFlag, flag_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Risk flag not found")
+    legacy_status = str(data.get("status") or "IN_REVIEW").upper()
+    row.status = _risk_status_to_core(legacy_status)
+    details = dict(row.details_json or {})
+    details["legacy_status"] = legacy_status
+    actions = list(details.get("admin_actions") or [])
+    actions.append(
+        {
+            "action_taken": data.get("action_taken"),
+            "status": legacy_status,
+            "actor_user_id": str(user.id),
+            "at": datetime.now(timezone.utc).isoformat(),
+        }
+    )
+    details["admin_actions"] = actions[-50:]
+    row.details_json = details
+    if row.status != "open":
+        row.resolved_at = datetime.now(timezone.utc)
+        row.resolved_by_user_id = user.id
+    await db.commit()
+    await db.refresh(row)
+    return _risk_flag_as_legacy(row)
+
+
+@router.get("/admin/verification/queue")
+async def legacy_admin_verification_queue(db: DB, user: CurrentUser, status: str | None = None):
+    _require_legacy_admin(user)
+    mapped_status = {"APPROVED": "APPROVED_BUSINESS", "NEEDS_INFO": "NEEDS_MORE_INFO"}.get(
+        (status or "").upper(),
+        status,
+    )
+    rows = await list_verification_queue(db, status=mapped_status)
+    return [_verification_review_as_legacy(row) for row in rows]
+
+
+@router.get("/admin/verification/{company_id}/documents")
+async def legacy_admin_company_documents(company_id: uuid.UUID, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    rows = await list_kyc_documents(db, company_id)
+    return [_kyc_doc_as_legacy(row) for row in rows]
+
+
+@router.post("/admin/verification/{company_id}/decide")
+async def legacy_admin_decide_verification(company_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    company = await db.get(Company, company_id)
+    if company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    review = (
+        await db.execute(
+            select(VerificationReview)
+            .where(VerificationReview.company_id == company_id)
+            .order_by(VerificationReview.created_at.desc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if review is None:
+        review = VerificationReview(company_id=company_id, status="SUBMITTED")
+        db.add(review)
+        await db.flush()
+    if review.status not in {"SUBMITTED", "IN_REVIEW"}:
+        review.status = "SUBMITTED"
+        await db.flush()
+    legacy_decision = str(data.get("decision") or "").upper()
+    decision_map = {
+        "APPROVED": "APPROVE_BUSINESS",
+        "APPROVE": "APPROVE_BUSINESS",
+        "APPROVE_BASIC": "APPROVE_BASIC",
+        "APPROVE_BUSINESS": "APPROVE_BUSINESS",
+        "REJECTED": "REJECT",
+        "REJECT": "REJECT",
+        "NEEDS_INFO": "REQUEST_MORE_INFO",
+        "REQUEST_MORE_INFO": "REQUEST_MORE_INFO",
+        "ESCALATE_TO_RISK": "ESCALATE_TO_RISK",
+    }
+    decision = decision_map.get(legacy_decision)
+    if not decision:
+        raise HTTPException(status_code=422, detail="Unsupported verification decision")
+    try:
+        updated = await decide_verification(
+            db,
+            review.id,
+            user.id,
+            decision,
+            data.get("decision_reason"),
+            data.get("internal_note"),
+            data.get("user_facing_note"),
+        )
+        if decision in {"APPROVE_BASIC", "APPROVE_BUSINESS"}:
+            company.verification_status = "verified"
+        elif decision == "REJECT":
+            company.verification_status = "rejected"
+        elif decision == "REQUEST_MORE_INFO":
+            company.verification_status = "needs_info"
+        await db.commit()
+        await db.refresh(updated)
+        return _verification_review_as_legacy(updated)
+    except KYCError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.get("/admin/kyc-media/files")
+async def legacy_admin_kyc_media_files(db: DB, user: CurrentUser, status: str | None = None):
+    _require_legacy_admin(user)
+    stmt = select(CompanyDocument).order_by(CompanyDocument.created_at.desc()).limit(200)
+    if status:
+        stmt = stmt.where(CompanyDocument.status == status)
+    rows = list((await db.execute(stmt)).scalars())
+    out = []
+    for row in rows:
+        latest = (
+            await db.execute(
+                select(KYCAnalysisResult)
+                .where(KYCAnalysisResult.document_id == row.id)
+                .order_by(KYCAnalysisResult.created_at.desc())
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        out.append(_kyc_doc_as_legacy(row, latest_analysis=latest))
+    return out
+
+
+@router.get("/admin/kyc-media/files/{document_id}")
+async def legacy_admin_kyc_media_file(document_id: uuid.UUID, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(CompanyDocument, document_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Document not found")
+    analyses = list(
+        (
+            await db.execute(
+                select(KYCAnalysisResult)
+                .where(KYCAnalysisResult.document_id == row.id)
+                .order_by(KYCAnalysisResult.created_at.desc())
+            )
+        ).scalars()
+    )
+    data = _kyc_doc_as_legacy(row, latest_analysis=analyses[0] if analyses else None)
+    data["analyses"] = [
+        {
+            "id": item.id,
+            "authenticity": item.authenticity,
+            "confidence": item.confidence,
+            "overall_risk_score": item.overall_risk_score,
+            "recommended_action": item.recommended_action,
+            "tamper_suspected": item.tamper_suspected,
+            "photoshop_suspected": item.photoshop_suspected,
+            "text_photo_consistency": item.text_photo_consistency,
+            "detected_issues": item.detected_issues,
+            "concerns": item.concerns,
+            "created_at": item.created_at,
+        }
+        for item in analyses
+    ]
+    return data
+
+
+@router.post("/admin/kyc-media/files/{document_id}/flag-risk")
+async def legacy_admin_flag_kyc_media(document_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    document = await db.get(CompanyDocument, document_id)
+    if document is None:
+        raise HTTPException(status_code=404, detail="Document not found")
+    note = data.get("note") or data.get("reason") or "KYC media flagged by admin"
+    severity = str(data.get("severity") or "high").lower()
+    if severity not in {"low", "medium", "high", "critical"}:
+        raise HTTPException(status_code=422, detail="Invalid risk severity")
+    document.status = "REJECTED"
+    document.reviewer_note = note
+    document.reviewed_by = user.id
+    document.reviewed_at = datetime.now(timezone.utc)
+    flag = RiskFlag(
+        subject_type="company_document",
+        subject_id=document.id,
+        company_id=document.company_id,
+        reason_code="kyc_media_risk",
+        severity=severity,
+        status="open",
+        source_event="cebu.admin.kyc_media",
+        details_json={"description": note, "legacy_status": "OPEN", "document_type": document.doc_type},
+    )
+    db.add(flag)
+    await db.commit()
+    await db.refresh(document)
+    await db.refresh(flag)
+    return {"document_id": document.id, "status": document.status, "risk_flag_id": flag.id}
+
+
 @router.post("/intents", status_code=201)
 async def legacy_create_intent(data: dict, db: DB, user: CurrentUser):
     requirements = dict(data.get("attrs_jsonb") or data.get("requirements_json") or {})
@@ -2703,24 +3278,90 @@ async def legacy_open_dispute(order_id: uuid.UUID, data: dict, db: DB, user: Cur
             reason_code=payload.reason_code,
             description=payload.description,
         )
+        evidence = data.get("evidence_json") or data.get("evidence") or data.get("attachments") or []
+        if evidence and not isinstance(evidence, list):
+            evidence = [evidence]
+        dispute.resolution_json = {
+            **(dispute.resolution_json or {}),
+            "evidence_json": evidence,
+            "requested_resolution": data.get("requested_resolution") or data.get("resolution"),
+            "refund_amount_minor": data.get("refund_amount_minor"),
+        }
         await db.commit()
         await db.refresh(dispute)
-        return {
-            "id": dispute.id,
-            "order_id": dispute.commerce_order_id,
-            "opened_by_user_id": user.id,
-            "reason": dispute.reason_code,
-            "evidence_json": [],
-            "admin_notes": None,
-            "status": _legacy_status(dispute.status, kind="dispute"),
-            "resolution": None,
-            "refund_amount_minor": None,
-            "created_at": dispute.created_at,
-            "updated_at": dispute.updated_at,
-        }
+        return _dispute_as_legacy(dispute)
     except CommerceTradeError as exc:
         await db.rollback()
         raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.get("/disputes/my")
+async def legacy_my_disputes(db: DB, user: CurrentUser, status: str | None = None):
+    stmt = (
+        select(OrderDispute)
+        .join(CommerceOrder, CommerceOrder.id == OrderDispute.commerce_order_id)
+        .order_by(OrderDispute.created_at.desc())
+        .limit(100)
+    )
+    if user.role not in ("admin", "super_admin"):
+        if not user.company_id:
+            return []
+        stmt = stmt.where(
+            or_(
+                CommerceOrder.buyer_company_id == user.company_id,
+                CommerceOrder.supplier_company_id == user.company_id,
+            )
+        )
+    statuses = _dispute_status_to_core(status)
+    if statuses:
+        stmt = stmt.where(OrderDispute.status.in_(statuses))
+    rows = list((await db.execute(stmt)).scalars())
+    return [_dispute_as_legacy(row) for row in rows]
+
+
+@router.get("/disputes/{dispute_id}")
+async def legacy_get_dispute(dispute_id: uuid.UUID, db: DB, user: CurrentUser):
+    row = await db.get(OrderDispute, dispute_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Dispute not found")
+    order = await db.get(CommerceOrder, row.commerce_order_id)
+    if order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if user.role not in ("admin", "super_admin") and not await user_is_order_party(db, user, order):
+        raise HTTPException(status_code=403, detail="Not a party to this dispute")
+    return _dispute_as_legacy(row)
+
+
+@router.post("/disputes/{dispute_id}/evidence")
+async def legacy_add_dispute_evidence(dispute_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    row = await db.get(OrderDispute, dispute_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Dispute not found")
+    order = await db.get(CommerceOrder, row.commerce_order_id)
+    if order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if user.role not in ("admin", "super_admin") and not await user_is_order_party(db, user, order):
+        raise HTTPException(status_code=403, detail="Not a party to this dispute")
+    evidence = _dispute_evidence(row)
+    incoming = data.get("evidence") or data.get("evidence_json") or data.get("attachments") or data
+    if not isinstance(incoming, list):
+        incoming = [incoming]
+    stamped = []
+    for item in incoming:
+        if isinstance(item, dict):
+            payload = dict(item)
+        else:
+            payload = {"description": str(item)}
+        payload.setdefault("submitted_by_user_id", str(user.id))
+        payload.setdefault("submitted_by_role", _legacy_role(user.role))
+        payload.setdefault("submitted_at", datetime.now(timezone.utc).isoformat())
+        stamped.append(payload)
+    info = dict(row.resolution_json or {})
+    info["evidence_json"] = evidence + stamped
+    row.resolution_json = info
+    await db.commit()
+    await db.refresh(row)
+    return _dispute_as_legacy(row)
 
 
 @router.post("/orders/{order_id}/reviews/seller", status_code=201)

@@ -45,11 +45,11 @@ export const useOrderStore = defineStore("order", {
       return api(`/orders/${orderId}/accept`, { method: "POST" });
     },
 
-    async openDispute(orderId: string, reason: string) {
+    async openDispute(orderId: string, reason: string, description?: string) {
       const api = useApiFetch();
       return api<Dispute>(`/orders/${orderId}/dispute`, {
         method: "POST",
-        body: { reason },
+        body: { reason, reason_code: reason, description },
       });
     },
 
