@@ -1,0 +1,64 @@
+services:
+  procurement-pc:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    restart: unless-stopped
+    environment:
+      NUXT_PUBLIC_API_BASE: /api
+      NUXT_CORE_API_INTERNAL: http://backend:8000
+      NUXT_PUBLIC_APP_NAME: AinerWise Procurement
+      NUXT_PUBLIC_APP_DOMAIN: procurement.localhost
+    volumes:
+      - ./modules/procurement/pc:/app
+      - procurement_pc_node_modules:/app/node_modules
+    ports:
+      - "4106:4106"
+    command: >
+      sh -lc "
+        npm install &&
+        npm run dev -- --host 0.0.0.0 --port 4106
+      "
+
+  procurement-h5:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    restart: unless-stopped
+    environment:
+      NUXT_PUBLIC_API_BASE: /api
+      NUXT_CORE_API_INTERNAL: http://backend:8000
+      NUXT_PUBLIC_APP_NAME: AinerWise Procurement
+      NUXT_PUBLIC_APP_DOMAIN: procurement-h5.localhost
+    volumes:
+      - ./modules/procurement/h5:/app
+      - procurement_h5_node_modules:/app/node_modules
+    ports:
+      - "4107:4107"
+    command: >
+      sh -lc "
+        npm install &&
+        npm run dev -- --host 0.0.0.0 --port 4107
+      "
+
+  procurement-admin:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    restart: unless-stopped
+    environment:
+      VITE_ADMIN_API_BASE: /api
+    volumes:
+      - ./modules/procurement/admin:/app
+      - procurement_admin_node_modules:/app/node_modules
+      - procurement_admin_dist:/app/dist
+    ports:
+      - "4108:4108"
+    command: >
+      sh -lc "
+        npm install &&
+        npm run dev -- --host 0.0.0.0 --port 4108
+      "
+
+volumes:
+  procurement_pc_node_modules:
+  procurement_h5_node_modules:
+  procurement_admin_node_modules:
+  procurement_admin_dist:

@@ -19,7 +19,7 @@ Principle:
 | SSO.5 | Verify cross-port login reuse for `localhost:4099`, `4098`, `4097`, `4094` | TODO | Needs Browser/E2E verification with real login cookies |
 | SSO.6 | Add formal cross-subdomain SSO bridge for `*.localhost` and future production domains | TODO | Host-only cookies work across same `localhost` ports, not across `procurement.localhost` aliases |
 | SSO.7 | Add fine-grained Portal Grant admin editor with workspace/region isolation | TODO | Must write positive/negative permission tests before implementation |
-| SSO.8 | Cut Procurement copied module auth to AinerWise Core SSO | TODO | Keep copied Cebu baseline running until Core API/auth parity is verified |
+| SSO.8 | Cut Procurement copied module auth to AinerWise Core SSO | READY_FOR_VERIFY | Copied PC/H5/Admin auth stores now use Core `/auth/*`; demo buyer login through `procurement.localhost` returns Core JWT; formal cross-subdomain cookie SSO remains SSO.6 |
 
 Strict rules for follow-up agents:
 
@@ -38,6 +38,30 @@ Verification evidence recorded by implementation agent on 2026-06-19:
 - Admin Core cookie can load `http://localhost:4097/access-center` with `HTTP 200` and page markers `Access Center`, `Shared Auth`, `Manage User Roles`.
 - Same Admin Core cookie can load `http://localhost:4094/marketing` with `HTTP 200`.
 - `/api/v1/auth/me/portals` returned `HTTP 200`, `19` portal grants, and `1` membership for the demo admin account.
+- `http://procurement.localhost/api/auth/login` with `demo@ainerwise.com / demo123` returns a Core buyer JWT.
+- `http://procurement.localhost/api/auth/me`, `/api/users/me`, and `/api/intents/my` work with that Core token.
+
+## AinerWise Procurement Core API Bridge V1
+
+Principle:
+
+> AinerWise Procurement keeps independent PC/H5/Admin entrypoints, but user identity and business data must flow through AinerWise Core middleware, not a separate Cebu backend.
+
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| PZL.1 | Keep root `CebuProjects` read-only and copy PC/H5/Admin into `Ainerwise/modules/procurement` | READY_FOR_VERIFY | Root `CebuProjects` status remains clean; copied counts: PC 59, H5 41, Admin 23 |
+| PZL.2 | Remove old user-visible `ProcurePing` brand and old backend API defaults | READY_FOR_VERIFY | `NUXT_PUBLIC_API_BASE=/api`, `VITE_ADMIN_API_BASE=/api`; host scans return zero visible `ProcurePing` |
+| PZL.3 | Route standalone Procurement hosts through AinerWise Core | READY_FOR_VERIFY | Nginx maps `/api/auth/*` to Core Auth, `/api/*` to `cebu-compat`, admin routes to Core admin routers |
+| PZL.4 | Add Core compatibility bridge for system mode, users, categories, marketplace, payment region config, intents, offers, orders, notifications | READY_FOR_VERIFY | `Ainerwise/backend/app/api/v1/endpoints/cebu_compat.py`; `py_compile` passes |
+| PZL.5 | Fix PC SSR `/api` loop by adding Nuxt routeRules and internal Core API target | READY_FOR_VERIFY | PC/H5 routeRules proxy server-side `/api/**`; `NUXT_CORE_API_INTERNAL=http://backend:8000` in standalone compose |
+| PZL.6 | Verify standalone Procurement PC/H5/Admin builds | READY_FOR_VERIFY | `npm run build` passes in all three copied module directories |
+| PZL.7 | Verify runtime hosts and Core API bridge | READY_FOR_VERIFY | PC/H5/Admin hosts return 200; Core auth/system-mode/payment/marketplace APIs return expected responses; unauthenticated private/admin APIs return 401 |
+| PZL.8 | Full admin/KYC/wallet/payment/message parity with positive and negative permission tests | IN_PROGRESS | Do not mark complete until every original Cebu workflow is tested against Core APIs |
+
+Follow-up agents:
+
+- Do not reintroduce `localhost:8080`, `localhost:8012`, or a separate Cebu user database as the default runtime.
+- Do not mark PZL.8 `READY_FOR_VERIFY` from page rendering alone; it requires workflow, ownership, workspace, and role tests.
 
 ## Phase 1: Foundation
 

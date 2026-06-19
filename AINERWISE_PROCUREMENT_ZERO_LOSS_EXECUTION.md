@@ -30,10 +30,11 @@ Shared Auth & SSO Middleware V1 lives in:
 Current rule:
 
 - PC/H5/Admin/Marketing on the same `localhost` host can reuse the Core auth cookie across ports.
-- `procurement.localhost` aliases are still standalone copied entrypoints; cross-subdomain SSO requires the future SSO bridge before Procurement can be considered Core-auth complete.
+- `procurement.localhost` aliases are standalone copied entrypoints, but their login/API calls now route through AinerWise Core Auth and Core compatibility APIs.
+- Cross-subdomain cookie SSO for `*.localhost` and future production domains still requires the formal SSO bridge; token-based Core compatibility does not complete that item by itself.
 - `/access-center` is the unified place to see which roles can open which logical backoffice workbench.
 
-Status: READY_FOR_VERIFY for shared SDK extraction and Access Center shell; TODO for Procurement copied module Core-auth cutover.
+Status: READY_FOR_VERIFY for shared SDK extraction, Access Center shell, and Procurement copied module Core-auth/API bridge V1; TODO for formal cross-subdomain SSO bridge.
 
 Verification evidence recorded on 2026-06-19:
 
@@ -41,7 +42,15 @@ Verification evidence recorded on 2026-06-19:
 - The AinerWise Docker dev stack mounts `./shared:/shared:ro` into every PC/H5/Admin-derived portal container.
 - `http://localhost:4097/access-center` is protected when unauthenticated and returns `302 /login?redirect=/access-center`.
 - The demo admin Core cookie loads `http://localhost:4097/access-center` and `http://localhost:4094/marketing` with `HTTP 200`.
-- Root `CebuProjects` remains the read-only baseline; Procurement copied module Core-auth cutover is still TODO and must not be claimed as complete.
+- Root `CebuProjects` remains the read-only baseline.
+- Procurement copied PC/H5/Admin production builds pass from `Ainerwise/modules/procurement/{pc,h5,admin}`.
+- `http://procurement.localhost`, `http://procurement-h5.localhost`, and `http://procurement-admin.localhost` return `HTTP 200`.
+- `http://cebu.localhost` redirects to `http://procurement.localhost` and returns `HTTP 200`.
+- `http://procurement.localhost/api/auth/system-mode` returns Core JSON with `app_name: AinerWise Procurement`.
+- `http://procurement.localhost/api/payments/region-config?country=PH` returns Core payment region config.
+- `http://procurement.localhost/api/marketplace/feed` returns Core supplier listing data.
+- Unauthenticated `http://procurement.localhost/api/intents/my` returns `401 Not authenticated`.
+- Demo login through `http://procurement.localhost/api/auth/login` with `demo@ainerwise.com / demo123` returns a Core buyer JWT; `/api/auth/me`, `/api/users/me`, and `/api/intents/my` work with that token.
 
 ## Physical Entrypoints
 
@@ -77,8 +86,8 @@ Current status: READY_FOR_VERIFY.
 | Brand Rename | User-visible `ProcurePing` renamed to `AinerWise Procurement` in copied module | READY_FOR_VERIFY | `rg "ProcurePing|>PP<|procureping.local"` only leaves intentional demo credential cases |
 | Standalone Entrypoints | Add procurement compose, ports, Nginx host routing, legacy alias redirects | READY_FOR_VERIFY | `Ainerwise/docker-compose.procurement-standalone.yml`, `Ainerwise/nginx/default.conf` |
 | Main Site Link | AinerWise PC header/home links to standalone Procurement PC | READY_FOR_VERIFY | `http://procurement.localhost` external link added |
-| Core API Migration | Replace transitional Cebu API with AinerWise Core compatible API | TODO | Must be done module by module, with ownership/workspace/region tests |
-| Ledger-Based Migration | Migrate Marketplace, Project Forge, RFQ, Order, Wallet, Message, KYC, Dispute, Admin panels | IN_PROGRESS | Legacy UI copied; Core API integration still TODO |
+| Core API Migration | Replace transitional Cebu API with AinerWise Core compatible API | IN_PROGRESS | Core bridge V1 is READY_FOR_VERIFY for auth, users, categories, marketplace feed, payment region config, buyer intents, supplier offers/orders/notifications adapters; full admin/KYC/wallet parity still requires ledger gates |
+| Ledger-Based Migration | Migrate Marketplace, Project Forge, RFQ, Order, Wallet, Message, KYC, Dispute, Admin panels | IN_PROGRESS | Legacy UI copied; public marketplace/auth/intent bridge verified; remaining workflows continue module by module |
 
 ## Status Rules
 
@@ -115,7 +124,7 @@ cd /Users/mac/Code_Start/Aislos/Ainerwise
 docker compose -f docker-compose.procurement-standalone.yml up -d
 ```
 
-Transitional legacy API overlay while Core API migration is still TODO:
+Optional legacy API overlay for unmapped parity investigations only. It is no longer the default runtime target for the copied Procurement PC/H5/Admin entrypoints:
 
 ```bash
 cd /Users/mac/Code_Start/Aislos/CebuProjects
@@ -163,14 +172,14 @@ Global final acceptance:
 
 | Legacy module | Original surface | Original APIs | Original roles | Original workflow | New path | New API target | Status | Verification command | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Public marketplace | PC/H5 | `/marketplace`, `/categories` | Guest, Buyer, Supplier | Browse categories/products/suppliers | `Ainerwise/modules/procurement/pc`, `h5` | Transitional `http://localhost:8080`, Core TODO | READY_FOR_VERIFY for UI copy, TODO for Core API | `rg "marketplace" Ainerwise/modules/procurement/{pc,h5}/pages` | Page copy present |
-| Buyer Projects / AI Project Forge | PC/H5 | `/projects`, `/intents`, AI analysis endpoints | Buyer | Create project/request, AI analysis, requirements, compare offers | `Ainerwise/modules/procurement/pc/pages/buyer/projects`, `h5/pages/buyer/projects` | Transitional `http://localhost:8080`, Core TODO | READY_FOR_VERIFY for UI copy, TODO for Core API | `find .../buyer/projects` | Page copy present |
-| RFQ / Intent / Offer | PC/H5/Admin | `/intents`, `/offers`, `/requests` | Buyer, Supplier, Admin | Request, match supplier, submit offer, award | `Ainerwise/modules/procurement/*` | Transitional `http://localhost:8080`, Core TODO | READY_FOR_VERIFY for UI copy, TODO for Core API | `rg "offers|requests|intents" Ainerwise/modules/procurement` | Page copy present |
-| Orders / Escrow / Wallet | PC/H5/Admin | `/orders`, `/wallet`, admin payments/escrow | Buyer, Supplier, Finance/Admin | Create order, escrow, release, payout | `Ainerwise/modules/procurement/*` | Transitional `http://localhost:8080` and `8012`, Core TODO | READY_FOR_VERIFY for UI copy, TODO for Core API | `rg "orders|wallet|escrow|payments" Ainerwise/modules/procurement` | Page copy present |
-| Messages / Notifications | PC/H5/Admin | `/messages`, `/notifications` | Buyer, Supplier, Support/Admin | Chat, notification center, admin notification ops | `Ainerwise/modules/procurement/*` | Transitional, Core TODO | READY_FOR_VERIFY for UI copy, TODO for Core API | `rg "messages|notifications" Ainerwise/modules/procurement` | Page copy present |
-| Supplier Catalog / Ads | PC/H5/Admin | `/catalog`, `/ads`, admin campaigns | Supplier, Admin | Manage products/services, supplier ads | `Ainerwise/modules/procurement/*` | Transitional, Core TODO | READY_FOR_VERIFY for UI copy, TODO for Core API | `rg "catalog|ads|campaign" Ainerwise/modules/procurement` | Page copy present |
-| Dispute / KYC / Risk | PC/H5/Admin | `/disputes`, `/verification`, `/risk`, KYC/KYB APIs | Buyer, Supplier, Admin, Risk, Verification | Submit dispute, verify company/docs, risk review | `Ainerwise/modules/procurement/*` | Transitional, Core TODO | READY_FOR_VERIFY for UI copy, TODO for Core API | `rg "disputes|verification|risk|KYC|KYB" Ainerwise/modules/procurement` | Page copy present |
-| Admin all panels | Admin, PC admin pages | Admin backend APIs | Admin, Super Admin, Ops, Finance, Risk, Support, Auditor | Manage users, companies, orders, payments, regions, settings, audit | `Ainerwise/modules/procurement/admin`, `pc/pages/admin` | Transitional `http://localhost:8012`, Core TODO | READY_FOR_VERIFY for UI copy, TODO for Core API | `find Ainerwise/modules/procurement/admin/src/pages -type f` | 23 admin pages copied |
+| Public marketplace | PC/H5 | `/marketplace`, `/categories` | Guest, Buyer, Supplier | Browse categories/products/suppliers | `Ainerwise/modules/procurement/pc`, `h5` | Core `/api/v1/cebu-compat/categories`, `/marketplace/feed`, `/marketplace/items/*` | READY_FOR_VERIFY for UI copy and public Core read bridge | `curl http://procurement.localhost/api/marketplace/feed` | `HTTP 200`, Core listing JSON |
+| Buyer Projects / AI Project Forge | PC/H5 | `/projects`, `/intents`, AI analysis endpoints | Buyer | Create project/request, AI analysis, requirements, compare offers | `Ainerwise/modules/procurement/pc/pages/buyer/projects`, `h5/pages/buyer/projects` | Core buyer project APIs plus `/api/v1/cebu-compat/intents/*` | IN_PROGRESS | `find .../buyer/projects` and authenticated `/api/intents/my` | UI copy present; demo buyer token returns Core intent list |
+| RFQ / Intent / Offer | PC/H5/Admin | `/intents`, `/offers`, `/requests` | Buyer, Supplier, Admin | Request, match supplier, submit offer, award | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/intents`, `/offers`, `/orders` | IN_PROGRESS | `rg "offers|requests|intents" Ainerwise/modules/procurement` | UI copy present; main buyer intent read path verified |
+| Orders / Escrow / Wallet | PC/H5/Admin | `/orders`, `/wallet`, admin payments/escrow | Buyer, Supplier, Finance/Admin | Create order, escrow, release, payout | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/orders/*` and `/api/v1/cebu-trade/wallet/*` | IN_PROGRESS | `rg "orders|wallet|escrow|payments" Ainerwise/modules/procurement` | UI copy present; payment region config verified |
+| Messages / Notifications | PC/H5/Admin | `/messages`, `/notifications` | Buyer, Supplier, Support/Admin | Chat, notification center, admin notification ops | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/notifications/*` plus commerce messaging services | IN_PROGRESS | `rg "messages|notifications" Ainerwise/modules/procurement` | UI copy present; compatibility adapter implemented |
+| Supplier Catalog / Ads | PC/H5/Admin | `/catalog`, `/ads`, admin campaigns | Supplier, Admin | Manage products/services, supplier ads | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/supplier/*`, `/api/v1/cebu-trade/ads/*` | IN_PROGRESS | `rg "catalog|ads|campaign" Ainerwise/modules/procurement` | UI copy present; public listing read verified |
+| Dispute / KYC / Risk | PC/H5/Admin | `/disputes`, `/verification`, `/risk`, KYC/KYB APIs | Buyer, Supplier, Admin, Risk, Verification | Submit dispute, verify company/docs, risk review | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/orders/*/dispute`, KYC/Core admin APIs | IN_PROGRESS | `rg "disputes|verification|risk|KYC|KYB" Ainerwise/modules/procurement` | UI copy present; dispute adapter implemented; KYC parity still needs verification |
+| Admin all panels | Admin, PC admin pages | Admin backend APIs | Admin, Super Admin, Ops, Finance, Risk, Support, Auditor | Manage users, companies, orders, payments, regions, settings, audit | `Ainerwise/modules/procurement/admin`, `pc/pages/admin` | Core `/api/v1/admin/cebu/*`, `/api/v1/admin/cebu-trade/*`, `/api/v1/cebu-compat/*` | IN_PROGRESS | `curl http://procurement-admin.localhost/api/admin/dashboard` | `401 Not authenticated` confirms Core-protected admin route; full panel parity still requires role login tests |
 
 ### Page Ledger Summary
 
@@ -361,7 +370,7 @@ Scope:
 
 - `CebuProjects` is a baseline, not the target runtime.
 - The first milestone is full UI/entrypoint replication under AinerWise, not final Core API migration.
-- Transitional legacy API use is allowed only while the ledger marks Core API migration as `TODO`.
+- Legacy API use is allowed only for parity investigation of unmapped endpoints. New runtime targets must use AinerWise Core or explicitly record a blocker in this ledger.
 - Demo emails may temporarily retain legacy domains until seed/login migration is completed.
 
 ## Current Verification Evidence
@@ -406,8 +415,20 @@ In-app browser opened the three standalone hosts and read visible DOM text.
 
 | Role | Command | Result |
 | --- | --- | --- |
-| Buyer | `curl -sS -X POST http://procurement.localhost/api/auth/login -H 'Content-Type: application/json' -d '{"email":"buyer@demo.procureping","password":"123"}'` | PASS, returns bearer token |
-| Admin | `curl -sS -X POST http://procurement-admin.localhost/api/auth/login -H 'Content-Type: application/json' -d '{"email":"admin@procureping.com","password":"admin123"}'` | PASS, returns bearer token |
+| Buyer | `curl -sS -X POST http://procurement.localhost/api/auth/login -H 'Content-Type: application/json' -d '{"email":"demo@ainerwise.com","password":"demo123"}'` | PASS, returns Core buyer JWT |
+| Buyer Core identity | `curl -sS http://procurement.localhost/api/auth/me -H "Authorization: Bearer $token"` | PASS, returns `demo@ainerwise.com`, role `buyer` |
+| Buyer legacy UI identity | `curl -sS http://procurement.localhost/api/users/me -H "Authorization: Bearer $token"` | PASS, returns legacy-shaped role `BUYER` from the same Core user |
+| Buyer intent list | `curl -sS http://procurement.localhost/api/intents/my -H "Authorization: Bearer $token"` | PASS, returns Core procurement request data |
+
+### Core API Bridge Evidence
+
+| API | Command | Result |
+| --- | --- | --- |
+| System mode | `curl -sS http://procurement.localhost/api/auth/system-mode` | `HTTP 200`, `app_name` is `AinerWise Procurement` |
+| Payment region config | `curl -sS 'http://procurement.localhost/api/payments/region-config?country=PH'` | `HTTP 200`, reads Core `region_payment_configs` or Core fallback |
+| Marketplace feed | `curl -sS http://procurement.localhost/api/marketplace/feed` | `HTTP 200`, returns Core supplier listing data |
+| Unauthenticated buyer data | `curl -sS http://procurement.localhost/api/intents/my` | `HTTP 401`, not a failed fetch or legacy backend outage |
+| Unauthenticated admin data | `curl -sS http://procurement-admin.localhost/api/admin/dashboard` | `HTTP 401`, Core-protected admin route |
 
 ### Clean Baseline Evidence
 
