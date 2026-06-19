@@ -4,12 +4,16 @@ Frontends can point `NUXT_PUBLIC_API_BASE` at `/api/v1/cebu-compat` for a
 drop-in migration window. New work should call `/api/v1/commerce/*` directly.
 """
 import uuid
+import io
+from datetime import datetime, timezone
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 from pydantic import BaseModel
 from sqlalchemy import or_, select
 
 from app.api.deps import CurrentUser, DB
+from app.api.v1.endpoints.files import BUCKET_NAME, get_minio_client
+from app.core.object_storage import new_user_upload_key
 from app.models.commerce import (
     CommerceOrder,
     ProcurementRequest,
@@ -31,6 +35,38 @@ from app.modules.cebu_trade.service import (
     list_deposits,
     list_wallet_transactions,
     wallet_balance,
+)
+from app.modules.buyer_project.models import (
+    BuyerProject,
+    ProjectAIRun,
+    ProjectFile,
+    ProjectLineItem,
+    ProjectMessage,
+    ProjectReport,
+    ProjectReportChangeLog,
+    ProjectReportColumn,
+    ProjectReportRow,
+    ProjectReportVersion,
+)
+from app.modules.buyer_project.schemas import ProjectCreate, ProjectUpdate
+from app.modules.buyer_project.service import (
+    BuyerProjectError,
+    add_message as add_buyer_project_message,
+    create_project as create_buyer_project,
+    estimate_prices as estimate_buyer_project_prices,
+    freeze_report as freeze_buyer_project_report,
+    get_metrics as get_buyer_project_metrics,
+    get_project as get_buyer_project,
+    get_report as get_buyer_project_report,
+    list_line_items as list_buyer_project_line_items,
+    list_messages as list_buyer_project_messages,
+    list_projects as list_buyer_projects,
+    list_report_versions as list_buyer_project_report_versions,
+    recalculate_report as recalculate_buyer_project_report,
+    report_detail as buyer_project_report_detail,
+    update_line_item as update_buyer_project_line_item,
+    update_project as update_buyer_project,
+    update_report_row as update_buyer_project_report_row,
 )
 from app.modules.commerce.access import (
     CommerceAccessDenied,
@@ -104,6 +140,45 @@ class LegacyWalletDepositCreate(BaseModel):
 class LegacyWalletSubmitTx(BaseModel):
     tx_hash: str | None = None
     submitter_note: str | None = None
+
+
+class LegacyProjectMessageCreate(BaseModel):
+    content: str
+    workflow_node: str | None = None
+    file_ids: list[uuid.UUID] | None = None
+
+
+class LegacyProjectReportCellChange(BaseModel):
+    row_id: uuid.UUID
+    field: str
+    value: object | None = None
+
+
+class LegacyProjectReportCellsPatch(BaseModel):
+    changes: list[LegacyProjectReportCellChange]
+    message: str | None = None
+
+
+class LegacyProjectReportColumnCreate(BaseModel):
+    key: str
+    label: str
+    data_type: str = "text"
+    editable: bool = True
+
+
+class LegacyProjectReportRowCreate(BaseModel):
+    name: str
+    description: str | None = None
+    qty: float = 1
+    unit: str = "pcs"
+    currency: str = "PHP"
+    quality_tier: str = "MID_RANGE"
+    selected_tier: str = "MID_RANGE"
+    notes: str | None = None
+
+
+class LegacyProjectReportChatRequest(BaseModel):
+    message: str
 
 
 @router.get("/system-mode")
@@ -345,6 +420,261 @@ def _wallet_instruction_address(data: LegacyWalletDepositCreate, user: CurrentUs
     return f"AINERWISE-PROCUREMENT-{currency}-{network}-{method}-{user_ref}"
 
 
+def _row_dict(row) -> dict:
+    if row is None:
+        return {}
+    return {column.name: getattr(row, column.name) for column in row.__table__.columns}
+
+
+def _with_jsonb_aliases(value):
+    if isinstance(value, list):
+        return [_with_jsonb_aliases(item) for item in value]
+    if not isinstance(value, dict):
+        return value
+    data = {}
+    for key, item in value.items():
+        converted = _with_jsonb_aliases(item)
+        data[key] = converted
+        if key.endswith("_json"):
+            data[f"{key}b"] = converted
+    return data
+
+
+def _line_item_as_legacy(row: ProjectLineItem) -> dict:
+    data = _with_jsonb_aliases(_row_dict(row))
+    data["intent_id"] = data.get("procurement_request_id")
+    data.setdefault("price_tiers_jsonb", data.get("price_tiers_json") or {})
+    data.setdefault("specs_jsonb", data.get("specs_json") or {})
+    return data
+
+
+def _file_as_legacy(row: ProjectFile) -> dict:
+    return _with_jsonb_aliases(_row_dict(row))
+
+
+def _ai_run_as_legacy(row: ProjectAIRun | None) -> dict | None:
+    if row is None:
+        return None
+    return _with_jsonb_aliases(_row_dict(row))
+
+
+async def _latest_project_ai_run(db: DB, project_id: uuid.UUID) -> ProjectAIRun | None:
+    return (
+        await db.execute(
+            select(ProjectAIRun)
+            .where(ProjectAIRun.project_id == project_id)
+            .order_by(ProjectAIRun.created_at.desc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+
+
+async def _project_files(db: DB, project_id: uuid.UUID) -> list[ProjectFile]:
+    return list(
+        (
+            await db.execute(
+                select(ProjectFile)
+                .where(ProjectFile.project_id == project_id)
+                .order_by(ProjectFile.created_at.asc())
+            )
+        ).scalars()
+    )
+
+
+async def _buyer_project_as_legacy(db: DB, project: BuyerProject, *, detail: bool = False) -> dict:
+    data = _with_jsonb_aliases(_row_dict(project))
+    data.setdefault("missing_questions_jsonb", data.get("missing_questions_json") or [])
+    data.setdefault("assumptions_jsonb", data.get("assumptions_json") or [])
+    data.setdefault("risk_notes_jsonb", data.get("risk_notes_json") or [])
+    data.setdefault("acceptance_criteria_jsonb", data.get("acceptance_criteria_json") or [])
+    data.setdefault("estimated_budget_jsonb", data.get("estimated_budget_json"))
+    data.setdefault("scale_jsonb", data.get("scale_json"))
+    if detail:
+        data["files"] = [_file_as_legacy(row) for row in await _project_files(db, project.id)]
+        data["line_items"] = [
+            _line_item_as_legacy(row) for row in await list_buyer_project_line_items(db, project.id)
+        ]
+        data["latest_ai_run"] = _ai_run_as_legacy(await _latest_project_ai_run(db, project.id))
+    return data
+
+
+def _metric_payload_as_legacy(payload: dict) -> dict:
+    data = _with_jsonb_aliases(payload)
+    for row in data.get("values") or []:
+        if "value_json" in row and "value_jsonb" not in row:
+            row["value_jsonb"] = row["value_json"]
+    for row in data.get("templates") or []:
+        if "unit_options_json" in row and "unit_options_jsonb" not in row:
+            row["unit_options_jsonb"] = row["unit_options_json"]
+    return data
+
+
+def _report_payload_as_legacy(payload: dict) -> dict:
+    return _with_jsonb_aliases(payload)
+
+
+def _project_line_item_templates(project: BuyerProject) -> list[dict]:
+    description = (project.description or "").lower()
+    project_type = (project.project_type or "GENERAL").upper()
+    if project_type == "SOLAR" or "solar" in description or "光伏" in description:
+        return [
+            {"name": "Solar PV panels", "category_hint": "solar", "unit": "lot", "share": 0.48},
+            {"name": "Hybrid inverter and electrical protection", "category_hint": "solar_electrical", "unit": "set", "share": 0.28},
+            {"name": "Mounting, cabling and commissioning", "category_hint": "installation", "unit": "lot", "share": 0.24},
+        ]
+    if project_type in {"CONSTRUCTION", "RENOVATION"} or any(word in description for word in ("hotel", "villa", "renovation", "装修", "别墅", "酒店")):
+        return [
+            {"name": "Core materials and fixtures package", "category_hint": "building_materials", "unit": "lot", "share": 0.42},
+            {"name": "Electrical, lighting and smart-control package", "category_hint": "smart_building", "unit": "lot", "share": 0.34},
+            {"name": "Installation, testing and handover service", "category_hint": "field_service", "unit": "lot", "share": 0.24},
+        ]
+    if project_type == "TECH_BUILD" or any(word in description for word in ("network", "cctv", "access", "门禁", "监控", "网络")):
+        return [
+            {"name": "Network backbone and cabinet package", "category_hint": "network", "unit": "lot", "share": 0.36},
+            {"name": "CCTV, access control and sensors", "category_hint": "security", "unit": "lot", "share": 0.38},
+            {"name": "Configuration, testing and documentation", "category_hint": "commissioning", "unit": "lot", "share": 0.26},
+        ]
+    return [
+        {"name": "Primary procurement package", "category_hint": "general_procurement", "unit": "lot", "share": 0.5},
+        {"name": "Delivery and installation package", "category_hint": "delivery_installation", "unit": "lot", "share": 0.3},
+        {"name": "Warranty, acceptance and support package", "category_hint": "support", "unit": "lot", "share": 0.2},
+    ]
+
+
+def _project_budget_base(project: BuyerProject) -> int:
+    if project.budget_max:
+        return max(int(project.budget_max), 10000)
+    if project.budget_min:
+        return max(int(project.budget_min * 1.35), 10000)
+    if project.area_value:
+        return max(int(float(project.area_value) * 12000), 10000)
+    return 250000
+
+
+def _tier_prices(total: float) -> dict:
+    return {
+        "BUDGET": {
+            "unit_price": round(total * 0.8, 2),
+            "total_price": round(total * 0.8, 2),
+            "source": "CORE_RULE_ESTIMATE",
+            "notes": "Lean option based on current project facts",
+        },
+        "MID_RANGE": {
+            "unit_price": round(total, 2),
+            "total_price": round(total, 2),
+            "source": "CORE_RULE_ESTIMATE",
+            "notes": "Balanced option based on current project facts",
+        },
+        "PREMIUM": {
+            "unit_price": round(total * 1.35, 2),
+            "total_price": round(total * 1.35, 2),
+            "source": "CORE_RULE_ESTIMATE",
+            "notes": "Premium option based on current project facts",
+        },
+    }
+
+
+async def _run_core_project_analysis(db: DB, project: BuyerProject, user: CurrentUser) -> ProjectAIRun:
+    started_at = datetime.now(timezone.utc)
+    run = ProjectAIRun(
+        project_id=project.id,
+        provider="AINERWISE_CORE",
+        model="project-forge-rule-analyzer-v1",
+        prompt_version="compat-v1",
+        status="RUNNING",
+        started_at=started_at,
+        input_snapshot_json={
+            "title": project.title,
+            "project_type": project.project_type,
+            "description": project.description,
+            "budget_min": project.budget_min,
+            "budget_max": project.budget_max,
+            "currency": project.currency,
+        },
+    )
+    db.add(run)
+    await db.flush()
+
+    existing_items = await list_buyer_project_line_items(db, project.id)
+    if not existing_items:
+        base_total = _project_budget_base(project)
+        for template in _project_line_item_templates(project):
+            total = float(base_total) * float(template["share"])
+            db.add(
+                ProjectLineItem(
+                    project_id=project.id,
+                    ai_run_id=run.id,
+                    name=template["name"],
+                    description=f"Generated from project facts for {project.title}.",
+                    qty=1,
+                    unit=template["unit"],
+                    quality_tier=project.quality_preference
+                    if project.quality_preference in {"BUDGET", "MID_RANGE", "PREMIUM"}
+                    else "MID_RANGE",
+                    estimated_unit_price=round(total, 2),
+                    estimated_total_price=round(total, 2),
+                    currency=project.currency or "PHP",
+                    confidence=0.72,
+                    sourcing_notes="Review quantities and specifications before publishing RFQ.",
+                    price_tiers_json=_tier_prices(total),
+                    category_hint=template["category_hint"],
+                    source="AI",
+                    status="DRAFT",
+                )
+            )
+    project.status = "AI_ANALYZED"
+    base_total = _project_budget_base(project)
+    project.ai_summary = (
+        "AinerWise Core analyzed the project facts and generated a draft procurement "
+        "package. Confirm quantities, missing site details, and preferred quality tier before sourcing."
+    )
+    project.missing_questions_json = [
+        {
+            "key": "delivery_site",
+            "question": "Confirm the exact delivery or installation site and access restrictions.",
+            "importance": "HIGH",
+        },
+        {
+            "key": "preferred_brands",
+            "question": "List any preferred or prohibited brands before RFQ publishing.",
+            "importance": "MEDIUM",
+        },
+    ]
+    project.assumptions_json = [
+        "Budget is treated as an estimate until supplier quotes are received.",
+        "Line items are grouped for procurement and can be edited before publishing.",
+    ]
+    project.risk_notes_json = [
+        "AI estimate should not be used as a final commercial offer.",
+        "Site conditions, delivery constraints, taxes and warranties must be reviewed before award.",
+    ]
+    project.acceptance_criteria_json = [
+        "Buyer confirms line items and quantities.",
+        "Supplier quotations include warranty, tax mode and delivery terms.",
+    ]
+    project.estimated_budget_json = {
+        "currency": project.currency or "PHP",
+        "min": int(base_total * 0.8),
+        "max": int(base_total * 1.35),
+        "confidence": 0.72,
+        "by_tier": {
+            "BUDGET": {"min": int(base_total * 0.72), "max": int(base_total * 0.9)},
+            "MID_RANGE": {"min": int(base_total * 0.9), "max": int(base_total * 1.1)},
+            "PREMIUM": {"min": int(base_total * 1.15), "max": int(base_total * 1.35)},
+        },
+    }
+    run.status = "SUCCESS"
+    run.finished_at = datetime.now(timezone.utc)
+    run.structured_output_json = {
+        "line_item_count": len(await list_buyer_project_line_items(db, project.id)),
+        "confidence": 0.72,
+        "requires_human_review": True,
+    }
+    run.token_usage_json = {"input_tokens": 0, "output_tokens": 0, "mode": "rule_based_core"}
+    await db.flush()
+    return run
+
+
 async def _owned_intent(db: DB, user: CurrentUser, intent_id: uuid.UUID):
     try:
         return await require_procurement_request_owner(db, user=user, request_id=intent_id)
@@ -562,6 +892,546 @@ async def legacy_submit_wallet_deposit_tx(
     await db.commit()
     await db.refresh(deposit)
     return WalletDepositRead.model_validate(deposit)
+
+
+async def _owned_buyer_project(db: DB, user: CurrentUser, project_id: uuid.UUID) -> BuyerProject:
+    try:
+        return await get_buyer_project(db, project_id, user.id)
+    except BuyerProjectError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from None
+
+
+@router.get("/buyer/projects")
+async def legacy_list_buyer_projects(db: DB, user: CurrentUser):
+    rows = await list_buyer_projects(db, user.id, limit=100)
+    return [await _buyer_project_as_legacy(db, row) for row in rows]
+
+
+@router.post("/buyer/projects", status_code=201)
+async def legacy_create_buyer_project(data: ProjectCreate, db: DB, user: CurrentUser):
+    row = await create_buyer_project(db, buyer_id=user.id, **data.model_dump())
+    await db.commit()
+    await db.refresh(row)
+    return await _buyer_project_as_legacy(db, row, detail=True)
+
+
+@router.get("/buyer/projects/{project_id}")
+async def legacy_get_buyer_project(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    row = await _owned_buyer_project(db, user, project_id)
+    return await _buyer_project_as_legacy(db, row, detail=True)
+
+
+@router.patch("/buyer/projects/{project_id}")
+async def legacy_update_buyer_project(
+    project_id: uuid.UUID, data: ProjectUpdate, db: DB, user: CurrentUser
+):
+    try:
+        row = await update_buyer_project(
+            db, project_id, user.id, **data.model_dump(exclude_unset=True)
+        )
+        await db.commit()
+        await db.refresh(row)
+        return await _buyer_project_as_legacy(db, row, detail=True)
+    except BuyerProjectError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=404, detail=str(exc)) from None
+
+
+@router.get("/buyer/projects/{project_id}/messages")
+async def legacy_buyer_project_messages(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    await _owned_buyer_project(db, user, project_id)
+    rows = await list_buyer_project_messages(db, project_id)
+    return [_with_jsonb_aliases(_row_dict(row)) for row in rows]
+
+
+@router.post("/buyer/projects/{project_id}/messages", status_code=201)
+async def legacy_create_buyer_project_message(
+    project_id: uuid.UUID,
+    data: LegacyProjectMessageCreate,
+    db: DB,
+    user: CurrentUser,
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    if data.file_ids:
+        files = await _project_files(db, project.id)
+        owned = {row.id for row in files}
+        missing = [str(file_id) for file_id in data.file_ids if file_id not in owned]
+        if missing:
+            raise HTTPException(status_code=400, detail=f"Files do not belong to project: {', '.join(missing)}")
+    user_msg = await add_buyer_project_message(
+        db,
+        project_id=project.id,
+        role="USER",
+        content=data.content,
+        workflow_node=data.workflow_node or "intake_chat",
+    )
+    metrics = await get_buyer_project_metrics(db, project)
+    missing = metrics.get("missing_required") or []
+    prompt = (
+        f"Captured. Next, please provide: {missing[0]['label']}."
+        if missing
+        else "Captured. You can run analysis now, or add more details such as delivery site, preferred brands, timeline, and warranty expectations."
+    )
+    assistant_msg = await add_buyer_project_message(
+        db,
+        project_id=project.id,
+        role="ASSISTANT",
+        content=prompt,
+        workflow_node="gap_question" if missing else "intake_chat",
+    )
+    if project.status == "DRAFT":
+        project.status = "COLLECTING_INFO"
+    await db.commit()
+    await db.refresh(user_msg)
+    await db.refresh(assistant_msg)
+    return [_with_jsonb_aliases(_row_dict(user_msg)), _with_jsonb_aliases(_row_dict(assistant_msg))]
+
+
+@router.get("/buyer/projects/{project_id}/metrics")
+async def legacy_buyer_project_metrics(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    return _metric_payload_as_legacy(await get_buyer_project_metrics(db, project))
+
+
+@router.patch("/buyer/projects/{project_id}/metrics")
+async def legacy_patch_buyer_project_metrics(
+    project_id: uuid.UUID,
+    data: dict,
+    db: DB,
+    user: CurrentUser,
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    from app.modules.buyer_project.service import update_metrics as update_buyer_project_metrics
+
+    metrics = data.get("metrics") if isinstance(data, dict) else None
+    if not isinstance(metrics, list):
+        raise HTTPException(status_code=422, detail="metrics must be a list")
+    result = await update_buyer_project_metrics(db, project, metrics)
+    await db.commit()
+    return _metric_payload_as_legacy(result)
+
+
+@router.post("/buyer/projects/{project_id}/files", status_code=201)
+async def legacy_upload_buyer_project_file(
+    project_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    file: UploadFile = File(...),
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    content = await file.read()
+    if len(content) > 20 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="File exceeds 20MB")
+    object_name = new_user_upload_key(user.id, file.filename or "project-file")
+    client = get_minio_client()
+    if not client.bucket_exists(BUCKET_NAME):
+        client.make_bucket(BUCKET_NAME)
+    client.put_object(
+        BUCKET_NAME,
+        object_name,
+        io.BytesIO(content),
+        length=len(content),
+        content_type=file.content_type or "application/octet-stream",
+    )
+    row = ProjectFile(
+        project_id=project.id,
+        url=f"minio://{BUCKET_NAME}/{object_name}",
+        file_name=file.filename or "project-file",
+        content_type=file.content_type or "application/octet-stream",
+        file_size=len(content),
+        extracted_text=content[:8192].decode("utf-8", errors="ignore") if (file.content_type or "").startswith("text/") else None,
+        status="EXTRACTED" if (file.content_type or "").startswith("text/") else "UPLOADED",
+    )
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    return _file_as_legacy(row)
+
+
+@router.delete("/buyer/projects/{project_id}/files/{file_id}", status_code=204)
+async def legacy_delete_buyer_project_file(
+    project_id: uuid.UUID, file_id: uuid.UUID, db: DB, user: CurrentUser
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    row = await db.get(ProjectFile, file_id)
+    if row is None or row.project_id != project.id:
+        raise HTTPException(status_code=404, detail="File not found")
+    await db.delete(row)
+    await db.commit()
+    return None
+
+
+@router.post("/buyer/projects/{project_id}/ai/analyze", status_code=202)
+async def legacy_start_buyer_project_analysis(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    run = await _run_core_project_analysis(db, project, user)
+    await db.commit()
+    await db.refresh(run)
+    return _ai_run_as_legacy(run)
+
+
+@router.get("/buyer/projects/{project_id}/ai-runs/{run_id}")
+async def legacy_get_buyer_project_ai_run(
+    project_id: uuid.UUID, run_id: uuid.UUID, db: DB, user: CurrentUser
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    run = await db.get(ProjectAIRun, run_id)
+    if run is None or run.project_id != project.id:
+        raise HTTPException(status_code=404, detail="AI run not found")
+    return _ai_run_as_legacy(run)
+
+
+@router.post("/buyer/projects/{project_id}/ai-runs/{run_id}/retry", status_code=202)
+async def legacy_retry_buyer_project_ai_run(
+    project_id: uuid.UUID, run_id: uuid.UUID, db: DB, user: CurrentUser
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    old_run = await db.get(ProjectAIRun, run_id)
+    if old_run is None or old_run.project_id != project.id:
+        raise HTTPException(status_code=404, detail="AI run not found")
+    run = await _run_core_project_analysis(db, project, user)
+    await db.commit()
+    await db.refresh(run)
+    return _ai_run_as_legacy(run)
+
+
+@router.get("/buyer/projects/{project_id}/comparison")
+async def legacy_buyer_project_comparison(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    items = []
+    for item in await list_buyer_project_line_items(db, project.id):
+        legacy_item = _line_item_as_legacy(item)
+        items.append(
+            {
+                "line_item_id": item.id,
+                "line_item": legacy_item,
+                "matched_suppliers": 0,
+                "price_snapshot": {
+                    "samples": [],
+                    "price_tiers_jsonb": legacy_item.get("price_tiers_jsonb") or {},
+                    "source_summary": "AinerWise Core estimate. Publish RFQ to collect supplier quotes.",
+                },
+                "issues": [] if item.confidence and item.confidence >= 0.6 else ["Low confidence; review before publishing"],
+            }
+        )
+    return {"project_id": project.id, "items": items}
+
+
+@router.post("/buyer/projects/{project_id}/price-estimate")
+async def legacy_buyer_project_price_estimate(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    rows = await estimate_buyer_project_prices(db, project)
+    await db.commit()
+    return {"project_id": project.id, "items": [_with_jsonb_aliases(_row_dict(row)) for row in rows]}
+
+
+@router.get("/buyer/projects/{project_id}/report")
+async def legacy_get_buyer_project_report(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    result = await get_buyer_project_report(db, project, actor_id=user.id)
+    await db.commit()
+    return _report_payload_as_legacy(result)
+
+
+@router.get("/buyer/projects/{project_id}/report/versions")
+async def legacy_buyer_project_report_versions(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    result = await get_buyer_project_report(db, project, actor_id=user.id)
+    versions = await list_buyer_project_report_versions(db, result["id"])
+    await db.commit()
+    return _with_jsonb_aliases(versions)
+
+
+@router.post("/buyer/projects/{project_id}/report/recalculate")
+async def legacy_recalculate_buyer_project_report(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    report = await recalculate_buyer_project_report(db, project, actor_id=user.id)
+    result = await buyer_project_report_detail(db, report)
+    await db.commit()
+    return _report_payload_as_legacy(result)
+
+
+@router.post("/buyer/projects/{project_id}/report/freeze")
+async def legacy_freeze_buyer_project_report(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    report = await freeze_buyer_project_report(db, project, actor_id=user.id)
+    result = await buyer_project_report_detail(db, report)
+    await db.commit()
+    return _report_payload_as_legacy(result)
+
+
+@router.patch("/buyer/projects/{project_id}/report/cells")
+async def legacy_patch_buyer_project_report_cells(
+    project_id: uuid.UUID,
+    data: LegacyProjectReportCellsPatch,
+    db: DB,
+    user: CurrentUser,
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    report = None
+    for change in data.changes:
+        report = await update_buyer_project_report_row(
+            db,
+            project,
+            change.row_id,
+            actor_id=user.id,
+            fields={change.field: change.value},
+        )
+    if report is None:
+        raise HTTPException(status_code=422, detail="No report cell changes provided")
+    result = await buyer_project_report_detail(db, report)
+    await db.commit()
+    return _report_payload_as_legacy(result)
+
+
+@router.post("/buyer/projects/{project_id}/report/columns", status_code=201)
+async def legacy_add_buyer_project_report_column(
+    project_id: uuid.UUID,
+    data: LegacyProjectReportColumnCreate,
+    db: DB,
+    user: CurrentUser,
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    result = await get_buyer_project_report(db, project, actor_id=user.id)
+    report = await db.get(ProjectReport, result["id"])
+    if report is None or report.current_version_id is None:
+        raise HTTPException(status_code=404, detail="Report not found")
+    db.add(
+        ProjectReportColumn(
+            report_version_id=report.current_version_id,
+            key=data.key,
+            label=data.label,
+            data_type=data.data_type,
+            sort_order=1000,
+            editable=data.editable,
+            system=False,
+        )
+    )
+    await db.flush()
+    detail = await buyer_project_report_detail(db, report)
+    await db.commit()
+    return _report_payload_as_legacy(detail)
+
+
+@router.post("/buyer/projects/{project_id}/report/rows", status_code=201)
+async def legacy_add_buyer_project_report_row(
+    project_id: uuid.UUID,
+    data: LegacyProjectReportRowCreate,
+    db: DB,
+    user: CurrentUser,
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    result = await get_buyer_project_report(db, project, actor_id=user.id)
+    report = await db.get(ProjectReport, result["id"])
+    if report is None or report.current_version_id is None:
+        raise HTTPException(status_code=404, detail="Report not found")
+    row_count = len(result.get("rows") or [])
+    db.add(
+        ProjectReportRow(
+            report_version_id=report.current_version_id,
+            project_id=project.id,
+            name=data.name,
+            description=data.description,
+            qty=data.qty,
+            unit=data.unit,
+            currency=data.currency,
+            quality_tier=data.quality_tier,
+            selected_tier=data.selected_tier,
+            notes=data.notes,
+            price_tiers_json=_tier_prices(0),
+            sort_order=row_count + 1,
+        )
+    )
+    await db.flush()
+    detail = await buyer_project_report_detail(db, report)
+    await db.commit()
+    return _report_payload_as_legacy(detail)
+
+
+@router.post("/buyer/projects/{project_id}/report/versions/{version_id}/restore")
+async def legacy_restore_buyer_project_report_version(
+    project_id: uuid.UUID,
+    version_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    result = await get_buyer_project_report(db, project, actor_id=user.id)
+    report = await db.get(ProjectReport, result["id"])
+    version = await db.get(ProjectReportVersion, version_id)
+    if report is None or version is None or version.report_id != report.id:
+        raise HTTPException(status_code=404, detail="Report version not found")
+    report.current_version_id = version.id
+    db.add(
+        ProjectReportChangeLog(
+            project_id=project.id,
+            report_id=report.id,
+            version_id=version.id,
+            actor_id=user.id,
+            change_type="RESTORE_VERSION",
+            status="APPLIED",
+            after_json={"version_id": str(version.id)},
+        )
+    )
+    detail = await buyer_project_report_detail(db, report)
+    await db.commit()
+    return _report_payload_as_legacy(detail)
+
+
+@router.post("/buyer/projects/{project_id}/report/chat", status_code=201)
+async def legacy_create_buyer_project_report_patch(
+    project_id: uuid.UUID,
+    data: LegacyProjectReportChatRequest,
+    db: DB,
+    user: CurrentUser,
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    result = await get_buyer_project_report(db, project, actor_id=user.id)
+    row = ProjectReportChangeLog(
+        project_id=project.id,
+        report_id=result["id"],
+        version_id=(result.get("current_version") or {}).get("id"),
+        actor_id=user.id,
+        change_type="CHAT_PATCH_REQUEST",
+        status="PENDING",
+        user_message=data.message,
+        patch_json={"requires_review": True, "message": data.message},
+    )
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    return _with_jsonb_aliases(_row_dict(row))
+
+
+@router.post("/buyer/projects/{project_id}/report/patches/{patch_id}/apply")
+async def legacy_apply_buyer_project_report_patch(
+    project_id: uuid.UUID, patch_id: uuid.UUID, db: DB, user: CurrentUser
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    row = await db.get(ProjectReportChangeLog, patch_id)
+    if row is None or row.project_id != project.id:
+        raise HTTPException(status_code=404, detail="Report patch not found")
+    row.status = "APPLIED"
+    row.applied_at = datetime.now(timezone.utc)
+    row.after_json = {"applied_without_auto_mutation": True}
+    await db.commit()
+    await db.refresh(row)
+    return _with_jsonb_aliases(_row_dict(row))
+
+
+@router.post("/buyer/projects/{project_id}/report/patches/{patch_id}/reject")
+async def legacy_reject_buyer_project_report_patch(
+    project_id: uuid.UUID, patch_id: uuid.UUID, db: DB, user: CurrentUser
+):
+    project = await _owned_buyer_project(db, user, project_id)
+    row = await db.get(ProjectReportChangeLog, patch_id)
+    if row is None or row.project_id != project.id:
+        raise HTTPException(status_code=404, detail="Report patch not found")
+    row.status = "REJECTED"
+    await db.commit()
+    await db.refresh(row)
+    return _with_jsonb_aliases(_row_dict(row))
+
+
+@router.patch("/buyer/projects/{project_id}/line-items/{item_id}")
+async def legacy_patch_buyer_project_line_item(
+    project_id: uuid.UUID,
+    item_id: uuid.UUID,
+    data: dict,
+    db: DB,
+    user: CurrentUser,
+):
+    await _owned_buyer_project(db, user, project_id)
+    try:
+        if "intent_id" in data and "procurement_request_id" not in data:
+            data["procurement_request_id"] = data["intent_id"]
+        if "price_tiers_jsonb" in data and "price_tiers_json" not in data:
+            data["price_tiers_json"] = data["price_tiers_jsonb"]
+        if "specs_jsonb" in data and "specs_json" not in data:
+            data["specs_json"] = data["specs_jsonb"]
+        row = await update_buyer_project_line_item(db, item_id, project_id, **data)
+        await db.commit()
+        await db.refresh(row)
+        return _line_item_as_legacy(row)
+    except BuyerProjectError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=404, detail=str(exc)) from None
+
+
+@router.delete("/buyer/projects/{project_id}/line-items/{item_id}", status_code=204)
+async def legacy_delete_buyer_project_line_item(
+    project_id: uuid.UUID, item_id: uuid.UUID, db: DB, user: CurrentUser
+):
+    await _owned_buyer_project(db, user, project_id)
+    try:
+        await update_buyer_project_line_item(db, item_id, project_id, status="REMOVED")
+        await db.commit()
+        return None
+    except BuyerProjectError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=404, detail=str(exc)) from None
+
+
+@router.post("/buyer/projects/{project_id}/freeze-form")
+async def legacy_freeze_buyer_project_form(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    if project.status in {"DRAFT", "COLLECTING_INFO", "AI_ANALYZED"}:
+        project.status = "READY_FOR_SOURCING"
+    await db.commit()
+    await db.refresh(project)
+    return await _buyer_project_as_legacy(db, project, detail=True)
+
+
+@router.post("/buyer/projects/{project_id}/publish")
+async def legacy_publish_buyer_project(project_id: uuid.UUID, db: DB, user: CurrentUser):
+    project = await _owned_buyer_project(db, user, project_id)
+    created_ids: list[uuid.UUID] = []
+    skipped = 0
+    for item in await list_buyer_project_line_items(db, project.id):
+        if item.status != "CONFIRMED" or item.include_in_estimate is False:
+            skipped += 1
+            continue
+        if item.procurement_request_id:
+            skipped += 1
+            continue
+        workspace_id = await resolve_commerce_workspace(db, user=user, requested_workspace_id=None)
+        req = await create_procurement_request(
+            db,
+            workspace_id=workspace_id,
+            buyer_user_id=user.id,
+            buyer_company_id=user.company_id,
+            portal_key="cebu",
+            title=item.name,
+            description=item.description or project.description,
+            category_schema_id=item.category_id,
+            requirements_json={
+                "qty": item.qty,
+                "unit": item.unit,
+                "currency": item.currency,
+                "budget_max_minor": int(float(item.estimated_total_price or 0) * 100),
+                "project_id": str(project.id),
+                "project_line_item_id": str(item.id),
+            },
+            attrs_json={
+                "source": "buyer_project",
+                "quality_tier": item.quality_tier,
+                "category_hint": item.category_hint,
+            },
+            status="draft",
+        )
+        item.procurement_request_id = req.id
+        item.status = "SOURCING"
+        created_ids.append(req.id)
+    if created_ids:
+        project.status = "SOURCING"
+    await db.commit()
+    await db.refresh(project)
+    return {
+        "project_id": project.id,
+        "published_count": len(created_ids),
+        "intents_created": created_ids,
+        "skipped_count": skipped,
+    }
 
 
 @router.get("/marketplace/feed")

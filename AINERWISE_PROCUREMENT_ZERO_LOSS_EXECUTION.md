@@ -53,6 +53,7 @@ Verification evidence recorded on 2026-06-19:
 - Demo login through `http://procurement.localhost/api/auth/login` with `demo@ainerwise.com / demo123` returns a Core buyer JWT; `/api/auth/me`, `/api/users/me`, and `/api/intents/my` work with that token.
 - `http://procurement.localhost/api/wallets/me`, `/api/wallets/transactions`, `/api/wallets/deposits`, and `/api/wallets/deposits/{id}/submit-tx` now use the Core wallet/deposit tables through the compatibility adapter.
 - Demo buyer can create and submit a PHP deposit through the PC API; another Core user token receives `404 Deposit not found` when trying to submit the buyer deposit.
+- `http://procurement.localhost/api/buyer/projects` now uses Core `buyer_projects` tables through the compatibility adapter; create, message, AI analyze, report, line-item confirm, publish-to-intent, and cross-user denial are READY_FOR_VERIFY.
 
 ## Physical Entrypoints
 
@@ -88,7 +89,7 @@ Current status: READY_FOR_VERIFY.
 | Brand Rename | User-visible `ProcurePing` renamed to `AinerWise Procurement` in copied module | READY_FOR_VERIFY | `rg "ProcurePing|>PP<|procureping.local"` only leaves intentional demo credential cases |
 | Standalone Entrypoints | Add procurement compose, ports, Nginx host routing, legacy alias redirects | READY_FOR_VERIFY | `Ainerwise/docker-compose.procurement-standalone.yml`, `Ainerwise/nginx/default.conf` |
 | Main Site Link | AinerWise PC header/home links to standalone Procurement PC | READY_FOR_VERIFY | `http://procurement.localhost` external link added |
-| Core API Migration | Replace transitional Cebu API with AinerWise Core compatible API | IN_PROGRESS | Core bridge V1 is READY_FOR_VERIFY for auth, users, categories, marketplace feed, payment region config, buyer intents, supplier offers/orders/notifications adapters, and wallet/deposit compatibility; full admin/KYC/order/escrow/message parity still requires ledger gates |
+| Core API Migration | Replace transitional Cebu API with AinerWise Core compatible API | IN_PROGRESS | Core bridge V1 is READY_FOR_VERIFY for auth, users, categories, marketplace feed, payment region config, buyer intents, supplier offers/orders/notifications adapters, wallet/deposit compatibility, and Buyer Projects / AI Project Forge main chain; full admin/KYC/order/escrow/message parity still requires ledger gates |
 | Ledger-Based Migration | Migrate Marketplace, Project Forge, RFQ, Order, Wallet, Message, KYC, Dispute, Admin panels | IN_PROGRESS | Legacy UI copied; public marketplace/auth/intent bridge verified; remaining workflows continue module by module |
 
 ## Status Rules
@@ -175,7 +176,7 @@ Global final acceptance:
 | Legacy module | Original surface | Original APIs | Original roles | Original workflow | New path | New API target | Status | Verification command | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Public marketplace | PC/H5 | `/marketplace`, `/categories` | Guest, Buyer, Supplier | Browse categories/products/suppliers | `Ainerwise/modules/procurement/pc`, `h5` | Core `/api/v1/cebu-compat/categories`, `/marketplace/feed`, `/marketplace/items/*` | READY_FOR_VERIFY for UI copy and public Core read bridge | `curl http://procurement.localhost/api/marketplace/feed` | `HTTP 200`, Core listing JSON |
-| Buyer Projects / AI Project Forge | PC/H5 | `/projects`, `/intents`, AI analysis endpoints | Buyer | Create project/request, AI analysis, requirements, compare offers | `Ainerwise/modules/procurement/pc/pages/buyer/projects`, `h5/pages/buyer/projects` | Core buyer project APIs plus `/api/v1/cebu-compat/intents/*` | IN_PROGRESS | `find .../buyer/projects` and authenticated `/api/intents/my` | UI copy present; demo buyer token returns Core intent list |
+| Buyer Projects / AI Project Forge | PC/H5 | `/projects`, `/intents`, AI analysis endpoints | Buyer | Create project/request, AI analysis, requirements, compare offers | `Ainerwise/modules/procurement/pc/pages/buyer/projects`, `h5/pages/buyer/projects` | Core `/api/v1/cebu-compat/buyer/projects*` plus `/api/v1/cebu-compat/intents/*` | IN_PROGRESS; main project-analysis chain READY_FOR_VERIFY | `curl -X POST http://procurement.localhost/api/buyer/projects/.../ai/analyze -H "Authorization: Bearer $token"` | Create project, chat, Core rule analysis, line items, report, publish to procurement request, and cross-user 404 verified |
 | RFQ / Intent / Offer | PC/H5/Admin | `/intents`, `/offers`, `/requests` | Buyer, Supplier, Admin | Request, match supplier, submit offer, award | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/intents`, `/offers`, `/orders` | IN_PROGRESS | `rg "offers|requests|intents" Ainerwise/modules/procurement` | UI copy present; main buyer intent read path verified |
 | Orders / Escrow / Wallet | PC/H5/Admin | `/orders`, `/wallet`, admin payments/escrow | Buyer, Supplier, Finance/Admin | Create order, escrow, release, payout | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/orders/*`, `/api/v1/cebu-compat/wallets/*`, and admin `/api/v1/admin/cebu-trade/deposits` | IN_PROGRESS; Wallet/Deposit bridge READY_FOR_VERIFY | `curl http://procurement.localhost/api/wallets/me -H "Authorization: Bearer $token"` | PC/H5 wallet API, deposit create, submit tx, admin deposits read, and cross-user submit denial verified |
 | Messages / Notifications | PC/H5/Admin | `/messages`, `/notifications` | Buyer, Supplier, Support/Admin | Chat, notification center, admin notification ops | `Ainerwise/modules/procurement/*` | Core `/api/v1/cebu-compat/notifications/*` plus commerce messaging services | IN_PROGRESS | `rg "messages|notifications" Ainerwise/modules/procurement` | UI copy present; compatibility adapter implemented |
@@ -444,6 +445,21 @@ In-app browser opened the three standalone hosts and read visible DOM text.
 | Cross-user submit denial | `curl -sS -o /tmp/proc_wallet_admin_cross.json -w '%{http_code}' -X POST http://procurement.localhost/api/wallets/deposits/$deposit_id/submit-tx -H 'Content-Type: application/json' -H "Authorization: Bearer $admin_token" -d '{"tx_hash":"ADMIN-SHOULD-NOT-OWN"}'` | `404`, `Deposit not found` |
 | H5 wallet host | `curl -sS http://procurement-h5.localhost/api/wallets/me -H "Authorization: Bearer $buyer_token"` | `HTTP 200`, same Core wallet data |
 | Admin deposits | `curl -sS http://procurement-admin.localhost/api/admin/deposits -H "Authorization: Bearer $admin_token"` | `HTTP 200`, Core admin finance deposit list |
+
+### Buyer Projects / AI Project Forge Evidence
+
+| Check | Command | Result |
+| --- | --- | --- |
+| Unauthenticated project list | `curl -sS -o /tmp/proj_unauth.json -w '%{http_code}' http://procurement.localhost/api/buyer/projects` | `401` |
+| Buyer project list | `curl -sS http://procurement.localhost/api/buyer/projects -H "Authorization: Bearer $buyer_token"` | `HTTP 200`, legacy array response |
+| Create project | `curl -sS -X POST http://procurement.localhost/api/buyer/projects -H 'Content-Type: application/json' -H "Authorization: Bearer $buyer_token" -d '{"title":"Codex Villa Smart Upgrade 20260619","project_type":"RENOVATION","country":"Philippines","city":"Cebu City","budget_max":1200000,"currency":"PHP","quality_preference":"MID_RANGE","description":"Villa smart lighting, CCTV, network and door lock upgrade."}'` | `HTTP 201`, Core `buyer_projects` row |
+| Send intake message | `curl -sS -X POST http://procurement.localhost/api/buyer/projects/$project_id/messages -H 'Content-Type: application/json' -H "Authorization: Bearer $buyer_token" -d '{"content":"We need smart lighting for 6 rooms, CCTV around the gate, and stable WiFi coverage."}'` | `HTTP 201`, returns user + assistant messages |
+| Run analysis | `curl -sS -X POST http://procurement.localhost/api/buyer/projects/$project_id/ai/analyze -H "Authorization: Bearer $buyer_token"` | `HTTP 202`, Core AI run status `SUCCESS` |
+| Project detail after analysis | `curl -sS http://procurement.localhost/api/buyer/projects/$project_id -H "Authorization: Bearer $buyer_token"` | `HTTP 200`, includes `line_items.length=3` and `latest_ai_run` |
+| Versioned report | `curl -sS http://procurement.localhost/api/buyer/projects/$project_id/report -H "Authorization: Bearer $buyer_token"` | `HTTP 200`, includes `rows.length=3` |
+| Publish confirmed item | `curl -sS -X PATCH http://procurement.localhost/api/buyer/projects/$project_id/line-items/$item_id -H 'Content-Type: application/json' -H "Authorization: Bearer $buyer_token" -d '{"status":"CONFIRMED"}' && curl -sS -X POST http://procurement.localhost/api/buyer/projects/$project_id/publish -H "Authorization: Bearer $buyer_token"` | `HTTP 200`, creates one Core procurement request |
+| Cross-user project denial | `curl -sS -o /tmp/proj_admin_cross.json -w '%{http_code}' http://procurement.localhost/api/buyer/projects/$project_id -H "Authorization: Bearer $admin_token"` | `404`, `Project not found` |
+| PC/H5 project pages | `curl -sS -o /tmp/page.html -w '%{http_code}' http://procurement.localhost/buyer/projects && curl -sS -o /tmp/page.html -w '%{http_code}' http://procurement-h5.localhost/buyer/projects` | `200`, standalone project entrypoints render |
 
 ### Clean Baseline Evidence
 
