@@ -5,7 +5,7 @@ drop-in migration window. New work should call `/api/v1/commerce/*` directly.
 """
 import uuid
 import io
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 from pydantic import BaseModel
@@ -14,6 +14,7 @@ from sqlalchemy import func, or_, select
 from app.api.deps import CurrentUser, DB
 from app.api.v1.endpoints.files import BUCKET_NAME, get_minio_client
 from app.core.object_storage import new_user_upload_key
+from app.models.backup import BackupJob, BackupSchedule
 from app.models.commerce import (
     CommerceMessage,
     CommerceOrder,
@@ -25,14 +26,23 @@ from app.models.commerce import (
     SupplierListing,
     SupplierOffer,
     TransactionReview,
+    TrustProfile,
+    TrustScoreEvent,
     TradeCategorySchema,
 )
 from app.models.notification import NotificationPreference
+from app.models.region import Region
 from app.models.user import Company, User
 from app.modules.cebu_trade.models import (
     AdCampaign,
     EscrowTransaction,
+    OrderShipping,
+    PaymentEvent,
+    Payout,
     RegionPaymentConfig,
+    SettlementEvent,
+    ShippingRate,
+    ShippingRoute,
     WalletDeposit,
     WalletTransaction,
 )
@@ -52,8 +62,11 @@ from app.modules.cebu_trade.service import (
     list_ad_campaigns,
     list_deposits,
     list_wallet_transactions,
+    refund_escrow,
+    reject_deposit,
     release_escrow,
     update_ad_campaign_status,
+    verify_deposit,
     wallet_balance,
 )
 from app.modules.buyer_project.models import (
@@ -130,7 +143,7 @@ from app.services.commerce_trade import (
     resolve_dispute as resolve_commerce_dispute,
     submit_offer,
 )
-from app.services.commerce_trust import CommerceTrustError, submit_transaction_review
+from app.services.commerce_trust import CommerceTrustError, get_or_create_trust_profile, submit_transaction_review
 from app.services.commerce_messaging import (
     CommerceMessagingAccessDenied,
     CommerceMessagingError,
@@ -786,6 +799,250 @@ def _escrow_as_legacy(row: EscrowTransaction | None) -> dict | None:
         "status": status_map.get(row.status, row.status),
         "created_at": row.created_at,
         "updated_at": row.updated_at,
+    }
+
+
+def _admin_escrow_as_legacy(row: EscrowTransaction | None) -> dict | None:
+    if row is None:
+        return None
+    return {
+        "id": row.id,
+        "order_id": row.order_id,
+        "provider": row.provider,
+        "provider_reference": row.provider_reference,
+        "auth_amount_minor": row.auth_amount_minor,
+        "captured_amount_minor": row.captured_amount_minor,
+        "released_amount_minor": row.released_amount_minor,
+        "refunded_amount_minor": row.refunded_amount_minor,
+        "currency": row.currency,
+        "status": row.status,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _wallet_deposit_as_admin_legacy(row: WalletDeposit) -> dict:
+    return {
+        "id": row.id,
+        "wallet_id": row.wallet_id,
+        "owner_user_id": row.owner_user_id,
+        "amount_minor": row.amount_minor,
+        "currency": row.currency,
+        "network": row.network,
+        "provider": row.provider,
+        "payment_method": row.payment_method,
+        "source_currency": row.source_currency,
+        "target_currency": row.target_currency,
+        "deposit_address": row.deposit_address,
+        "tx_hash": row.tx_hash,
+        "confirmations": row.confirmations,
+        "status": row.status,
+        "submitter_note": row.submitter_note,
+        "admin_note": row.admin_note,
+        "verified_by": row.verified_by,
+        "verified_at": row.verified_at,
+        "rejected_by": row.rejected_by,
+        "rejected_at": row.rejected_at,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _payout_as_admin_legacy(row: Payout) -> dict:
+    return {
+        "id": row.id,
+        "workspace_id": row.workspace_id,
+        "company_id": row.company_id,
+        "supplier_id": row.company_id,
+        "order_id": row.order_id,
+        "escrow_id": row.escrow_id,
+        "amount_minor": row.amount_minor,
+        "currency": row.currency,
+        "provider": row.provider,
+        "method": row.provider,
+        "destination": row.destination,
+        "status": row.status,
+        "risk_hold": row.risk_hold,
+        "provider_reference": row.provider_reference,
+        "failure_reason": row.failure_reason,
+        "scheduled_at": row.scheduled_at,
+        "paid_at": row.paid_at,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _payment_event_as_admin_legacy(row: PaymentEvent) -> dict:
+    return {
+        "id": row.id,
+        "workspace_id": row.workspace_id,
+        "provider": row.provider,
+        "provider_event_id": row.provider_event_id,
+        "event_type": row.event_type,
+        "order_id": row.order_id,
+        "escrow_id": row.escrow_id,
+        "amount_minor": row.amount_minor,
+        "currency": row.currency,
+        "status": row.status,
+        "error_message": row.error_message,
+        "raw_payload": row.raw_payload,
+        "received_at": row.received_at,
+        "processed_at": row.processed_at,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _settlement_event_as_admin_legacy(row: SettlementEvent) -> dict:
+    return {
+        "id": row.id,
+        "payment_intent_id": row.payment_intent_id,
+        "provider": row.provider,
+        "provider_reference": row.provider_reference,
+        "gross_amount_minor": row.gross_amount_minor,
+        "fee_amount_minor": row.fee_amount_minor,
+        "net_amount_minor": row.net_amount_minor,
+        "currency": row.currency,
+        "status": row.status,
+        "raw_payload": row.raw_payload,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _shipping_route_as_admin_legacy(row: ShippingRoute) -> dict:
+    return {
+        "id": row.id,
+        "origin_country": row.origin_country,
+        "origin_region": row.origin_region,
+        "dest_country": row.dest_country,
+        "dest_region": row.dest_region,
+        "shipping_method": row.shipping_method,
+        "description": row.description,
+        "status": row.status,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _shipping_rate_as_admin_legacy(row: ShippingRate) -> dict:
+    return {
+        "id": row.id,
+        "route_id": row.route_id,
+        "weight_min_kg": row.weight_min_kg,
+        "weight_max_kg": row.weight_max_kg,
+        "price_per_kg_minor": row.price_per_kg_minor,
+        "currency": row.currency,
+        "min_charge_minor": row.min_charge_minor,
+        "volume_factor": row.volume_factor,
+        "estimated_days_min": row.estimated_days_min,
+        "estimated_days_max": row.estimated_days_max,
+        "surcharges_json": row.surcharges_json,
+        "valid_from": row.valid_from,
+        "valid_until": row.valid_until,
+        "notes": row.notes,
+        "status": row.status,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _trust_tier(score: int) -> str:
+    if score >= 90:
+        return "DIAMOND"
+    if score >= 75:
+        return "PLATINUM"
+    if score >= 60:
+        return "GOLD"
+    if score >= 40:
+        return "SILVER"
+    return "BRONZE"
+
+
+def _trust_profile_as_admin_legacy(row: TrustProfile, company: Company | None = None) -> dict:
+    metrics = row.metrics_json or {}
+    completion = 50
+    if company is not None:
+        fields = [company.name, company.country, company.city, company.address, company.description, company.website]
+        completion = min(100, 20 + sum(1 for value in fields if value) * 12)
+        if company.verification_status.lower() == "approved":
+            completion = 100
+    dispute_rate = 0
+    if row.completed_orders:
+        dispute_rate = round(row.dispute_count * 100 / row.completed_orders, 2)
+    return {
+        "id": row.id,
+        "entity_id": row.company_id,
+        "entity_type": "SUPPLIER",
+        "company_id": row.company_id,
+        "company_name": company.name if company else None,
+        "portal_key": row.portal_key,
+        "trust_score": row.trust_score,
+        "trust_tier": _trust_tier(row.trust_score),
+        "profile_completion_rate": metrics.get("profile_completion_rate", completion),
+        "deal_completion_rate": metrics.get("deal_completion_rate", 100 if row.completed_orders else 0),
+        "successful_deals_count": row.completed_orders,
+        "canceled_deals_count": metrics.get("canceled_deals_count", 0),
+        "deposit_amount_minor": metrics.get("deposit_amount_minor", 0),
+        "deposit_currency": metrics.get("deposit_currency", "PHP"),
+        "dispute_rate": metrics.get("dispute_rate", dispute_rate),
+        "refund_rate": metrics.get("refund_rate", 0),
+        "completed_orders": row.completed_orders,
+        "dispute_count": row.dispute_count,
+        "review_count": row.review_count,
+        "avg_rating": row.avg_rating,
+        "status": metrics.get("status", "ACTIVE"),
+        "metrics_json": metrics,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _region_extra(row: Region) -> dict:
+    payload = row.tax_rules_json if isinstance(row.tax_rules_json, dict) else {}
+    return payload.get("procurement_admin", {}) if isinstance(payload.get("procurement_admin"), dict) else {}
+
+
+def _region_as_admin_legacy(row: Region) -> dict:
+    extra = _region_extra(row)
+    return {
+        "id": row.id,
+        "name": row.name,
+        "slug": extra.get("slug") or row.code.lower(),
+        "region_type": extra.get("region_type") or "COUNTRY",
+        "country": extra.get("country") or row.name,
+        "city": extra.get("city"),
+        "center_lat": extra.get("center_lat"),
+        "center_lng": extra.get("center_lng"),
+        "default_radius_km": extra.get("default_radius_km") or 15,
+        "status": "ACTIVE" if row.is_active else "DISABLED",
+        "notes": extra.get("notes"),
+        "code": row.code,
+        "currency_code": row.currency_code,
+        "timezone": row.timezone,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _backup_config_from_rows(schedules: list[BackupSchedule], jobs: list[BackupJob]) -> dict:
+    enabled = any(row.enabled for row in schedules) if schedules else True
+    primary = schedules[0] if schedules else None
+    latest_job = jobs[0] if jobs else None
+    latest_success = next((row for row in jobs if row.status == "SUCCESS"), None)
+    return {
+        "enabled": enabled,
+        "backup_storage_path": "/var/backups/ainerwise-procurement",
+        "backup_retention_days": primary.retention_days if primary else 30,
+        "backup_retention_count": primary.retention_count if primary else 10,
+        "default_frequency": primary.frequency if primary else "WEEKLY",
+        "total_schedules": len(schedules),
+        "total_jobs": len(jobs),
+        "successful_jobs": sum(1 for row in jobs if row.status == "SUCCESS"),
+        "failed_jobs": sum(1 for row in jobs if row.status == "FAILED"),
+        "last_run_at": latest_job.started_at if latest_job else None,
+        "last_success_at": latest_success.finished_at if latest_success else None,
+        "next_run_at": min((row.next_run_at for row in schedules if row.enabled and row.next_run_at), default=None),
     }
 
 
@@ -3027,6 +3284,549 @@ async def legacy_admin_flag_kyc_media(document_id: uuid.UUID, data: dict, db: DB
     await db.refresh(document)
     await db.refresh(flag)
     return {"document_id": document.id, "status": document.status, "risk_flag_id": flag.id}
+
+
+@router.get("/admin/shipping/routes")
+async def legacy_admin_shipping_routes(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    rows = list((await db.execute(select(ShippingRoute).order_by(ShippingRoute.created_at.desc()))).scalars())
+    return [_shipping_route_as_admin_legacy(row) for row in rows]
+
+
+@router.post("/admin/shipping/routes", status_code=201)
+async def legacy_admin_create_shipping_route(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = ShippingRoute(
+        origin_country=str(data.get("origin_country") or "").upper(),
+        origin_region=data.get("origin_region"),
+        dest_country=str(data.get("dest_country") or "").upper(),
+        dest_region=data.get("dest_region"),
+        shipping_method=str(data.get("shipping_method") or "LOCAL_DELIVERY").upper(),
+        description=data.get("description"),
+        status=str(data.get("status") or "ACTIVE").upper(),
+    )
+    if not row.origin_country or not row.dest_country:
+        raise HTTPException(status_code=422, detail="origin_country and dest_country are required")
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    return _shipping_route_as_admin_legacy(row)
+
+
+@router.patch("/admin/shipping/routes/{route_id}")
+async def legacy_admin_update_shipping_route(route_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(ShippingRoute, route_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Shipping route not found")
+    for key in ("origin_country", "origin_region", "dest_country", "dest_region", "shipping_method", "description", "status"):
+        if key in data:
+            value = data[key]
+            if key in {"origin_country", "dest_country", "shipping_method", "status"} and value is not None:
+                value = str(value).upper()
+            setattr(row, key, value)
+    await db.commit()
+    await db.refresh(row)
+    return _shipping_route_as_admin_legacy(row)
+
+
+@router.get("/admin/shipping/rates")
+async def legacy_admin_shipping_rates(db: DB, user: CurrentUser, route_id: uuid.UUID | None = None):
+    _require_legacy_admin(user)
+    stmt = select(ShippingRate).order_by(ShippingRate.created_at.desc())
+    if route_id:
+        stmt = stmt.where(ShippingRate.route_id == route_id)
+    rows = list((await db.execute(stmt)).scalars())
+    return [_shipping_rate_as_admin_legacy(row) for row in rows]
+
+
+@router.post("/admin/shipping/rates", status_code=201)
+async def legacy_admin_create_shipping_rate(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    route_id = _uuid_or_none(data.get("route_id"))
+    if route_id is None or await db.get(ShippingRoute, route_id) is None:
+        raise HTTPException(status_code=404, detail="Shipping route not found")
+    row = ShippingRate(
+        route_id=route_id,
+        weight_min_kg=float(data.get("weight_min_kg") or 0),
+        weight_max_kg=float(data.get("weight_max_kg") or 99999),
+        price_per_kg_minor=int(data.get("price_per_kg_minor") or 0),
+        currency=str(data.get("currency") or "USD").upper(),
+        min_charge_minor=int(data.get("min_charge_minor") or 0),
+        volume_factor=float(data.get("volume_factor") or 5000),
+        estimated_days_min=int(data.get("estimated_days_min") or 1),
+        estimated_days_max=int(data.get("estimated_days_max") or 7),
+        surcharges_json=data.get("surcharges_json"),
+        valid_from=data.get("valid_from") or date.today(),
+        valid_until=data.get("valid_until"),
+        notes=data.get("notes"),
+        status=str(data.get("status") or "ACTIVE").upper(),
+    )
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    return _shipping_rate_as_admin_legacy(row)
+
+
+@router.patch("/admin/shipping/rates/{rate_id}")
+async def legacy_admin_update_shipping_rate(rate_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(ShippingRate, rate_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Shipping rate not found")
+    for key in (
+        "weight_min_kg",
+        "weight_max_kg",
+        "price_per_kg_minor",
+        "currency",
+        "min_charge_minor",
+        "volume_factor",
+        "estimated_days_min",
+        "estimated_days_max",
+        "surcharges_json",
+        "valid_from",
+        "valid_until",
+        "notes",
+        "status",
+    ):
+        if key in data:
+            value = data[key]
+            if key in {"currency", "status"} and value is not None:
+                value = str(value).upper()
+            setattr(row, key, value)
+    await db.commit()
+    await db.refresh(row)
+    return _shipping_rate_as_admin_legacy(row)
+
+
+@router.get("/admin/shipping/statistics")
+async def legacy_admin_shipping_statistics(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    routes = list((await db.execute(select(ShippingRoute))).scalars())
+    rates = list((await db.execute(select(ShippingRate))).scalars())
+    shipments = list((await db.execute(select(OrderShipping))).scalars())
+    active_routes = [row for row in routes if row.status == "ACTIVE"]
+    active_rates = [row for row in rates if row.status == "ACTIVE"]
+    by_method: dict[str, int] = {}
+    for row in routes:
+        by_method[row.shipping_method] = by_method.get(row.shipping_method, 0) + 1
+    route_labels = {
+        row.id: f"{row.origin_country}->{row.dest_country} · {row.shipping_method}"
+        for row in routes
+    }
+    rate_avgs = [
+        {
+            "route_id": row.route_id,
+            "route_label": route_labels.get(row.route_id, str(row.route_id)),
+            "avg_price_per_kg_minor": row.price_per_kg_minor,
+            "avg_eta_max_days": row.estimated_days_max,
+        }
+        for row in rates
+    ]
+    avg_price = int(sum(row.price_per_kg_minor for row in rates) / len(rates)) if rates else 0
+    return {
+        "total_routes": len(routes),
+        "active_routes": len(active_routes),
+        "inactive_routes": len(routes) - len(active_routes),
+        "total_rates": len(rates),
+        "active_rates": len(active_rates),
+        "inactive_rates": len(rates) - len(active_rates),
+        "pending_shipments": sum(1 for row in shipments if row.status == "PENDING"),
+        "shipped_orders": sum(1 for row in shipments if row.status in {"SHIPPED", "IN_TRANSIT"}),
+        "delivered_orders": sum(1 for row in shipments if row.status == "DELIVERED"),
+        "avg_price_per_kg_minor": avg_price,
+        "last_route_updated_at": max((row.updated_at for row in routes if row.updated_at), default=None),
+        "last_rate_updated_at": max((row.updated_at for row in rates if row.updated_at), default=None),
+        "routes_by_method": by_method,
+        "top_expensive_routes": sorted(rate_avgs, key=lambda item: item["avg_price_per_kg_minor"], reverse=True)[:5],
+        "top_cheapest_routes": sorted(rate_avgs, key=lambda item: item["avg_price_per_kg_minor"])[:5],
+        "top_slowest_routes": sorted(rate_avgs, key=lambda item: item["avg_eta_max_days"], reverse=True)[:5],
+    }
+
+
+@router.get("/admin/escrow")
+async def legacy_admin_escrow_transactions(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    rows = list((await db.execute(select(EscrowTransaction).order_by(EscrowTransaction.created_at.desc()).limit(200))).scalars())
+    return [_admin_escrow_as_legacy(row) for row in rows]
+
+
+@router.post("/admin/escrow/{escrow_id}/release")
+async def legacy_admin_release_escrow(
+    escrow_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    data: dict | None = None,
+):
+    _require_legacy_admin(user)
+    try:
+        row = await release_escrow(db, escrow_id, (data or {}).get("amount_minor"))
+        await db.commit()
+        await db.refresh(row)
+        return _admin_escrow_as_legacy(row)
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.post("/admin/escrow/{escrow_id}/refund")
+async def legacy_admin_refund_escrow(
+    escrow_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    data: dict | None = None,
+):
+    _require_legacy_admin(user)
+    body = data or {}
+    try:
+        row = await refund_escrow(
+            db,
+            escrow_id,
+            body.get("amount_minor"),
+            body.get("reason") or body.get("reason_text") or body.get("reason_code"),
+        )
+        await db.commit()
+        await db.refresh(row)
+        return _admin_escrow_as_legacy(row)
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.get("/admin/deposits")
+async def legacy_admin_deposits(db: DB, user: CurrentUser, status: str | None = None):
+    _require_legacy_admin(user)
+    stmt = select(WalletDeposit).order_by(WalletDeposit.created_at.desc()).limit(200)
+    if status:
+        stmt = stmt.where(WalletDeposit.status == status)
+    rows = list((await db.execute(stmt)).scalars())
+    return [_wallet_deposit_as_admin_legacy(row) for row in rows]
+
+
+@router.post("/admin/deposits/{deposit_id}/verify")
+async def legacy_admin_verify_deposit(
+    deposit_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    data: dict | None = None,
+):
+    _require_legacy_admin(user)
+    try:
+        row = await verify_deposit(db, deposit_id, user.id, (data or {}).get("admin_note"))
+        await db.commit()
+        await db.refresh(row)
+        return _wallet_deposit_as_admin_legacy(row)
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.post("/admin/deposits/{deposit_id}/reject")
+async def legacy_admin_reject_deposit(
+    deposit_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    data: dict | None = None,
+):
+    _require_legacy_admin(user)
+    try:
+        row = await reject_deposit(db, deposit_id, user.id, (data or {}).get("admin_note"))
+        await db.commit()
+        await db.refresh(row)
+        return _wallet_deposit_as_admin_legacy(row)
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.get("/admin/payouts")
+async def legacy_admin_payouts(db: DB, user: CurrentUser, status: str | None = None):
+    _require_legacy_admin(user)
+    stmt = select(Payout).order_by(Payout.created_at.desc()).limit(200)
+    if status:
+        stmt = stmt.where(Payout.status == status)
+    rows = list((await db.execute(stmt)).scalars())
+    return [_payout_as_admin_legacy(row) for row in rows]
+
+
+@router.get("/admin/payment-events")
+async def legacy_admin_payment_events(db: DB, user: CurrentUser, status: str | None = None):
+    _require_legacy_admin(user)
+    stmt = select(PaymentEvent).order_by(PaymentEvent.created_at.desc()).limit(200)
+    if status:
+        stmt = stmt.where(PaymentEvent.status == status)
+    rows = list((await db.execute(stmt)).scalars())
+    return [_payment_event_as_admin_legacy(row) for row in rows]
+
+
+@router.get("/admin/settlement-events")
+async def legacy_admin_settlement_events(db: DB, user: CurrentUser, status: str | None = None):
+    _require_legacy_admin(user)
+    stmt = select(SettlementEvent).order_by(SettlementEvent.created_at.desc()).limit(200)
+    if status:
+        stmt = stmt.where(SettlementEvent.status == status)
+    rows = list((await db.execute(stmt)).scalars())
+    return [_settlement_event_as_admin_legacy(row) for row in rows]
+
+
+@router.get("/admin/payment-region-configs")
+async def legacy_admin_payment_region_configs(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    rows = list((await db.execute(select(RegionPaymentConfig).order_by(RegionPaymentConfig.country_code.asc()))).scalars())
+    if not rows:
+        return [_payment_region_config_as_legacy(None, "PH")]
+    return [_payment_region_config_as_legacy(row, row.country_code) for row in rows]
+
+
+@router.patch("/admin/payment-region-configs/{config_id}")
+async def legacy_admin_update_payment_region_config(config_id: str, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = None
+    try:
+        row = await db.get(RegionPaymentConfig, uuid.UUID(config_id))
+    except ValueError:
+        row = (
+            await db.execute(
+                select(RegionPaymentConfig).where(RegionPaymentConfig.country_code == config_id.upper()[:2])
+            )
+        ).scalar_one_or_none()
+    if row is None:
+        raise HTTPException(status_code=404, detail="Payment region config not found")
+    for key in (
+        "country_name",
+        "local_currency",
+        "default_settlement_currency",
+        "default_transaction_mode",
+        "enabled_currencies",
+        "enabled_payment_methods",
+        "cross_border_currencies",
+        "force_usd_bridge",
+        "allow_supplier_payout_currency",
+        "is_active",
+    ):
+        if key in data:
+            value = data[key]
+            if key in {"local_currency", "default_settlement_currency", "default_transaction_mode"} and value is not None:
+                value = str(value).upper()
+            setattr(row, key, value)
+    await db.commit()
+    await db.refresh(row)
+    return _payment_region_config_as_legacy(row, row.country_code)
+
+
+@router.get("/admin/regions")
+async def legacy_admin_regions(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    rows = list((await db.execute(select(Region).order_by(Region.created_at.desc()))).scalars())
+    return [_region_as_admin_legacy(row) for row in rows]
+
+
+@router.post("/admin/regions", status_code=201)
+async def legacy_admin_create_region(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    slug = str(data.get("slug") or data.get("code") or data.get("name") or "").strip().lower()
+    code = (data.get("code") or slug[:10]).upper()
+    if not code:
+        raise HTTPException(status_code=422, detail="slug or code is required")
+    existing = (await db.execute(select(Region).where(Region.code == code))).scalar_one_or_none()
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="Region code already exists")
+    extra = {
+        "slug": slug,
+        "region_type": data.get("region_type") or "CITY",
+        "country": data.get("country"),
+        "city": data.get("city"),
+        "center_lat": data.get("center_lat"),
+        "center_lng": data.get("center_lng"),
+        "default_radius_km": data.get("default_radius_km") or 15,
+        "notes": data.get("notes"),
+    }
+    row = Region(
+        code=code,
+        name=data.get("name") or code,
+        currency_code=str(data.get("currency_code") or ("PHP" if str(data.get("country") or "").lower() == "philippines" else "USD")).upper(),
+        language_codes_json=data.get("language_codes_json") or ["en"],
+        tax_rules_json={"procurement_admin": extra},
+        timezone=data.get("timezone") or "Asia/Manila",
+        is_active=str(data.get("status") or "ACTIVE").upper() == "ACTIVE",
+    )
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    return _region_as_admin_legacy(row)
+
+
+@router.patch("/admin/regions/{region_id}")
+async def legacy_admin_update_region(region_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(Region, region_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Region not found")
+    if "name" in data:
+        row.name = data["name"]
+    if "currency_code" in data:
+        row.currency_code = str(data["currency_code"]).upper()
+    if "timezone" in data:
+        row.timezone = data["timezone"]
+    if "status" in data:
+        row.is_active = str(data["status"]).upper() == "ACTIVE"
+    extra = _region_extra(row)
+    for key in ("slug", "region_type", "country", "city", "center_lat", "center_lng", "default_radius_km", "notes"):
+        if key in data:
+            extra[key] = data[key]
+    base = dict(row.tax_rules_json or {})
+    base["procurement_admin"] = extra
+    row.tax_rules_json = base
+    await db.commit()
+    await db.refresh(row)
+    return _region_as_admin_legacy(row)
+
+
+@router.get("/maps/coverage/estimate")
+async def legacy_maps_coverage_estimate(
+    db: DB,
+    user: CurrentUser,
+    lat: float | None = None,
+    lng: float | None = None,
+    radius_km: float | None = None,
+):
+    regions = list((await db.execute(select(Region).where(Region.is_active.is_(True)))).scalars())
+    companies = list((await db.execute(select(Company).where(Company.verification_status != "rejected"))).scalars())
+    active_names = [_region_as_admin_legacy(row)["name"] for row in regions]
+    return {
+        "lat": lat,
+        "lng": lng,
+        "radius_km": radius_km or 15,
+        "matching_companies": len(companies),
+        "matching_branches": len(companies),
+        "active_regions": active_names,
+    }
+
+
+@router.get("/admin/trust/users")
+async def legacy_admin_trust_users(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    rows = list((await db.execute(select(TrustProfile).order_by(TrustProfile.updated_at.desc()).limit(200))).scalars())
+    company_ids = [row.company_id for row in rows]
+    companies = {}
+    if company_ids:
+        company_rows = list((await db.execute(select(Company).where(Company.id.in_(company_ids)))).scalars())
+        companies = {row.id: row for row in company_rows}
+    return [_trust_profile_as_admin_legacy(row, companies.get(row.company_id)) for row in rows]
+
+
+@router.post("/admin/trust/users/{entity_id}/recalculate")
+async def legacy_admin_recalculate_trust_user(entity_id: uuid.UUID, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    company = await db.get(Company, entity_id)
+    if company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    profile = await get_or_create_trust_profile(db, company_id=company.id, portal_key="cebu")
+    before = profile.trust_score
+    score = 50 + min(profile.completed_orders * 5, 30)
+    if profile.avg_rating is not None:
+        score += int(float(profile.avg_rating) * 8)
+    score -= profile.dispute_count * 10
+    profile.trust_score = max(0, min(100, score))
+    db.add(
+        TrustScoreEvent(
+            trust_profile_id=profile.id,
+            event_type="ADMIN_RECALCULATED",
+            score_delta=profile.trust_score - before,
+            before_score=before,
+            after_score=profile.trust_score,
+            reason="Admin recalculated from procurement trust console",
+            related_entity_type="COMPANY",
+            related_entity_id=company.id,
+            created_by=user.id,
+        )
+    )
+    await db.commit()
+    await db.refresh(profile)
+    return _trust_profile_as_admin_legacy(profile, company)
+
+
+@router.post("/admin/trust/{entity_type}/{entity_id}/adjust")
+async def legacy_admin_adjust_trust(entity_type: str, entity_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    if entity_type.upper() not in {"SUPPLIER", "COMPANY"}:
+        raise HTTPException(status_code=422, detail="Only supplier/company trust adjustment is supported")
+    company = await db.get(Company, entity_id)
+    if company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    profile = await get_or_create_trust_profile(db, company_id=company.id, portal_key="cebu")
+    delta = int(data.get("score_delta") or data.get("delta") or 0)
+    before = profile.trust_score
+    profile.trust_score = max(0, min(100, profile.trust_score + delta))
+    metrics = dict(profile.metrics_json or {})
+    adjustments = list(metrics.get("admin_adjustments") or [])
+    adjustments.append(
+        {
+            "delta": delta,
+            "reason": data.get("reason"),
+            "actor_user_id": str(user.id),
+            "at": datetime.now(timezone.utc).isoformat(),
+        }
+    )
+    metrics["admin_adjustments"] = adjustments[-50:]
+    profile.metrics_json = metrics
+    db.add(
+        TrustScoreEvent(
+            trust_profile_id=profile.id,
+            event_type="ADMIN_ADJUSTED",
+            score_delta=profile.trust_score - before,
+            before_score=before,
+            after_score=profile.trust_score,
+            reason=data.get("reason") or "Manual admin trust adjustment",
+            related_entity_type="COMPANY",
+            related_entity_id=company.id,
+            created_by=user.id,
+        )
+    )
+    await db.commit()
+    await db.refresh(profile)
+    return _trust_profile_as_admin_legacy(profile, company)
+
+
+@router.get("/admin/backups/config")
+async def legacy_admin_backup_config(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    schedules = list((await db.execute(select(BackupSchedule).order_by(BackupSchedule.created_at.asc()))).scalars())
+    jobs = list((await db.execute(select(BackupJob).order_by(BackupJob.created_at.desc()).limit(100))).scalars())
+    return _backup_config_from_rows(schedules, jobs)
+
+
+@router.put("/admin/backups/config")
+async def legacy_admin_update_backup_config(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    schedules = list((await db.execute(select(BackupSchedule).order_by(BackupSchedule.created_at.asc()))).scalars())
+    if not schedules:
+        schedule = BackupSchedule(
+            name="Default Procurement Backup",
+            frequency=data.get("default_frequency") or "WEEKLY",
+            hour=2,
+            minute=0,
+            enabled=bool(data.get("enabled", True)),
+            retention_count=int(data.get("backup_retention_count") or 10),
+            retention_days=int(data.get("backup_retention_days") or 30),
+            created_by=user.id,
+        )
+        db.add(schedule)
+        schedules = [schedule]
+    else:
+        for schedule in schedules:
+            if "enabled" in data:
+                schedule.enabled = bool(data["enabled"])
+            if "backup_retention_count" in data:
+                schedule.retention_count = int(data["backup_retention_count"] or schedule.retention_count)
+            if "backup_retention_days" in data:
+                schedule.retention_days = int(data["backup_retention_days"] or schedule.retention_days)
+    await db.commit()
+    jobs = list((await db.execute(select(BackupJob).order_by(BackupJob.created_at.desc()).limit(100))).scalars())
+    return {
+        **_backup_config_from_rows(schedules, jobs),
+        "backup_storage_path": data.get("backup_storage_path") or "/var/backups/ainerwise-procurement",
+    }
 
 
 @router.post("/intents", status_code=201)

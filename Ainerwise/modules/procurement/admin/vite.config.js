@@ -21,13 +21,34 @@ export default defineConfig({
       '/api/auth': coreProxy((p) => p.replace(/^\/api\/auth/, '/api/v1/auth')),
       '/api/users': coreProxy((p) => p.replace(/^\/api\/users/, '/api/v1/cebu-compat/users')),
       '/api/admin/shipping': coreProxy((p) =>
-        p.replace(/^\/api\/admin\/shipping/, '/api/v1/admin/cebu-trade/shipping')
+        p.replace(/^\/api\/admin\/shipping/, '/api/v1/cebu-compat/admin/shipping')
       ),
       '/api/admin/deposits': coreProxy((p) =>
-        p.replace(/^\/api\/admin\/deposits/, '/api/v1/admin/cebu-trade/deposits')
+        p.replace(/^\/api\/admin\/deposits/, '/api/v1/cebu-compat/admin/deposits')
       ),
       '/api/admin/payouts': coreProxy((p) =>
-        p.replace(/^\/api\/admin\/payouts/, '/api/v1/admin/cebu-trade/payouts')
+        p.replace(/^\/api\/admin\/payouts/, '/api/v1/cebu-compat/admin/payouts')
+      ),
+      '/api/admin/escrow': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/escrow/, '/api/v1/cebu-compat/admin/escrow')
+      ),
+      '/api/admin/payment-events': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/payment-events/, '/api/v1/cebu-compat/admin/payment-events')
+      ),
+      '/api/admin/settlement-events': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/settlement-events/, '/api/v1/cebu-compat/admin/settlement-events')
+      ),
+      '/api/admin/payment-region-configs': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/payment-region-configs/, '/api/v1/cebu-compat/admin/payment-region-configs')
+      ),
+      '/api/admin/regions': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/regions/, '/api/v1/cebu-compat/admin/regions')
+      ),
+      '/api/admin/trust': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/trust/, '/api/v1/cebu-compat/admin/trust')
+      ),
+      '/api/admin/backups/config': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/backups\/config/, '/api/v1/cebu-compat/admin/backups/config')
       ),
       '/api/admin/ad-campaigns': coreProxy((p) =>
         p.replace(/^\/api\/admin\/ad-campaigns/, '/api/v1/cebu-compat/admin/ad-campaigns')
