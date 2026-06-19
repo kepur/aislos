@@ -61,6 +61,7 @@ Principle:
 | PZL.10 | Buyer Projects / AI Project Forge main chain through AinerWise Core | READY_FOR_VERIFY | `/api/buyer/projects*` compatibility writes to Core buyer project tables; create, chat, rule-based Core analysis, line items, report, confirm, publish-to-procurement-request, PC/H5 entrypoints, and cross-user 404 verified |
 | PZL.11 | Orders / Escrow / Delivery / Reviews compatibility through AinerWise Core | READY_FOR_VERIFY | `/api/orders/*` now supports order detail with real escrow/delivery, wallet payment, supplier delivery status progression, buyer acceptance, escrow release, supplier wallet credit, seller review, buyer review, supplier review summary, and cross-supplier 403 verified |
 | PZL.12 | Messages / Notifications compatibility through AinerWise Core | READY_FOR_VERIFY | `/api/threads/order/{order_id}/messages` maps legacy PC/H5 order chat to Core `CommerceThread/CommerceMessage`; buyer post, supplier read/reply, buyer read, notification mapping, mark-read, and cross-supplier 403 verified |
+| PZL.13 | Supplier Catalog / Ads compatibility through AinerWise Core | READY_FOR_VERIFY | `/api/supplier/catalog/items`, `/api/merchant/ad-campaigns`, and `/api/admin/ad-campaigns` now route to Core `supplier_listings` and `ad_campaigns`; supplier create/list/update/delete, campaign create/submit/admin approve/supplier pause, cross-supplier 404s, Nginx `nginx -t`, backend `py_compile`, and PC/H5/Admin builds verified |
 
 Follow-up agents:
 

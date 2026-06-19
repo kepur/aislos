@@ -27,7 +27,13 @@ from app.models.commerce import (
 )
 from app.models.notification import NotificationPreference
 from app.models.user import Company, User
-from app.modules.cebu_trade.models import EscrowTransaction, RegionPaymentConfig, WalletDeposit, WalletTransaction
+from app.modules.cebu_trade.models import (
+    AdCampaign,
+    EscrowTransaction,
+    RegionPaymentConfig,
+    WalletDeposit,
+    WalletTransaction,
+)
 from app.modules.cebu_trade.schemas import (
     WalletDepositRead,
     WalletRead,
@@ -36,13 +42,16 @@ from app.modules.cebu_trade.schemas import (
 from app.modules.cebu_trade.service import (
     CebuTradeError,
     capture_escrow,
+    create_ad_campaign,
     create_deposit,
     create_escrow,
     get_or_create_wallet,
     get_escrow_for_order,
+    list_ad_campaigns,
     list_deposits,
     list_wallet_transactions,
     release_escrow,
+    update_ad_campaign_status,
     wallet_balance,
 )
 from app.modules.buyer_project.models import (
@@ -98,6 +107,7 @@ from app.services.commerce_trade import (
     award_offer,
     bind_listing_to_request,
     complete_order,
+    create_listing,
     create_delivery,
     create_procurement_request,
     list_deliveries,
@@ -311,6 +321,150 @@ def _user_as_legacy(user: User) -> dict:
     data["status"] = "ACTIVE" if user.is_active else "INACTIVE"
     data["two_fa_enabled"] = False
     return data
+
+
+def _require_legacy_admin(user: User) -> None:
+    if user.role not in ("admin", "super_admin", "finance"):
+        raise HTTPException(status_code=403, detail="Admin privileges required")
+
+
+def _uuid_or_none(value: object | None) -> uuid.UUID | None:
+    if value in (None, ""):
+        return None
+    if isinstance(value, uuid.UUID):
+        return value
+    try:
+        return uuid.UUID(str(value))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail="Invalid UUID value") from exc
+
+
+def _company_as_legacy(row: Company) -> dict:
+    contact_info = row.contact_info or {}
+    return {
+        "id": row.id,
+        "name": row.name,
+        "type": row.type,
+        "country": row.country,
+        "city": row.city,
+        "address": row.address,
+        "phone": contact_info.get("phone"),
+        "email": contact_info.get("email"),
+        "website": row.website,
+        "description": row.description,
+        "verification_status": row.verification_status,
+        "contact_info": contact_info,
+        "logo_url": row.logo_url,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _catalog_status_to_core(status: str | None) -> str | None:
+    if status is None:
+        return None
+    maps = {
+        "ACTIVE": "active",
+        "INACTIVE": "inactive",
+        "DRAFT": "draft",
+        "ARCHIVED": "archived",
+        "DELETED": "archived",
+    }
+    return maps.get(str(status).upper(), str(status).lower())
+
+
+def _catalog_status_as_legacy(status: str | None) -> str:
+    maps = {
+        "active": "ACTIVE",
+        "inactive": "INACTIVE",
+        "draft": "DRAFT",
+        "archived": "DELETED",
+    }
+    return maps.get((status or "").lower(), (status or "").upper())
+
+
+def _catalog_attrs_from_payload(data: dict, existing: dict | None = None) -> dict:
+    attrs = dict(existing or {})
+    for key in (
+        "description",
+        "unit",
+        "stock_qty",
+        "images",
+        "tags",
+        "market_mode",
+        "min_order_qty",
+        "origin_country",
+        "view_count",
+        "order_count",
+    ):
+        if key in data:
+            attrs[key] = data.get(key)
+    extra = data.get("attributes_json") or data.get("attrs_json") or {}
+    if isinstance(extra, dict):
+        attrs.update(extra)
+    return attrs
+
+
+def _catalog_item_as_legacy(row: SupplierListing, *, company_name: str | None = None) -> dict:
+    attrs = row.attributes_json or {}
+    return {
+        "id": row.id,
+        "company_id": row.company_id,
+        "company_name": company_name,
+        "category_id": row.category_schema_id,
+        "category_schema_id": row.category_schema_id,
+        "title": row.title,
+        "description": attrs.get("description"),
+        "price_minor": row.price_minor or 0,
+        "currency": row.currency,
+        "unit": attrs.get("unit") or "pcs",
+        "stock_qty": attrs.get("stock_qty") or 0,
+        "images": attrs.get("images") or [],
+        "tags": attrs.get("tags") or [],
+        "market_mode": attrs.get("market_mode") or "B2B",
+        "min_order_qty": attrs.get("min_order_qty") or 1,
+        "origin_country": attrs.get("origin_country"),
+        "view_count": attrs.get("view_count") or 0,
+        "order_count": attrs.get("order_count") or 0,
+        "status": _catalog_status_as_legacy(row.status),
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _ad_status_to_core(status: str) -> str:
+    value = (status or "").upper()
+    if value not in {"DRAFT", "PENDING_REVIEW", "ACTIVE", "PAUSED", "REJECTED", "COMPLETED"}:
+        raise HTTPException(status_code=422, detail="Unsupported campaign status")
+    return value
+
+
+def _ad_campaign_as_legacy(row: AdCampaign) -> dict:
+    return {
+        "id": row.id,
+        "company_id": row.company_id,
+        "catalog_item_id": row.listing_id,
+        "listing_id": row.listing_id,
+        "title": row.title,
+        "name": row.title,
+        "placement": row.placement,
+        "target_category_id": row.target_category_id,
+        "target_keywords": row.target_keywords or [],
+        "target_countries": row.target_countries or [],
+        "budget_minor": row.budget_minor,
+        "spent_minor": row.spent_minor,
+        "bid_per_click_minor": row.bid_per_click_minor,
+        "currency": row.currency,
+        "status": row.status,
+        "rejection_reason": row.rejection_reason,
+        "starts_at": row.starts_at,
+        "ends_at": row.ends_at,
+        "impressions": row.impressions,
+        "clicks": row.clicks,
+        "conversions": row.conversions,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
 
 
 def _intent_as_legacy(row: ProcurementRequest) -> dict:
@@ -995,6 +1149,16 @@ def _listing_as_legacy(item) -> dict:
 @router.get("/users/me")
 async def legacy_get_me(user: CurrentUser):
     return _user_as_legacy(user)
+
+
+@router.get("/companies/me")
+async def legacy_get_my_company(db: DB, user: CurrentUser):
+    if not user.company_id:
+        raise HTTPException(status_code=404, detail="Company not found")
+    company = await db.get(Company, user.company_id)
+    if company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    return _company_as_legacy(company)
 
 
 @router.patch("/users/me")
@@ -1830,6 +1994,282 @@ async def legacy_marketplace_item(item_id: uuid.UUID, db: DB):
         "is_sponsored": False,
         "created_at": listing.created_at,
     }
+
+
+@router.get("/supplier/catalog/items")
+async def legacy_supplier_catalog_items(
+    db: DB,
+    user: CurrentUser,
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+    keyword: str | None = None,
+    status: str | None = None,
+    market_mode: str | None = None,
+    category_id: uuid.UUID | None = None,
+):
+    try:
+        company_id = require_supplier_company(user, requested_company_id=None)
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    stmt = select(SupplierListing).where(SupplierListing.company_id == company_id)
+    if keyword:
+        stmt = stmt.where(SupplierListing.title.ilike(f"%{keyword.strip()}%"))
+    if category_id:
+        stmt = stmt.where(SupplierListing.category_schema_id == category_id)
+    if status:
+        stmt = stmt.where(SupplierListing.status == _catalog_status_to_core(status))
+    else:
+        stmt = stmt.where(SupplierListing.status != "archived")
+    rows = list((await db.execute(stmt.order_by(SupplierListing.created_at.desc()))).scalars())
+    if market_mode:
+        rows = [
+            row
+            for row in rows
+            if (row.attributes_json or {}).get("market_mode", "B2B").upper() == market_mode.upper()
+        ]
+    total = len(rows)
+    offset = (page - 1) * page_size
+    page_rows = rows[offset : offset + page_size]
+    company = await db.get(Company, company_id)
+    return {
+        "items": [_catalog_item_as_legacy(row, company_name=company.name if company else None) for row in page_rows],
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "has_next": offset + page_size < total,
+    }
+
+
+@router.post("/supplier/catalog/items", status_code=201)
+async def legacy_create_supplier_catalog_item(data: dict, db: DB, user: CurrentUser):
+    try:
+        company_id = require_supplier_company(user, requested_company_id=data.get("company_id"))
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    title = str(data.get("title") or "").strip()
+    if not title:
+        raise HTTPException(status_code=422, detail="title is required")
+    category_id = _uuid_or_none(data.get("category_schema_id") or data.get("category_id"))
+    region_id = _uuid_or_none(data.get("region_id"))
+    attrs = _catalog_attrs_from_payload(data)
+    row = await create_listing(
+        db,
+        company_id=company_id,
+        region_id=region_id,
+        category_schema_id=category_id,
+        title=title,
+        attributes_json=attrs,
+        price_minor=int(data.get("price_minor") or 0),
+        currency=str(data.get("currency") or "PHP").upper(),
+        status=_catalog_status_to_core(data.get("status")) or "active",
+        legacy_catalog_item_id=data.get("legacy_catalog_item_id"),
+    )
+    await db.commit()
+    await db.refresh(row)
+    company = await db.get(Company, company_id)
+    return _catalog_item_as_legacy(row, company_name=company.name if company else None)
+
+
+@router.get("/supplier/catalog/items/{item_id}")
+async def legacy_get_supplier_catalog_item(item_id: uuid.UUID, db: DB, user: CurrentUser):
+    try:
+        company_id = require_supplier_company(user, requested_company_id=None)
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    row = await db.get(SupplierListing, item_id)
+    if row is None or row.company_id != company_id or row.status == "archived":
+        raise HTTPException(status_code=404, detail="Catalog item not found")
+    company = await db.get(Company, company_id)
+    return _catalog_item_as_legacy(row, company_name=company.name if company else None)
+
+
+@router.patch("/supplier/catalog/items/{item_id}")
+async def legacy_update_supplier_catalog_item(item_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    try:
+        company_id = require_supplier_company(user, requested_company_id=data.get("company_id"))
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    row = await db.get(SupplierListing, item_id)
+    if row is None or row.company_id != company_id or row.status == "archived":
+        raise HTTPException(status_code=404, detail="Catalog item not found")
+    if "title" in data and data.get("title"):
+        row.title = str(data["title"]).strip()
+    if "category_id" in data or "category_schema_id" in data:
+        row.category_schema_id = _uuid_or_none(data.get("category_schema_id") or data.get("category_id"))
+    if "region_id" in data:
+        row.region_id = _uuid_or_none(data.get("region_id"))
+    if "price_minor" in data:
+        row.price_minor = int(data.get("price_minor") or 0)
+    if "currency" in data and data.get("currency"):
+        row.currency = str(data["currency"]).upper()
+    if "status" in data:
+        row.status = _catalog_status_to_core(data.get("status")) or row.status
+    row.attributes_json = _catalog_attrs_from_payload(data, row.attributes_json)
+    await db.commit()
+    await db.refresh(row)
+    company = await db.get(Company, company_id)
+    return _catalog_item_as_legacy(row, company_name=company.name if company else None)
+
+
+@router.delete("/supplier/catalog/items/{item_id}", status_code=204)
+async def legacy_delete_supplier_catalog_item(item_id: uuid.UUID, db: DB, user: CurrentUser):
+    try:
+        company_id = require_supplier_company(user, requested_company_id=None)
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    row = await db.get(SupplierListing, item_id)
+    if row is None or row.company_id != company_id or row.status == "archived":
+        raise HTTPException(status_code=404, detail="Catalog item not found")
+    row.status = "archived"
+    await db.commit()
+    return None
+
+
+async def _owned_ad_campaign(db: DB, user: User, campaign_id: uuid.UUID) -> AdCampaign:
+    try:
+        company_id = require_supplier_company(user, requested_company_id=None)
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    row = await db.get(AdCampaign, campaign_id)
+    if row is None or row.company_id != company_id:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    return row
+
+
+@router.get("/merchant/ad-campaigns")
+async def legacy_merchant_ad_campaigns(db: DB, user: CurrentUser):
+    try:
+        company_id = require_supplier_company(user, requested_company_id=None)
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    rows = await list_ad_campaigns(db, company_id=company_id)
+    return [_ad_campaign_as_legacy(row) for row in rows]
+
+
+@router.post("/merchant/ad-campaigns", status_code=201)
+async def legacy_create_merchant_ad_campaign(data: dict, db: DB, user: CurrentUser):
+    try:
+        company_id = require_supplier_company(user, requested_company_id=None)
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    listing_id = _uuid_or_none(data.get("listing_id") or data.get("catalog_item_id"))
+    if listing_id:
+        listing = await db.get(SupplierListing, listing_id)
+        if listing is None or listing.company_id != company_id or listing.status == "archived":
+            raise HTTPException(status_code=403, detail="Cannot advertise another supplier catalog item")
+    title = str(data.get("title") or data.get("name") or "").strip()
+    if not title:
+        raise HTTPException(status_code=422, detail="title is required")
+    campaign = await create_ad_campaign(
+        db,
+        company_id=company_id,
+        listing_id=listing_id,
+        title=title,
+        placement=data.get("placement") or "FEED_TOP",
+        target_category_id=_uuid_or_none(data.get("target_category_id")),
+        target_keywords=data.get("target_keywords"),
+        target_countries=data.get("target_countries"),
+        budget_minor=int(data.get("budget_minor") or 0),
+        bid_per_click_minor=int(data.get("bid_per_click_minor") or 0),
+        currency=str(data.get("currency") or "USD").upper(),
+        starts_at=data.get("starts_at"),
+        ends_at=data.get("ends_at"),
+    )
+    await db.commit()
+    await db.refresh(campaign)
+    return _ad_campaign_as_legacy(campaign)
+
+
+@router.post("/merchant/ad-campaigns/{campaign_id}/submit")
+async def legacy_submit_merchant_ad_campaign(campaign_id: uuid.UUID, db: DB, user: CurrentUser):
+    row = await _owned_ad_campaign(db, user, campaign_id)
+    if row.status not in ("DRAFT", "PAUSED", "REJECTED"):
+        raise HTTPException(status_code=409, detail=f"Cannot submit campaign in {row.status}")
+    try:
+        updated = await update_ad_campaign_status(
+            db,
+            campaign_id,
+            new_status="PENDING_REVIEW",
+            company_id=row.company_id,
+        )
+        await db.commit()
+        await db.refresh(updated)
+        return _ad_campaign_as_legacy(updated)
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=404, detail=str(exc)) from None
+
+
+@router.post("/merchant/ad-campaigns/{campaign_id}/pause")
+async def legacy_pause_merchant_ad_campaign(campaign_id: uuid.UUID, db: DB, user: CurrentUser):
+    row = await _owned_ad_campaign(db, user, campaign_id)
+    if row.status not in ("ACTIVE", "PENDING_REVIEW", "DRAFT"):
+        raise HTTPException(status_code=409, detail=f"Cannot pause campaign in {row.status}")
+    try:
+        updated = await update_ad_campaign_status(
+            db,
+            campaign_id,
+            new_status="PAUSED",
+            company_id=row.company_id,
+        )
+        await db.commit()
+        await db.refresh(updated)
+        return _ad_campaign_as_legacy(updated)
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=404, detail=str(exc)) from None
+
+
+@router.get("/admin/ad-campaigns")
+async def legacy_admin_ad_campaigns(db: DB, user: CurrentUser, status: str | None = None):
+    _require_legacy_admin(user)
+    rows = await list_ad_campaigns(db, status=_ad_status_to_core(status) if status else None)
+    return [_ad_campaign_as_legacy(row) for row in rows]
+
+
+@router.post("/admin/ad-campaigns/{campaign_id}/approve")
+async def legacy_admin_approve_ad_campaign(campaign_id: uuid.UUID, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    try:
+        row = await update_ad_campaign_status(db, campaign_id, new_status="ACTIVE")
+        await db.commit()
+        await db.refresh(row)
+        return _ad_campaign_as_legacy(row)
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=404, detail=str(exc)) from None
+
+
+@router.post("/admin/ad-campaigns/{campaign_id}/reject")
+async def legacy_admin_reject_ad_campaign(campaign_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    reason = data.get("reason") or data.get("rejection_reason") or "Rejected by admin"
+    try:
+        row = await update_ad_campaign_status(
+            db,
+            campaign_id,
+            new_status="REJECTED",
+            rejection_reason=reason,
+        )
+        await db.commit()
+        await db.refresh(row)
+        return _ad_campaign_as_legacy(row)
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=404, detail=str(exc)) from None
+
+
+@router.post("/admin/ad-campaigns/{campaign_id}/pause")
+async def legacy_admin_pause_ad_campaign(campaign_id: uuid.UUID, db: DB, user: CurrentUser, data: dict | None = None):
+    _require_legacy_admin(user)
+    try:
+        row = await update_ad_campaign_status(db, campaign_id, new_status="PAUSED")
+        await db.commit()
+        await db.refresh(row)
+        return _ad_campaign_as_legacy(row)
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=404, detail=str(exc)) from None
 
 
 @router.post("/intents", status_code=201)

@@ -81,7 +81,7 @@ export default defineNuxtConfig({
     "/api/admin/shipping/**": { proxy: `${coreApiInternal}/api/v1/admin/cebu-trade/shipping/**` },
     "/api/admin/deposits": { proxy: `${coreApiInternal}/api/v1/admin/cebu-trade/deposits` },
     "/api/admin/payouts": { proxy: `${coreApiInternal}/api/v1/admin/cebu-trade/payouts` },
-    "/api/admin/ad-campaigns/**": { proxy: `${coreApiInternal}/api/v1/admin/cebu-trade/ads/campaigns/**` },
+    "/api/admin/ad-campaigns/**": { proxy: `${coreApiInternal}/api/v1/cebu-compat/admin/ad-campaigns/**` },
     "/api/admin/**": { proxy: `${coreApiInternal}/api/v1/admin/cebu/**` },
     "/api/**": { proxy: `${coreApiInternal}/api/v1/cebu-compat/**` },
   },
