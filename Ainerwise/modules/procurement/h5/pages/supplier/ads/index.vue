@@ -42,6 +42,12 @@
       </div>
     </div>
 
+    <div v-else-if="error" class="mx-4 mt-6 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-700">
+      <p class="font-semibold">Could not load campaigns</p>
+      <p class="mt-1 text-xs">{{ error }}</p>
+      <button class="mt-3 rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white" @click="loadCampaigns">Try again</button>
+    </div>
+
     <!-- Empty -->
     <div v-else-if="filteredCampaigns.length === 0" class="empty-state mt-8">
       <div class="text-5xl mb-3">📢</div>
@@ -172,6 +178,7 @@ useHead({ title: "Ad Campaigns" });
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const loading = ref(false);
+const error = ref('');
 const campaigns = ref<any[]>([]);
 const activeTab = ref('ALL');
 const showMetrics = ref(false);
@@ -185,58 +192,45 @@ const statusTabs = [
   { label: 'Paused', value: 'PAUSED' },
 ]
 
-// Mock campaigns for demo
-const MOCK_CAMPAIGNS = [
-  { id: 'mc1', name: 'Cement Summer Sale', title: 'Cement Summer Sale', placement: 'FEED_TOP', status: 'ACTIVE', budget_minor: 500000, spent_minor: 182000, bid_per_click_minor: 5000, currency: 'PHP', impressions: 12400, clicks: 342, ctr: 0.0276, conversions: 28 },
-  { id: 'mc2', name: 'Medical Supplies Promo', title: 'Medical Supplies Promo', placement: 'SEARCH_TOP', status: 'PENDING_REVIEW', budget_minor: 1000000, spent_minor: 0, bid_per_click_minor: 8000, currency: 'PHP', impressions: 0, clicks: 0, ctr: 0, conversions: 0 },
-  { id: 'mc3', name: 'Safety Equipment Q4', title: 'Safety Equipment Q4', placement: 'CATEGORY_TOP', status: 'DRAFT', budget_minor: 300000, spent_minor: 0, bid_per_click_minor: 4000, currency: 'PHP', impressions: 0, clicks: 0, ctr: 0, conversions: 0 },
-  { id: 'mc4', name: 'Office Furniture Blowout', title: 'Office Furniture Blowout', placement: 'FEED_INLINE', status: 'PAUSED', budget_minor: 750000, spent_minor: 612000, bid_per_click_minor: 6000, currency: 'PHP', impressions: 9800, clicks: 201, ctr: 0.0205, conversions: 15, rejection_reason: null },
-]
-
-const displayCampaigns = computed(() => campaigns.value.length > 0 ? campaigns.value : MOCK_CAMPAIGNS)
 const filteredCampaigns = computed(() => {
-  if (activeTab.value === 'ALL') return displayCampaigns.value
-  return displayCampaigns.value.filter(c => c.status === activeTab.value)
+  if (activeTab.value === 'ALL') return campaigns.value
+  return campaigns.value.filter(c => c.status === activeTab.value)
 })
 
-const activeCampaigns = computed(() => displayCampaigns.value.filter(c => c.status === 'ACTIVE').length)
-const pendingCampaigns = computed(() => displayCampaigns.value.filter(c => c.status === 'PENDING_REVIEW').length)
-const totalClicks = computed(() => displayCampaigns.value.reduce((sum, c) => sum + (c.clicks ?? 0), 0))
+const activeCampaigns = computed(() => campaigns.value.filter(c => c.status === 'ACTIVE').length)
+const pendingCampaigns = computed(() => campaigns.value.filter(c => c.status === 'PENDING_REVIEW').length)
+const totalClicks = computed(() => campaigns.value.reduce((sum, c) => sum + (c.clicks ?? 0), 0))
 
 async function loadCampaigns() {
   loading.value = true;
+  error.value = '';
   try {
     const data = await $fetch<any[]>(`${config.public.apiBase}/merchant/ad-campaigns`, {
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     });
     campaigns.value = data ?? [];
-  } catch { campaigns.value = []; } finally { loading.value = false; }
+  } catch (e: any) {
+    campaigns.value = [];
+    error.value = e?.data?.detail ?? e?.message ?? 'Failed to load supplier campaigns.';
+  } finally { loading.value = false; }
 }
 
 async function submitCampaign(c: any) {
   try {
-    if (!c.id.startsWith('mc')) {
-      const data = await $fetch<any>(`${config.public.apiBase}/merchant/ad-campaigns/${c.id}/submit`, {
-        method: 'POST', headers: { Authorization: `Bearer ${authStore.accessToken}` },
-      });
-      c.status = data.status;
-    } else {
-      c.status = 'PENDING_REVIEW';
-    }
+    const data = await $fetch<any>(`${config.public.apiBase}/merchant/ad-campaigns/${c.id}/submit`, {
+      method: 'POST', headers: { Authorization: `Bearer ${authStore.accessToken}` },
+    });
+    Object.assign(c, data);
     showToast({ type: 'success', message: 'Submitted for review!' });
   } catch (e: any) { showToast({ type: 'fail', message: e?.data?.detail ?? 'Failed' }); }
 }
 
 async function pauseCampaign(c: any) {
   try {
-    if (!c.id.startsWith('mc')) {
-      const data = await $fetch<any>(`${config.public.apiBase}/merchant/ad-campaigns/${c.id}/pause`, {
-        method: 'POST', headers: { Authorization: `Bearer ${authStore.accessToken}` },
-      });
-      c.status = data.status;
-    } else {
-      c.status = 'PAUSED';
-    }
+    const data = await $fetch<any>(`${config.public.apiBase}/merchant/ad-campaigns/${c.id}/pause`, {
+      method: 'POST', headers: { Authorization: `Bearer ${authStore.accessToken}` },
+    });
+    Object.assign(c, data);
     showToast({ type: 'success', message: 'Campaign paused' });
   } catch (e: any) { showToast({ type: 'fail', message: e?.data?.detail ?? 'Failed' }); }
 }

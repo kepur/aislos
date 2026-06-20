@@ -216,9 +216,7 @@ async function createCampaign() {
     showToast({ type: 'success', message: 'Campaign created! Submit it for review.' });
     router.replace('/supplier/ads');
   } catch (e: any) {
-    // If API fails, simulate success for demo
-    showToast({ type: 'success', message: 'Campaign created (demo mode)!' });
-    router.replace('/supplier/ads');
+    showToast({ type: 'fail', message: e?.data?.detail ?? e?.message ?? 'Failed to create campaign' });
   } finally { saving.value = false; }
 }
 
