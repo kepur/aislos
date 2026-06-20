@@ -43,6 +43,7 @@ from app.models.settings import IntegrationSetting
 from app.models.user import Company, User
 from app.modules.cebu_trade.models import (
     AdCampaign,
+    Address,
     EscrowTransaction,
     OrderShipping,
     PaymentEvent,
@@ -626,6 +627,72 @@ async def _ensure_user_company(
     await sync_role_portal_access(db, user_id=user.id, role=user.role, company_id=company.id)
     await db.flush()
     return company
+
+
+def _address_as_legacy(row: Address) -> dict:
+    return {
+        "id": row.id,
+        "user_id": row.user_id,
+        "company_id": row.company_id,
+        "address_type": row.address_type,
+        "label": row.label,
+        "contact_name": row.contact_name,
+        "contact_phone": row.contact_phone,
+        "country_code": row.country_code,
+        "country_name": row.country_name,
+        "state_province": row.state_province,
+        "city": row.city,
+        "district": row.district,
+        "postal_code": row.postal_code,
+        "address_line1": row.address_line1,
+        "address_line2": row.address_line2,
+        "lat": row.lat,
+        "lng": row.lng,
+        "is_default": row.is_default,
+        "status": row.status,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+async def _unset_address_defaults(db: DB, user_id: uuid.UUID, address_type: str) -> None:
+    rows = list(
+        (
+            await db.execute(
+                select(Address).where(
+                    Address.user_id == user_id,
+                    Address.address_type == address_type,
+                    Address.status == "ACTIVE",
+                    Address.is_default.is_(True),
+                )
+            )
+        ).scalars()
+    )
+    for row in rows:
+        row.is_default = False
+
+
+def _address_payload(data: dict, user: User) -> dict:
+    country_code = str(data.get("country_code") or data.get("country") or user.country or "PH").upper()
+    if len(country_code) > 5:
+        country_code = "PH" if "phil" in country_code.lower() else country_code[:5]
+    return {
+        "address_type": str(data.get("address_type") or "DELIVERY_TO").upper(),
+        "label": data.get("label") or data.get("name") or "Default Address",
+        "contact_name": data.get("contact_name") or user.full_name or user.email,
+        "contact_phone": data.get("contact_phone") or data.get("phone") or user.phone or "N/A",
+        "country_code": country_code,
+        "country_name": data.get("country_name") or data.get("country") or user.country or "Philippines",
+        "state_province": data.get("state_province") or data.get("province") or data.get("state"),
+        "city": data.get("city") or "Cebu",
+        "district": data.get("district"),
+        "postal_code": data.get("postal_code") or data.get("zip"),
+        "address_line1": data.get("address_line1") or data.get("address") or "Address pending",
+        "address_line2": data.get("address_line2"),
+        "lat": data.get("lat"),
+        "lng": data.get("lng"),
+        "is_default": bool(data.get("is_default")),
+    }
 
 
 def _dispute_evidence(row: OrderDispute) -> list:
@@ -1304,6 +1371,125 @@ def _platform_setting_as_admin_legacy(row: PlatformSetting) -> dict:
         "updated_by": row.updated_by,
         "updated_at": row.updated_at,
     }
+
+
+def _default_ranking_profiles() -> list[dict]:
+    return [
+        {
+            "id": "default",
+            "name": "Balanced",
+            "description": "Balanced supplier ranking for most procurement requests.",
+            "is_default": True,
+            "weights": {
+                "category_match": 0.30,
+                "trust": 0.25,
+                "distance": 0.15,
+                "deal_rate": 0.15,
+                "stock": 0.15,
+            },
+        },
+        {
+            "id": "cost",
+            "name": "Cost Sensitive",
+            "description": "Prioritize available stock and deal conversion for price-sensitive sourcing.",
+            "is_default": False,
+            "weights": {
+                "category_match": 0.25,
+                "trust": 0.15,
+                "distance": 0.10,
+                "deal_rate": 0.25,
+                "stock": 0.25,
+            },
+        },
+        {
+            "id": "trust",
+            "name": "Trust First",
+            "description": "Prefer verified and historically reliable suppliers.",
+            "is_default": False,
+            "weights": {
+                "category_match": 0.25,
+                "trust": 0.45,
+                "distance": 0.10,
+                "deal_rate": 0.15,
+                "stock": 0.05,
+            },
+        },
+        {
+            "id": "distance",
+            "name": "Nearby Delivery",
+            "description": "Favor nearby suppliers for urgent local delivery.",
+            "is_default": False,
+            "weights": {
+                "category_match": 0.25,
+                "trust": 0.20,
+                "distance": 0.35,
+                "deal_rate": 0.10,
+                "stock": 0.10,
+            },
+        },
+        {
+            "id": "delivery",
+            "name": "Delivery Confidence",
+            "description": "Prefer suppliers with stock and delivery readiness.",
+            "is_default": False,
+            "weights": {
+                "category_match": 0.25,
+                "trust": 0.20,
+                "distance": 0.15,
+                "deal_rate": 0.15,
+                "stock": 0.25,
+            },
+        },
+    ]
+
+
+def _ranking_profile_as_legacy(profile: dict) -> dict:
+    weights = profile.get("weights") or {}
+    normalized_weights = {str(key): float(value or 0) for key, value in weights.items()}
+    return {
+        "id": str(profile.get("id")),
+        "name": profile.get("name") or str(profile.get("id")).title(),
+        "description": profile.get("description"),
+        "is_default": bool(profile.get("is_default")),
+        "weights": normalized_weights,
+        "total_weight": round(sum(normalized_weights.values()), 4),
+        "updated_at": profile.get("updated_at"),
+    }
+
+
+async def _ranking_profiles_setting(db: DB) -> PlatformSetting:
+    row = (
+        await db.execute(
+            select(PlatformSetting).where(
+                PlatformSetting.portal_key == "admin_cebu",
+                PlatformSetting.key == "ranking_profiles_json",
+            )
+        )
+    ).scalar_one_or_none()
+    if row is None:
+        row = PlatformSetting(
+            portal_key="admin_cebu",
+            key="ranking_profiles_json",
+            value_json={"value": _default_ranking_profiles()},
+            description="AinerWise Procurement supplier ranking profile weights.",
+        )
+        db.add(row)
+        await db.flush()
+    return row
+
+
+async def _load_ranking_profiles(db: DB) -> list[dict]:
+    row = await _ranking_profiles_setting(db)
+    value = _platform_setting_value(row)
+    profiles = value if isinstance(value, list) else _default_ranking_profiles()
+    return [_ranking_profile_as_legacy(profile) for profile in profiles if isinstance(profile, dict)]
+
+
+async def _save_ranking_profiles(db: DB, profiles: list[dict]) -> PlatformSetting:
+    row = await _ranking_profiles_setting(db)
+    row.value_json = {"value": profiles}
+    await db.flush()
+    return row
 
 
 async def _ensure_legacy_admin_default_settings(db: DB) -> list[PlatformSetting]:
@@ -2420,6 +2606,68 @@ async def legacy_trust_me(db: DB, user: CurrentUser):
     await db.commit()
     await db.refresh(row)
     return _trust_profile_as_admin_legacy(row, company)
+
+
+@router.get("/addresses")
+async def legacy_list_addresses(db: DB, user: CurrentUser, address_type: str | None = None):
+    stmt = (
+        select(Address)
+        .where(Address.user_id == user.id, Address.status == "ACTIVE")
+        .order_by(Address.is_default.desc(), Address.created_at.desc())
+    )
+    if address_type:
+        stmt = stmt.where(Address.address_type == address_type.upper())
+    rows = list((await db.execute(stmt)).scalars())
+    return [_address_as_legacy(row) for row in rows]
+
+
+@router.post("/addresses", status_code=201)
+async def legacy_create_address(data: dict, db: DB, user: CurrentUser):
+    payload = _address_payload(data, user)
+    if payload["is_default"]:
+        await _unset_address_defaults(db, user.id, payload["address_type"])
+    row = Address(user_id=user.id, company_id=user.company_id, status="ACTIVE", **payload)
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    return _address_as_legacy(row)
+
+
+@router.patch("/addresses/{address_id}")
+async def legacy_update_address(address_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    row = await db.get(Address, address_id)
+    if row is None or row.user_id != user.id or row.status != "ACTIVE":
+        raise HTTPException(status_code=404, detail="Address not found")
+    payload = _address_payload({**_address_as_legacy(row), **data}, user)
+    if payload["is_default"]:
+        await _unset_address_defaults(db, user.id, row.address_type)
+    for key, value in payload.items():
+        setattr(row, key, value)
+    await db.commit()
+    await db.refresh(row)
+    return _address_as_legacy(row)
+
+
+@router.post("/addresses/{address_id}/set-default")
+async def legacy_set_default_address(address_id: uuid.UUID, db: DB, user: CurrentUser):
+    row = await db.get(Address, address_id)
+    if row is None or row.user_id != user.id or row.status != "ACTIVE":
+        raise HTTPException(status_code=404, detail="Address not found")
+    await _unset_address_defaults(db, user.id, row.address_type)
+    row.is_default = True
+    await db.commit()
+    await db.refresh(row)
+    return _address_as_legacy(row)
+
+
+@router.delete("/addresses/{address_id}", status_code=204)
+async def legacy_delete_address(address_id: uuid.UUID, db: DB, user: CurrentUser):
+    row = await db.get(Address, address_id)
+    if row is None or row.user_id != user.id or row.status != "ACTIVE":
+        raise HTTPException(status_code=404, detail="Address not found")
+    row.status = "DELETED"
+    await db.commit()
+    return None
 
 
 @router.patch("/users/me")
@@ -5286,6 +5534,79 @@ async def legacy_admin_trust_users(db: DB, user: CurrentUser):
         company_rows = list((await db.execute(select(Company).where(Company.id.in_(company_ids)))).scalars())
         companies = {row.id: row for row in company_rows}
     return [_trust_profile_as_admin_legacy(row, companies.get(row.company_id)) for row in rows]
+
+
+@router.get("/ranking/profiles")
+async def legacy_ranking_profiles(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    profiles = await _load_ranking_profiles(db)
+    await db.commit()
+    return profiles
+
+
+@router.get("/admin/ranking/summary")
+async def legacy_admin_ranking_summary(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    profiles = await _load_ranking_profiles(db)
+    await db.commit()
+    return {profile["id"]: profile["weights"] for profile in profiles}
+
+
+@router.patch("/ranking/profiles/{profile_id}")
+async def legacy_update_ranking_profile(profile_id: str, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    weights = data.get("weights")
+    if not isinstance(weights, dict):
+        raise HTTPException(status_code=422, detail="weights object is required")
+    profiles = await _load_ranking_profiles(db)
+    found = None
+    for profile in profiles:
+        if profile["id"] == profile_id:
+            found = profile
+            break
+    if found is None:
+        raise HTTPException(status_code=404, detail="Ranking profile not found")
+    before = dict(found.get("weights") or {})
+    found["weights"] = {str(key): max(0, min(float(value or 0), 1)) for key, value in weights.items()}
+    found["updated_at"] = datetime.now(timezone.utc).isoformat()
+    await _save_ranking_profiles(db, profiles)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="admin.ranking_profile.update",
+        entity_type="ranking_profile",
+        entity_id=None,
+        before=before,
+        after=found["weights"],
+        reason=f"Updated ranking profile {profile_id}",
+    )
+    await db.commit()
+    return _ranking_profile_as_legacy(found)
+
+
+@router.delete("/ranking/profiles/{profile_id}", status_code=204)
+async def legacy_delete_ranking_profile(profile_id: str, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    protected = {"default", "cost", "trust", "distance", "delivery"}
+    if profile_id in protected:
+        raise HTTPException(status_code=409, detail="Built-in ranking profiles cannot be deleted")
+    profiles = await _load_ranking_profiles(db)
+    kept = [profile for profile in profiles if profile["id"] != profile_id]
+    if len(kept) == len(profiles):
+        raise HTTPException(status_code=404, detail="Ranking profile not found")
+    await _save_ranking_profiles(db, kept)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="admin.ranking_profile.delete",
+        entity_type="ranking_profile",
+        entity_id=None,
+        before={"id": profile_id},
+        after=None,
+        reason=f"Deleted ranking profile {profile_id}",
+    )
+    await db.commit()
+    return None
 
 
 @router.post("/admin/trust/users/{entity_id}/recalculate")
