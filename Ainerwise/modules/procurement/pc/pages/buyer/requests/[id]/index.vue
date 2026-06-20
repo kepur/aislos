@@ -116,6 +116,14 @@
         <UIcon name="i-heroicons-arrow-path" class="w-6 h-6 animate-spin text-slate-400" />
       </div>
 
+      <div v-else-if="candidateError" class="rounded-xl border border-red-100 bg-red-50 px-4 py-6 text-center">
+        <p class="text-sm font-semibold text-red-700">Unable to load matched suppliers</p>
+        <p class="mt-1 text-xs text-red-600">{{ candidateError }}</p>
+        <UButton class="mt-4" size="sm" color="red" variant="soft" icon="i-heroicons-arrow-path" @click="fetchCandidates">
+          Retry
+        </UButton>
+      </div>
+
       <div v-else-if="candidates.length === 0" class="text-center py-8 text-slate-400">
         <div class="text-3xl mb-2">🔍</div>
         <p class="text-sm">No matched suppliers yet for this request category.</p>
@@ -172,23 +180,23 @@
 
             <!-- Score breakdown chips -->
             <div class="mt-2 flex flex-wrap gap-1.5">
-              <span v-if="c.score_breakdown.distance_km !== null" class="text-[10px] bg-slate-100 text-slate-600 rounded-full px-2 py-0.5">
+              <span v-if="c.score_breakdown?.distance_km !== null && c.score_breakdown?.distance_km !== undefined" class="text-[10px] bg-slate-100 text-slate-600 rounded-full px-2 py-0.5">
                 📍 {{ c.score_breakdown.distance_km }}km
               </span>
               <span class="text-[10px] bg-slate-100 text-slate-600 rounded-full px-2 py-0.5">
-                ⭐ Trust {{ c.score_breakdown.trust_score }}
+                ⭐ Trust {{ c.score_breakdown?.trust_score || 0 }}
               </span>
               <span class="text-[10px] bg-slate-100 text-slate-600 rounded-full px-2 py-0.5">
-                🤝 {{ Math.round(c.score_breakdown.deal_completion_rate * 100) }}% deal rate
+                🤝 {{ Math.round((c.score_breakdown?.deal_completion_rate || 0) * 100) }}% deal rate
               </span>
-              <span v-if="c.score_breakdown.has_stock" class="text-[10px] bg-green-50 text-green-700 rounded-full px-2 py-0.5">
+              <span v-if="c.score_breakdown?.has_stock" class="text-[10px] bg-green-50 text-green-700 rounded-full px-2 py-0.5">
                 ✅ In Stock ({{ c.score_breakdown.stock_qty }})
               </span>
               <span
                 class="text-[10px] rounded-full px-2 py-0.5"
-                :class="c.score_breakdown.verification_level === 'TRUSTED' ? 'bg-purple-50 text-purple-700' : c.score_breakdown.verification_level === 'BUSINESS' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-500'"
+                :class="c.score_breakdown?.verification_level === 'TRUSTED' ? 'bg-purple-50 text-purple-700' : c.score_breakdown?.verification_level === 'BUSINESS' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-500'"
               >
-                🏷 {{ c.score_breakdown.verification_level }}
+                🏷 {{ c.score_breakdown?.verification_level || 'BASIC' }}
               </span>
             </div>
             <div v-if="c.unit_price_minor" class="mt-2 flex items-center gap-2 text-xs text-slate-500">
@@ -269,11 +277,19 @@
   <div v-else-if="loading" class="flex justify-center p-12">
     <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin text-slate-400" />
   </div>
+
+  <UCard v-else class="bg-white">
+    <div class="py-10 text-center">
+      <h2 class="text-lg font-semibold text-slate-900">Request not available</h2>
+      <p class="mt-2 text-sm text-slate-500">{{ requestError || 'The request could not be loaded from AinerWise Core.' }}</p>
+      <UButton to="/buyer/requests" class="mt-5" color="indigo" variant="soft" icon="i-heroicons-arrow-left">
+        Back to requests
+      </UButton>
+    </div>
+  </UCard>
 </template>
 
 <script setup lang="ts">
-import { demoIntents, demoSupplierCandidatesForIntent, isDemoToken } from "~/utils/demoData";
-
 definePageMeta({
   layout: 'buyer'
 })
@@ -285,24 +301,26 @@ const config = useRuntimeConfig()
 const id = route.params.id as string
 const intent = ref<any>(null)
 const loading = ref(true)
+const requestError = ref('')
 
 // Supplier candidates
 const candidates = ref<any[]>([])
 const candidatesLoading = ref(false)
+const candidateError = ref('')
 const candidateSort = ref('comprehensive')
 const selectedCandidate = ref<any | null>(null)
 
 const fetchIntent = async () => {
   loading.value = true
+  requestError.value = ''
   const { data, error } = await api.getIntent(id)
   if (data) {
     intent.value = data
     await fetchCandidates()
-  } else if (authStore.isDemoMode && (isDemoToken(authStore.accessToken) || id.startsWith('demo-'))) {
-    intent.value = demoIntents.find((row) => row.id === id) || null
-    await fetchCandidates()
   } else {
     console.error(error)
+    intent.value = null
+    requestError.value = extractErrorMessage(error, 'Error fetching request details')
     useToast().add({ title: 'Error fetching request details', color: 'red' })
   }
   loading.value = false
@@ -310,26 +328,24 @@ const fetchIntent = async () => {
 
 const fetchCandidates = async () => {
   if (!intent.value) return
-  const demoEnabled = authStore.isDemoMode && (isDemoToken(authStore.accessToken) || id.startsWith('demo-'))
-  if (demoEnabled) {
-    candidates.value = sortDemoCandidates(demoSupplierCandidatesForIntent(id))
-    return
-  }
   candidatesLoading.value = true
+  candidateError.value = ''
   try {
     const data = await $fetch<any>(
       `${config.public.apiBase}/intents/${intent.value.id}/supplier-candidates?sort=${candidateSort.value}&limit=10`,
       { headers: { Authorization: `Bearer ${authStore.accessToken}` } }
     )
-    candidates.value = data.candidates || []
-  } catch {
+    const rows = data.candidates || data.items || []
+    candidates.value = sortCandidates(rows.map(normalizeCandidate))
+  } catch (error: any) {
     candidates.value = []
+    candidateError.value = extractErrorMessage(error, 'Matched supplier request failed.')
   } finally {
     candidatesLoading.value = false
   }
 }
 
-function sortDemoCandidates(list: any[]) {
+function sortCandidates(list: any[]) {
   const copy = [...list]
   switch (candidateSort.value) {
     case 'cost': return copy.sort((a, b) => a.unit_price_minor - b.unit_price_minor)
@@ -342,13 +358,12 @@ function sortDemoCandidates(list: any[]) {
 
 async function openCandidate(candidate: any) {
   selectedCandidate.value = candidate
-  const demoEnabled = authStore.isDemoMode && (isDemoToken(authStore.accessToken) || id.startsWith('demo-'))
-  if (demoEnabled) return
   try {
-    selectedCandidate.value = await $fetch<any>(
+    const data = await $fetch<any>(
       `${config.public.apiBase}/intents/${intent.value.id}/supplier-candidates/${candidate.catalog_item_id}?sort=${candidateSort.value}`,
       { headers: { Authorization: `Bearer ${authStore.accessToken}` } }
     )
+    selectedCandidate.value = normalizeCandidate(data.candidate || data)
   } catch {
     selectedCandidate.value = candidate
   }
@@ -356,20 +371,6 @@ async function openCandidate(candidate: any) {
 
 async function bindCandidate(candidate: any) {
   try {
-    const demoEnabled = authStore.isDemoMode && (isDemoToken(authStore.accessToken) || id.startsWith('demo-'))
-    if (demoEnabled) {
-      candidates.value = candidates.value.map((row) => ({
-        ...row,
-        score_breakdown: {
-          ...(row.score_breakdown || {}),
-          bound_catalog_item: row.catalog_item_id === candidate.catalog_item_id,
-          bound_supplier: row.company_id === candidate.company_id,
-        },
-      }))
-      selectedCandidate.value = candidates.value.find((row) => row.catalog_item_id === candidate.catalog_item_id) || candidate
-      useToast().add({ title: 'Supplier bound for demo request', color: 'green' })
-      return
-    }
     const data = await $fetch<any>(
       `${config.public.apiBase}/intents/${intent.value.id}/supplier-candidates/${candidate.catalog_item_id}/bind`,
       {
@@ -379,11 +380,46 @@ async function bindCandidate(candidate: any) {
       }
     )
     await fetchCandidates()
-    selectedCandidate.value = data.candidate
+    selectedCandidate.value = data.candidate ? normalizeCandidate(data.candidate) : selectedCandidate.value
     useToast().add({ title: 'Supplier bound to request', color: 'green' })
   } catch (e: any) {
     useToast().add({ title: e?.data?.detail || 'Bind failed', color: 'red' })
   }
+}
+
+function normalizeCandidate(row: any) {
+  const attrs = row.attributes_json || row.attrs_jsonb || {}
+  const scoreBreakdown = row.score_breakdown || {
+    price_minor: row.price_minor,
+    bound_catalog_item: Boolean(attrs.bound_catalog_item),
+    bound_supplier: Boolean(attrs.bound_supplier),
+    distance_km: row.distance_km ?? null,
+    trust_score: row.trust_score ?? 0,
+    deal_completion_rate: row.deal_completion_rate ?? 0,
+    has_stock: Number(row.stock_qty ?? attrs.stock_qty ?? 0) > 0,
+    stock_qty: Number(row.stock_qty ?? attrs.stock_qty ?? 0),
+    verification_level: row.verification_level || attrs.verification_level || 'BASIC',
+    category_match: row.category_match || 0,
+  }
+  return {
+    ...row,
+    catalog_item_id: row.catalog_item_id || row.id,
+    company_name: row.company_name || row.supplier_name || attrs.company_name || 'Supplier listing',
+    catalog_item_title: row.catalog_item_title || row.title || attrs.title || 'Catalog item',
+    ranking_score: Number(row.ranking_score ?? row.score ?? 0),
+    unit_price_minor: row.unit_price_minor ?? row.price_minor ?? scoreBreakdown.price_minor,
+    currency: row.currency || intent.value?.currency || 'PHP',
+    unit: row.unit || attrs.unit || intent.value?.unit || 'unit',
+    market_mode: row.market_mode || attrs.market_mode,
+    origin_country: row.origin_country || attrs.origin_country,
+    eta_days: row.eta_days || attrs.eta_days,
+    why_recommended: row.why_recommended || 'Matched from AinerWise Core supplier catalog.',
+    score_breakdown: scoreBreakdown,
+  }
+}
+
+function extractErrorMessage(error: any, fallback: string) {
+  return error?.data?.detail || error?.message || fallback
 }
 
 onMounted(() => {
