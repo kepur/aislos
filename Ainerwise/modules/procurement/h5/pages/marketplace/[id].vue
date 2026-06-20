@@ -278,7 +278,6 @@
 </template>
 
 <script setup lang="ts">
-import { demoMarketplaceItemById, demoMarketplaceItems } from "~/utils/demoData";
 
 definePageMeta({ layout: 'default' })
 
@@ -454,11 +453,8 @@ onMounted(async () => {
       relatedItems.value = (feed.items ?? []).filter(i => i.id !== item.value!.id).slice(0, 4)
     }
   } catch {
-    const demoItem = demoMarketplaceItemById(id) as Product | null
-    item.value = demoItem
-    relatedItems.value = demoItem
-      ? (demoMarketplaceItems as Product[]).filter(i => i.id !== demoItem.id && i.category_id === demoItem.category_id).slice(0, 4)
-      : []
+    item.value = null
+    relatedItems.value = []
   }
   finally { loading.value = false }
   await loadAddresses()

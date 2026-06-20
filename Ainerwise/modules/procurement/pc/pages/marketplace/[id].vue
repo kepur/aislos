@@ -308,7 +308,6 @@
 </template>
 
 <script setup lang="ts">
-import { demoMarketplaceItemById, demoMarketplaceItems } from "~/utils/demoData";
 
 definePageMeta({ layout: 'default' })
 
@@ -401,11 +400,8 @@ onMounted(async () => {
     }
   } catch (e) {
     console.error('Product load error', e)
-    const demoItem = demoMarketplaceItemById(id) as Product | null
-    item.value = demoItem
-    relatedItems.value = demoItem
-      ? (demoMarketplaceItems as Product[]).filter(i => i.id !== demoItem.id && i.category_id === demoItem.category_id).slice(0, 4)
-      : []
+    item.value = null
+    relatedItems.value = []
   } finally {
     loading.value = false
   }

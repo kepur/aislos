@@ -104,6 +104,12 @@
           </div>
         </div>
 
+        <div v-else-if="feedError" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-center text-red-700">
+          <p class="text-base font-semibold">Could not load marketplace products</p>
+          <p class="mt-1 text-sm">{{ feedError }}</p>
+          <button class="mt-4 rounded-xl bg-red-600 px-5 py-2 text-sm font-semibold text-white" @click="loadFeed(true)">Try again</button>
+        </div>
+
         <!-- Empty state -->
         <div v-else-if="!loading && items.length === 0" class="text-center py-24 text-slate-400">
           <div class="text-5xl mb-4">🔍</div>
@@ -195,7 +201,6 @@
 </template>
 
 <script setup lang="ts">
-import { demoMarketplaceItems } from "~/utils/demoData";
 
 definePageMeta({ layout: 'default' })
 
@@ -234,6 +239,7 @@ const items = ref<FeedItem[]>([])
 const total = ref(0)
 const hasNext = ref(false)
 const loading = ref(false)
+const feedError = ref('')
 const page = ref(1)
 
 // Filters
@@ -267,6 +273,7 @@ async function loadFeed(reset = false) {
     items.value = []
   }
   loading.value = true
+  feedError.value = ''
   try {
     const params: Record<string, any> = {
       page: page.value,
@@ -290,19 +297,9 @@ async function loadFeed(reset = false) {
     hasNext.value = data.has_next
   } catch (e) {
     console.error('Feed error', e)
-    const filtered = demoMarketplaceItems.filter((item) => {
-      if (categoryId.value && item.category_id !== categoryId.value) return false
-      if (marketMode.value && item.market_mode !== marketMode.value) return false
-      if (keyword.value.trim() && !item.title.toLowerCase().includes(keyword.value.trim().toLowerCase())) return false
-      if (originCountry.value && item.origin_country !== originCountry.value) return false
-      return true
-    }) as FeedItem[]
-    if (reset) {
-      items.value = filtered
-    } else {
-      items.value.push(...filtered)
-    }
-    total.value = filtered.length
+    if (reset) items.value = []
+    feedError.value = (e as any)?.data?.detail ?? (e as any)?.message ?? 'Marketplace feed request failed.'
+    total.value = items.value.length
     hasNext.value = false
   } finally {
     loading.value = false
