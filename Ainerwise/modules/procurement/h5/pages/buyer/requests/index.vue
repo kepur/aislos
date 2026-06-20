@@ -122,19 +122,7 @@ const { formatPrice, formatDate, formatRelativeTime, getIntentStatusLabel } = us
 const activeFilter = ref("ALL");
 const sortBy = ref("newest");
 
-// Mock data fallback — shown when API returns empty
-const MOCK_INTENTS = [
-  { id: 'm1', title: 'Portland Cement Type I – 500 bags', qty: 500, unit: 'bags', currency: 'PHP', budget_max_minor: 25000000, status: 'ACTIVE', created_at: new Date(Date.now()-86400000*2).toISOString(), expires_at: new Date(Date.now()+86400000*5).toISOString(), offer_count: 3, city: 'Cebu City' },
-  { id: 'm2', title: 'Office Chairs Ergonomic – 20 units', qty: 20, unit: 'pcs', currency: 'PHP', budget_max_minor: 8000000, status: 'ACTIVE', created_at: new Date(Date.now()-86400000*1).toISOString(), expires_at: new Date(Date.now()+86400000*7).toISOString(), offer_count: 1, city: 'Mandaue' },
-  { id: 'm3', title: 'N95 Face Masks KN95 – 2000 boxes', qty: 2000, unit: 'boxes', currency: 'PHP', budget_max_minor: 60000000, status: 'AWARDED', created_at: new Date(Date.now()-86400000*10).toISOString(), expires_at: null, offer_count: 5, city: 'Lapu-Lapu' },
-  { id: 'm4', title: 'Industrial Electric Fans – 10 units', qty: 10, unit: 'units', currency: 'PHP', budget_max_minor: 3500000, status: 'ACTIVE', created_at: new Date(Date.now()-86400000*3).toISOString(), expires_at: new Date(Date.now()+86400000*3).toISOString(), offer_count: 0, city: 'Cebu City' },
-  { id: 'm5', title: 'PVC Pipes 4-inch Schedule 40 – 300 pcs', qty: 300, unit: 'pcs', currency: 'PHP', budget_max_minor: 15000000, status: 'CLOSED', created_at: new Date(Date.now()-86400000*20).toISOString(), expires_at: null, offer_count: 7, city: 'Talisay' },
-]
-
-const allIntents = computed(() => {
-  const real = intentStore.intents
-  return real.length > 0 ? real : MOCK_INTENTS as any[]
-})
+const allIntents = computed(() => intentStore.intents)
 
 const filterTabs = computed(() => [
   { label: t("common.all"), value: "ALL", count: allIntents.value.length },
