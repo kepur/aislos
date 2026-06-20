@@ -230,6 +230,14 @@
           <div v-for="n in 2" :key="n" class="card"><div class="shimmer h-20 rounded"></div></div>
         </div>
 
+        <div v-else-if="intentStore.offerError" class="card border border-red-100 bg-red-50 text-center py-6">
+          <p class="text-sm font-semibold text-red-700">Unable to load offers</p>
+          <p class="mt-1 text-xs text-red-600">{{ intentStore.offerError }}</p>
+          <button type="button" class="mt-4 rounded-xl bg-white px-5 py-2 text-sm font-semibold text-red-700 shadow-sm" @click="loadOffers">
+            Retry
+          </button>
+        </div>
+
         <div v-else-if="displayOffers.length === 0" class="card text-center py-8">
           <div class="text-4xl mb-2">⏳</div>
           <p class="text-slate-500 text-sm font-medium">{{ $t("pages.waiting_for_offers") }}</p>
@@ -401,9 +409,18 @@ async function awardOffer(offerId: string) {
     await intentStore.awardOffer(offerId);
     showToast({ type: "success", message: "Offer awarded! Order created." });
     await intentStore.fetchIntent(id);
-    await intentStore.fetchOffers(id);
+    await loadOffers();
     router.push("/buyer/orders");
   } catch { /* user cancelled */ }
+}
+
+async function loadOffers() {
+  offersLoading.value = true;
+  try {
+    await intentStore.fetchOffers(id);
+  } finally {
+    offersLoading.value = false;
+  }
 }
 
 onMounted(async () => {
@@ -413,9 +430,7 @@ onMounted(async () => {
   await intentStore.fetchIntent(id);
   loading.value = false;
 
-  offersLoading.value = true;
-  await intentStore.fetchOffers(id);
-  offersLoading.value = false;
+  await loadOffers();
 
   await fetchCandidates();
 });

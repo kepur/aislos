@@ -1,12 +1,21 @@
 import { defineStore } from "pinia";
 import type { Intent, Offer, PaginatedResponse } from "~/types";
-import { demoIntents, demoOffersForIntent, isDemoToken } from "~/utils/demoData";
+import { demoIntents, isDemoToken } from "~/utils/demoData";
+
+function extractErrorMessage(error: unknown, fallback: string) {
+  const err = error as { data?: { detail?: unknown }; message?: string };
+  const detail = err?.data?.detail;
+  if (typeof detail === "string" && detail.trim()) return detail;
+  if (err?.message) return err.message;
+  return fallback;
+}
 
 export const useIntentStore = defineStore("intent", {
   state: () => ({
     intents: [] as Intent[],
     currentIntent: null as Intent | null,
     offers: [] as Offer[],
+    offerError: "",
     loading: false,
     total: 0,
   }),
@@ -76,12 +85,12 @@ export const useIntentStore = defineStore("intent", {
 
     async fetchOffers(intentId: string) {
       const api = useApiFetch();
+      this.offerError = "";
       try {
         this.offers = await api<Offer[]>(`/intents/${intentId}/offers`);
       } catch (error) {
-        const authStore = useAuthStore();
-        if (!authStore.isDemoMode || !isDemoToken(authStore.accessToken)) throw error;
-        this.offers = demoOffersForIntent(intentId);
+        this.offers = [];
+        this.offerError = extractErrorMessage(error, "Unable to load offers for this request.");
       }
     },
 

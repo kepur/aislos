@@ -9,6 +9,14 @@
         <div v-for="n in 3" :key="n" class="card"><div class="shimmer h-24 rounded"></div></div>
       </div>
 
+      <div v-else-if="loadError && allOffers.length === 0" class="card border border-red-100 bg-red-50 text-center">
+        <p class="text-sm font-semibold text-red-700">Unable to load offers</p>
+        <p class="mt-1 text-xs text-red-600">{{ loadError }}</p>
+        <button type="button" class="mt-4 btn-secondary py-2 px-5 text-sm" @click="loadOffers">
+          Retry
+        </button>
+      </div>
+
       <div v-else-if="allOffers.length === 0" class="empty-state">
         <svg class="w-16 h-16 text-slate-200 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
           <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" />
@@ -22,6 +30,10 @@
 
       <!-- Group by intent -->
       <div v-else class="space-y-5">
+        <div v-if="loadError" class="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+          Some offers could not be refreshed: {{ loadError }}
+        </div>
+
         <div v-for="group in groupedOffers" :key="group.intentId">
           <div class="flex items-center justify-between mb-2">
             <h3 class="font-semibold text-slate-800 text-sm line-clamp-1 flex-1 pr-2">{{ group.intentTitle }}</h3>
@@ -53,7 +65,6 @@
 
 <script setup lang="ts">
 import type { Offer } from "~/types";
-import { demoOffersForIntent, isDemoToken } from "~/utils/demoData";
 
 definePageMeta({ layout: "buyer", middleware: ["buyer"] });
 useHead({ title: "Offers" });
@@ -65,6 +76,7 @@ const authStore = useAuthStore();
 
 const loading = ref(true);
 const allOffers = ref<Offer[]>([]);
+const loadError = ref("");
 
 const groupedOffers = computed(() => {
   const groups: Record<string, { intentId: string; intentTitle: string; offers: Offer[] }> = {};
@@ -94,16 +106,40 @@ function getOfferBadgeClass(status: string) {
   return map[status] || "badge-gray";
 }
 
-onMounted(async () => {
-  await intentStore.fetchMyIntents();
-  // Fetch offers for all intents
-  const offerPromises = intentStore.intents.map((intent) =>
-    $fetch<Offer[]>(`${config.public.apiBase}/intents/${intent.id}/offers`, {
-      headers: { Authorization: `Bearer ${authStore.accessToken}` },
-    }).catch(() => isDemoToken(authStore.accessToken) ? demoOffersForIntent(intent.id) : [] as Offer[])
-  );
-  const results = await Promise.all(offerPromises);
-  allOffers.value = results.flat();
-  loading.value = false;
-});
+function extractLoadError(error: unknown) {
+  const err = error as { data?: { detail?: unknown }; message?: string };
+  const detail = err?.data?.detail;
+  if (typeof detail === "string" && detail.trim()) return detail;
+  return err?.message || "Offers request failed.";
+}
+
+async function loadOffers() {
+  loading.value = true;
+  loadError.value = "";
+  allOffers.value = [];
+
+  try {
+    await intentStore.fetchMyIntents();
+    const results = await Promise.allSettled(
+      intentStore.intents.map((intent) =>
+        $fetch<Offer[]>(`${config.public.apiBase}/intents/${intent.id}/offers`, {
+          headers: { Authorization: `Bearer ${authStore.accessToken}` },
+        })
+      )
+    );
+
+    allOffers.value = results
+      .filter((result): result is PromiseFulfilledResult<Offer[]> => result.status === "fulfilled")
+      .flatMap((result) => result.value);
+
+    const failed = results.find((result) => result.status === "rejected") as PromiseRejectedResult | undefined;
+    if (failed) loadError.value = extractLoadError(failed.reason);
+  } catch (error) {
+    loadError.value = extractLoadError(error);
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(loadOffers);
 </script>

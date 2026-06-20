@@ -13,6 +13,14 @@
       <div v-for="n in 3" :key="n" class="card"><div class="shimmer h-24 rounded"></div></div>
     </div>
 
+    <div v-else-if="intentStore.offerError" class="empty-state py-20 px-4">
+      <p class="text-red-600 font-semibold">Unable to load offers</p>
+      <p class="mt-1 text-xs text-red-500">{{ intentStore.offerError }}</p>
+      <button type="button" class="mt-4 rounded-xl bg-white px-5 py-2 text-sm font-semibold text-red-700 shadow-sm" @click="loadCompare">
+        Retry
+      </button>
+    </div>
+
     <div v-else-if="offers.length === 0" class="empty-state py-20">
       <p class="text-slate-500 font-medium">{{ $t("pages.no_offers_to_compare") }}</p>
     </div>
@@ -175,12 +183,15 @@ function shippingEtaLabel(offer: any) {
   return `${estimate.estimated_days_min}-${estimate.estimated_days_max}d`;
 }
 
-onMounted(async () => {
+async function loadCompare() {
+  loading.value = true;
   if (intentId) {
     await intentStore.fetchIntent(intentId);
     await intentStore.fetchOffers(intentId);
     await Promise.all(intentStore.offers.map((offer) => fetchShippingEstimateForOffer(offer)));
   }
   loading.value = false;
-});
+}
+
+onMounted(loadCompare);
 </script>
