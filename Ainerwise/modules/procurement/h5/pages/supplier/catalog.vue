@@ -32,7 +32,6 @@
           <option value="">All Status</option>
           <option value="ACTIVE">Active</option>
           <option value="INACTIVE">Inactive</option>
-          <option value="INACTIVE">Inactive</option>
         </select>
       </div>
     </Transition>
@@ -71,6 +70,12 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <div v-else-if="loadError" class="rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-700">
+          <p class="font-semibold">Could not load catalog</p>
+          <p class="mt-1 text-xs">{{ loadError }}</p>
+          <button class="mt-3 rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white" @click="loadItems">Try again</button>
         </div>
 
         <!-- Empty -->
@@ -262,6 +267,7 @@ const categories = ref<any[]>([]);
 const company = ref<{ name: string; status: string } | null>(null);
 const companyMissing = ref(false);
 const loading = ref(true);
+const loadError = ref('');
 const refreshing = ref(false);
 const loadingMore = ref(false);
 const saveLoading = ref(false);
@@ -289,22 +295,7 @@ const form = reactive({
 
 watch(priceInput, (v) => { form.price_minor = Math.round(v * 100); });
 
-const MOCK_ITEMS = [
-  { id: 'mi1', title: 'Portland Cement Type I – 40kg', description: 'OPC certified cement for construction.', price_minor: 4900000, currency: 'PHP', unit: 'bag', stock_qty: 500, market_mode: 'B2B', status: 'ACTIVE', images: ['https://picsum.photos/seed/201/200/200'], tags: ['cement','construction'], view_count: 1240, order_count: 87, origin_country: 'PH', min_order_qty: 20, weight_kg: 40 },
-  { id: 'mi2', title: 'Steel Rebar 10mm × 6m', description: 'Grade 60 deformed steel bar.', price_minor: 28000000, currency: 'PHP', unit: 'bundle', stock_qty: 120, market_mode: 'B2B', status: 'ACTIVE', images: ['https://picsum.photos/seed/202/200/200'], tags: ['steel','rebar'], view_count: 890, order_count: 42, origin_country: 'CN', min_order_qty: 5, weight_kg: 120 },
-  { id: 'mi3', title: 'Nitrile Gloves 100pcs/box', description: 'Powder-free disposable gloves.', price_minor: 35000000, currency: 'PHP', unit: 'box', stock_qty: 2000, market_mode: 'BOTH', status: 'ACTIVE', images: ['https://picsum.photos/seed/203/200/200'], tags: ['gloves','ppe'], view_count: 3200, order_count: 215, origin_country: 'CN', min_order_qty: 10, weight_kg: 0.8 },
-  { id: 'mi4', title: 'Office Chair Ergonomic Mesh', description: 'Lumbar support, adjustable height.', price_minor: 50000000, currency: 'PHP', unit: 'pc', stock_qty: 45, market_mode: 'B2C', status: 'ACTIVE', images: ['https://picsum.photos/seed/204/200/200'], tags: ['chair','office'], view_count: 670, order_count: 23, origin_country: 'CN', min_order_qty: 1, weight_kg: 12 },
-  { id: 'mi5', title: 'Marine Plywood 3/4 × 4 × 8', description: '18mm marine-grade, moisture resistant.', price_minor: 165000, currency: 'PHP', unit: 'sheet', stock_qty: 0, market_mode: 'B2B', status: 'INACTIVE', images: [], tags: ['plywood','marine'], view_count: 320, order_count: 18, origin_country: 'PH', min_order_qty: 10, weight_kg: 22 },
-]
-
-const displayItems = computed(() => {
-  if (items.value.length > 0) return items.value
-  let list = [...MOCK_ITEMS]
-  if (keyword.value) list = list.filter(i => i.title.toLowerCase().includes(keyword.value.toLowerCase()))
-  if (modeFilter.value) list = list.filter(i => i.market_mode === modeFilter.value || (modeFilter.value !== 'BOTH' && i.market_mode === 'BOTH'))
-  if (statusFilter.value) list = list.filter(i => i.status === statusFilter.value)
-  return list
-})
+const displayItems = computed(() => items.value)
 
 const stats = computed(() => [
   { label: 'Total', value: displayItems.value.length, color: 'text-slate-900' },
@@ -315,6 +306,7 @@ const stats = computed(() => [
 
 async function loadItems() {
   loading.value = true; page.value = 1;
+  loadError.value = '';
   try {
     const params: any = { page: 1, page_size: 20 };
     if (keyword.value.trim()) params.keyword = keyword.value.trim();
@@ -325,14 +317,21 @@ async function loadItems() {
     });
     items.value = data.items ?? data ?? [];
     hasNext.value = data.has_next ?? false;
-  } catch { items.value = []; } finally { loading.value = false; refreshing.value = false; }
+  } catch (e: any) {
+    items.value = [];
+    loadError.value = e?.data?.detail ?? e?.message ?? 'Failed to load supplier catalog.';
+  } finally { loading.value = false; refreshing.value = false; }
 }
 
 async function loadMore() {
   loadingMore.value = true; page.value++;
   try {
+    const params: any = { page: page.value, page_size: 20 };
+    if (keyword.value.trim()) params.keyword = keyword.value.trim();
+    if (statusFilter.value) params.status = statusFilter.value;
+    if (modeFilter.value) params.market_mode = modeFilter.value;
     const data = await $fetch<any>(`${config.public.apiBase}/supplier/catalog/items`, {
-      params: { page: page.value, page_size: 20 },
+      params,
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     });
     items.value.push(...(data.items ?? []));
@@ -427,14 +426,12 @@ async function saveItem() {
   saveLoading.value = true;
   try {
     const headers = { Authorization: `Bearer ${authStore.accessToken}` };
-    if (editing.value && !editing.value.id.startsWith('mi')) {
+    if (editing.value) {
       await $fetch(`${config.public.apiBase}/supplier/catalog/items/${editing.value.id}`, { method: 'PATCH', body: { ...form }, headers });
       showToast({ type: 'success', message: 'Item updated!' });
     } else if (!editing.value) {
       await $fetch(`${config.public.apiBase}/supplier/catalog/items`, { method: 'POST', body: { ...form }, headers });
       showToast({ type: 'success', message: 'Item added!' });
-    } else {
-      showToast({ type: 'success', message: 'Updated (demo mode)' });
     }
     showSheet.value = false;
     await loadItems();
@@ -454,11 +451,9 @@ async function saveItem() {
 async function toggleStatus(item: any) {
   const newStatus = item.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
   try {
-    if (!item.id.startsWith('mi')) {
-      await $fetch(`${config.public.apiBase}/supplier/catalog/items/${item.id}`, {
-        method: 'PATCH', body: { status: newStatus }, headers: { Authorization: `Bearer ${authStore.accessToken}` },
-      });
-    }
+    await $fetch(`${config.public.apiBase}/supplier/catalog/items/${item.id}`, {
+      method: 'PATCH', body: { status: newStatus }, headers: { Authorization: `Bearer ${authStore.accessToken}` },
+    });
     item.status = newStatus;
     showToast({ type: 'success', message: `Item ${newStatus.toLowerCase()}` });
   } catch (e: any) { showToast({ type: 'fail', message: e?.data?.detail ?? 'Update failed' }); }
@@ -467,11 +462,9 @@ async function toggleStatus(item: any) {
 async function deleteItem(item: any) {
   try {
     await showConfirmDialog({ title: 'Delete item?', message: `"${item.title}" will be removed.` });
-    if (!item.id.startsWith('mi')) {
-      await $fetch(`${config.public.apiBase}/supplier/catalog/items/${item.id}`, {
-        method: 'DELETE', headers: { Authorization: `Bearer ${authStore.accessToken}` },
-      });
-    }
+    await $fetch(`${config.public.apiBase}/supplier/catalog/items/${item.id}`, {
+      method: 'DELETE', headers: { Authorization: `Bearer ${authStore.accessToken}` },
+    });
     items.value = items.value.filter(i => i.id !== item.id);
     showToast({ type: 'success', message: 'Item deleted' });
   } catch {}
