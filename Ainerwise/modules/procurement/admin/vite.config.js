@@ -56,6 +56,12 @@ export default defineConfig({
       '/api/admin/maps': coreProxy((p) =>
         p.replace(/^\/api\/admin\/maps/, '/api/v1/cebu-compat/admin/maps')
       ),
+      '/api/admin/dashboard': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/dashboard/, '/api/v1/cebu-compat/admin/dashboard')
+      ),
+      '/api/admin/marketplace': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/marketplace/, '/api/v1/cebu-compat/admin/marketplace')
+      ),
       '/api/admin/ad-campaigns': coreProxy((p) =>
         p.replace(/^\/api\/admin\/ad-campaigns/, '/api/v1/cebu-compat/admin/ad-campaigns')
       ),

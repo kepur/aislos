@@ -2,7 +2,7 @@ import type { Intent, Notification, Offer, Order, User } from "~/types";
 
 export const demoBuyerUser: User = {
   id: "00000000-0000-4000-8000-000000000101",
-  email: "buyer@demo.procureping",
+  email: "buyer@demo.ainerwise.com",
   full_name: "Demo Buyer",
   role: "BUYER",
   status: "ACTIVE",
@@ -14,7 +14,7 @@ export const demoBuyerUser: User = {
 
 export const demoSupplierUser: User = {
   id: "00000000-0000-4000-8000-000000000201",
-  email: "supplier@demo.procureping",
+  email: "supplier@demo.ainerwise.com",
   full_name: "Demo Supplier",
   role: "SUPPLIER_ADMIN",
   status: "ACTIVE",
@@ -25,7 +25,7 @@ export const demoSupplierUser: User = {
 };
 
 export function isDemoEmail(email: string) {
-  return email.trim().toLowerCase().endsWith("@demo.procureping");
+  return email.trim().toLowerCase().endsWith("@demo.ainerwise.com");
 }
 
 export function isDemoToken(token?: string | null) {

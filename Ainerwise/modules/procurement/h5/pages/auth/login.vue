@@ -138,8 +138,8 @@ const loading = ref(false);
 const errors = ref<Record<string, string>>({});
 
 const demoAccounts = [
-  { label: "Demo Buyer", email: "buyer@demo.procureping", password: "123" },
-  { label: "Demo Supplier", email: "supplier@demo.procureping", password: "123" },
+  { label: "Demo Buyer", email: "buyer@demo.ainerwise.com", password: "123" },
+  { label: "Demo Supplier", email: "supplier@demo.ainerwise.com", password: "123" },
 ];
 
 function fillDemo(acc: { email: string; password: string }) {

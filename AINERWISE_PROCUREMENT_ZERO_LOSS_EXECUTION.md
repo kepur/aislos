@@ -642,6 +642,25 @@ Recorded by implementation agent on 2026-06-20. Status is `READY_FOR_VERIFY`; an
 | Procurement H5 build | `docker compose -f docker-compose.yml -f docker-compose.procurement-standalone.yml exec -T procurement-h5 npm run build` | PASS, Nuxt production build completed |
 | Procurement Admin build | `docker compose -f docker-compose.yml -f docker-compose.procurement-standalone.yml exec -T procurement-admin npm run build` | PASS, Vite production build completed |
 
+### Admin Dashboard / Marketplace Management Bridge Evidence
+
+Recorded by implementation agent on 2026-06-20. Status is `READY_FOR_VERIFY`; an independent verification agent must rerun these before marking `VERIFIED`.
+
+| Check | Command | Result |
+| --- | --- | --- |
+| Backend syntax | `python3 -m py_compile Ainerwise/backend/app/api/v1/endpoints/cebu_compat.py` | PASS |
+| Nginx config | `docker compose -f docker-compose.yml -f docker-compose.procurement-standalone.yml exec -T nginx nginx -t` | PASS |
+| Admin dashboard | `GET http://procurement-admin.localhost/api/admin/dashboard` with admin token | `HTTP 200`, real Core counts returned: users `11964`, buyers `6429`, suppliers `2091`, active intents `310`, open disputes `235`, pending company verifications `491`, captured escrow orders `67`, open risk flags `271`, escrow held `146700000` |
+| Marketplace filters | `GET http://procurement.localhost/api/marketplace/filters` | `HTTP 200`, returned `1333` Core categories and market modes `B2B/B2C/BOTH` |
+| Admin marketplace list | `GET http://procurement-admin.localhost/api/admin/marketplace/items?page_size=5` with admin token | `HTTP 200`, total `1351`, first item `c6c49a24-1244-4f93-a3e4-f905e55ce860`, status `ACTIVE`, company `Security vendor b0fce4f5f2` |
+| Admin marketplace status update | `PATCH /api/admin/marketplace/items/c6c49a24-1244-4f93-a3e4-f905e55ce860 -d '{"status":"INACTIVE"}'` then restore to `ACTIVE` | Both `HTTP 200`; status changed to `INACTIVE` then back to `ACTIVE`; audit event emitted through Core compatibility bridge |
+| Customer negative permission | Customer token requests `GET /api/admin/dashboard`, `GET /api/admin/marketplace/items`, and `PATCH /api/admin/marketplace/items/{id}` | All returned `403`, Admin-only boundary holds |
+| Old brand scan | `rg -n "ProcurePing\|procureping" Ainerwise/modules/procurement -S` | No matches; Admin login default is `admin@ainerwise.com`, PC/H5 local demo helper uses `demo.ainerwise.com` |
+| Browser sanity | In-app Browser opened `http://procurement-admin.localhost/login`, logged in as `admin@ainerwise.com`, then opened `/marketplace` | Login and Marketplace rendered AinerWise brand, Marketplace table columns present, `hasOldBrand=false`, console error log empty |
+| Procurement PC build | `docker compose -f docker-compose.yml -f docker-compose.procurement-standalone.yml exec -T procurement-pc npm run build` | PASS, Nuxt production build completed; known external asset warnings only |
+| Procurement H5 build | `docker compose -f docker-compose.yml -f docker-compose.procurement-standalone.yml exec -T procurement-h5 npm run build` | PASS, Nuxt production build completed |
+| Procurement Admin build | `docker compose -f docker-compose.yml -f docker-compose.procurement-standalone.yml exec -T procurement-admin npm run build` | PASS, Vite production build completed |
+
 ### Buyer Projects / AI Project Forge Evidence
 
 | Check | Command | Result |

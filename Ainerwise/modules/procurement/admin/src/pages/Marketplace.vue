@@ -130,10 +130,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-
-const auth = useAuthStore()
-const API = import.meta.env.VITE_API_BASE
+import { api } from '@/utils/api'
 
 const items = ref([])
 const categories = ref([])
@@ -150,8 +147,7 @@ const categoryFilter = ref('')
 
 onMounted(async () => {
   try {
-    const f = await fetch(`${API}/marketplace/filters`, { headers: authHeaders() })
-    const data = await f.json()
+    const { data } = await api.get('/marketplace/filters')
     categories.value = data.categories ?? []
   } catch {}
   await load(true)
@@ -161,15 +157,15 @@ async function load(reset = false) {
   if (reset) page.value = 1
   loading.value = true
   try {
-    const params = new URLSearchParams({ page: page.value, page_size: pageSize })
-    if (search.value.trim()) params.set('keyword', search.value.trim())
-    if (marketMode.value) params.set('market_mode', marketMode.value)
-    if (categoryFilter.value) params.set('category_id', categoryFilter.value)
-
-    // Use feed endpoint — admin can see all via feed; status not exposed in public feed
-    // For admin we use the feed (public) as the primary view, since admin catalog endpoint may differ
-    const r = await fetch(`${API}/marketplace/feed?${params}&sort=newest`, { headers: authHeaders() })
-    const data = await r.json()
+    const params = {
+      page: page.value,
+      page_size: pageSize,
+      keyword: search.value.trim() || undefined,
+      market_mode: marketMode.value || undefined,
+      status: statusFilter.value || undefined,
+      category_id: categoryFilter.value || undefined,
+    }
+    const { data } = await api.get('/admin/marketplace/items', { params })
     items.value = data.items ?? []
     total.value = data.total ?? 0
     hasNext.value = data.has_next ?? false
@@ -182,30 +178,19 @@ async function load(reset = false) {
 
 async function setStatus(item, newStatus) {
   try {
-    // Use merchant catalog update — we need company context; for admin use a direct approach
-    const r = await fetch(`${API}/merchant/catalog/${item.id}`, {
-      method: 'PATCH',
-      headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
+    const { data } = await api.patch(`/admin/marketplace/items/${item.id}`, {
+      status: newStatus,
+      reason: 'Procurement Admin marketplace status update'
     })
-    if (r.ok) {
-      item.status = newStatus
-    } else {
-      const err = await r.json()
-      alert(err.detail ?? 'Failed to update status')
-    }
+    item.status = data.status
   } catch (e) {
-    alert('Network error')
+    alert(e.response?.data?.detail ?? 'Network error')
   }
 }
 
 async function rejectItem(item) {
   if (!confirm(`Reject "${item.title}"? It will be removed from the marketplace.`)) return
   await setStatus(item, 'REJECTED')
-}
-
-function authHeaders() {
-  return { Authorization: `Bearer ${auth.token}` }
 }
 
 function formatPrice(minor, currency) {

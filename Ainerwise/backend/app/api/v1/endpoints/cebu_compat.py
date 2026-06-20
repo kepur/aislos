@@ -2909,6 +2909,25 @@ async def legacy_marketplace_feed(
     }
 
 
+@router.get("/marketplace/filters")
+async def legacy_marketplace_filters(db: DB):
+    categories = list(
+        (
+            await db.execute(
+                select(TradeCategorySchema)
+                .where(TradeCategorySchema.status == "active")
+                .order_by(TradeCategorySchema.name.asc())
+            )
+        ).scalars()
+    )
+    return {
+        "categories": [_category_as_legacy(row) for row in categories],
+        "market_modes": ["B2B", "B2C", "BOTH"],
+        "sort_options": ["newest", "price_asc", "price_desc"],
+        "currencies": ["PHP", "USD", "EUR"],
+    }
+
+
 @router.get("/marketplace/items/{item_id}")
 async def legacy_marketplace_item(item_id: uuid.UUID, db: DB):
     row = (
@@ -3172,6 +3191,78 @@ async def legacy_pause_merchant_ad_campaign(campaign_id: uuid.UUID, db: DB, user
         raise HTTPException(status_code=404, detail=str(exc)) from None
 
 
+@router.get("/admin/dashboard")
+async def legacy_admin_dashboard(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    users_total = (await db.execute(select(func.count()).select_from(User))).scalar() or 0
+    buyers_total = (
+        await db.execute(
+            select(func.count())
+            .select_from(User)
+            .where(User.role.in_(("buyer", "customer_user")))
+        )
+    ).scalar() or 0
+    suppliers_total = (
+        await db.execute(
+            select(func.count())
+            .select_from(User)
+            .where(User.role.in_(("vendor", "service_partner")))
+        )
+    ).scalar() or 0
+    active_intents = (
+        await db.execute(
+            select(func.count())
+            .select_from(ProcurementRequest)
+            .where(ProcurementRequest.status.in_(("published", "matching", "offer_received")))
+        )
+    ).scalar() or 0
+    open_disputes = (
+        await db.execute(
+            select(func.count())
+            .select_from(OrderDispute)
+            .where(OrderDispute.status.in_(("open", "under_review")))
+        )
+    ).scalar() or 0
+    pending_company_verifications = (
+        await db.execute(
+            select(func.count())
+            .select_from(Company)
+            .where(Company.verification_status.in_(("pending", "submitted", "needs_info")))
+        )
+    ).scalar() or 0
+    orders_in_escrow = (
+        await db.execute(
+            select(func.count())
+            .select_from(EscrowTransaction)
+            .where(EscrowTransaction.status == "CAPTURED")
+        )
+    ).scalar() or 0
+    escrow_held_minor = (
+        await db.execute(
+            select(func.coalesce(func.sum(EscrowTransaction.captured_amount_minor), 0))
+            .where(EscrowTransaction.status == "CAPTURED")
+        )
+    ).scalar() or 0
+    open_risk_flags = (
+        await db.execute(
+            select(func.count())
+            .select_from(RiskFlag)
+            .where(RiskFlag.status == "open")
+        )
+    ).scalar() or 0
+    return {
+        "users_total": users_total,
+        "buyers_total": buyers_total,
+        "suppliers_total": suppliers_total,
+        "active_intents": active_intents,
+        "open_disputes": open_disputes,
+        "pending_company_verifications": pending_company_verifications,
+        "orders_in_escrow": orders_in_escrow,
+        "open_risk_flags": open_risk_flags,
+        "escrow_held_minor": escrow_held_minor,
+    }
+
+
 @router.get("/admin/users")
 async def legacy_admin_users(
     db: DB,
@@ -3339,6 +3430,91 @@ async def legacy_admin_companies(
         stmt = stmt.where(Company.verification_status == verification_status)
     rows = list((await db.execute(stmt)).scalars())
     return [_company_as_legacy(row) for row in rows]
+
+
+@router.get("/admin/marketplace/items")
+async def legacy_admin_marketplace_items(
+    db: DB,
+    user: CurrentUser,
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+    keyword: str | None = None,
+    status: str | None = None,
+    market_mode: str | None = None,
+    category_id: uuid.UUID | None = None,
+):
+    _require_legacy_admin(user)
+    stmt = select(SupplierListing, Company.name.label("company_name")).join(
+        Company,
+        Company.id == SupplierListing.company_id,
+        isouter=True,
+    )
+    if keyword:
+        stmt = stmt.where(SupplierListing.title.ilike(f"%{keyword.strip()}%"))
+    if category_id:
+        stmt = stmt.where(SupplierListing.category_schema_id == category_id)
+    if status:
+        stmt = stmt.where(SupplierListing.status == _catalog_status_to_core(status))
+    else:
+        stmt = stmt.where(SupplierListing.status != "archived")
+    rows = list((await db.execute(stmt.order_by(SupplierListing.created_at.desc()))).all())
+    if market_mode:
+        rows = [
+            (listing, company_name)
+            for listing, company_name in rows
+            if (listing.attributes_json or {}).get("market_mode", "B2B").upper() == market_mode.upper()
+        ]
+    category_ids = {listing.category_schema_id for listing, _ in rows if listing.category_schema_id}
+    categories = {}
+    if category_ids:
+        category_rows = list(
+            (
+                await db.execute(
+                    select(TradeCategorySchema).where(TradeCategorySchema.id.in_(category_ids))
+                )
+            ).scalars()
+        )
+        categories = {row.id: row.name for row in category_rows}
+    total = len(rows)
+    offset = (page - 1) * page_size
+    items = []
+    for listing, company_name in rows[offset : offset + page_size]:
+        data = _catalog_item_as_legacy(listing, company_name=company_name)
+        data["category_name"] = categories.get(listing.category_schema_id)
+        items.append(data)
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "has_next": offset + page_size < total,
+    }
+
+
+@router.patch("/admin/marketplace/items/{item_id}")
+async def legacy_admin_update_marketplace_item(item_id: uuid.UUID, data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(SupplierListing, item_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Catalog item not found")
+    before = row.status
+    if "status" in data:
+        row.status = _catalog_status_to_core(data.get("status")) or row.status
+    row.attributes_json = _catalog_attrs_from_payload(data, row.attributes_json)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.marketplace_item_updated",
+        entity_type="supplier_listing",
+        entity_id=row.id,
+        before=before,
+        after=row.status,
+        reason=data.get("reason"),
+    )
+    await db.commit()
+    await db.refresh(row)
+    company = await db.get(Company, row.company_id)
+    return _catalog_item_as_legacy(row, company_name=company.name if company else None)
 
 
 @router.patch("/admin/companies/{company_id}/verification")

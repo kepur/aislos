@@ -22,7 +22,7 @@
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ t('login.email') }}</label>
-            <input v-model="email" type="email" class="input" placeholder="admin@procureping.com" @keyup.enter="login" />
+            <input v-model="email" type="email" class="input" placeholder="admin@ainerwise.com" @keyup.enter="login" />
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ t('login.password') }}</label>
@@ -48,7 +48,7 @@ import { SUPPORTED_LOCALES, applyDirection } from '@/i18n'
 const { t, locale } = useI18n()
 const auth = useAuthStore()
 const router = useRouter()
-const email = ref('admin@procureping.com')
+const email = ref('admin@ainerwise.com')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
