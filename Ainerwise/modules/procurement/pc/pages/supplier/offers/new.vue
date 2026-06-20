@@ -4,7 +4,10 @@
       <UButton to="/supplier/inbox" color="gray" variant="ghost" icon="i-heroicons-arrow-left" size="sm" />
       <div>
         <h1 class="text-2xl font-bold text-slate-900">Submit Offer</h1>
-        <p class="text-sm text-slate-500 mt-1">For Request: 500 bags Portland Cement (Ref: #REQ-82910)</p>
+        <p class="text-sm text-slate-500 mt-1">
+          <span v-if="intent">For Request: {{ intent.title }} (Ref: #{{ String(intent.id).slice(0, 8) }})</span>
+          <span v-else>Load a buyer request from the supplier inbox before submitting an offer.</span>
+        </p>
       </div>
     </div>
 
@@ -19,23 +22,23 @@
           <dl class="space-y-4 text-sm">
             <div>
               <dt class="font-medium text-slate-500">Quantity</dt>
-              <dd class="font-bold text-slate-900 mt-0.5">500 Bags</dd>
+              <dd class="font-bold text-slate-900 mt-0.5">{{ qty }} {{ intent?.unit || 'pcs' }}</dd>
             </div>
             <div>
               <dt class="font-medium text-slate-500">Buyer Budget</dt>
-              <dd class="font-bold text-slate-900 mt-0.5">$2,000 - $2,500</dd>
+              <dd class="font-bold text-slate-900 mt-0.5">{{ budgetLabel }}</dd>
             </div>
             <div>
               <dt class="font-medium text-slate-500">Delivery Location</dt>
-              <dd class="font-medium text-slate-900 mt-0.5">Mandaue City (4.2 km away)</dd>
+              <dd class="font-medium text-slate-900 mt-0.5">{{ deliveryLocationLabel }}</dd>
             </div>
             <div>
               <dt class="font-medium text-slate-500">Required By</dt>
-              <dd class="font-medium text-slate-900 mt-0.5">Tomorrow afternoon</dd>
+              <dd class="font-medium text-slate-900 mt-0.5">{{ requiredByLabel }}</dd>
             </div>
             <div>
               <dt class="font-medium text-slate-500">Notes</dt>
-              <dd class="text-slate-700 mt-0.5 italic">"Looking for Holcim or Republic brand."</dd>
+              <dd class="text-slate-700 mt-0.5 italic">"{{ intent?.notes || 'No additional buyer notes.' }}"</dd>
             </div>
           </dl>
 
@@ -124,7 +127,7 @@
               </div>
 
               <UFormGroup label="Stock Confidence" required>
-                <USelect v-model="form.stock" :options="['High (In Warehouse)', 'Medium (Supplier Network)', 'Low (Need to order)']" size="lg" />
+                <USelect v-model="form.stock" :options="stockOptions" option-attribute="label" value-attribute="value" size="lg" />
               </UFormGroup>
             </div>
 
@@ -136,9 +139,11 @@
               <UTextarea v-model="form.notes" :rows="3" placeholder="Specify brand, packaging details, or delivery requirements..." />
             </UFormGroup>
 
+            <p v-if="error" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error }}</p>
+
             <div class="pt-4 flex justify-end space-x-4">
               <UButton color="gray" variant="ghost" size="lg" to="/supplier/inbox">Cancel</UButton>
-              <UButton type="submit" color="indigo" size="lg" class="px-8 font-bold" icon="i-heroicons-paper-airplane">Send Offer</UButton>
+              <UButton type="submit" color="indigo" size="lg" class="px-8 font-bold" icon="i-heroicons-paper-airplane" :loading="loading" :disabled="!intent || !canSubmit">Send Offer</UButton>
             </div>
           </form>
         </UCard>
@@ -150,6 +155,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import type { Intent } from '~/types'
 
 definePageMeta({
   layout: 'supplier'
@@ -158,7 +164,10 @@ definePageMeta({
 const router = useRouter()
 const route = useRoute()
 const api = useApiFetch()
-const qty = 500
+const offerStore = useOfferStore()
+const intent = ref<Intent | null>(null)
+const loading = ref(false)
+const error = ref('')
 const intentCountry = ref('PH')
 const selectedOriginAddressId = ref<string>('')
 const shippingAddresses = ref<any[]>([])
@@ -168,20 +177,52 @@ const form = ref({
   unitPrice: 4.20,
   deliveryFee: 50.00,
   eta: 'Tomorrow, 2:00 PM',
-  stock: 'High (In Warehouse)',
+  stock: 'FIRM',
   warranty: 'Return if defective',
   notes: 'We have Republic Cement in stock. Can deliver by tomorrow 2PM via our flatbed truck. Price includes unloading at the site.'
 })
 
+const stockOptions = [
+  { label: 'High (In Warehouse)', value: 'FIRM' },
+  { label: 'Medium (Supplier Network)', value: 'UNKNOWN' },
+  { label: 'Low (Need to order)', value: 'BACKORDER' },
+]
+
+const intentId = computed(() => (typeof route.query.intent_id === 'string' ? route.query.intent_id : ''))
+const qty = computed(() => Math.max(1, Number(intent.value?.qty || 1)))
+const currency = computed(() => intent.value?.currency || shippingEstimate.value?.currency || 'PHP')
+const canSubmit = computed(() => Boolean(intentId.value && form.value.unitPrice > 0 && qty.value > 0))
+
 const totalItemCost = computed(() => {
-  return (form.value.unitPrice * qty).toFixed(2)
+  return (form.value.unitPrice * qty.value).toFixed(2)
 })
 
 const totalLandedCost = computed(() => {
-  return ((form.value.unitPrice * qty) + Number(form.value.deliveryFee)).toFixed(2)
+  return ((form.value.unitPrice * qty.value) + Number(form.value.deliveryFee)).toFixed(2)
 })
 
 const destCountry = computed(() => intentCountry.value || 'PH')
+const budgetLabel = computed(() => {
+  const row = intent.value
+  if (!row) return 'Loading...'
+  if (row.budget_min_minor && row.budget_max_minor) {
+    return `${formatMinor(row.budget_min_minor, row.currency)} - ${formatMinor(row.budget_max_minor, row.currency)}`
+  }
+  if (row.budget_max_minor) return `Up to ${formatMinor(row.budget_max_minor, row.currency)}`
+  return 'Open'
+})
+const deliveryLocationLabel = computed(() => {
+  const row = intent.value
+  if (!row) return 'Loading...'
+  return [row.city, row.country].filter(Boolean).join(', ') || `${row.radius_km || 30} km service area`
+})
+const requiredByLabel = computed(() => {
+  const row = intent.value
+  if (!row) return 'Loading...'
+  const dates = [row.delivery_window_start, row.delivery_window_end].filter(Boolean)
+  if (dates.length) return dates.map((value) => new Date(String(value)).toLocaleDateString('en-PH')).join(' - ')
+  return row.expires_at ? `Before ${new Date(row.expires_at).toLocaleDateString('en-PH')}` : 'Flexible'
+})
 const shippingAddressOptions = computed(() =>
   shippingAddresses.value.map((a: any) => ({
     label: `${a.label} · ${a.city} · ${a.country_name}`,
@@ -189,10 +230,43 @@ const shippingAddressOptions = computed(() =>
   }))
 )
 
-const submitOffer = () => {
-  if(confirm(`Submit offer with Total Landed Cost of $${totalLandedCost.value}?`)) {
-    alert('Offer sent successfully to the buyer!')
-    router.push('/supplier/dashboard')
+function formatMinor(amountMinor: number, valueCurrency = 'PHP') {
+  try {
+    return new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: valueCurrency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(amountMinor / 100)
+  } catch {
+    return `${(amountMinor / 100).toLocaleString()} ${valueCurrency}`
+  }
+}
+
+async function submitOffer() {
+  if (!canSubmit.value || loading.value) return
+  if (!window.confirm(`Submit offer with Total Landed Cost of ${formatMinor(Math.round(Number(totalLandedCost.value) * 100), currency.value)}?`)) return
+  loading.value = true
+  error.value = ''
+  const payload: Record<string, unknown> = {
+    qty_available: qty.value,
+    unit_price_minor: Math.round(Number(form.value.unitPrice) * 100),
+    delivery_fee_minor: Math.round(Number(form.value.deliveryFee) * 100),
+    currency: currency.value,
+    tier: 'GOOD',
+    stock_confidence: form.value.stock,
+    message: form.value.notes || undefined,
+    warranty: form.value.warranty || undefined,
+  }
+  try {
+    await offerStore.submitOffer(intentId.value, payload)
+    window.alert('Offer submitted to the buyer.')
+    await router.push('/supplier/offers')
+  } catch (err: any) {
+    const detail = err?.data?.detail
+    error.value = typeof detail === 'string' ? detail : JSON.stringify(detail) || 'Failed to submit offer'
+  } finally {
+    loading.value = false
   }
 }
 
@@ -212,13 +286,20 @@ async function loadShippingAddresses() {
 }
 
 async function loadIntentCountry() {
-  const intentId = route.query.intent_id as string | undefined
-  if (!intentId) return
+  if (!intentId.value) {
+    error.value = 'Missing buyer request id.'
+    return
+  }
   try {
-    const intent = await api<{ country?: string }>(`/intents/${intentId}`)
-    intentCountry.value = intent.country || 'PH'
-  } catch {
+    const row = await api<Intent>(`/intents/${intentId.value}`)
+    intent.value = row
+    intentCountry.value = row.country || 'PH'
+    if (row.budget_max_minor && row.qty) {
+      form.value.unitPrice = Number(((row.budget_max_minor / 100) / Math.max(1, row.qty)).toFixed(2))
+    }
+  } catch (err: any) {
     intentCountry.value = 'PH'
+    error.value = err?.data?.detail || 'Failed to load buyer request.'
   }
 }
 
@@ -232,9 +313,9 @@ async function recalculateShipping() {
       body: {
         origin_country: selectedOriginAddress.value.country_code || 'PH',
         dest_country: destCountry.value || 'PH',
-        weight_kg: qty,
-        declared_value_minor: Math.round(form.value.unitPrice * qty * 100),
-        currency: 'USD'
+        weight_kg: qty.value,
+        declared_value_minor: Math.round(form.value.unitPrice * qty.value * 100),
+        currency: currency.value
       }
     })
     shippingEstimate.value = res.estimates?.[0] || null

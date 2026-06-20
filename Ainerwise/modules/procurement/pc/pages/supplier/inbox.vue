@@ -25,19 +25,19 @@
 
         <div class="flex items-center ml-auto space-x-4">
           <label class="flex items-center gap-2 cursor-pointer select-none"><input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-indigo-600 cursor-pointer" /><span class="text-sm text-slate-700">Pre-funded only</span></label>
-          <UButton variant="ghost" color="gray" size="sm" icon="i-heroicons-arrow-path">Refresh</UButton>
+          <UButton variant="ghost" color="gray" size="sm" icon="i-heroicons-arrow-path" :loading="offerStore.loading" @click="loadPings">Refresh</UButton>
         </div>
       </div>
     </UCard>
 
     <!-- Pings Table -->
     <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-      <UTable :columns="columns" :rows="pings">
+      <UTable :columns="columns" :rows="tableRows" :loading="offerStore.loading">
 
         <template #summary-data="{ row }">
           <div>
             <div class="font-bold text-slate-900">{{ row.title }}</div>
-            <div class="text-xs text-slate-500">ID: {{ row.id }} • {{ row.category }}</div>
+            <div class="text-xs text-slate-500">ID: {{ row.shortId }} • {{ row.category }}</div>
             <div class="mt-1 line-clamp-1 text-sm text-slate-600">{{ row.description }}</div>
           </div>
         </template>
@@ -74,12 +74,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import type { Intent } from '~/types'
 
 definePageMeta({
   layout: 'supplier'
 })
 
+const router = useRouter()
+const offerStore = useOfferStore()
 const status = ref('Online: Receiving Pings')
 
 const columns = [
@@ -91,47 +94,66 @@ const columns = [
   { key: 'actions', label: 'Actions' }
 ]
 
-const pings = [
-  {
-    id: '#REQ-82910',
-    title: '500 bags Portland Cement',
-    category: 'Construction Materials',
-    description: 'Looking for Holcim or Republic brand. Must be delivered by tomorrow afternoon.',
-    qty: '500 Bags',
-    budget: '$2,000 - $2,500',
-    preFunded: true,
-    distance: '4.2 km',
-    deliveryWindow: 'Tomorrow, 2PM',
-    timeLeft: '3h 15m'
-  },
-  {
-    id: '#REQ-82911',
-    title: '1000m Copper Wire 12 AWG',
-    category: 'Electrical',
-    description: 'THHN stranded. Need 2 rolls of 500m each.',
-    qty: '1000 Meters',
-    budget: 'Open',
-    preFunded: false,
-    distance: '1.5 km',
-    deliveryWindow: 'Next Week',
-    timeLeft: '1d 12h'
-  },
-  {
-    id: '#REQ-82912',
-    title: 'Commercial AC Unit 5HP',
-    category: 'HVAC',
-    description: 'Floor standing split type, inverter. Daikin or Panasonic preferred.',
-    qty: '1 Piece',
-    budget: '$1,500 Max',
-    preFunded: true,
-    distance: '8.0 km',
-    deliveryWindow: 'Anytime',
-    timeLeft: '5h 45m'
-  }
-]
+const tableRows = computed(() => offerStore.pings.map((ping) => mapPingRow(ping)))
 
-const makeOffer = (ping: any) => {
-  // Mock make offer action
-  alert(`Opening quote editor for ${ping.title}`)
+function mapPingRow(ping: Intent) {
+  const budget =
+    ping.budget_min_minor && ping.budget_max_minor
+      ? `${formatMinor(ping.budget_min_minor, ping.currency)} - ${formatMinor(ping.budget_max_minor, ping.currency)}`
+      : ping.budget_max_minor
+        ? `Up to ${formatMinor(ping.budget_max_minor, ping.currency)}`
+        : 'Open'
+  return {
+    id: ping.id,
+    shortId: `#${String(ping.id).slice(0, 8)}`,
+    title: ping.title,
+    category: ping.category_id ? `Category ${String(ping.category_id).slice(0, 8)}` : 'General',
+    description: ping.notes || 'No additional notes.',
+    qty: `${ping.qty || 1} ${ping.unit || 'pcs'}`,
+    budget,
+    preFunded: Boolean(ping.budget_max_minor),
+    distance: [ping.city, ping.country].filter(Boolean).join(', ') || `${ping.radius_km || 30} km service area`,
+    deliveryWindow: formatDeliveryWindow(ping),
+    timeLeft: formatTimeLeft(ping.expires_at),
+  }
 }
+
+function formatMinor(amountMinor: number, currency = 'PHP') {
+  try {
+    return new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(amountMinor / 100)
+  } catch {
+    return `${(amountMinor / 100).toLocaleString()} ${currency}`
+  }
+}
+
+function formatDeliveryWindow(ping: Intent) {
+  if (ping.delivery_window_start || ping.delivery_window_end) {
+    return [ping.delivery_window_start, ping.delivery_window_end].filter(Boolean).map((date) => new Date(String(date)).toLocaleDateString()).join(' - ')
+  }
+  return 'Flexible'
+}
+
+function formatTimeLeft(expiresAt?: string) {
+  if (!expiresAt) return 'Open'
+  const ms = new Date(expiresAt).getTime() - Date.now()
+  if (!Number.isFinite(ms) || ms <= 0) return 'Expired'
+  const hours = Math.floor(ms / 3600000)
+  if (hours < 24) return `${hours}h left`
+  return `${Math.floor(hours / 24)}d left`
+}
+
+async function loadPings() {
+  await offerStore.fetchPings()
+}
+
+const makeOffer = (ping: { id: string }) => {
+  router.push(`/supplier/offers/new?intent_id=${ping.id}`)
+}
+
+onMounted(loadPings)
 </script>
