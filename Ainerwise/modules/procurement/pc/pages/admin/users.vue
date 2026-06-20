@@ -21,6 +21,15 @@
         <UButton icon="i-heroicons-arrow-path" color="gray" variant="ghost" :loading="loading" @click="load(true)">Refresh</UButton>
       </div>
 
+      <UAlert
+        v-if="error"
+        color="red"
+        variant="soft"
+        icon="i-heroicons-exclamation-triangle"
+        class="mb-4"
+        :title="error"
+      />
+
       <UTable :columns="columns" :rows="users" :loading="loading">
         <template #name-data="{ row }">
           <div>
@@ -89,6 +98,7 @@ const loading = ref(false)
 const users = ref<any[]>([])
 const total = ref(0)
 const hasNext = ref(false)
+const error = ref('')
 
 const roleOptions = [
   { label: 'All Roles', value: '' },
@@ -123,6 +133,7 @@ const columns = [
 async function load(reset = false) {
   if (reset) page.value = 1
   loading.value = true
+  error.value = ''
   try {
     const params: Record<string, any> = {
       page: page.value,
@@ -142,14 +153,11 @@ async function load(reset = false) {
     hasNext.value = data.has_next ?? (page.value * pageSize < total.value)
   } catch (e: any) {
     console.error('Admin users fetch error:', e)
-    // Fallback to mock if endpoint not available
-    users.value = [
-      { id: '1', full_name: 'Demo Buyer', email: 'buyer@procurement.localhost', role: 'BUYER', account_type: 'INDIVIDUAL', status: 'ACTIVE', created_at: new Date().toISOString() },
-      { id: '2', full_name: 'Demo Supplier', email: 'supplier@procurement.localhost', role: 'SUPPLIER_ADMIN', account_type: 'BUSINESS', status: 'ACTIVE', created_at: new Date().toISOString() },
-      { id: '3', full_name: 'Admin User', email: 'admin@procurement.localhost', role: 'ADMIN', account_type: 'INDIVIDUAL', status: 'ACTIVE', created_at: new Date().toISOString() },
-    ]
-    total.value = users.value.length
+    users.value = []
+    total.value = 0
     hasNext.value = false
+    const detail = e?.data?.detail
+    error.value = typeof detail === 'string' ? detail : 'Failed to load platform users.'
   } finally {
     loading.value = false
   }
@@ -165,8 +173,8 @@ async function toggleStatus(user: any) {
     })
     user.status = newStatus
   } catch (e: any) {
-    // Optimistic update fallback
-    user.status = newStatus
+    const detail = e?.data?.detail
+    error.value = typeof detail === 'string' ? detail : 'Failed to update user status.'
   }
 }
 
