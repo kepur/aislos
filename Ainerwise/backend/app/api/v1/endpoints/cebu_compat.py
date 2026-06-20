@@ -7,8 +7,10 @@ import io
 import secrets
 import uuid
 from datetime import date, datetime, timezone
+from pathlib import Path
 
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy import func, or_, select
 
@@ -17,7 +19,8 @@ from app.core.permissions import STAFF_ROLES
 from app.core.security import hash_password
 from app.api.v1.endpoints.files import BUCKET_NAME, get_minio_client
 from app.core.object_storage import new_user_upload_key
-from app.models.admin_config import PlatformSetting
+from app.models.admin_config import NotificationTemplate, PlatformSetting
+from app.models.audit import AuditLog
 from app.models.backup import BackupJob, BackupSchedule
 from app.models.commerce import (
     CommerceMessage,
@@ -34,7 +37,7 @@ from app.models.commerce import (
     TrustScoreEvent,
     TradeCategorySchema,
 )
-from app.models.notification import NotificationPreference
+from app.models.notification import NotificationPreference, PortalNotification
 from app.models.region import Region
 from app.models.settings import IntegrationSetting
 from app.models.user import Company, User
@@ -160,6 +163,7 @@ from app.services.commerce_messaging import (
     post_thread_message,
 )
 from app.services.audit import append_audit_event
+from app.services.backup_service import create_backup_archive, next_run_at_for_schedule
 from app.services.demo_mode import is_demo_mode_enabled, set_demo_mode_enabled
 from app.services.portal_access import suspend_user_portal_access, sync_role_portal_access
 
@@ -1240,6 +1244,114 @@ async def _ensure_legacy_admin_default_settings(db: DB) -> list[PlatformSetting]
     if created:
         await db.flush()
     return list(existing.values()) + created
+
+
+def _audit_risk_level(row: AuditLog) -> str:
+    text = " ".join(
+        str(value or "").lower()
+        for value in (row.action, row.entity_type, row.reason, row.source)
+    )
+    if any(marker in text for marker in ("critical", "failed", "refund", "delete", "reject")):
+        return "HIGH"
+    if any(marker in text for marker in ("risk", "dispute", "suspend", "forbidden")):
+        return "MEDIUM"
+    return "LOW"
+
+
+def _audit_log_as_admin_legacy(row: AuditLog, actor: User | None = None) -> dict:
+    return {
+        "id": row.id,
+        "actor_type": row.actor_type,
+        "actor_user_id": row.actor_user_id,
+        "actor_role": _legacy_role(actor.role) if actor else None,
+        "agent_slug": row.agent_slug,
+        "portal_key": row.portal_key,
+        "action": row.action,
+        "entity_type": row.entity_type,
+        "entity_id": row.entity_id,
+        "before": row.before_json,
+        "after": row.after_json,
+        "reason": row.reason,
+        "source": row.source,
+        "risk_level": _audit_risk_level(row),
+        "correlation_id": row.correlation_id,
+        "ip": row.ip,
+        "user_agent": row.user_agent,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _notification_template_as_admin_legacy(row: NotificationTemplate) -> dict:
+    return {
+        "id": row.id,
+        "portal_key": row.portal_key,
+        "template_key": row.template_key,
+        "channel": row.channel,
+        "language": row.language,
+        "subject": row.subject,
+        "body": row.body,
+        "variables_hint": row.variables_hint,
+        "active": row.active,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _portal_notification_as_admin_legacy(row: PortalNotification) -> dict:
+    return {
+        "id": row.id,
+        "user_id": row.user_id,
+        "portal_key": row.portal_key,
+        "domain": row.domain,
+        "event_type": row.event_type,
+        "title": row.title,
+        "body": row.body,
+        "link_path": row.link_path,
+        "aggregate_type": row.aggregate_type,
+        "aggregate_id": row.aggregate_id,
+        "status": row.status,
+        "read_at": row.read_at,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _backup_schedule_as_admin_legacy(row: BackupSchedule) -> dict:
+    return {
+        "id": row.id,
+        "name": row.name,
+        "frequency": row.frequency,
+        "cron_expr": row.cron_expr,
+        "day_of_week": row.day_of_week,
+        "day_of_month": row.day_of_month,
+        "hour": row.hour,
+        "minute": row.minute,
+        "enabled": row.enabled,
+        "retention_count": row.retention_count,
+        "retention_days": row.retention_days,
+        "last_run_at": row.last_run_at,
+        "next_run_at": row.next_run_at,
+        "created_by": row.created_by,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _backup_job_as_admin_legacy(row: BackupJob) -> dict:
+    return {
+        "id": row.id,
+        "schedule_id": row.schedule_id,
+        "status": row.status,
+        "archive_size_bytes": row.archive_size_bytes,
+        "archive_path": row.archive_path,
+        "started_at": row.started_at,
+        "finished_at": row.finished_at,
+        "error_message": row.error_message,
+        "created_by": row.created_by,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
 
 
 async def _get_integration_setting(db: DB, category: str) -> IntegrationSetting | None:
@@ -3401,6 +3513,315 @@ async def legacy_admin_upsert_setting(key: str, data: dict, db: DB, user: Curren
     await db.commit()
     await db.refresh(row)
     return _platform_setting_as_admin_legacy(row)
+
+
+@router.get("/admin/audit-logs")
+async def legacy_admin_audit_logs(
+    db: DB,
+    user: CurrentUser,
+    action: str | None = None,
+    risk_level: str | None = None,
+    limit: int = Query(default=100, ge=1, le=500),
+):
+    _require_legacy_admin(user)
+    stmt = select(AuditLog).order_by(AuditLog.created_at.desc()).limit(limit)
+    if action:
+        stmt = stmt.where(AuditLog.action.ilike(f"%{action}%"))
+    rows = list((await db.execute(stmt)).scalars())
+    actor_ids = [row.actor_user_id for row in rows if row.actor_user_id]
+    actors: dict[uuid.UUID, User] = {}
+    if actor_ids:
+        actor_rows = list((await db.execute(select(User).where(User.id.in_(actor_ids)))).scalars())
+        actors = {actor.id: actor for actor in actor_rows}
+    items = [_audit_log_as_admin_legacy(row, actors.get(row.actor_user_id)) for row in rows]
+    if risk_level:
+        items = [item for item in items if item["risk_level"] == risk_level.upper()]
+    return items
+
+
+@router.get("/admin/notification-templates")
+async def legacy_admin_notification_templates(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    rows = list(
+        (
+            await db.execute(
+                select(NotificationTemplate)
+                .where(NotificationTemplate.portal_key == "admin_cebu")
+                .order_by(NotificationTemplate.template_key.asc(), NotificationTemplate.channel.asc())
+            )
+        ).scalars()
+    )
+    return [_notification_template_as_admin_legacy(row) for row in rows]
+
+
+@router.put("/admin/notification-templates/{template_key}")
+async def legacy_admin_upsert_notification_template(
+    template_key: str,
+    data: dict,
+    db: DB,
+    user: CurrentUser,
+):
+    _require_legacy_admin(user)
+    channel = str(data.get("channel") or "").strip().upper()
+    language = str(data.get("language") or "en").strip() or "en"
+    stmt = select(NotificationTemplate).where(
+        NotificationTemplate.portal_key == "admin_cebu",
+        NotificationTemplate.template_key == template_key,
+    )
+    if channel:
+        stmt = stmt.where(NotificationTemplate.channel == channel)
+    row = (await db.execute(stmt.order_by(NotificationTemplate.channel.asc()))).scalars().first()
+    before = None
+    if row is None:
+        row = NotificationTemplate(
+            portal_key="admin_cebu",
+            template_key=template_key,
+            channel=channel or "EMAIL",
+            language=language,
+            body=str(data.get("body") or ""),
+            active=bool(data.get("active", True)),
+        )
+        db.add(row)
+    else:
+        before = {
+            "subject": row.subject,
+            "body": row.body,
+            "active": row.active,
+            "channel": row.channel,
+        }
+    if "subject" in data:
+        row.subject = data.get("subject")
+    if "body" in data:
+        row.body = str(data.get("body") or "")
+    if "active" in data:
+        row.active = bool(data.get("active"))
+    if channel:
+        row.channel = channel
+    row.language = language
+    await db.flush()
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.notification_template_updated",
+        entity_type="notification_template",
+        entity_id=row.id,
+        before=before,
+        after={"subject": row.subject, "active": row.active, "channel": row.channel},
+        reason=template_key,
+    )
+    await db.commit()
+    await db.refresh(row)
+    return _notification_template_as_admin_legacy(row)
+
+
+@router.get("/admin/notifications")
+async def legacy_admin_notifications(
+    db: DB,
+    user: CurrentUser,
+    status: str | None = None,
+    limit: int = Query(default=100, ge=1, le=500),
+):
+    _require_legacy_admin(user)
+    stmt = select(PortalNotification).order_by(PortalNotification.created_at.desc()).limit(limit)
+    if status:
+        stmt = stmt.where(PortalNotification.status == status)
+    rows = list((await db.execute(stmt)).scalars())
+    return [_portal_notification_as_admin_legacy(row) for row in rows]
+
+
+@router.post("/admin/notifications/test", status_code=201)
+async def legacy_admin_test_notification(
+    db: DB,
+    user: CurrentUser,
+    channel: str | None = None,
+    data: dict | None = None,
+):
+    _require_legacy_admin(user)
+    payload = data or {}
+    normalized_channel = str(channel or payload.get("channel") or "IN_APP").upper()
+    row = PortalNotification(
+        user_id=user.id,
+        portal_key="admin_cebu",
+        domain="commerce",
+        event_type="cebu.admin.test",
+        title=payload.get("title") or f"AinerWise Procurement {normalized_channel} test",
+        body=payload.get("body") or "This is a real in-app test notification from Procurement Admin.",
+        link_path="/notifications",
+        status="unread",
+    )
+    db.add(row)
+    await db.flush()
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.notification_tested",
+        entity_type="portal_notification",
+        entity_id=row.id,
+        before=None,
+        after=normalized_channel,
+        reason=None,
+    )
+    await db.commit()
+    await db.refresh(row)
+    return {
+        "message": f"Test notification queued for {normalized_channel}",
+        "notification": _portal_notification_as_admin_legacy(row),
+    }
+
+
+@router.get("/admin/backups/schedules")
+async def legacy_admin_backup_schedules(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    rows = list((await db.execute(select(BackupSchedule).order_by(BackupSchedule.created_at.desc()))).scalars())
+    return [_backup_schedule_as_admin_legacy(row) for row in rows]
+
+
+@router.post("/admin/backups/schedules", status_code=201)
+async def legacy_admin_create_backup_schedule(data: dict, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    frequency = str(data.get("frequency") or "WEEKLY").upper()
+    if frequency not in {"WEEKLY", "MONTHLY", "CUSTOM"}:
+        raise HTTPException(status_code=422, detail="Invalid backup frequency")
+    row = BackupSchedule(
+        name=data.get("name") or f"{frequency.title()} procurement backup",
+        frequency=frequency,
+        cron_expr=data.get("cron_expr"),
+        day_of_week=data.get("day_of_week"),
+        day_of_month=data.get("day_of_month"),
+        hour=int(data.get("hour") if data.get("hour") is not None else 2),
+        minute=int(data.get("minute") if data.get("minute") is not None else 0),
+        enabled=bool(data.get("enabled", True)),
+        retention_count=int(data.get("retention_count") if data.get("retention_count") is not None else 10),
+        retention_days=int(data.get("retention_days") if data.get("retention_days") is not None else 30),
+        created_by=user.id,
+    )
+    row.next_run_at = next_run_at_for_schedule(row)
+    db.add(row)
+    await db.flush()
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.backup_schedule_created",
+        entity_type="backup_schedule",
+        entity_id=row.id,
+        before=None,
+        after=row.frequency,
+        reason=row.name,
+    )
+    await db.commit()
+    await db.refresh(row)
+    return _backup_schedule_as_admin_legacy(row)
+
+
+@router.patch("/admin/backups/schedules/{schedule_id}")
+async def legacy_admin_update_backup_schedule(
+    schedule_id: uuid.UUID,
+    data: dict,
+    db: DB,
+    user: CurrentUser,
+):
+    _require_legacy_admin(user)
+    row = await db.get(BackupSchedule, schedule_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Backup schedule not found")
+    before = _backup_schedule_as_admin_legacy(row)
+    for key in (
+        "name",
+        "frequency",
+        "cron_expr",
+        "day_of_week",
+        "day_of_month",
+        "hour",
+        "minute",
+        "enabled",
+        "retention_count",
+        "retention_days",
+    ):
+        if key not in data:
+            continue
+        value = data[key]
+        if key == "frequency":
+            value = str(value).upper()
+            if value not in {"WEEKLY", "MONTHLY", "CUSTOM"}:
+                raise HTTPException(status_code=422, detail="Invalid backup frequency")
+        setattr(row, key, value)
+    row.next_run_at = next_run_at_for_schedule(row)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.backup_schedule_updated",
+        entity_type="backup_schedule",
+        entity_id=row.id,
+        before={"enabled": before["enabled"], "frequency": before["frequency"]},
+        after={"enabled": row.enabled, "frequency": row.frequency},
+        reason=row.name,
+    )
+    await db.commit()
+    await db.refresh(row)
+    return _backup_schedule_as_admin_legacy(row)
+
+
+@router.delete("/admin/backups/schedules/{schedule_id}", status_code=204)
+async def legacy_admin_delete_backup_schedule(schedule_id: uuid.UUID, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(BackupSchedule, schedule_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Backup schedule not found")
+    before = _backup_schedule_as_admin_legacy(row)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.backup_schedule_deleted",
+        entity_type="backup_schedule",
+        entity_id=row.id,
+        before={"enabled": before["enabled"], "frequency": before["frequency"]},
+        after=None,
+        reason=row.name,
+    )
+    await db.delete(row)
+    await db.commit()
+
+
+@router.post("/admin/backups/manual")
+async def legacy_admin_manual_backup(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await create_backup_archive(db, created_by=user.id)
+    await _append_legacy_admin_audit(
+        db,
+        user,
+        action="cebu.compat.admin.backup_executed",
+        entity_type="backup_job",
+        entity_id=row.id,
+        before=None,
+        after=row.status,
+        reason=None,
+    )
+    await db.commit()
+    await db.refresh(row)
+    return _backup_job_as_admin_legacy(row)
+
+
+@router.get("/admin/backups/jobs")
+async def legacy_admin_backup_jobs(
+    db: DB,
+    user: CurrentUser,
+    limit: int = Query(default=50, ge=1, le=500),
+):
+    _require_legacy_admin(user)
+    rows = list((await db.execute(select(BackupJob).order_by(BackupJob.created_at.desc()).limit(limit))).scalars())
+    return [_backup_job_as_admin_legacy(row) for row in rows]
+
+
+@router.get("/admin/backups/jobs/{job_id}/download")
+async def legacy_admin_download_backup(job_id: uuid.UUID, db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    row = await db.get(BackupJob, job_id)
+    if row is None or not row.archive_path:
+        raise HTTPException(status_code=404, detail="Backup archive not found")
+    path = Path(row.archive_path)
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="Backup archive not found")
+    return FileResponse(path, media_type="application/zip", filename=path.name)
 
 
 @router.get("/admin/ad-campaigns")

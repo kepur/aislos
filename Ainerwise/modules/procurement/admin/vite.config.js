@@ -92,6 +92,18 @@ export default defineConfig({
       '/api/admin/settings': coreProxy((p) =>
         p.replace(/^\/api\/admin\/settings/, '/api/v1/cebu-compat/admin/settings')
       ),
+      '/api/admin/audit-logs': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/audit-logs/, '/api/v1/cebu-compat/admin/audit-logs')
+      ),
+      '/api/admin/notification-templates': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/notification-templates/, '/api/v1/cebu-compat/admin/notification-templates')
+      ),
+      '/api/admin/notifications': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/notifications/, '/api/v1/cebu-compat/admin/notifications')
+      ),
+      '/api/admin/backups': coreProxy((p) =>
+        p.replace(/^\/api\/admin\/backups/, '/api/v1/cebu-compat/admin/backups')
+      ),
       '/api/admin': coreProxy((p) => p.replace(/^\/api\/admin/, '/api/v1/admin/cebu')),
       '/api': coreProxy((p) => p.replace(/^\/api/, '/api/v1/cebu-compat'))
     }
