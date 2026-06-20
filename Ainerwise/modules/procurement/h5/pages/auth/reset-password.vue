@@ -58,7 +58,7 @@ const sent = ref(false);
 async function handleReset() {
   loading.value = true;
   try {
-    await $fetch(`${config.public.apiBase}/auth/reset-password`, {
+    await $fetch(`${config.public.apiBase}/auth/request-password-reset`, {
       method: "POST",
       body: { email: email.value },
     });
