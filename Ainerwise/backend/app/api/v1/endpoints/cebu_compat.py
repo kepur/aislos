@@ -1254,6 +1254,51 @@ def _shipping_rate_as_admin_legacy(row: ShippingRate) -> dict:
     }
 
 
+def _normalize_country_code(value: object | None, fallback: str = "PH") -> str:
+    raw = str(value or fallback).strip()
+    if not raw:
+        return fallback
+    upper = raw.upper()
+    aliases = {
+        "PHILIPPINES": "PH",
+        "THE PHILIPPINES": "PH",
+        "CEBU": "PH",
+        "UNITED STATES": "US",
+        "USA": "US",
+        "UNITED ARAB EMIRATES": "AE",
+        "UAE": "AE",
+    }
+    return aliases.get(upper, upper[:5])
+
+
+def _shipping_estimate_as_legacy(route: ShippingRoute, rate: ShippingRate, weight_kg: float) -> dict:
+    base_cost = max(int(weight_kg * float(rate.price_per_kg_minor or 0)), int(rate.min_charge_minor or 0))
+    surcharges_minor = 0
+    if isinstance(rate.surcharges_json, dict):
+        for value in rate.surcharges_json.values():
+            if isinstance(value, (int, float)):
+                surcharges_minor += int(value)
+            elif isinstance(value, dict) and isinstance(value.get("amount_minor"), (int, float)):
+                surcharges_minor += int(value["amount_minor"])
+    total_shipping_minor = base_cost + surcharges_minor
+    return {
+        "route_id": route.id,
+        "rate_id": rate.id,
+        "shipping_method": route.shipping_method,
+        "origin_country": route.origin_country,
+        "origin_region": route.origin_region,
+        "dest_country": route.dest_country,
+        "dest_region": route.dest_region,
+        "weight_kg": weight_kg,
+        "cost_minor": base_cost,
+        "surcharges_minor": surcharges_minor,
+        "total_shipping_minor": total_shipping_minor,
+        "currency": rate.currency,
+        "estimated_days_min": rate.estimated_days_min,
+        "estimated_days_max": rate.estimated_days_max,
+    }
+
+
 def _trust_tier(score: int) -> str:
     if score >= 90:
         return "DIAMOND"
@@ -5081,6 +5126,50 @@ async def legacy_admin_flag_kyc_media(document_id: uuid.UUID, data: dict, db: DB
     await db.refresh(document)
     await db.refresh(flag)
     return {"document_id": document.id, "status": document.status, "risk_flag_id": flag.id}
+
+
+@router.post("/shipping/estimate")
+async def legacy_shipping_estimate(data: dict, db: DB, user: CurrentUser):
+    origin_country = _normalize_country_code(data.get("origin_country"))
+    dest_country = _normalize_country_code(data.get("dest_country"))
+    try:
+        weight_kg = float(data.get("weight_kg") or 0)
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=422, detail="weight_kg must be a positive number") from None
+    if weight_kg <= 0:
+        raise HTTPException(status_code=422, detail="weight_kg must be a positive number")
+
+    shipping_method = data.get("shipping_method")
+    today = date.today()
+    stmt = (
+        select(ShippingRoute, ShippingRate)
+        .join(ShippingRate, ShippingRate.route_id == ShippingRoute.id)
+        .where(
+            ShippingRoute.origin_country == origin_country,
+            ShippingRoute.dest_country == dest_country,
+            ShippingRoute.status == "ACTIVE",
+            ShippingRate.status == "ACTIVE",
+            ShippingRate.weight_min_kg <= weight_kg,
+            ShippingRate.weight_max_kg >= weight_kg,
+            ShippingRate.valid_from <= today,
+            or_(ShippingRate.valid_until.is_(None), ShippingRate.valid_until >= today),
+        )
+    )
+    if shipping_method:
+        stmt = stmt.where(ShippingRoute.shipping_method == str(shipping_method).upper())
+    rows = (await db.execute(stmt)).all()
+    estimates = sorted(
+        [_shipping_estimate_as_legacy(route, rate, weight_kg) for route, rate in rows],
+        key=lambda item: (item["total_shipping_minor"], item["estimated_days_max"]),
+    )
+    return {
+        "estimates": estimates,
+        "items": estimates,
+        "total": len(estimates),
+        "origin_country": origin_country,
+        "dest_country": dest_country,
+        "weight_kg": weight_kg,
+    }
 
 
 @router.get("/admin/shipping/routes")

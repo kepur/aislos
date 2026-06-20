@@ -52,6 +52,7 @@ export default defineNuxtConfig({
     "/api/users/**": { proxy: `${coreApiInternal}/api/v1/cebu-compat/users/**` },
     "/api/addresses": { proxy: `${coreApiInternal}/api/v1/cebu-compat/addresses` },
     "/api/addresses/**": { proxy: `${coreApiInternal}/api/v1/cebu-compat/addresses/**` },
+    "/api/shipping/estimate": { proxy: `${coreApiInternal}/api/v1/cebu-compat/shipping/estimate` },
     "/api/shipping/**": { proxy: `${coreApiInternal}/api/v1/cebu-trade/shipping/**` },
     "/api/ads/**": { proxy: `${coreApiInternal}/api/v1/cebu-trade/ads/**` },
     "/api/payouts/**": { proxy: `${coreApiInternal}/api/v1/cebu-trade/payouts/**` },
