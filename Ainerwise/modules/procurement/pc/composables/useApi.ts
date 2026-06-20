@@ -41,6 +41,7 @@ export const useApi = () => {
 
     // Offers
     getOffersForIntent: (intentId: string) => fetchApi(`/intents/${intentId}/offers`),
+    getOffer: (offerId: string) => fetchApi(`/offers/${offerId}`),
     makeOffer: (intentId: string, data: any) => fetchApi(`/intents/${intentId}/offers`, { method: 'POST', body: data }),
     awardOffer: (offerId: string) => fetchApi(`/offers/${offerId}/award`, { method: 'POST' }),
 
