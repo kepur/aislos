@@ -59,7 +59,7 @@
             <dl>
               <dt class="text-sm font-medium text-slate-500 truncate">{{ appStore.t('buyer.dashboard.activeRequests') }}</dt>
               <dd class="flex items-baseline">
-                <div class="text-2xl font-semibold text-slate-900">4</div>
+                <div class="text-2xl font-semibold text-slate-900">{{ dashboardLoading ? '...' : activeRequestsCount }}</div>
               </dd>
             </dl>
           </div>
@@ -75,7 +75,7 @@
             <dl>
               <dt class="text-sm font-medium text-slate-500 truncate">{{ appStore.t('buyer.dashboard.offersReceived') }}</dt>
               <dd class="flex items-baseline">
-                <div class="text-2xl font-semibold text-slate-900">12</div>
+                <div class="text-2xl font-semibold text-slate-900">{{ dashboardLoading ? '...' : offersReceivedCount }}</div>
               </dd>
             </dl>
           </div>
@@ -91,7 +91,7 @@
             <dl>
               <dt class="text-sm font-medium text-slate-500 truncate">{{ appStore.t('buyer.dashboard.ordersProgress') }}</dt>
               <dd class="flex items-baseline">
-                <div class="text-2xl font-semibold text-slate-900">2</div>
+                <div class="text-2xl font-semibold text-slate-900">{{ dashboardLoading ? '...' : ordersInProgressCount }}</div>
               </dd>
             </dl>
           </div>
@@ -107,7 +107,7 @@
             <dl>
               <dt class="text-sm font-medium text-slate-500 truncate">{{ appStore.t('buyer.dashboard.escrowHeld') }}</dt>
               <dd class="flex items-baseline">
-                <div class="text-2xl font-semibold text-slate-900">$4,500.00</div>
+                <div class="text-2xl font-semibold text-slate-900">{{ dashboardLoading ? '...' : escrowHeldLabel }}</div>
               </dd>
             </dl>
           </div>
@@ -185,9 +185,13 @@
           </div>
         </template>
 
-        <UTable :columns="columns" :rows="requests">
+        <div v-if="dashboardError" class="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {{ dashboardError }}
+        </div>
+
+        <UTable :columns="columns" :rows="requests" :loading="dashboardLoading">
           <template #status-data="{ row }">
-            <UBadge :color="row.statusKey === 'receivingOffers' ? 'blue' : 'yellow'" variant="subtle">{{ row.status }}</UBadge>
+            <UBadge :color="intentStatusColor(row.statusKey)" variant="subtle">{{ row.status }}</UBadge>
           </template>
           <template #offers-data="{ row }">
             <span class="font-medium text-indigo-600">{{ row.offers }}</span>
@@ -204,15 +208,10 @@
           <template #header>
             <h3 class="text-lg font-medium text-slate-900">{{ appStore.t('buyer.dashboard.recentMessages') }}</h3>
           </template>
-          <ul class="divide-y divide-slate-200">
-            <li v-for="i in 3" :key="i" class="py-3 flex">
-              <UAvatar :src="`https://i.pravatar.cc/150?u=sup${i}`" class="mr-3" />
-              <div>
-                <p class="text-sm font-medium text-slate-900">Global Build Supply Co.</p>
-                <p class="text-sm text-slate-500 truncate w-48">{{ appStore.t('buyer.dashboard.messagePreview') }}</p>
-              </div>
-            </li>
-          </ul>
+          <div class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
+            <p class="text-sm font-medium text-slate-600">No recent message threads yet.</p>
+            <p class="mt-1 text-xs text-slate-400">Order conversations will appear after a real buyer/supplier thread exists.</p>
+          </div>
           <UButton block variant="ghost" color="indigo" class="mt-4" to="/buyer/messages">{{ appStore.t('action.viewAllMessages') }}</UButton>
         </UCard>
 
@@ -221,12 +220,13 @@
           <template #header>
             <h3 class="text-lg font-medium text-slate-900">{{ appStore.t('buyer.dashboard.recommended') }}</h3>
           </template>
-          <div class="flex flex-wrap gap-2">
-            <UBadge color="gray" variant="solid" class="cursor-pointer hover:bg-slate-200">Construction</UBadge>
-            <UBadge color="gray" variant="solid" class="cursor-pointer hover:bg-slate-200">Cement</UBadge>
-            <UBadge color="gray" variant="solid" class="cursor-pointer hover:bg-slate-200">Lumber</UBadge>
-            <UBadge color="gray" variant="solid" class="cursor-pointer hover:bg-slate-200">Steel Rebar</UBadge>
-            <UBadge color="gray" variant="solid" class="cursor-pointer hover:bg-slate-200">Heavy Machinery</UBadge>
+          <div v-if="recommendedTags.length" class="flex flex-wrap gap-2">
+            <NuxtLink v-for="tag in recommendedTags" :key="tag" :to="`/marketplace?keyword=${encodeURIComponent(tag)}`">
+              <UBadge color="gray" variant="solid" class="cursor-pointer hover:bg-slate-200">{{ tag }}</UBadge>
+            </NuxtLink>
+          </div>
+          <div v-else class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">
+            Recommendations will appear after marketplace or request activity creates real category signals.
           </div>
         </UCard>
       </div>
@@ -312,9 +312,32 @@ const trustProfile = ref<TrustProfile | null>(null)
 const accountContext = ref<{ account_type: string; features: Record<string, boolean> } | null>(null)
 const recommendations = ref<any[]>([])
 const marketplaceTotal = ref<number | null>(null)
+const buyerIntents = ref<any[]>([])
+const buyerOrders = ref<any[]>([])
+const dashboardLoading = ref(false)
+const dashboardError = ref('')
 
 const isBusiness = computed(() => accountContext.value?.account_type === 'BUSINESS')
 const totalMarketplaceItems = computed(() => marketplaceTotal.value ? `${marketplaceTotal.value}+` : `${recommendations.value.length || 0}+`)
+const activeRequestsCount = computed(() => buyerIntents.value.filter((row) => isActiveIntent(row.status)).length)
+const offersReceivedCount = computed(() => buyerIntents.value.reduce((sum, row) => sum + Number(row.offer_count ?? row.offers ?? 0), 0))
+const ordersInProgressCount = computed(() => buyerOrders.value.filter((row) => isInProgressOrder(row.status)).length)
+const escrowHeldMinor = computed(() => buyerOrders.value
+  .filter((row) => ['PAID_IN_ESCROW', 'IN_PROGRESS', 'DELIVERED', 'ACCEPTED'].includes(String(row.status || '').toUpperCase()))
+  .reduce((sum, row) => sum + Number(row.total_amount_minor ?? row.total_minor ?? 0), 0))
+const escrowCurrency = computed(() => buyerOrders.value.find((row) => row.currency)?.currency || 'PHP')
+const escrowHeldLabel = computed(() => escrowHeldMinor.value ? formatMinor(escrowHeldMinor.value, escrowCurrency.value) : '—')
+const recommendedTags = computed(() => {
+  const tags = new Set<string>()
+  for (const item of recommendations.value) {
+    if (item.category_name) tags.add(String(item.category_name))
+    if (Array.isArray(item.tags)) item.tags.slice(0, 2).forEach((tag: unknown) => tags.add(String(tag)))
+  }
+  for (const row of buyerIntents.value) {
+    if (row.category_name) tags.add(String(row.category_name))
+  }
+  return Array.from(tags).filter(Boolean).slice(0, 6)
+})
 
 const columns = computed(() => [
   { key: 'title', label: appStore.t('buyer.table.requestTitle') },
@@ -324,12 +347,14 @@ const columns = computed(() => [
   { key: 'actions', label: appStore.t('buyer.table.actions') }
 ])
 
-const requests = computed(() => [
-  { id: 1, title: '500 bags Portland Cement', budget: '$2,000 - $2,500', statusKey: 'receivingOffers', status: appStore.t('buyer.status.receivingOffers'), offers: 5 },
-  { id: 2, title: 'Office Laptops (x10)', budget: '$8,000 - $10,000', statusKey: 'reviewing', status: appStore.t('buyer.status.reviewing'), offers: 12 },
-  { id: 3, title: 'Marine Engine Parts', budget: '$1,500 Max', statusKey: 'receivingOffers', status: appStore.t('buyer.status.receivingOffers'), offers: 2 },
-  { id: 4, title: 'Custom Aluminum Extrusion', budget: 'Open', statusKey: 'reviewing', status: appStore.t('buyer.status.reviewing'), offers: 4 }
-])
+const requests = computed(() => buyerIntents.value.slice(0, 6).map((row) => ({
+  id: row.id,
+  title: row.title || row.name || 'Untitled request',
+  budget: formatIntentBudget(row),
+  statusKey: String(row.status || 'DRAFT').toUpperCase(),
+  status: formatIntentStatus(row.status),
+  offers: Number(row.offer_count ?? row.offers ?? 0),
+})))
 
 function trustTierLabel(tier: TrustTier) {
   return appStore.t(`trust.tier.${tier}`) || tier
@@ -362,8 +387,89 @@ function formatMinor(minor: number, currency = 'PHP') {
   }
 }
 
+function normalizeList(data: any, keys: string[]) {
+  if (Array.isArray(data)) return data
+  for (const key of keys) {
+    if (Array.isArray(data?.[key])) return data[key]
+  }
+  return []
+}
+
+function isActiveIntent(status: string) {
+  const normalized = String(status || '').toUpperCase()
+  return !['AWARDED', 'CLOSED', 'CANCELED', 'CANCELLED', 'EXPIRED'].includes(normalized)
+}
+
+function isInProgressOrder(status: string) {
+  return ['AWAITING_PAYMENT', 'PAID_IN_ESCROW', 'IN_PROGRESS', 'DELIVERED'].includes(String(status || '').toUpperCase())
+}
+
+function formatIntentBudget(row: any) {
+  const min = Number(row.budget_min_minor || 0)
+  const max = Number(row.budget_max_minor || 0)
+  const currency = row.currency || 'PHP'
+  if (min && max) return `${formatMinor(min, currency)} - ${formatMinor(max, currency)}`
+  if (max) return `Up to ${formatMinor(max, currency)}`
+  if (min) return `From ${formatMinor(min, currency)}`
+  return 'Open'
+}
+
+function formatIntentStatus(status: string) {
+  const normalized = String(status || 'DRAFT').toUpperCase()
+  const known: Record<string, string> = {
+    DRAFT: 'Draft',
+    ACTIVE: 'Receiving Offers',
+    PUBLISHED: 'Receiving Offers',
+    AWARDED: 'Awarded',
+    CLOSED: 'Closed',
+    CANCELED: 'Canceled',
+    CANCELLED: 'Canceled',
+    EXPIRED: 'Expired',
+  }
+  return known[normalized] || normalized.replaceAll('_', ' ')
+}
+
+function intentStatusColor(status: string) {
+  return {
+    DRAFT: 'gray',
+    ACTIVE: 'blue',
+    PUBLISHED: 'blue',
+    AWARDED: 'green',
+    CLOSED: 'gray',
+    CANCELED: 'red',
+    CANCELLED: 'red',
+    EXPIRED: 'orange',
+  }[String(status || '').toUpperCase()] || 'gray'
+}
+
+async function loadBuyerDashboardData() {
+  dashboardLoading.value = true
+  dashboardError.value = ''
+  try {
+    const [intentData, orderData] = await Promise.all([
+      $fetch<any>(`${config.public.apiBase}/intents/my`, {
+        params: { page: 1, page_size: 20 },
+        headers: { Authorization: `Bearer ${authStore.accessToken}` },
+      }),
+      $fetch<any>(`${config.public.apiBase}/orders/my`, {
+        params: { page: 1, page_size: 20 },
+        headers: { Authorization: `Bearer ${authStore.accessToken}` },
+      }),
+    ])
+    buyerIntents.value = normalizeList(intentData, ['items', 'intents'])
+    buyerOrders.value = normalizeList(orderData, ['orders', 'items'])
+  } catch (error: any) {
+    buyerIntents.value = []
+    buyerOrders.value = []
+    dashboardError.value = error?.data?.detail || error?.message || 'Unable to load buyer dashboard data.'
+  } finally {
+    dashboardLoading.value = false
+  }
+}
+
 onMounted(async () => {
   if (!authStore.accessToken) return
+  await loadBuyerDashboardData()
   // Trust profile
   try {
     const trust = await $fetch<TrustMe>(`${config.public.apiBase}/trust/me`, {
