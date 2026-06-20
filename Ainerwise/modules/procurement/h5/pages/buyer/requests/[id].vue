@@ -285,7 +285,6 @@
 
 <script setup lang="ts">
 import { showConfirmDialog, showToast } from "vant";
-import { demoSupplierCandidatesForIntent, isDemoToken } from "~/utils/demoData";
 
 definePageMeta({ layout: "default", middleware: ["buyer"] });
 useHead({ title: "Request Detail" });
@@ -309,41 +308,17 @@ const selectedCandidate = ref<any | null>(null);
 const intent = computed(() => intentStore.currentIntent);
 const offers = computed(() => intentStore.offers);
 
-// Mock offers for demo when API returns empty
-const MOCK_OFFERS = [
-  { id: 'mo1', total_price_minor: 24500000, unit_price_minor: 49000, currency: 'PHP', qty_available: 600, eta_date: new Date(Date.now()+86400000*3).toISOString().split('T')[0], status: 'SUBMITTED', message: 'Ready for immediate delivery. Price includes delivery to Cebu City.', company_name: 'Cebu Building Supply Co.' },
-  { id: 'mo2', total_price_minor: 22000000, unit_price_minor: 44000, currency: 'PHP', qty_available: 500, eta_date: new Date(Date.now()+86400000*5).toISOString().split('T')[0], status: 'SUBMITTED', message: 'Bulk discount available for 700+ bags. Contact for pricing.', company_name: 'Southern Materials Corp.' },
-  { id: 'mo3', total_price_minor: 26000000, unit_price_minor: 52000, currency: 'PHP', qty_available: 1000, eta_date: new Date(Date.now()+86400000*2).toISOString().split('T')[0], status: 'AWARDED', message: 'Premium cement, ISO certified. Fastest delivery.', company_name: 'PhilCem Distributors Inc.' },
-]
-
-// Mock candidates for demo
-const MOCK_CANDIDATES = [
-  { catalog_item_id: 'mc1', company_name: 'Cebu Building Supply Co.', catalog_item_title: 'Portland Cement Type I – OPC', ranking_score: 94.5, price_score: 88, trust_score: 92, distance_km: 3.2, stock_score: 90, unit_price_minor: 4900000, currency: 'PHP', unit: 'bag', eta_days: 2 },
-  { catalog_item_id: 'mc2', company_name: 'Southern Materials Corp.', catalog_item_title: 'Holcim Cement – 40kg', ranking_score: 87.2, price_score: 95, trust_score: 78, distance_km: 8.5, stock_score: 85, unit_price_minor: 4400000, currency: 'PHP', unit: 'bag', eta_days: 4 },
-  { catalog_item_id: 'mc3', company_name: 'PhilCem Distributors Inc.', catalog_item_title: 'Lafarge Premium Cement', ranking_score: 82.1, price_score: 72, trust_score: 96, distance_km: 12.1, stock_score: 95, unit_price_minor: 5200000, currency: 'PHP', unit: 'bag', eta_days: 1 },
-  { catalog_item_id: 'mc4', company_name: 'Visayas Construction Hub', catalog_item_title: 'Republic Cement – OPC Type', ranking_score: 75.8, price_score: 80, trust_score: 70, distance_km: 15.3, stock_score: 75, unit_price_minor: 4700000, currency: 'PHP', unit: 'bag', eta_days: 3 },
-]
-
-const displayOffers = computed(() => {
-  const real = offers.value
-  if (real.length > 0) return real
-  return id.startsWith('m') ? MOCK_OFFERS as any[] : []
-})
+const displayOffers = computed(() => offers.value)
 
 async function fetchCandidates() {
-  const demoEnabled = authStore.isDemoMode && (isDemoToken(authStore.accessToken) || id.startsWith("demo-"));
-  if (demoEnabled) {
-    const demoRows = demoSupplierCandidatesForIntent(id)
-    candidates.value = sortMockCandidates(demoRows.length ? demoRows : MOCK_CANDIDATES)
-    return
-  }
   candidatesLoading.value = true
   try {
     const data = await $fetch<any>(`${config.public.apiBase}/intents/${id}/supplier-candidates`, {
       params: { sort: candidateSort.value, limit: 8 },
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     })
-    candidates.value = data.candidates ?? []
+    const rows = data.candidates ?? data.items ?? []
+    candidates.value = sortCandidates(rows.map(normalizeCandidate))
   } catch {
     candidates.value = []
   } finally {
@@ -351,13 +326,38 @@ async function fetchCandidates() {
   }
 }
 
-function sortMockCandidates(list: any[]) {
+function normalizeCandidate(row: any) {
+  const attrs = row.attributes_json || row.attrs_jsonb || {}
+  const scoreBreakdown = row.score_breakdown || {
+    price_minor: row.price_minor,
+    bound_catalog_item: Boolean(attrs.bound_catalog_item),
+    distance_km: row.distance_km,
+  }
+  return {
+    ...row,
+    catalog_item_id: row.catalog_item_id || row.id,
+    company_name: row.company_name || row.supplier_name || attrs.company_name || "Supplier listing",
+    catalog_item_title: row.catalog_item_title || row.title || attrs.title || "Catalog item",
+    ranking_score: Number(row.ranking_score ?? row.score ?? 0),
+    price_score: row.price_score,
+    trust_score: row.trust_score,
+    stock_score: row.stock_score,
+    unit_price_minor: row.unit_price_minor ?? row.price_minor ?? scoreBreakdown.price_minor,
+    currency: row.currency || intent.value?.currency || "PHP",
+    unit: row.unit || attrs.unit || intent.value?.unit || "unit",
+    eta_days: row.eta_days || attrs.eta_days,
+    why_recommended: row.why_recommended || "Matched from AinerWise Core supplier catalog.",
+    score_breakdown: scoreBreakdown,
+  }
+}
+
+function sortCandidates(list: any[]) {
   const copy = [...list]
   switch (candidateSort.value) {
-    case 'cost': return copy.sort((a, b) => a.unit_price_minor - b.unit_price_minor)
+    case 'cost': return copy.sort((a, b) => (a.unit_price_minor ?? Number.MAX_SAFE_INTEGER) - (b.unit_price_minor ?? Number.MAX_SAFE_INTEGER))
     case 'trust': return copy.sort((a, b) => (b.trust_score || b.score_breakdown?.trust_score || 0) - (a.trust_score || a.score_breakdown?.trust_score || 0))
     case 'distance': return copy.sort((a, b) => (candidateDistance(a) ?? 9999) - (candidateDistance(b) ?? 9999))
-    case 'delivery': return copy.sort((a, b) => a.eta_days - b.eta_days)
+    case 'delivery': return copy.sort((a, b) => (a.eta_days ?? 9999) - (b.eta_days ?? 9999))
     default: return copy.sort((a, b) => b.ranking_score - a.ranking_score)
   }
 }
@@ -372,27 +372,13 @@ function openCandidate(candidate: any) {
 
 async function bindCandidate(candidate: any) {
   try {
-    const demoEnabled = authStore.isDemoMode && (isDemoToken(authStore.accessToken) || id.startsWith("demo-"));
-    if (demoEnabled) {
-      candidates.value = candidates.value.map((row) => ({
-        ...row,
-        score_breakdown: {
-          ...(row.score_breakdown || {}),
-          bound_catalog_item: row.catalog_item_id === candidate.catalog_item_id,
-          bound_supplier: row.company_id === candidate.company_id,
-        },
-      }))
-      selectedCandidate.value = candidates.value.find((row) => row.catalog_item_id === candidate.catalog_item_id) || candidate
-      showToast({ type: "success", message: "Supplier bound for demo request." })
-      return
-    }
-    const data = await $fetch<any>(`${config.public.apiBase}/intents/${id}/supplier-candidates/${candidate.catalog_item_id}/bind`, {
+    await $fetch<any>(`${config.public.apiBase}/intents/${id}/supplier-candidates/${candidate.catalog_item_id}/bind`, {
       method: "POST",
       body: { note: "Buyer selected from matched suppliers panel" },
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     })
     await fetchCandidates()
-    selectedCandidate.value = data.candidate
+    selectedCandidate.value = candidates.value.find((row) => row.catalog_item_id === candidate.catalog_item_id) || null
     showToast({ type: "success", message: "Supplier bound to request." })
   } catch (e: any) {
     showToast({ type: "fail", message: e?.data?.detail || "Bind failed" })
@@ -424,20 +410,13 @@ onMounted(async () => {
   if (!authStore.systemMode) {
     await authStore.fetchSystemMode();
   }
-  // Fetch intent
-  if (!id.startsWith('m')) {
-    await intentStore.fetchIntent(id);
-  }
+  await intentStore.fetchIntent(id);
   loading.value = false;
 
-  // Fetch offers
-  if (!id.startsWith('m')) {
-    offersLoading.value = true;
-    await intentStore.fetchOffers(id);
-    offersLoading.value = false;
-  }
+  offersLoading.value = true;
+  await intentStore.fetchOffers(id);
+  offersLoading.value = false;
 
-  // Fetch ranked candidates
   await fetchCandidates();
 });
 </script>
