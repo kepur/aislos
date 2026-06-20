@@ -16,7 +16,7 @@ from sqlalchemy import func, or_, select
 
 from app.api.deps import CurrentUser, DB
 from app.core.permissions import STAFF_ROLES
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password
 from app.api.v1.endpoints.files import BUCKET_NAME, get_minio_client
 from app.core.object_storage import new_user_upload_key
 from app.models.admin_config import NotificationTemplate, PlatformSetting
@@ -527,6 +527,105 @@ def _company_as_legacy(row: Company) -> dict:
         "created_at": row.created_at,
         "updated_at": row.updated_at,
     }
+
+
+def _company_profile_as_legacy(row: Company, user: User | None = None) -> dict:
+    contact_info = row.contact_info or {}
+    return {
+        "id": row.id,
+        "company_id": row.id,
+        "company_name": row.name,
+        "name": row.name,
+        "registration_number": contact_info.get("registration_number") or contact_info.get("tax_id"),
+        "tax_id": contact_info.get("tax_id") or contact_info.get("registration_number"),
+        "industry": contact_info.get("industry"),
+        "company_size": contact_info.get("company_size") or "1-10",
+        "website": row.website,
+        "bio": row.description,
+        "description": row.description,
+        "address_line1": contact_info.get("address_line1") or row.address,
+        "address": row.address,
+        "city": row.city,
+        "country": row.country,
+        "phone": contact_info.get("phone") or (user.phone if user else None),
+        "email": contact_info.get("email") or (user.email if user else None),
+        "account_type": contact_info.get("account_type") or "BUSINESS",
+        "company_type": row.type,
+        "kyb_status": row.verification_status.upper(),
+        "verification_status": row.verification_status,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+    }
+
+
+def _apply_company_payload(company: Company, data: dict, user: User | None = None) -> None:
+    contact_info = dict(company.contact_info or {})
+    name = data.get("name") or data.get("company_name") or data.get("companyName")
+    if name:
+        company.name = str(name)
+    if data.get("type"):
+        company.type = str(data.get("type")).lower()
+    if data.get("company_type"):
+        company.type = str(data.get("company_type")).lower()
+    for field in ("country", "city", "address", "website", "description"):
+        if field in data:
+            setattr(company, field, data.get(field))
+    if "bio" in data:
+        company.description = data.get("bio")
+    if "address_line1" in data:
+        company.address = data.get("address_line1")
+    for field in (
+        "tax_id",
+        "registration_number",
+        "industry",
+        "company_size",
+        "phone",
+        "email",
+        "category",
+        "account_type",
+        "address_line1",
+    ):
+        if field in data:
+            contact_info[field] = data.get(field)
+    if user is not None:
+        contact_info.setdefault("email", user.email)
+        if user.phone:
+            contact_info.setdefault("phone", user.phone)
+    company.contact_info = contact_info
+
+
+async def _ensure_user_company(
+    db: DB,
+    user: User,
+    data: dict | None = None,
+    *,
+    default_type: str = "buyer",
+) -> Company:
+    payload = data or {}
+    company = await db.get(Company, user.company_id) if user.company_id else None
+    if company is None:
+        company = Company(
+            name=(
+                payload.get("name")
+                or payload.get("company_name")
+                or payload.get("companyName")
+                or f"{user.full_name or user.email} Company"
+            ),
+            type=str(payload.get("type") or payload.get("company_type") or default_type).lower(),
+            country=payload.get("country") or user.country,
+            city=payload.get("city"),
+            address=payload.get("address") or payload.get("address_line1"),
+            website=payload.get("website"),
+            description=payload.get("description") or payload.get("bio"),
+            contact_info={"email": user.email, "phone": user.phone} if (user.email or user.phone) else {},
+        )
+        db.add(company)
+        await db.flush()
+        user.company_id = company.id
+    _apply_company_payload(company, payload, user)
+    await sync_role_portal_access(db, user_id=user.id, role=user.role, company_id=company.id)
+    await db.flush()
+    return company
 
 
 def _dispute_evidence(row: OrderDispute) -> list:
@@ -2047,6 +2146,34 @@ async def legacy_get_my_company(db: DB, user: CurrentUser):
     return _company_as_legacy(company)
 
 
+@router.get("/companies/my")
+async def legacy_get_my_company_alias(db: DB, user: CurrentUser):
+    return await legacy_get_my_company(db, user)
+
+
+@router.post("/companies", status_code=201)
+async def legacy_create_my_company(data: dict, db: DB, user: CurrentUser):
+    company = await _ensure_user_company(db, user, data, default_type="vendor" if user.role == "vendor" else "buyer")
+    await db.commit()
+    await db.refresh(company)
+    await db.refresh(user)
+    return _company_as_legacy(company)
+
+
+@router.patch("/companies/me")
+async def legacy_update_my_company(data: dict, db: DB, user: CurrentUser):
+    if not user.company_id:
+        raise HTTPException(status_code=404, detail="Company not found")
+    company = await db.get(Company, user.company_id)
+    if company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    _apply_company_payload(company, data, user)
+    await sync_role_portal_access(db, user_id=user.id, role=user.role, company_id=company.id)
+    await db.commit()
+    await db.refresh(company)
+    return _company_as_legacy(company)
+
+
 @router.get("/companies/me/documents")
 async def legacy_get_my_company_documents(db: DB, user: CurrentUser):
     if not user.company_id:
@@ -2113,6 +2240,188 @@ async def legacy_submit_my_company_verification(db: DB, user: CurrentUser):
         raise HTTPException(status_code=409, detail=str(exc)) from None
 
 
+@router.post("/uploads", status_code=201)
+async def legacy_upload_file(db: DB, user: CurrentUser, file: UploadFile = File(...)):
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=422, detail="File is empty")
+    if len(content) > 25 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="File is too large")
+    object_name = new_user_upload_key(user.id, file.filename or "upload")
+    client = get_minio_client()
+    if not client.bucket_exists(BUCKET_NAME):
+        client.make_bucket(BUCKET_NAME)
+    client.put_object(
+        BUCKET_NAME,
+        object_name,
+        io.BytesIO(content),
+        len(content),
+        content_type=file.content_type or "application/octet-stream",
+    )
+    await append_audit_event(
+        db,
+        actor_type="user",
+        actor_user_id=user.id,
+        portal_key="procurement",
+        action="procurement.upload.create",
+        entity_type="object_storage",
+        entity_id=None,
+        before=None,
+        after={"bucket": BUCKET_NAME, "object_name": object_name, "filename": file.filename},
+        reason="Legacy Procurement upload compatibility",
+        source="cebu.compat.upload",
+    )
+    await db.commit()
+    return {
+        "url": f"minio://{BUCKET_NAME}/{object_name}",
+        "object_name": object_name,
+        "filename": file.filename,
+        "content_type": file.content_type,
+        "size": len(content),
+    }
+
+
+@router.get("/buyer/company-profile")
+async def legacy_get_buyer_company_profile(db: DB, user: CurrentUser):
+    if not user.company_id:
+        raise HTTPException(status_code=404, detail="Company profile not found")
+    company = await db.get(Company, user.company_id)
+    if company is None:
+        raise HTTPException(status_code=404, detail="Company profile not found")
+    return _company_profile_as_legacy(company, user)
+
+
+@router.patch("/buyer/company-profile")
+async def legacy_update_buyer_company_profile(data: dict, db: DB, user: CurrentUser):
+    company = await _ensure_user_company(db, user, data, default_type="buyer")
+    await db.commit()
+    await db.refresh(company)
+    await db.refresh(user)
+    return _company_profile_as_legacy(company, user)
+
+
+def _team_member_as_legacy(member: User, owner_id: uuid.UUID) -> dict:
+    return {
+        "id": member.id,
+        "email": member.email,
+        "display_name": member.full_name or member.email,
+        "role": "OWNER" if member.id == owner_id else "MEMBER",
+        "core_role": member.role,
+        "status": "ACTIVE" if member.is_active else "INACTIVE",
+        "created_at": member.created_at,
+        "updated_at": member.updated_at,
+    }
+
+
+@router.get("/buyer/team/members")
+async def legacy_buyer_team_members(db: DB, user: CurrentUser):
+    if not user.company_id:
+        return [_team_member_as_legacy(user, user.id)]
+    rows = list(
+        (
+            await db.execute(
+                select(User)
+                .where(User.company_id == user.company_id)
+                .order_by(User.created_at.asc())
+            )
+        ).scalars()
+    )
+    return [_team_member_as_legacy(row, user.id) for row in rows]
+
+
+@router.post("/buyer/team/invite", status_code=201)
+async def legacy_buyer_team_invite(data: dict, db: DB, user: CurrentUser):
+    email = str(data.get("email") or "").strip().lower()
+    if not email:
+        raise HTTPException(status_code=422, detail="email is required")
+    company = await _ensure_user_company(db, user, {}, default_type="buyer")
+    existing = (await db.execute(select(User).where(User.email == email))).scalar_one_or_none()
+    if existing is not None:
+        if existing.company_id != company.id:
+            raise HTTPException(status_code=409, detail="This user belongs to another company")
+        return _team_member_as_legacy(existing, user.id)
+    member = User(
+        email=email,
+        password_hash=hash_password(secrets.token_urlsafe(24)),
+        full_name=data.get("display_name") or data.get("name") or email.split("@")[0],
+        role="buyer",
+        language=user.language,
+        country=user.country,
+        company_id=company.id,
+        is_active=True,
+    )
+    db.add(member)
+    await db.flush()
+    await sync_role_portal_access(db, user_id=member.id, role=member.role, company_id=company.id)
+    await append_audit_event(
+        db,
+        actor_type="user",
+        actor_user_id=user.id,
+        portal_key="procurement",
+        action="buyer.team.invite",
+        entity_type="user",
+        entity_id=member.id,
+        before=None,
+        after={"email": member.email, "company_id": str(company.id), "role": data.get("role") or "MEMBER"},
+        reason="Legacy buyer team invite compatibility",
+        source="cebu.compat.team",
+    )
+    await db.commit()
+    await db.refresh(member)
+    return _team_member_as_legacy(member, user.id)
+
+
+@router.delete("/buyer/team/members/{member_id}", status_code=204)
+async def legacy_buyer_team_remove_member(member_id: uuid.UUID, db: DB, user: CurrentUser):
+    if member_id == user.id:
+        raise HTTPException(status_code=409, detail="Cannot remove yourself")
+    if not user.company_id:
+        raise HTTPException(status_code=403, detail="Company required")
+    member = await db.get(User, member_id)
+    if member is None or member.company_id != user.company_id:
+        raise HTTPException(status_code=404, detail="Team member not found")
+    member.is_active = False
+    await suspend_user_portal_access(db, user_id=member.id)
+    await append_audit_event(
+        db,
+        actor_type="user",
+        actor_user_id=user.id,
+        portal_key="procurement",
+        action="buyer.team.remove",
+        entity_type="user",
+        entity_id=member.id,
+        before={"is_active": True},
+        after={"is_active": False},
+        reason="Legacy buyer team remove compatibility",
+        source="cebu.compat.team",
+    )
+    await db.commit()
+    return None
+
+
+@router.get("/trust/me")
+async def legacy_trust_me(db: DB, user: CurrentUser):
+    company = await db.get(Company, user.company_id) if user.company_id else None
+    if company is None:
+        return {
+            "company_id": None,
+            "trust_score": 50,
+            "trust_tier": "SILVER",
+            "profile_completion_rate": 20,
+            "deal_completion_rate": 0,
+            "successful_deals_count": 0,
+            "dispute_rate": 0,
+            "status": "INCOMPLETE",
+        }
+    try:
+        row = await get_or_create_trust_profile(db, company_id=company.id, portal_key="cebu")
+    except CommerceTrustError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+    await db.commit()
+    await db.refresh(row)
+    return _trust_profile_as_admin_legacy(row, company)
+
+
 @router.patch("/users/me")
 async def legacy_update_me(data: UserUpdate, db: DB, user: CurrentUser):
     for field, value in data.model_dump(exclude_unset=True).items():
@@ -2120,6 +2429,21 @@ async def legacy_update_me(data: UserUpdate, db: DB, user: CurrentUser):
     await db.commit()
     await db.refresh(user)
     return _user_as_legacy(user)
+
+
+@router.patch("/users/me/password")
+async def legacy_change_my_password(data: dict, db: DB, user: CurrentUser):
+    current_password = data.get("current_password") or data.get("old_password")
+    new_password = data.get("new_password") or data.get("password")
+    if not current_password or not new_password:
+        raise HTTPException(status_code=422, detail="current_password and new_password are required")
+    if len(str(new_password)) < 8:
+        raise HTTPException(status_code=422, detail="New password must be at least 8 characters")
+    if not verify_password(str(current_password), user.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    user.password_hash = hash_password(str(new_password))
+    await db.commit()
+    return {"message": "Password changed successfully"}
 
 
 @router.patch("/users/me/telegram")
@@ -4928,6 +5252,30 @@ async def legacy_maps_coverage_estimate(
     }
 
 
+@router.get("/maps/reverse-geocode")
+async def legacy_maps_reverse_geocode(lat: float = Query(...), lng: float = Query(...)):
+    if not (-90 <= lat <= 90 and -180 <= lng <= 180):
+        raise HTTPException(status_code=422, detail="Invalid coordinates")
+    nearest = min(
+        [
+            ("Cebu City, Philippines", 10.3157, 123.8854),
+            ("Mandaue City, Philippines", 10.3236, 123.9223),
+            ("Lapu-Lapu City, Philippines", 10.3103, 123.9494),
+            ("Manila, Philippines", 14.5995, 120.9842),
+            ("Davao City, Philippines", 7.0707, 125.6087),
+        ],
+        key=lambda item: abs(item[1] - lat) + abs(item[2] - lng),
+    )
+    label = f"{nearest[0]} ({lat:.4f}, {lng:.4f})"
+    return {
+        "formatted_address": label,
+        "address": label,
+        "lat": lat,
+        "lng": lng,
+        "provider": "ainerwise-local",
+    }
+
+
 @router.get("/admin/trust/users")
 async def legacy_admin_trust_users(db: DB, user: CurrentUser):
     _require_legacy_admin(user)
@@ -5515,6 +5863,117 @@ async def legacy_award_offer(offer_id: uuid.UUID, db: DB, user: CurrentUser):
     except CommerceTradeError as exc:
         await db.rollback()
         raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
+@router.post("/orders", status_code=201)
+async def legacy_create_direct_order(data: dict, db: DB, user: CurrentUser):
+    listing_id = _uuid_or_none(data.get("catalog_item_id") or data.get("supplier_listing_id") or data.get("item_id"))
+    if listing_id is None:
+        raise HTTPException(status_code=422, detail="catalog_item_id is required")
+    listing = await db.get(SupplierListing, listing_id)
+    if listing is None or listing.status != "active":
+        raise HTTPException(status_code=404, detail="Catalog item not found")
+    if user.company_id and listing.company_id == user.company_id:
+        raise HTTPException(status_code=409, detail="Cannot buy your own listing")
+    qty = max(1, int(data.get("qty") or data.get("quantity") or 1))
+    unit_price = int(listing.price_minor or 0)
+    if unit_price <= 0:
+        raise HTTPException(status_code=409, detail="Catalog item is not directly orderable")
+    buyer_company = await _ensure_user_company(db, user, {}, default_type="buyer")
+    try:
+        workspace_id = await resolve_commerce_workspace(
+            db,
+            user=user,
+            requested_workspace_id=_uuid_or_none(data.get("workspace_id")),
+        )
+    except CommerceAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    total = unit_price * qty
+    attrs = listing.attributes_json or {}
+    request = ProcurementRequest(
+        workspace_id=workspace_id,
+        buyer_company_id=buyer_company.id,
+        buyer_user_id=user.id,
+        portal_key="cebu",
+        category_schema_id=listing.category_schema_id,
+        region_id=listing.region_id,
+        title=f"Buy Now: {listing.title}",
+        description=data.get("notes") or attrs.get("description"),
+        requirements_json={
+            "source": "marketplace_buy_now",
+            "catalog_item_id": str(listing.id),
+            "qty": qty,
+            "unit_price_minor": unit_price,
+            "currency": listing.currency,
+        },
+        attrs_json={
+            "direct_order": True,
+            "delivery_address_id": data.get("delivery_address_id"),
+            "delivery_city": data.get("delivery_city"),
+        },
+        status="awarded",
+        published_at=datetime.now(timezone.utc),
+    )
+    db.add(request)
+    await db.flush()
+    offer = SupplierOffer(
+        workspace_id=workspace_id,
+        procurement_request_id=request.id,
+        supplier_listing_id=listing.id,
+        supplier_company_id=listing.company_id,
+        price_minor=total,
+        currency=listing.currency,
+        status="awarded",
+        terms_json={
+            "source": "marketplace_buy_now",
+            "qty": qty,
+            "unit_price_minor": unit_price,
+            "notes": data.get("notes"),
+        },
+    )
+    db.add(offer)
+    await db.flush()
+    order = CommerceOrder(
+        workspace_id=workspace_id,
+        procurement_request_id=request.id,
+        winning_offer_id=offer.id,
+        buyer_company_id=buyer_company.id,
+        supplier_company_id=listing.company_id,
+        status="confirmed",
+        total_minor=total,
+        currency=listing.currency,
+        delivery_json={
+            "qty": qty,
+            "delivery_address_id": data.get("delivery_address_id"),
+            "delivery_city": data.get("delivery_city"),
+            "notes": data.get("notes"),
+            "status": "PENDING",
+        },
+    )
+    db.add(order)
+    await db.flush()
+    await append_audit_event(
+        db,
+        actor_type="user",
+        actor_user_id=user.id,
+        portal_key="procurement",
+        action="commerce.order.direct_create",
+        entity_type="commerce_order",
+        entity_id=order.id,
+        before=None,
+        after={
+            "catalog_item_id": str(listing.id),
+            "buyer_company_id": str(buyer_company.id),
+            "supplier_company_id": str(listing.company_id),
+            "total_minor": total,
+            "currency": listing.currency,
+        },
+        reason="Legacy Marketplace Buy Now compatibility",
+        source="cebu.compat.orders",
+    )
+    await db.commit()
+    await db.refresh(order)
+    return await _order_as_legacy(db, order)
 
 
 @router.get("/orders/my")
