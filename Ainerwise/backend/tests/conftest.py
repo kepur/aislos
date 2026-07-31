@@ -38,6 +38,9 @@ _CLEANUP_STATEMENTS = [
     f"DELETE FROM trade_category_schemas WHERE {_TEST_CATEGORY_FILTER}",
     # 2Hands tests list against the real "2hands" category, so they are matched
     # by listing title instead. Children first, then the parent listing.
+    f"DELETE FROM channels.channel_listings WHERE supplier_listing_id IN (SELECT id FROM supplier_listings WHERE {_TEST_LISTING_FILTER})",
+    "DELETE FROM channels.channel_category_maps WHERE account_id IN (SELECT id FROM channels.channel_accounts WHERE channel IN ('testfeed','testassisted'))",
+    "DELETE FROM channels.channel_accounts WHERE channel IN ('testfeed','testassisted')",
     f"DELETE FROM secondhand_deals WHERE supplier_listing_id IN (SELECT id FROM supplier_listings WHERE {_TEST_LISTING_FILTER})",
     f"DELETE FROM secondhand_address_disclosures WHERE secondhand_listing_id IN (SELECT id FROM secondhand_listings WHERE supplier_listing_id IN (SELECT id FROM supplier_listings WHERE {_TEST_LISTING_FILTER}))",
     f"DELETE FROM secondhand_listings WHERE supplier_listing_id IN (SELECT id FROM supplier_listings WHERE {_TEST_LISTING_FILTER})",

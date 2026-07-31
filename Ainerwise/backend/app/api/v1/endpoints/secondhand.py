@@ -32,6 +32,7 @@ from app.models.secondhand import (
     SecondhandListing,
 )
 from app.models.user import Company, User
+from app.services.syndication import delist_listing_everywhere
 
 router = APIRouter(prefix="/secondhand", tags=["secondhand"])
 
@@ -662,12 +663,20 @@ async def confirm_pickup(deal_id: uuid.UUID, data: PickupConfirm, db: DB, user: 
     if data.note:
         deal.note = data.note
 
-    # Unique stock: mark sold so it can be delisted everywhere (P1 fan-out).
+    # Unique stock: mark sold, then take it down on every channel it reached.
     detail = await db.get(SecondhandListing, deal.secondhand_listing_id)
     detail.sold_at = detail.sold_at or _now()
     listing.status = "sold"
 
     await db.commit()
+
+    # Best-effort fan-out. A syndication problem must never invalidate a
+    # pickup the buyer and seller already completed in person.
+    try:
+        await delist_listing_everywhere(db, listing.id)
+    except Exception:  # noqa: BLE001
+        await db.rollback()
+
     await db.refresh(deal)
     return _deal_as_dict(deal)
 

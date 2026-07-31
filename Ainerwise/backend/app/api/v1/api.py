@@ -53,6 +53,7 @@ from app.api.v1.endpoints import (
     regions,
     secondhand,
     seo,
+    syndication,
     service_packages,
     service_partners,
     showroom,
@@ -120,6 +121,7 @@ api_router.include_router(telegram.router)
 api_router.include_router(integrations.router)
 api_router.include_router(localization.router)
 api_router.include_router(secondhand.router)
+api_router.include_router(syndication.router)
 api_router.include_router(knowledge.router)
 api_router.include_router(ai_reviews.router)
 api_router.include_router(ai_chat.router)

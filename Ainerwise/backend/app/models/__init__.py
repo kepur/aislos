@@ -111,6 +111,10 @@ from app.models.secondhand import (
     SecondhandDeal,
     SecondhandListing,
 )
+from app.models.syndication import (
+    ChannelCategoryMap,
+    ChannelListing,
+)
 from app.models.field_service import (
     PartnerCrew,
     CrewMembership,
@@ -211,4 +215,5 @@ __all__ = [
     "CommerceThread", "CommerceMessage",
     "CommerceSettlement", "CommerceReconciliationRun",
     "SecondhandListing", "SecondhandAddressDisclosure", "SecondhandDeal",
+    "ChannelListing", "ChannelCategoryMap",
 ]

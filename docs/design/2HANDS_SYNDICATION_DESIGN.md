@@ -271,3 +271,39 @@ P0 先跑起来收钱,P1/P2 才是护城河。**不要在 P0 就做 AI 和自动
 ### ⚠️ P1 必须补的硬化项
 - **地址静态加密**:当前 `pickup_address/contact_phone` 是明文列,靠 API 层严格管控 + 审计留痕。代码库暂无字段级加密工具,**上生产前需接 pgcrypto 或应用层加密并做密钥管理**。
 - 卖家实名与序列号核验(目前只做重复拦截,未对接失窃库)。
+
+---
+
+## P1 落地记录(2026-07-06)
+
+**约束:纯增量,不得变更原版系统流程。** 与 `p0-2hands` 标签对比,P1 仅触碰 4 个文件:
+`api.py`(+2 行 include_router)、`models/__init__.py`(+模型导出)、`conftest.py`(+测试清理)、
+`secondhand.py`(2Hands 自有端点接入下架扇出)。**原版系统零改动,全量 418 测试通过。**
+
+| 项 | 产出 |
+|---|---|
+| 映射表 | `channels.channel_listings`(SKU × 渠道账号 → external_id/状态/内容指纹)、`channels.channel_category_maps`(类目+字段映射,可后台编辑)。迁移 081 |
+| 复用不改表 | 渠道账号复用现有 `channels.channel_accounts`,靠 `meta_json.kind="syndication"` 区分 —— **零 schema 变更** |
+| 驱动契约 | `ChannelDriver` Protocol:publish/update/delist(+stats/messages 能力位)。**AI 代理接入 = 加第四种 driver,契约与任务路径不变** |
+| 已实现驱动 | `feed`(渲染商户 feed 供渠道自行拉取)、`assisted`(生成人工发布内容包)。**两者均不对第三方发起任何请求** |
+| API | `/api/v1/syndication/*` 10 条:渠道 CRUD、类目映射、推流、状态、待办队列、回填帖子ID、确认撤下、feed 导出、全渠道下架 |
+
+### 合规姿态(架构级保证)
+`get_driver()` 对 `api` / `agent` / 未知类型**一律降级为 assisted**。没有官方合作协议就不可能自动发帖 ——
+这不是靠规范约束,是代码默认行为。要启用 `api` 驱动必须显式注册该渠道实现。
+
+### 测试固化的不变量
+1. **地址永不出境** — 推流响应、feed XML、人工内容包中均无完整地址/电话,只带 `国家/城市/区`
+2. **幂等防封号** — 内容指纹未变则跳过重推(重复发帖是账号被封的主因)
+3. **卖出即下架** — 确认取货自动扇出:可自动化渠道直接 `delisted`,人工渠道进 `pending_takedown` 待办队列
+4. **扇出失败不影响成交** — 推流异常被吞并记录,不回滚已完成的线下交易
+
+### 测试中发现并修正的建模缺陷
+最初 assisted 渠道下架后停留在 `pending_review`,与「待人工发布」同状态,运营看板**无法区分该发还是该撤**。
+已拆分出 `pending_takedown`,并新增 `/syndication/queue` 待办队列(action = post / take_down / retry)
++ `confirm-takedown` 人工确认端点。否则人工渠道的活会静默堆积,已售商品继续挂在外部平台。
+
+### P2 之前仍需的
+- Celery 队列化 + 每渠道限流(当前推流同步执行,适合小批量;上量需异步化)
+- `analytics` 事件脊柱(P2 本体)
+- 后台推流控制台 UI(当前仅 API)
