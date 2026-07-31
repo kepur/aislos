@@ -10,7 +10,7 @@ from app.models.integration import AIRun
 from app.models.lead import Lead
 from app.models.solution import Solution, SolutionPackage
 from app.services import factorypulse, lifecycle_lines, recurring_revenue, storageguard
-from app.services.integration_events import create_integration_event
+from app.services.event_bus import emit_event
 
 # Map AI Facility Assessment category keys to solution-line taxonomy.
 SOLUTION_LINE_BY_CATEGORY = {
@@ -564,11 +564,7 @@ async def analyze_lead(
         ai_run.status = "completed"
         db.add(lead)
         db.add(ai_run)
-        await db.commit()
-        await db.refresh(ai_run)
-        await db.refresh(lead)
-
-        await create_integration_event(
+        await emit_event(
             db,
             event_type="ai.completed",
             payload={
@@ -578,7 +574,13 @@ async def analyze_lead(
                 "completeness_score": output["completeness"]["score"],
                 "recommended_status": output["recommended_status"],
             },
+            aggregate_type="lead",
+            aggregate_id=lead.id,
+            target_channel="telegram_admin",
         )
+        await db.commit()
+        await db.refresh(ai_run)
+        await db.refresh(lead)
     except Exception as exc:
         lead.status = "new"
         ai_run.status = "failed"

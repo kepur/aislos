@@ -104,6 +104,7 @@ async def run_project_analyze(
     }
 
     run = AgentRun(
+        workspace_id=project.workspace_id,
         agent_slug=AGENT_SLUG,
         workflow=WORKFLOW,
         status="running",

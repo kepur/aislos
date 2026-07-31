@@ -1,0 +1,2 @@
+<template><CebuAdminResourceTable title="Cebu Users & Staff" endpoint="/admin/cebu/users" :columns="columns" status-path="/admin/cebu/users/{id}/active" status-field="is_active" :status-options="['active','disabled']" /></template>
+<script setup lang="ts">definePageMeta({layout:'default',middleware:['auth']});const columns=[{key:'email',label:'Email'},{key:'full_name',label:'Name'},{key:'role',label:'Role',badge:true},{key:'is_active',label:'Active'},{key:'created_at',label:'Created'}]</script>

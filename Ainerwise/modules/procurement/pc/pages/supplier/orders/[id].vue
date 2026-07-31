@@ -10,7 +10,7 @@
         <div class="flex-1">
           <div class="flex flex-wrap items-center gap-3">
             <h1 class="text-2xl font-bold text-slate-900">Order #{{ shortId(order.id).toUpperCase() }}</h1>
-            <UBadge :color="statusColor(order.status)" variant="solid">{{ order.status }}</UBadge>
+            <UBadge :color="statusColor(order.status)" variant="solid">{{ orderStatusLabel(order.status) }}</UBadge>
           </div>
           <p class="mt-1 text-sm text-slate-500">
             Intent {{ shortId(order.intent_id) }} · Offer {{ shortId(order.offer_id) }} · Created {{ formatDate(order.created_at) }}
@@ -39,7 +39,8 @@
                 {{ escrowText }}
               </p>
               <p v-if="order.escrow" class="mt-2 text-xs text-emerald-700">
-                Escrow {{ order.escrow.status }} · Provider {{ order.escrow.provider || 'AinerWise Core' }}
+                Payment record {{ order.escrow.status }}
+                <template v-if="order.escrow.provider_reference"> · Ref {{ order.escrow.provider_reference }}</template>
               </p>
             </div>
           </div>
@@ -66,7 +67,7 @@
             </div>
             <div class="flex justify-between gap-4">
               <dt class="text-slate-500">Current Status</dt>
-              <dd><UBadge :color="statusColor(order.status)" variant="subtle">{{ order.status }}</UBadge></dd>
+              <dd><UBadge :color="statusColor(order.status)" variant="subtle">{{ orderStatusLabel(order.status) }}</UBadge></dd>
             </div>
             <div class="flex justify-between gap-4 border-t border-slate-100 pt-4">
               <dt class="font-semibold text-slate-900">Total</dt>
@@ -79,7 +80,7 @@
           <template #header>
             <div>
               <h3 class="text-lg font-medium text-slate-900">Delivery Status</h3>
-              <p class="mt-1 text-sm text-slate-500">Update fulfillment without leaving AinerWise Procurement.</p>
+              <p class="mt-1 text-sm text-slate-500">Update fulfillment without leaving AISLOS Market.</p>
             </div>
           </template>
 
@@ -232,12 +233,12 @@ const canUpdateDelivery = computed(() => {
 })
 
 const escrowText = computed(() => {
-  if (!order.value?.escrow) return 'Payment or escrow has not been captured yet for this order.'
-  if (['AUTH_HELD', 'CAPTURED'].includes(order.value.escrow.status)) {
-    return 'Funds are secured and will be released after buyer acceptance.'
+  if (!order.value?.escrow) return 'The buyer has not recorded a payment for this order yet. They pay you directly and log the reference here.'
+  if (['AUTHORIZED', 'AUTH_HELD', 'CAPTURED'].includes(order.value.escrow.status)) {
+    return 'The buyer recorded a direct payment to you. Verify you received it, then start fulfilment — open a dispute if it never arrived.'
   }
-  if (order.value.escrow.status === 'RELEASED') return 'Funds have been released for this order.'
-  return `Escrow status is ${order.value.escrow.status}.`
+  if (order.value.escrow.status === 'RELEASED') return 'Delivery accepted — this order is settled on record.'
+  return `Payment record status is ${order.value.escrow.status}.`
 })
 
 watch(order, (value) => {

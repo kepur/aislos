@@ -18,6 +18,7 @@ from app.core.portal_context import PortalContext, get_portal_context
 from app.db.session import async_session_factory, engine
 from app.main import app
 from app.models.portal_policy import FROZEN_CONFIDENCE_GATE, PHASE1_PROJECT_TYPES, PortalPolicy
+from tests.route_utils import registered_route_paths
 from app.services.portal_policy import (
     PortalPolicyError,
     activate_policy,
@@ -56,7 +57,7 @@ def _default_kwargs() -> dict:
 # ---------------------------------------------------------------------------
 
 def test_portal_policy_route_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     assert POLICY_URL in paths
 
 

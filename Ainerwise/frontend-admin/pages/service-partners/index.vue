@@ -17,6 +17,7 @@
         </button>
       </div>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -200,6 +201,7 @@ const selectedPartner = ref<any>(null)
 const saving = ref(false)
 const skillsText = ref('')
 const languagesText = ref('')
+const error = ref('')
 
 const createForm = reactive({
   partner_type: '',
@@ -211,13 +213,15 @@ const createForm = reactive({
 })
 
 async function loadPartners() {
+  error.value = ''
   const params = new URLSearchParams()
   if (statusFilter.value) params.set('verification_status', statusFilter.value)
   try {
     const res = await apiFetch<any>(`/service-partners?${params.toString()}`)
     partners.value = res.items || []
-  } catch {
+  } catch (e: any) {
     partners.value = []
+    error.value = e?.data?.detail || e?.message || 'Service partners could not be loaded'
   }
 }
 
@@ -227,6 +231,7 @@ function openDetail(partner: any) {
 
 async function createPartner() {
   saving.value = true
+  error.value = ''
   try {
     const body: any = { partner_type: createForm.partner_type }
     if (createForm.country) body.country = createForm.country
@@ -244,13 +249,14 @@ async function createPartner() {
     languagesText.value = ''
     await loadPartners()
   } catch (e: any) {
-    console.error('Create partner failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Service partner could not be created'
   } finally {
     saving.value = false
   }
 }
 
 async function updateStatus(id: string, newStatus: string) {
+  error.value = ''
   try {
     await apiFetch(`/service-partners/${id}/status`, {
       method: 'PATCH',
@@ -258,7 +264,7 @@ async function updateStatus(id: string, newStatus: string) {
     })
     await loadPartners()
   } catch (e: any) {
-    console.error('Status update failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Partner status could not be updated'
   }
 }
 

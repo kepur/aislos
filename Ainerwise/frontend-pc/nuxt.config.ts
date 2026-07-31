@@ -1,9 +1,31 @@
 import { fileURLToPath } from 'node:url'
 
+const localeRoutePrefixes = ['/en', '/cn', '/rs', '/pl']
+
+function addLocaleAliases(pages: any[]) {
+  for (const page of pages) {
+    if (page.path) {
+      const basePath = page.path === '/' ? '' : page.path
+      const aliases = localeRoutePrefixes.map(prefix => `${prefix}${basePath}`)
+      page.alias = Array.from(new Set([
+        ...(Array.isArray(page.alias) ? page.alias : page.alias ? [page.alias] : []),
+        ...aliases,
+      ]))
+    }
+    if (page.children) addLocaleAliases(page.children)
+  }
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
   experimental: { appManifest: false },
+
+  hooks: {
+    'pages:extend'(pages) {
+      addLocaleAliases(pages)
+    },
+  },
 
   alias: {
     '@ainerwise/shared-auth': fileURLToPath(new URL('../shared/auth/useSharedAuth.ts', import.meta.url)),
@@ -30,6 +52,8 @@ export default defineNuxtConfig({
       adminUrl: process.env.NUXT_PUBLIC_ADMIN_URL || 'http://localhost:4097',
       storeAdminUrl: process.env.NUXT_PUBLIC_STORE_ADMIN_URL || 'http://localhost:4095',
       agentUrl: process.env.NUXT_PUBLIC_AGENT_URL || 'http://localhost:4093',
+      // AISLOS Market (standalone procurement product). Official site links out here.
+      marketUrl: process.env.NUXT_PUBLIC_MARKET_URL || 'http://market.localhost',
     },
   },
 
@@ -38,12 +62,17 @@ export default defineNuxtConfig({
   },
 
   i18n: {
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
     locales: [
       { code: 'en', name: 'English', file: 'en.json' },
       { code: 'zh', name: '中文', file: 'zh.json' },
       { code: 'sr', name: 'Srpski', file: 'sr.json' },
+      { code: 'pl', name: 'Polski', file: 'pl.json' },
     ],
     defaultLocale: 'en',
+    fallbackLocale: 'en',
     lazy: true,
     langDir: '.',
     strategy: 'no_prefix',
@@ -60,6 +89,9 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    build: {
+      chunkSizeWarningLimit: 600,
+    },
     optimizeDeps: {
       include: ['naive-ui', 'vueuc', 'date-fns-tz/formatInTimeZone'],
     },

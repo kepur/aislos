@@ -7,7 +7,19 @@
       {{ $t('common.back') }}
     </NuxtLink>
 
-    <div v-if="product" class="space-y-4">
+    <div v-if="loading" class="py-20 text-center text-sm text-slate-400">
+      Loading product...
+    </div>
+
+    <div v-else-if="error" class="rounded-2xl border border-red-100 bg-red-50 p-4 text-center">
+      <p class="text-sm font-semibold text-red-700">Product could not be loaded.</p>
+      <p class="mt-1 text-xs text-red-500">{{ error }}</p>
+      <button type="button" class="mt-3 rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white" @click="loadProduct">
+        Retry
+      </button>
+    </div>
+
+    <div v-else-if="product" class="space-y-4">
       <!-- Image -->
       <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
         <div class="h-48 bg-slate-50 flex items-center justify-center">
@@ -74,7 +86,7 @@
     </div>
 
     <div v-else class="text-center py-20 text-slate-400">
-      <p class="text-sm">Loading...</p>
+      <p class="text-sm">Product not found.</p>
     </div>
   </div>
 </template>
@@ -82,8 +94,9 @@
 <script setup lang="ts">
 const route = useRoute()
 const { apiFetch } = useApi()
-const { demoProducts } = useDemoCatalog()
-const product = ref<any>(demoProducts.find((item) => item.slug === route.params.slug) || null)
+const product = ref<any>(null)
+const loading = ref(true)
+const error = ref('')
 
 function protocolsFor(product: any) {
   if (Array.isArray(product?.protocols_json)) return product.protocols_json
@@ -91,13 +104,19 @@ function protocolsFor(product: any) {
   return []
 }
 
-onMounted(async () => {
+async function loadProduct() {
+  loading.value = true
+  error.value = ''
   try {
     const res = await apiFetch<any>(`/products/${route.params.slug}`)
     product.value = res
-  } catch {}
-  if (!product.value) {
-    product.value = demoProducts.find((item) => item.slug === route.params.slug)
+  } catch (cause: any) {
+    product.value = null
+    error.value = cause?.data?.detail || cause?.message || 'Please try again.'
+  } finally {
+    loading.value = false
   }
-})
+}
+
+onMounted(loadProduct)
 </script>

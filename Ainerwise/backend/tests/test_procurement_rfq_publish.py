@@ -15,6 +15,7 @@ from app.models.integration import IntegrationEvent
 from app.models.procurement import CommercialSnapshot
 from app.models.rfq import RFQ
 from app.services.portal_policy import ensure_default_policies
+from tests.route_utils import registered_route_paths
 
 BASE = "/api/v1/procurement"
 
@@ -159,7 +160,7 @@ async def _ready_package(project_id: str, buyer: str, admin: str) -> str:
 
 
 def test_publish_route_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     assert "/api/v1/procurement/projects/{project_id}/packages/{package_id}/publish-rfq" in paths
 
 

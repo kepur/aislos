@@ -7,6 +7,7 @@ from app.schemas.base import BaseSchema
 
 
 class MarketingCampaignBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     name: str
     channel: str
     objective: str | None = None
@@ -52,6 +53,7 @@ class MarketingCampaignRead(MarketingCampaignBase):
 
 
 class MarketingContactBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     company_name: str | None = None
     contact_name: str | None = None
     email: str | None = None
@@ -96,6 +98,7 @@ class MarketingContactRead(MarketingContactBase):
 
 
 class MarketingActivityBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     campaign_id: uuid.UUID | None = None
     contact_id: uuid.UUID | None = None
     lead_id: uuid.UUID | None = None
@@ -163,6 +166,7 @@ class CreativeBriefVersionContent(BaseSchema):
 
 
 class CreativeBriefCreate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     title: str
     objective: str | None = None
     campaign_id: uuid.UUID | None = None
@@ -192,6 +196,7 @@ class CreativeBriefVersionRead(CreativeBriefVersionContent):
 
 class CreativeBriefRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     campaign_id: uuid.UUID | None = None
     region_id: uuid.UUID | None = None
     title: str
@@ -232,6 +237,7 @@ class BriefRejectAction(BaseSchema):
 
 class MediaRequestRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     brief_version_id: uuid.UUID
     deliverable_key: str
     status: str

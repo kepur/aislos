@@ -6,6 +6,7 @@ from app.schemas.base import BaseSchema
 
 class TicketRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     buyer_company_id: uuid.UUID | None = None
     buyer_user_id: uuid.UUID | None = None
@@ -28,8 +29,30 @@ class TicketRead(BaseSchema):
     created_at: datetime
 
 
-class TicketCreate(BaseSchema):
+class TicketCustomerRead(BaseSchema):
+    id: uuid.UUID
     project_id: uuid.UUID | None = None
+    issue_type: str | None = None
+    priority: str
+    title: str
+    description: str | None = None
+    files_json: list | None = None
+    status: str
+    affected_device: str | None = None
+    monitoring_point_id: uuid.UUID | None = None
+    warranty_related: bool | None = None
+    amc_covered: bool | None = None
+    is_paid_service: bool | None = None
+    coverage_type: str | None = None
+    estimated_cost: float | None = None
+    resolution: str | None = None
+    created_at: datetime
+
+
+class TicketCreate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
+    project_id: uuid.UUID | None = None
+    asset_id: uuid.UUID | None = None
     issue_type: str | None = None
     priority: str = "medium"
     title: str

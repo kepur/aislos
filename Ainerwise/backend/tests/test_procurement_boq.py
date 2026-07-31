@@ -14,6 +14,7 @@ from app.main import app
 from app.models.procurement import BoqItem, BoqVersion
 from app.services.portal_policy import ensure_default_policies
 from app.services.procurement_boq import derive_solution_plan_totals
+from tests.route_utils import registered_route_paths
 
 BASE = "/api/v1/procurement"
 
@@ -121,7 +122,7 @@ async def _create_draft(project_id: str, admin_token: str) -> dict:
 
 
 def test_boq_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/procurement/projects/{project_id}/boq",
         "/api/v1/procurement/projects/{project_id}/boq/review",

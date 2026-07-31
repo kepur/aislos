@@ -234,14 +234,30 @@ commerce.dispute.opened
 
 ### Phase 2：迁移采购交易域到 Ainerwise Core
 
+**进展（2026-06-11）**：首三个切片已在 Core 落地（migration `036`）。
+
+| 切片 | Core 表/API | 状态 |
+|------|-------------|------|
+| Category + Listing | `trade_category_schemas`, `supplier_listings`, `/commerce/supplier-listings` | ✅ |
+| Intent + Matching | `procurement_requests`, `/commerce/procurement-requests`, `supplier-candidates`, `bind` | ✅ |
+| Offer + Order | `supplier_offers`, `commerce_orders`, `/offers/{id}/award` | ✅ |
+| Delivery + Dispute | `order_deliveries`, `order_disputes`, 配送/纠纷 API + Bridge `commerce.dispute.opened` | ✅ |
+| Trust + Review + Risk | `trust_profiles`, `transaction_reviews`, `risk_flags` | ✅ |
+| Payment Intent + FX | `commerce_payment_intents` → `PaymentPlan`，`fx-quote` 复用 `ExchangeRate` | ✅ |
+| Settlement / Reconciliation | `commerce_settlements`, `commerce_reconciliation_runs`，账本核对 | ✅ |
+| Stripe 自动结算 | `/commerce/orders/{id}/checkout` + `/webhooks/stripe` → `escrow:psp` | ✅ |
+| Legacy API 兼容 | `/api/v1/cebu-compat/*` + `CEBU_LEGACY_API_PARITY.md` | ✅（过渡期） |
+| Message / Notification | `commerce_threads`, `commerce_messages`, `portal_notifications` + 事件驱动站内通知 | ✅ |
+
+执行控制板：`INTEGRATION_PHASE2_EXECUTION_TASKS.md`
+
 按依赖顺序迁移：
 
 ```text
-Category schema / Supplier Listing
-  -> Intent / Matching / Offer
-  -> Order / Delivery / Message / Notification
-  -> Dispute / Review / Trust / Risk
-  -> Payment Config / FX / Settlement
+Category schema / Supplier Listing          ← 已完成
+  -> Intent / Matching / Offer                ← 已完成（基础）
+  -> Order / Delivery / Dispute / Trust / Payment / Settlement / Messaging ← 已完成（基础）
+  -> Phase 3 Portal 收敛（manifest + composable + H5/Admin 首屏）
 ```
 
 每迁移一个模块：
@@ -252,6 +268,18 @@ Category schema / Supplier Listing
 - 数据核对通过后关闭旧模块。
 
 ### Phase 3：Portal 收敛
+
+**进展（2026-06-11）**：P3-01～P3-04 首切片已落地。执行控制板：`INTEGRATION_PHASE3_EXECUTION_TASKS.md`
+
+| 切片 | 状态 |
+|------|------|
+| Cebu / cebu_buyer Portal manifest | ✅ |
+| `useCommerce` 共享 composable | ✅ |
+| Supplier H5 订单 + 通知 | ✅ |
+| Admin Commerce 对账页 | ✅ |
+| Cebu PC 全量页面 + Legacy API 切换 | 待做 |
+
+原则：
 
 1. Cebu PC/H5 保持独立品牌体验，但改为 Ainerwise Core 的 Portal。
 2. 公共前端能力提取为共享 composable、API client、auth 和 design tokens。

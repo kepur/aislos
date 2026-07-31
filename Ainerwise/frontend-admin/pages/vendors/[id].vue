@@ -60,6 +60,7 @@
       </div>
     </div>
   </div>
+  <div v-else-if="error" class="text-center py-12 text-red-600">{{ error }}</div>
   <div v-else class="text-center py-12 text-gray-500">{{ $t('common.loading') }}</div>
 </template>
 
@@ -70,22 +71,26 @@ const route = useRoute()
 const { apiFetch } = useApi()
 const vendor = ref<any>(null)
 const statusLoading = ref(false)
+const error = ref('')
 
 onMounted(async () => {
   try {
     vendor.value = await apiFetch<any>(`/vendors/${route.params.id}`)
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Vendor could not be loaded'
+  }
 })
 
 async function handleStatusChange(newStatus: string) {
   statusLoading.value = true
+  error.value = ''
   try {
     vendor.value = await apiFetch<any>(`/vendors/${route.params.id}/status`, {
       method: 'PATCH',
       body: { verification_status: newStatus },
     })
   } catch (e: any) {
-    console.error('Status change failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Status change failed'
   } finally {
     statusLoading.value = false
   }

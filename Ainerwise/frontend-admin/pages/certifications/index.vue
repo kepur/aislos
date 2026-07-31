@@ -9,6 +9,7 @@
         + Add Certification
       </button>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <!-- Filters -->
     <div class="flex gap-3 mb-4">
@@ -185,6 +186,7 @@ const statusFilter = ref('')
 const showModal = ref(false)
 const editingCert = ref<any>(null)
 const saving = ref(false)
+const error = ref('')
 
 const defaultForm = () => ({
   certification_name: '',
@@ -221,6 +223,7 @@ function isExpiringSoon(dateStr: string) {
 }
 
 async function load() {
+  error.value = ''
   const params = new URLSearchParams()
   params.set('skip', String(page.value * limit))
   params.set('limit', String(limit))
@@ -230,7 +233,9 @@ async function load() {
     const res = await apiFetch<any>(`/certifications?${params}`)
     items.value = res.items || []
     total.value = res.total || 0
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Certifications could not be loaded'
+  }
 }
 
 function openCreate() {
@@ -259,6 +264,7 @@ function openEdit(cert: any) {
 
 async function saveCert() {
   saving.value = true
+  error.value = ''
   try {
     const body: Record<string, any> = { ...form }
     if (!body.issue_date) delete body.issue_date
@@ -275,7 +281,7 @@ async function saveCert() {
     showModal.value = false
     await load()
   } catch (e: any) {
-    console.error('Save cert failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Certification could not be saved'
   } finally {
     saving.value = false
   }
@@ -283,10 +289,13 @@ async function saveCert() {
 
 async function deleteCert(id: string) {
   if (!confirm('Delete this certification record?')) return
+  error.value = ''
   try {
     await apiFetch(`/certifications/${id}`, { method: 'DELETE' })
     await load()
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Certification could not be deleted'
+  }
 }
 
 watch([page, ownerTypeFilter, statusFilter], () => load())

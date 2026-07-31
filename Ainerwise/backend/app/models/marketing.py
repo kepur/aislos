@@ -11,6 +11,7 @@ from app.models.base_model import Base, TimestampMixin, UUIDMixin
 class MarketingCampaign(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "marketing_campaigns"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     channel: Mapped[str] = mapped_column(String(50), nullable=False)
     objective: Mapped[str | None] = mapped_column(String(100))
@@ -33,6 +34,7 @@ class MarketingCampaign(Base, UUIDMixin, TimestampMixin):
 class MarketingContact(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "marketing_contacts"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True)
     company_name: Mapped[str | None] = mapped_column(String(255))
     contact_name: Mapped[str | None] = mapped_column(String(255))
     email: Mapped[str | None] = mapped_column(String(255), index=True)
@@ -56,6 +58,7 @@ class MarketingContact(Base, UUIDMixin, TimestampMixin):
 class MarketingActivity(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "marketing_activities"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True)
     campaign_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("marketing_campaigns.id"), nullable=True
     )
@@ -97,6 +100,7 @@ class MarketingAsset(Base, UUIDMixin, TimestampMixin):
         ),
     )
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True)
     region_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("regions.id"), nullable=True
     )
@@ -146,6 +150,9 @@ class MarketingMediaUpload(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "marketing_media_uploads"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     media_request_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("marketing_media_requests.id", ondelete="CASCADE"),
@@ -195,6 +202,7 @@ ALLOWED_UPLOAD_EXTENSIONS = frozenset({".png", ".jpg", ".jpeg", ".webp", ".mp4",
 class MarketingCreativeBrief(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "marketing_creative_briefs"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True)
     campaign_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("marketing_campaigns.id"), nullable=True, index=True
     )
@@ -224,6 +232,9 @@ class MarketingCreativeBriefVersion(Base, UUIDMixin, TimestampMixin):
         UniqueConstraint("brief_id", "version", name="uq_marketing_brief_versions_brief_version"),
     )
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     brief_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("marketing_creative_briefs.id", ondelete="CASCADE"),
@@ -307,6 +318,7 @@ class MarketingMediaRequest(Base, UUIDMixin, TimestampMixin):
         ),
     )
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True)
     brief_version_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("marketing_creative_brief_versions.id", ondelete="CASCADE"),

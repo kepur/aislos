@@ -2,6 +2,7 @@
   <div v-if="solution">
     <NuxtLink to="solutions" class="text-sm text-primary-600 hover:underline">&larr; Back to Solutions</NuxtLink>
     <h1 class="admin-page-title mt-4 mb-6">Edit Solution</h1>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <form class="max-w-3xl space-y-6" @submit.prevent="handleSubmit">
       <div class="admin-card space-y-4">
@@ -64,6 +65,7 @@
       </div>
     </form>
   </div>
+  <div v-else-if="error" class="text-center py-12 text-red-600">{{ error }}</div>
   <div v-else class="text-center py-12 text-gray-500">{{ $t('common.loading') }}</div>
 </template>
 
@@ -74,6 +76,7 @@ const route = useRoute()
 const { apiFetch } = useApi()
 const solution = ref<any>(null)
 const loading = ref(false)
+const error = ref('')
 
 const form = reactive({
   title: '',
@@ -89,7 +92,7 @@ const deliveryFlowStr = ref('')
 
 onMounted(async () => {
   try {
-    const sol = await apiFetch<any>(`/solutions/${route.params.id}`)
+    const sol = await apiFetch<any>(`/solutions/admin/${route.params.id}`)
     solution.value = sol
     Object.assign(form, {
       title: sol.title || '',
@@ -101,7 +104,9 @@ onMounted(async () => {
     targetScenariosStr.value = (sol.target_scenarios_json || []).join(', ')
     painPointsStr.value = (sol.pain_points_json || []).join(', ')
     deliveryFlowStr.value = (sol.delivery_flow_json || []).join(', ')
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Solution could not be loaded'
+  }
 })
 
 function splitCSV(str: string): string[] {
@@ -110,6 +115,7 @@ function splitCSV(str: string): string[] {
 
 async function handleSubmit() {
   loading.value = true
+  error.value = ''
   try {
     const payload: Record<string, any> = {
       ...form,
@@ -122,7 +128,7 @@ async function handleSubmit() {
       body: payload,
     })
   } catch (e: any) {
-    console.error('Update failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Solution could not be updated'
   } finally {
     loading.value = false
   }

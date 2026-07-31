@@ -1,7 +1,7 @@
 # Machine-readable shared platform manifest (SP01)
 # No real secrets — placeholders only.
 version: "1.0"
-updated: "2026-06-11"
+updated: "2026-06-12"
 
 canonical:
   workspace: /Users/mac/Code_Start/Aislos/Ainerwise
@@ -11,15 +11,14 @@ canonical:
     - /Users/mac/Code_Start/Ainerwise
 
 checkout_drift_risk:
-  status: active
-  description: Same compose project binds both Aislos/Ainerwise and legacy Ainerwise checkouts
+  status: remediated
+  description: Running compose services bind the canonical Aislos/Ainerwise checkout
   canonical_services:
     - backend
-    - marketing-portal
-  legacy_bind_services:
     - frontend-pc
     - frontend-h5
     - frontend-admin
+    - marketing-portal
     - store-frontend
     - store-admin
     - developer-portal
@@ -31,8 +30,9 @@ checkout_drift_risk:
     - ai-orchestrator
     - channel-gateway
     - nginx
-  remediation: SP02 — scripts/shared-platform/rebind-canonical.sh from canonical cwd
-  status_after_sp02: remediation_script_available
+  legacy_bind_services: []
+  remediation: scripts/shared-platform/rebind-canonical.sh from canonical cwd
+  status_after_sp02: remediated_and_runtime_inspected
 
 services:
   - name: postgres
@@ -68,7 +68,7 @@ postgresql:
       schema: public
       app_role: ainerwise
       migration_owner: ainerwise/backend/alembic
-      current_head: "033"
+      current_head: "077"
       single_head_required: true
     - name: cebu-legacy
       database: cebu
@@ -85,11 +85,11 @@ redis:
     - prefix: "ainerwise:celery:"
       owner: ainerwise-core
       queues: [default, ai_ingestion, automation]
-    - prefix: "stream:"
+    - prefix: "ainerwise:stream:"
       owner: ainerwise-core
       streams:
         - key: ainerwise:stream:events
-          consumer_groups: [domain-consumers]
+          consumer_groups: [automation]
     - prefix: "cebu-legacy:"
       owner: cebu-legacy
       status: active_sp02

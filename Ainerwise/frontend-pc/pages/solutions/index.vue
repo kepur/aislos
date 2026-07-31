@@ -5,7 +5,15 @@
         <h1 class="text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">{{ $t('solutions.title') }}</h1>
         <p class="mt-3 text-slate-300">{{ $t('solutions.subtitle') }}</p>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div v-if="loading" class="glass-panel p-8 text-center text-sm text-slate-400">Loading solutions...</div>
+      <div v-else-if="error" class="glass-panel border-red-500/30 p-6 text-center text-sm text-red-300">
+        <p>{{ error }}</p>
+        <button class="btn-primary mt-4" @click="loadSolutions">Retry</button>
+      </div>
+      <div v-else-if="!solutions.length" class="glass-panel p-8 text-center text-sm text-slate-400">
+        No solutions are currently published.
+      </div>
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <NuxtLink
           v-for="solution in solutions"
           :key="solution.slug"
@@ -26,17 +34,23 @@
 
 <script setup lang="ts">
 const { apiFetch } = useApi()
-const { demoSolutions } = useDemoCatalog()
-const solutions = ref<any[]>(demoSolutions)
+const solutions = ref<any[]>([])
+const loading = ref(true)
+const error = ref('')
 
-onMounted(async () => {
+async function loadSolutions() {
+  loading.value = true
+  error.value = ''
   try {
     const res = await apiFetch<any>('/solutions')
     solutions.value = res.items || res || []
-  } catch {}
-
-  if (!solutions.value.length) {
-    solutions.value = demoSolutions
+  } catch (e: any) {
+    solutions.value = []
+    error.value = e?.data?.detail || e?.message || 'Unable to load solutions.'
+  } finally {
+    loading.value = false
   }
-})
+}
+
+onMounted(loadSolutions)
 </script>

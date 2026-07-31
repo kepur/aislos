@@ -20,6 +20,9 @@ VOICE_MODES = ("text", "realtime", "pipeline")
 class Store(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "stores"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), index=True
+    )
     region_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("regions.id"))
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     address: Mapped[str | None] = mapped_column(String(500))
@@ -32,6 +35,9 @@ class Store(Base, UUIDMixin, TimestampMixin):
 class KioskDevice(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "kiosk_devices"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), index=True
+    )
     store_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("stores.id", ondelete="CASCADE"), nullable=False, index=True
     )
@@ -49,6 +55,9 @@ class ShowroomSession(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "showroom_sessions"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), index=True
+    )
     device_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("kiosk_devices.id"), nullable=False, index=True
     )
@@ -72,6 +81,9 @@ class ShowroomOrder(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "showroom_orders"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), index=True
+    )
     session_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("showroom_sessions.id"), index=True
     )

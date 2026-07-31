@@ -18,6 +18,9 @@ PROJECT_STATUSES = (
 class Project(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "projects"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     lead_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("leads.id"), nullable=True
     )

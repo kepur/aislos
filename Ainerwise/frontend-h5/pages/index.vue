@@ -46,7 +46,17 @@
         <h2 class="text-base font-bold text-slate-800">{{ $t('home.solutionsTitle') }}</h2>
         <NuxtLink to="/solutions" class="text-xs font-semibold text-blue-500">{{ $t('common.viewAll') }} &rarr;</NuxtLink>
       </div>
-      <div class="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+      <div v-if="solutionsLoading" class="rounded-xl border border-slate-100 bg-white p-6 text-center text-xs text-slate-400">
+        Loading solutions...
+      </div>
+      <div v-else-if="solutionsError" class="rounded-xl border border-red-100 bg-red-50 p-4 text-xs text-red-700">
+        <p>{{ solutionsError }}</p>
+        <button class="mt-3 rounded-full bg-red-600 px-4 py-2 font-semibold text-white" @click="loadSolutions">Retry</button>
+      </div>
+      <div v-else-if="!solutions.length" class="rounded-xl border border-slate-100 bg-white p-6 text-center text-xs text-slate-400">
+        No solutions are currently published.
+      </div>
+      <div v-else class="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
         <NuxtLink
           v-for="solution in solutions"
           :key="solution.slug"
@@ -61,8 +71,6 @@
           <h3 class="text-sm font-semibold text-slate-800 line-clamp-1">{{ solution.title }}</h3>
           <p class="text-xs text-slate-400 mt-1 line-clamp-2">{{ solution.description }}</p>
         </NuxtLink>
-
-        <!-- Placeholder if no solutions from API -->
       </div>
     </div>
 
@@ -71,11 +79,9 @@
       <p class="mt-1 text-xs leading-relaxed text-slate-500">
         AinerWise positions the catalog around project-grade Chinese leaders and verified ecosystem partners, not cheap commodity sourcing.
       </p>
-      <div class="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-        <span v-for="partner in demoSupplyPartners" :key="partner.name" class="flex-shrink-0 rounded-full bg-blue-50 px-3 py-1 text-[10px] font-semibold text-blue-600">
-          {{ partner.name }}
-        </span>
-      </div>
+      <NuxtLink to="/products" class="mt-3 inline-flex rounded-full bg-blue-50 px-3 py-1 text-[10px] font-semibold text-blue-600">
+        Explore verified catalog
+      </NuxtLink>
     </div>
 
     <!-- Intelligence Levels -->
@@ -132,9 +138,10 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const { apiFetch } = useApi()
-const { demoSolutions, demoSupplyPartners } = useDemoCatalog()
 
-const solutions = ref<any[]>(demoSolutions.slice(0, 6))
+const solutions = ref<any[]>([])
+const solutionsLoading = ref(true)
+const solutionsError = ref('')
 
 const heroSignals = ['Buildings', 'Cold Chain', 'Kitchen', 'Water', 'Energy', 'Industrial']
 
@@ -160,15 +167,21 @@ const whyReasons = computed(() => [
   { emoji: '🕐', title: t('home.whyLifecycle'), desc: t('home.whyLifecycleDesc') },
 ])
 
-onMounted(async () => {
+async function loadSolutions() {
+  solutionsLoading.value = true
+  solutionsError.value = ''
   try {
     const res = await apiFetch<any>('/solutions')
-    solutions.value = res.items || res || []
-  } catch {}
-  if (!solutions.value.length) {
-    solutions.value = demoSolutions.slice(0, 6)
+    solutions.value = (res.items || res || []).slice(0, 6)
+  } catch (e: any) {
+    solutions.value = []
+    solutionsError.value = e?.data?.detail || e?.message || 'Unable to load solutions.'
+  } finally {
+    solutionsLoading.value = false
   }
-})
+}
+
+onMounted(loadSolutions)
 </script>
 
 <style scoped>

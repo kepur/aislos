@@ -17,6 +17,9 @@ from app.models.base_model import Base, TimestampMixin, UUIDMixin
 class AgentMission(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "agent_missions"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True
     )
@@ -36,6 +39,9 @@ class AgentMission(Base, UUIDMixin, TimestampMixin):
 class AgentMissionTask(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "agent_mission_tasks"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     mission_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("agent_missions.id", ondelete="CASCADE"), nullable=False, index=True
     )

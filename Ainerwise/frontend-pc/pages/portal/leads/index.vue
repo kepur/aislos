@@ -11,6 +11,9 @@
       </NuxtLink>
     </div>
 
+    <div v-if="error" class="portal-card border-red-200 bg-red-50 text-sm text-red-700">
+      {{ error }} <button class="ml-2 font-semibold underline" @click="loadData">Retry</button>
+    </div>
     <div class="portal-card p-0 overflow-hidden">
       <table class="w-full text-sm">
         <thead>
@@ -34,7 +37,10 @@
             </td>
             <td class="px-4 py-3 text-slate-400 text-xs">{{ new Date(lead.created_at).toLocaleDateString() }}</td>
           </tr>
-          <tr v-if="!leads.length">
+          <tr v-if="loading && !leads.length">
+            <td colspan="5" class="px-4 py-12 text-center text-sm text-slate-400">Loading requirements...</td>
+          </tr>
+          <tr v-else-if="!leads.length">
             <td colspan="5" class="px-4 py-12 text-center">
               <div class="text-3xl mb-2">📋</div>
               <p class="text-slate-400 text-sm">{{ $t('common.noData') }}</p>
@@ -48,10 +54,12 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'portal', middleware: 'auth' })
+definePageMeta({ layout: 'customer-workspace', middleware: 'auth' })
 
 const { apiFetch } = useApi()
 const leads = ref<any[]>([])
+const loading = ref(true)
+const error = ref('')
 
 function statusClass(status: string) {
   const map: Record<string, string> = {
@@ -64,10 +72,19 @@ function statusClass(status: string) {
   return map[status] || 'bg-slate-50 text-slate-600'
 }
 
-onMounted(async () => {
+async function loadData() {
+  loading.value = true
+  error.value = ''
   try {
     const res = await apiFetch<any>('/leads/my')
     leads.value = res.items || []
-  } catch {}
-})
+  } catch (e: any) {
+    leads.value = []
+    error.value = e?.data?.detail || e?.message || 'Unable to load requirements.'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(loadData)
 </script>

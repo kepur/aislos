@@ -11,8 +11,8 @@
     <div class="bg-red-50 border border-red-200 rounded-xl p-6 mb-8 flex items-start">
       <UIcon name="i-heroicons-exclamation-triangle" class="w-8 h-8 text-red-600 mr-4 flex-shrink-0" />
       <div>
-        <h4 class="font-bold text-red-900 mb-1">Escrow Funds Frozen</h4>
-        <p class="text-sm text-red-800">By opening a dispute, the $2,150.00 held in escrow will remain frozen. It will not be released to the supplier until this dispute is resolved by our administrative team.</p>
+        <h4 class="font-bold text-red-900 mb-1">Order Frozen for Review</h4>
+        <p class="text-sm text-red-800">Opening a dispute flags this order and its payment records for review. The order stays frozen — no further milestones should be paid — until our administrative team resolves the dispute.</p>
       </div>
     </div>
 
@@ -103,7 +103,7 @@ const submitDispute = async () => {
     alert('Missing order id.')
     return
   }
-  if (!confirm('Are you sure you want to open this dispute? Escrow funds will be frozen.')) return
+  if (!confirm('Are you sure you want to open this dispute? The order will be frozen for admin review.')) return
   submitting.value = true
   const amount = form.value.amount ? Math.round(Number(form.value.amount) * 100) : null
   const { error } = await openDispute(orderId.value, {

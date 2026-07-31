@@ -8,12 +8,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.agent import AGENT_GRANT_SCOPES, Agent, AgentGrant
+from app.core.product_catalog import PUBLIC_PRODUCT_STATUSES
 from app.models.ecosystem import AgentInstallation, MarketplaceListing, StoreOrder, StoreOrderItem
 from app.models.product import Product
+from app.models.portal_access import WorkspaceMembership
 from app.models.user import User
 from app.schemas.ecosystem import MarketplaceListingCreate, StoreOrderCreate
+from app.services.portal_access import list_memberships
 
-PUBLIC_PRODUCT_STATUSES = ("approved", "active", "published")
 STORE_ORDER_TRANSITIONS = {
     "requested": {"reviewing", "cancelled"},
     "reviewing": {"quoted", "cancelled"},
@@ -22,18 +24,47 @@ STORE_ORDER_TRANSITIONS = {
     "cancelled": set(),
 }
 
+AGENT_INSTALL_MANAGER_MEMBERSHIPS = frozenset(
+    {
+        "admin_operator",
+        "customer_owner",
+        "developer",
+        "partner_company_owner",
+        "supplier_owner",
+    }
+)
 
-def store_order_dict(order: StoreOrder, items: list[StoreOrderItem]) -> dict:
-    return {
+
+async def require_agent_install_manager(
+    db: AsyncSession,
+    *,
+    user_id: uuid.UUID,
+    workspace_id: uuid.UUID,
+) -> WorkspaceMembership:
+    memberships = [
+        membership
+        for membership in await list_memberships(db, user_id)
+        if membership.workspace_id == workspace_id
+        and membership.membership_type in AGENT_INSTALL_MANAGER_MEMBERSHIPS
+    ]
+    if not memberships:
+        raise PermissionError("Workspace Owner or Admin membership required to manage Agents")
+    return memberships[0]
+
+
+def store_order_dict(
+    order: StoreOrder,
+    items: list[StoreOrderItem],
+    *,
+    include_internal: bool = False,
+) -> dict:
+    data = {
         "id": str(order.id),
-        "user_id": str(order.user_id),
-        "company_id": str(order.company_id) if order.company_id else None,
         "status": order.status,
         "currency": order.currency,
         "subtotal": float(order.subtotal),
         "notes": order.notes,
         "delivery_json": order.delivery_json,
-        "reviewed_by": str(order.reviewed_by) if order.reviewed_by else None,
         "reviewed_at": order.reviewed_at.isoformat() if order.reviewed_at else None,
         "created_at": order.created_at.isoformat(),
         "items": [
@@ -49,6 +80,15 @@ def store_order_dict(order: StoreOrder, items: list[StoreOrderItem]) -> dict:
         ],
         "payment_boundary": "No payment was taken. AinerWise will review and issue a formal quote.",
     }
+    if include_internal:
+        data.update(
+            {
+                "user_id": str(order.user_id),
+                "company_id": str(order.company_id) if order.company_id else None,
+                "reviewed_by": str(order.reviewed_by) if order.reviewed_by else None,
+            }
+        )
+    return data
 
 
 async def create_store_order(
@@ -160,6 +200,7 @@ def installation_dict(installation: AgentInstallation, listing: MarketplaceListi
         "id": str(installation.id),
         "listing_id": str(installation.listing_id),
         "agent_id": str(installation.agent_id),
+        "workspace_id": str(installation.workspace_id),
         "name": listing.name if listing else None,
         "slug": listing.slug if listing else None,
         "status": installation.status,
@@ -270,14 +311,21 @@ async def approve_marketplace_listing(
 
 
 async def install_marketplace_agent(
-    db: AsyncSession, *, listing: MarketplaceListing, user: User, config_json: dict | None
+    db: AsyncSession,
+    *,
+    listing: MarketplaceListing,
+    user: User,
+    workspace_id: uuid.UUID,
+    config_json: dict | None,
 ) -> AgentInstallation:
     if listing.status != "approved" or not listing.agent_id:
         raise HTTPException(status_code=400, detail="Only approved Marketplace Agents can be installed")
+    await require_agent_install_manager(db, user_id=user.id, workspace_id=workspace_id)
     installation = (
         await db.execute(
             select(AgentInstallation).where(
                 AgentInstallation.listing_id == listing.id,
+                AgentInstallation.workspace_id == workspace_id,
                 AgentInstallation.installed_by == user.id,
             )
         )
@@ -288,6 +336,7 @@ async def install_marketplace_agent(
             listing_id=listing.id,
             agent_id=listing.agent_id,
             installed_by=user.id,
+            workspace_id=workspace_id,
             company_id=user.company_id,
             status="installed",
             config_json=config_json,
@@ -299,6 +348,26 @@ async def install_marketplace_agent(
         installation.installed_at = now
         installation.uninstalled_at = None
     db.add(installation)
+    existing_scopes = set(
+        (
+            await db.execute(
+                select(AgentGrant.scope).where(
+                    AgentGrant.agent_id == listing.agent_id,
+                    AgentGrant.workspace_id == workspace_id,
+                )
+            )
+        ).scalars()
+    )
+    for scope in AGENT_GRANT_SCOPES:
+        if scope not in existing_scopes:
+            db.add(
+                AgentGrant(
+                    agent_id=listing.agent_id,
+                    workspace_id=workspace_id,
+                    scope=scope,
+                    granted=False,
+                )
+            )
     await db.commit()
     await db.refresh(installation)
     return installation

@@ -10,6 +10,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_factory, engine
 from app.main import app
+from tests.route_utils import registered_route_paths
 from app.models.agent import Agent, AgentGrant
 from app.models.lifecycle import InventoryItem
 from app.models.payment import LedgerEntry
@@ -24,7 +25,7 @@ SHOWROOM_SLUGS = [
 
 
 def test_portal_10_routes_registered():
-    paths = {route.path for route in app.routes}
+    paths = registered_route_paths(app)
     for path in (
         "/api/v1/showroom/kiosk/bootstrap",
         "/api/v1/showroom/kiosk/sessions",

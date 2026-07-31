@@ -1,6 +1,8 @@
 <template>
   <div class="relative min-h-screen">
-    <Global3DBackground />
+    <ClientOnly>
+      <LazyGlobal3DBackground v-if="isDark" />
+    </ClientOnly>
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
@@ -9,5 +11,11 @@
 
 <script setup lang="ts">
 const { initAuth } = useAuth()
-onMounted(() => initAuth())
+const { loadAccess } = usePortalManifest()
+const { isDark } = useTheme()
+useHead({ htmlAttrs: { class: computed(() => (isDark.value ? 'dark' : 'light')) } })
+onMounted(async () => {
+  await initAuth()
+  await loadAccess()
+})
 </script>

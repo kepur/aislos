@@ -11,11 +11,12 @@ from typing import Any
 
 import redis.asyncio as aioredis
 from sqlalchemy import select
+
+from app.models.commerce import CommerceOrder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.models.legacy_bridge import LegacyBridgeIdempotency, LegacyIdentityMapping
-from app.models.lead import Lead
 from app.schemas.legacy_bridge import LegacyBridgeEventIn, LegacyBridgeEventOut
 from app.services.audit import append_audit_event
 from app.services.event_bus import emit_event
@@ -26,6 +27,7 @@ LEGACY_BRIDGE_STREAM_KEY = "cebu-legacy:stream:bridge"
 ALLOWED_LEGACY_EVENT_TYPES = frozenset(
     {
         "procurement.request.created",
+        "procurement.request.published",
         "commerce.order.completed",
         "commerce.dispute.opened",
         "legacy.identity.map",
@@ -33,7 +35,8 @@ ALLOWED_LEGACY_EVENT_TYPES = frozenset(
 )
 
 CORE_EVENT_MAP = {
-    "procurement.request.created": "procurement.project.created",
+    "procurement.request.created": "procurement.request.created",
+    "procurement.request.published": "procurement.request.published",
     "commerce.order.completed": "commerce.order.completed",
     "commerce.dispute.opened": "commerce.dispute.opened",
 }
@@ -161,24 +164,69 @@ async def process_legacy_event(
     payload.setdefault("legacy_client_id", client_id)
 
     if data.event_type == "procurement.request.created":
-        lead = Lead(
-            contact_name=payload.get("contact_name"),
-            contact_email=payload.get("contact_email"),
-            contact_phone=payload.get("contact_phone"),
-            project_type=payload.get("project_type"),
-            country=payload.get("country"),
-            city=payload.get("city"),
-            budget_range=payload.get("budget_range"),
-            description=payload.get("description"),
-            status="new",
-            source_channel="cebu_legacy",
-            source_detail=str(payload.get("legacy_request_id") or payload.get("legacy_id") or ""),
-            language=payload.get("language") or "en",
+        from app.services.commerce_trade import upsert_request_from_legacy
+
+        req, lead = await upsert_request_from_legacy(db, payload, portal_key=data.portal_key)
+        if lead:
+            out.lead_id = lead.id
+            payload["lead_id"] = str(lead.id)
+        payload["procurement_request_id"] = str(req.id)
+        out.procurement_request_id = req.id
+
+    elif data.event_type == "procurement.request.published":
+        from app.services.commerce_trade import publish_request
+
+        rid = payload.get("procurement_request_id") or payload.get("core_request_id")
+        if not rid:
+            raise LegacyBridgeError("procurement_request_id required")
+        row = await publish_request(db, uuid.UUID(str(rid)))
+        payload["procurement_request_id"] = str(row.id)
+        out.procurement_request_id = row.id
+
+    elif data.event_type == "commerce.order.completed":
+        from app.services.commerce_trade import complete_order
+
+        order = await complete_order(
+            db,
+            order_id=uuid.UUID(str(payload["order_id"])) if payload.get("order_id") else None,
+            legacy_order_id=str(payload.get("legacy_order_id") or ""),
         )
-        db.add(lead)
-        await db.flush()
-        out.lead_id = lead.id
-        payload["lead_id"] = str(lead.id)
+        payload["commerce_order_id"] = str(order.id)
+        out.commerce_order_id = order.id
+
+    elif data.event_type == "commerce.dispute.opened":
+        from app.models.user import User
+        from app.services.commerce_trade import get_order, open_dispute
+
+        order = None
+        if payload.get("order_id"):
+            order = await get_order(db, uuid.UUID(str(payload["order_id"])))
+        elif payload.get("legacy_order_id"):
+            order = (
+                await db.execute(
+                    select(CommerceOrder).where(
+                        CommerceOrder.legacy_order_id == str(payload["legacy_order_id"])
+                    )
+                )
+            ).scalar_one_or_none()
+        if order is None:
+            raise LegacyBridgeError("order not found for dispute")
+        system_user = (
+            await db.execute(select(User).where(User.role == "super_admin").limit(1))
+        ).scalar_one_or_none()
+        if system_user is None:
+            raise LegacyBridgeError("no system user for bridge dispute")
+        dispute = await open_dispute(
+            db,
+            order_id=order.id,
+            user=system_user,
+            reason_code=str(payload.get("reason_code") or "legacy_import"),
+            description=payload.get("description"),
+            legacy_dispute_id=str(payload.get("legacy_dispute_id") or "") or None,
+        )
+        payload["dispute_id"] = str(dispute.id)
+        out.dispute_id = dispute.id
+        out.commerce_order_id = order.id
 
     elif data.event_type == "legacy.identity.map":
         mapping = await upsert_identity_mapping(
@@ -204,7 +252,7 @@ async def process_legacy_event(
         core_type,
         payload,
         aggregate_type="legacy_bridge",
-        aggregate_id=out.lead_id or out.mapping_id,
+        aggregate_id=out.lead_id or out.mapping_id or out.procurement_request_id or out.commerce_order_id,
     )
     out.core_event_id = core_event.id
 
@@ -213,7 +261,7 @@ async def process_legacy_event(
         actor_type="system",
         action=f"legacy.bridge.{data.event_type.replace('.', '_')}",
         entity_type="legacy_bridge",
-        entity_id=out.lead_id or out.mapping_id or core_event.id,
+        entity_id=out.lead_id or out.mapping_id or out.procurement_request_id or out.commerce_order_id or core_event.id,
         portal_key=data.portal_key,
         after=payload,
         source="legacy_bridge",
@@ -232,11 +280,16 @@ async def process_legacy_event(
     )
     await db.commit()
 
-    await _mirror_to_bridge_stream(
-        None,
-        event_type=data.event_type,
-        payload=payload,
-        correlation_id=data.correlation_id,
-    )
+    try:
+        await _mirror_to_bridge_stream(
+            None,
+            event_type=data.event_type,
+            payload=payload,
+            correlation_id=data.correlation_id,
+        )
+    except Exception:
+        # The Core outbox row is authoritative. A non-authoritative Legacy
+        # observability stream must not turn a committed write into a false 5xx.
+        pass
 
     return out

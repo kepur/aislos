@@ -48,38 +48,66 @@ async def get_project_boq_version(
     if project.current_boq_version_id is None:
         result = await db.execute(
             select(BoqVersion)
-            .where(BoqVersion.project_id == project.id)
+            .where(
+                BoqVersion.project_id == project.id,
+                BoqVersion.workspace_id == project.workspace_id,
+            )
             .order_by(BoqVersion.version.desc())
             .limit(1)
         )
         return result.scalar_one_or_none()
-    return await db.get(BoqVersion, project.current_boq_version_id)
+    version = await db.get(BoqVersion, project.current_boq_version_id)
+    if (
+        version is None
+        or version.project_id != project.id
+        or version.workspace_id != project.workspace_id
+    ):
+        return None
+    return version
 
 
-async def list_items_for_version(db: AsyncSession, version_id: uuid.UUID) -> list[BoqItem]:
+async def list_items_for_version(
+    db: AsyncSession,
+    version_id: uuid.UUID,
+    *,
+    workspace_id: uuid.UUID | None = None,
+) -> list[BoqItem]:
+    stmt = select(BoqItem).where(BoqItem.boq_version_id == version_id)
+    if workspace_id is not None:
+        stmt = stmt.where(BoqItem.workspace_id == workspace_id)
     result = await db.execute(
-        select(BoqItem)
-        .where(BoqItem.boq_version_id == version_id)
+        stmt
         .order_by(BoqItem.sort_order, BoqItem.created_at)
     )
     return list(result.scalars().all())
 
 
 async def list_options_for_items(
-    db: AsyncSession, item_ids: list[uuid.UUID]
+    db: AsyncSession,
+    item_ids: list[uuid.UUID],
+    *,
+    workspace_id: uuid.UUID | None = None,
 ) -> list[BoqItemOption]:
     if not item_ids:
         return []
-    result = await db.execute(
-        select(BoqItemOption).where(BoqItemOption.boq_item_id.in_(item_ids))
-    )
+    stmt = select(BoqItemOption).where(BoqItemOption.boq_item_id.in_(item_ids))
+    if workspace_id is not None:
+        stmt = stmt.where(BoqItemOption.workspace_id == workspace_id)
+    result = await db.execute(stmt)
     return list(result.scalars().all())
 
 
-async def list_solution_plans(db: AsyncSession, version_id: uuid.UUID) -> list[SolutionPlan]:
+async def list_solution_plans(
+    db: AsyncSession,
+    version_id: uuid.UUID,
+    *,
+    workspace_id: uuid.UUID | None = None,
+) -> list[SolutionPlan]:
+    stmt = select(SolutionPlan).where(SolutionPlan.boq_version_id == version_id)
+    if workspace_id is not None:
+        stmt = stmt.where(SolutionPlan.workspace_id == workspace_id)
     result = await db.execute(
-        select(SolutionPlan)
-        .where(SolutionPlan.boq_version_id == version_id)
+        stmt
         .order_by(SolutionPlan.tier)
     )
     return list(result.scalars().all())
@@ -118,7 +146,9 @@ async def rebuild_solution_plans(
     assumptions: str | None = None,
     exclusions: str | None = None,
 ) -> list[SolutionPlan]:
-    existing = await list_solution_plans(db, version.id)
+    existing = await list_solution_plans(
+        db, version.id, workspace_id=version.workspace_id
+    )
     for plan in existing:
         await db.delete(plan)
     await db.flush()
@@ -127,6 +157,7 @@ async def rebuild_solution_plans(
     for tier in BOQ_TIERS:
         t_min, t_max, currency = derive_solution_plan_totals(items, options, tier)
         plan = SolutionPlan(
+            workspace_id=version.workspace_id,
             boq_version_id=version.id,
             tier=tier,
             total_min=t_min,
@@ -178,6 +209,7 @@ async def create_draft_boq(
     facts_score = compute_facts_score(facts)
 
     version = BoqVersion(
+        workspace_id=project.workspace_id,
         project_id=project.id,
         version=version_num,
         status="draft",
@@ -193,6 +225,7 @@ async def create_draft_boq(
     all_options: list[BoqItemOption] = []
     for idx, raw in enumerate(items_payload):
         item = BoqItem(
+            workspace_id=version.workspace_id,
             boq_version_id=version.id,
             category=raw["category"],
             trade=raw.get("trade"),
@@ -223,6 +256,7 @@ async def create_draft_boq(
             unit_max = Decimal(str(opt["unit_price_max"]))
             t_min, t_max = derive_option_totals(item.qty, unit_min, unit_max)
             option = BoqItemOption(
+                workspace_id=version.workspace_id,
                 boq_item_id=item.id,
                 tier=tier,
                 capability=opt["capability"],
@@ -341,7 +375,9 @@ async def freeze_boq_version(
         select(ProcurementProjectFact).where(ProcurementProjectFact.project_id == project.id)
     )
     facts = list(facts_result.scalars().all())
-    items = await list_items_for_version(db, version.id)
+    items = await list_items_for_version(
+        db, version.id, workspace_id=project.workspace_id
+    )
     review = await db.get(AIReview, version.review_id) if version.review_id else None
 
     validate_freeze_preconditions(

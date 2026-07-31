@@ -1,0 +1,2 @@
+<template><div class="space-y-4 p-4"><h1 class="text-xl font-bold text-slate-800">消息</h1><NuxtLink v-for="item in items" :key="item.id" :to="`/messages/${item.commerce_order_id}`" class="m-card block"><p class="font-semibold text-slate-800">{{ item.subject }}</p><p class="text-xs text-slate-400">{{ item.status }}</p></NuxtLink></div></template>
+<script setup lang="ts">definePageMeta({middleware:['auth']});const {listThreads}=useCommerce();const items=ref<any[]>([]);onMounted(async()=>items.value=(await listThreads()).items)</script>

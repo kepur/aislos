@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-slate-200 bg-white;
+  }
+  .input {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm
+           outline-none transition-colors placeholder:text-slate-400
+           focus:border-brand-400 focus:ring-2 focus:ring-brand-100;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-slate-700;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5
+           text-sm font-semibold text-white transition-colors hover:bg-brand-700
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200
+           bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-colors
+           hover:border-slate-300 hover:bg-slate-50 disabled:opacity-50;
+  }
+  /* Condition grades read at a glance across the whole app. */
+  .grade {
+    @apply inline-flex h-6 min-w-6 items-center justify-center rounded-lg px-2 text-xs font-bold;
+  }
+  .grade-A { @apply bg-emerald-100 text-emerald-700; }
+  .grade-B { @apply bg-sky-100 text-sky-700; }
+  .grade-C { @apply bg-amber-100 text-amber-700; }
+  .grade-D { @apply bg-rose-100 text-rose-700; }
+}

@@ -42,6 +42,9 @@ class CustomerWarranty(Base, UUIDMixin, TimestampMixin):
     """FI.2.6 — Coverage AinerWise provides to a customer on a project."""
     __tablename__ = "customer_warranties"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("projects.id"), nullable=True
     )
@@ -65,6 +68,9 @@ class AMCContract(Base, UUIDMixin, TimestampMixin):
     """FI.2.7 — Annual Maintenance Contract: the recurring-revenue core."""
     __tablename__ = "amc_contracts"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("projects.id"), nullable=True
     )
@@ -89,6 +95,9 @@ class MonitoringPoint(Base, UUIDMixin, TimestampMixin):
     """FI.2.8 — A single monitored point (temperature, door, probe, tag, ...)."""
     __tablename__ = "monitoring_points"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("projects.id"), nullable=True
     )
@@ -113,6 +122,9 @@ class InventoryItem(Base, UUIDMixin, TimestampMixin):
     """FI.2.9 — Spare-parts / consumable stock record."""
     __tablename__ = "inventory_items"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     product_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("products.id"), nullable=True
     )
@@ -139,6 +151,9 @@ class StockMovement(Base, UUIDMixin, TimestampMixin):
     """FI.2.9 — Inbound/outbound/reservation history for an inventory item."""
     __tablename__ = "stock_movements"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     inventory_item_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("inventory_items.id"), nullable=False
     )
@@ -159,6 +174,9 @@ class MaintenanceSchedule(Base, UUIDMixin, TimestampMixin):
     """FI.2.10 — Inspection / calibration / replacement task with due dates."""
     __tablename__ = "maintenance_schedules"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("projects.id"), nullable=True
     )
@@ -186,6 +204,9 @@ class CalibrationRecord(Base, UUIDMixin, TimestampMixin):
     """FI.2.10 — Completed calibration with certificate, for audit traceability."""
     __tablename__ = "calibration_records"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     monitoring_point_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("monitoring_points.id"), nullable=True
     )

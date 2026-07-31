@@ -13,7 +13,15 @@
         <p class="mt-4 text-sm font-medium text-amber-300">{{ $t('services.onSiteNotice') }}</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-if="loading" class="glass-panel p-8 text-center text-sm text-slate-400">Loading service plans...</div>
+      <div v-else-if="error" class="glass-panel border-red-500/30 p-6 text-center text-sm text-red-300">
+        <p>{{ error }}</p>
+        <button class="btn-primary mt-4" @click="loadPackages">Retry</button>
+      </div>
+      <div v-else-if="!packages.length" class="glass-panel p-8 text-center text-sm text-slate-400">
+        No service plans are currently published.
+      </div>
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div v-for="pkg in packages" :key="pkg.id" class="glass-panel p-6 transition border-primary-500/30 hover:border-primary-500/50 hover:shadow-[0_0_15px_rgba(14,165,233,0.3)]">
           <h2 class="text-xl font-semibold text-white">{{ packageName(pkg) }}</h2>
           <p class="text-primary-400 font-medium mt-1">{{ packageTerm(pkg) }}</p>
@@ -53,8 +61,9 @@
 <script setup lang="ts">
 const { apiFetch } = useApi()
 const { t, te, tm, rt } = useI18n()
-const { demoServicePackages } = useDemoCatalog()
-const packages = ref<any[]>(demoServicePackages)
+const packages = ref<any[]>([])
+const loading = ref(true)
+const error = ref('')
 
 function packageTerm(pkg: any) {
   const key = `services.packages.${pkg.slug}.term`
@@ -73,17 +82,22 @@ function packageDescription(pkg: any) {
 
 function packageServices(pkg: any) {
   const key = `services.packages.${pkg.slug}.included`
-  return te(`services.packages.${pkg.slug}.name`) ? (tm(key) as any[]).map(service => rt(service)) : pkg.included_services_json
+  return te(`services.packages.${pkg.slug}.name`) ? (tm(key) as any[]).map(service => rt(service)) : pkg.included_services_json || []
 }
 
-onMounted(async () => {
+async function loadPackages() {
+  loading.value = true
+  error.value = ''
   try {
     const res = await apiFetch<any>('/service-packages')
     packages.value = res.items || res || []
-  } catch {}
-
-  if (!packages.value.length) {
-    packages.value = demoServicePackages
+  } catch (e: any) {
+    packages.value = []
+    error.value = e?.data?.detail || e?.message || 'Unable to load service plans.'
+  } finally {
+    loading.value = false
   }
-})
+}
+
+onMounted(loadPackages)
 </script>

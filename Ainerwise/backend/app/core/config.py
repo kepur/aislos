@@ -1,8 +1,10 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
+
     PROJECT_NAME: str = "AinerWise"
     API_V1_PREFIX: str = "/api/v1"
 
@@ -61,7 +63,7 @@ class Settings(BaseSettings):
         r")(:\d+)?$"
     )
 
-    DEMO_MODE_ENABLED: bool = True
+    DEMO_MODE_ENABLED: bool = False
     DEMO_BUYER_EMAIL: str = "demo@ainerwise.com"
     DEMO_BUYER_PASSWORD: str = "demo123"
     DEMO_ADMIN_EMAIL: str = "admin@ainerwise.com"
@@ -75,21 +77,20 @@ class Settings(BaseSettings):
 
     TELEGRAM_BOT_TOKEN: str = ""
     TELEGRAM_ADMIN_CHAT_ID: str = ""
+    TELEGRAM_WEBHOOK_SECRET: str = ""
     AI_ORCHESTRATOR_URL: str = "http://ai-orchestrator:8001"
     CHANNEL_GATEWAY_URL: str = "http://channel-gateway:8200"
     PARTNER_PORTAL_URL: str = "http://localhost:4098"
     SIGN_BASE_URL: str = "http://localhost:4099"
+    PASSWORD_RESET_BASE_URL: str = "http://localhost:4098/auth/reset-password"
+    BACKUP_DIR: str = "/app/backups"
+    UPLOAD_DIR: str = "/app/uploads"
     SERVICE_TOKEN: str = "ainerwise_service_dev"
 
     # SP03 — Cebu legacy bridge (separate from user JWT and SERVICE_TOKEN)
     LEGACY_BRIDGE_CLIENT_ID: str = "cebu-legacy"
     LEGACY_BRIDGE_SECRET: str = "cebu_legacy_bridge_dev_change_me"
     LEGACY_BRIDGE_MAX_SKEW_SECONDS: int = 300
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
-        extra = "ignore"
 
 
 settings = Settings()

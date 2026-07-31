@@ -1,5 +1,5 @@
 {
-  "app_name": "AinerWise Procurement",
+  "app_name": "AISLOS Market",
   "tagline": "告诉供应商您的需求。",
   "common": {
     "submit": "提交",
@@ -67,6 +67,31 @@
     "wallet": "钱包",
     "me": "我的",
     "pings": "需求池"
+  },
+  "market": {
+    "search_placeholder": "搜索商品...",
+    "near_me": "附近（全部位置）",
+    "categories": "品类",
+    "seller_type": "卖家类型",
+    "all": "全部",
+    "individual": "个人",
+    "business": "企业",
+    "verified_only": "仅看已认证企业",
+    "products": "个商品",
+    "loading": "加载中...",
+    "near": "附近",
+    "could_not_load": "商品列表加载失败",
+    "no_products": "没有找到商品",
+    "post_request_instead": "改为发布需求",
+    "ad": "广告",
+    "buy_now": "立即购买",
+    "quote": "报价",
+    "load_more": "加载更多",
+    "sort_best": "最佳",
+    "sort_new": "最新",
+    "sort_popular": "热门",
+    "sort_price_asc": "价格 ↑",
+    "sort_price_desc": "价格 ↓"
   },
   "project": {
     "title": "AI 项目",

@@ -2,8 +2,6 @@
   <div>
     <!-- Hero Section -->
     <section class="bg-indigo-900 text-white py-20 lg:py-32 relative overflow-hidden">
-      <!-- Decorative background -->
-      <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
       <div class="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-indigo-900"></div>
 
       <div class="container mx-auto px-4 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
@@ -13,7 +11,7 @@
             <span class="text-indigo-300">Verified suppliers compete with offers.</span>
           </h1>
           <p class="text-lg lg:text-xl text-indigo-100 mb-8 max-w-2xl leading-relaxed">
-            A safer reverse marketplace with escrow protection, supplier verification, and side-by-side offer comparison. Designed for global procurement and fast sourcing.
+            A safer reverse marketplace with verified suppliers, milestone payment records, and side-by-side offer comparison. Designed for global procurement and fast sourcing.
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
             <UButton size="xl" color="white" variant="solid" to="/post-request" class="justify-center px-8 text-indigo-900 font-semibold shadow-lg hover:shadow-xl transition-shadow">
@@ -25,8 +23,8 @@
           </div>
 
           <div class="mt-10 flex items-center space-x-6 text-sm text-indigo-200">
-            <div class="flex items-center"><UIcon name="i-heroicons-shield-check" class="w-5 h-5 mr-2 text-green-400" /> Escrow Protected</div>
-            <div class="flex items-center"><UIcon name="i-heroicons-badge-check" class="w-5 h-5 mr-2 text-blue-400" /> Verified Suppliers</div>
+            <div class="flex items-center"><UIcon name="i-heroicons-shield-check" class="w-5 h-5 mr-2 text-green-400" /> Milestone Records</div>
+            <div class="flex items-center"><UIcon name="i-heroicons-check-badge" class="w-5 h-5 mr-2 text-blue-400" /> Verified Suppliers</div>
           </div>
         </div>
 
@@ -109,7 +107,7 @@
     <section class="py-20 bg-white">
       <div class="container mx-auto px-4">
         <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold text-slate-900 mb-4">How AinerWise Procurement Works</h2>
+          <h2 class="text-3xl font-bold text-slate-900 mb-4">How AISLOS Market Works</h2>
           <p class="text-lg text-slate-600 max-w-2xl mx-auto">The secure reverse marketplace that saves you time and protects your money.</p>
         </div>
 
@@ -142,18 +140,18 @@
 
           <div class="relative z-10 flex flex-col items-center text-center bg-white p-4">
             <div class="w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 shadow-sm border-4 border-white">
-              <UIcon name="i-heroicons-lock-closed" class="w-8 h-8" />
+              <UIcon name="i-heroicons-clipboard-document-check" class="w-8 h-8" />
             </div>
-            <h4 class="font-semibold text-slate-900 mb-2">4. Escrow Checkout</h4>
-            <p class="text-sm text-slate-600">Funds are held safely until you confirm delivery.</p>
+            <h4 class="font-semibold text-slate-900 mb-2">4. Award &amp; Order</h4>
+            <p class="text-sm text-slate-600">Award an offer — a milestone payment plan is recorded.</p>
           </div>
 
           <div class="relative z-10 flex flex-col items-center text-center bg-white p-4">
             <div class="w-16 h-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-4 shadow-sm border-4 border-white">
               <UIcon name="i-heroicons-check-badge" class="w-8 h-8" />
             </div>
-            <h4 class="font-semibold text-slate-900 mb-2">5. Confirm Delivery</h4>
-            <p class="text-sm text-slate-600">Inspect the items, click confirm, payout released.</p>
+            <h4 class="font-semibold text-slate-900 mb-2">5. Deliver &amp; Confirm</h4>
+            <p class="text-sm text-slate-600">Confirm each milestone as work is delivered — items become tracked assets.</p>
           </div>
         </div>
       </div>

@@ -24,7 +24,12 @@ class TelegramAdapter(ChannelAdapter):
     async def receive(self, payload: dict) -> NormalizedMessage | None:
         return self.normalize(payload)
 
-    async def send(self, external_thread_id: str, content: str) -> SendResult:
+    async def send(
+        self,
+        external_thread_id: str,
+        content: str,
+        metadata: dict | None = None,
+    ) -> SendResult:
         token = await self._bot_token()
         async with httpx.AsyncClient(timeout=10) as client:
             response = await client.post(

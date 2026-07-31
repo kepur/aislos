@@ -20,7 +20,7 @@
         </div>
         <h3 class="text-2xl font-bold text-slate-900 mb-3">I am a Buyer</h3>
         <p class="text-slate-600 mb-8 flex-grow">
-          I want to post procurement requests, receive competitive offers from verified suppliers, and pay securely via escrow.
+          I want to post procurement requests, receive competitive offers from verified suppliers, and manage payments through documented milestones.
         </p>
         <UButton color="blue" variant="soft" block size="lg" class="group-hover:bg-blue-600 group-hover:text-white transition-colors">
           Register as Buyer

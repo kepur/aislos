@@ -8,7 +8,7 @@ import uuid
 from datetime import date, timedelta
 
 from fastapi import APIRouter, HTTPException, Query
-from sqlalchemy import select
+from sqlalchemy import or_, select
 
 from app.api.deps import CurrentUser, DB
 from app.models.file import FileAsset
@@ -20,11 +20,14 @@ from app.models.lifecycle import (
     MonitoringPoint,
 )
 from app.models.notification import NotificationPreference
+from app.models.commerce import TradeCategorySchema
 from app.models.project import Project
+from app.models.region import Region
 from app.models.ticket import Ticket
 from app.schemas import lifecycle as ls
 from app.schemas.notification import NotificationPreferenceRead, NotificationPreferenceUpdate
-from app.schemas.ticket import TicketRead
+from app.schemas.ticket import TicketCustomerRead
+from app.services.project_access import require_customer_project_access
 
 router = APIRouter(prefix="/portal", tags=["portal-lifecycle"])
 
@@ -53,7 +56,36 @@ async def update_notification_preferences(data: NotificationPreferenceUpdate, db
     if pref is None:
         pref = NotificationPreference(user_id=user.id, company_id=user.company_id)
         db.add(pref)
-    for field, value in data.model_dump(exclude_unset=True).items():
+    values = data.model_dump(exclude_unset=True)
+    category_ids = values.get("supplier_category_ids_json")
+    if category_ids:
+        active_ids = set(
+            (
+                await db.execute(
+                    select(TradeCategorySchema.id).where(
+                        TradeCategorySchema.id.in_(category_ids),
+                        TradeCategorySchema.status == "active",
+                    )
+                )
+            ).scalars()
+        )
+        if active_ids != set(category_ids):
+            raise HTTPException(status_code=422, detail="Unknown or inactive supplier category")
+    region_ids = values.get("supplier_region_ids_json")
+    if region_ids:
+        active_ids = set(
+            (
+                await db.execute(
+                    select(Region.id).where(Region.id.in_(region_ids), Region.is_active.is_(True))
+                )
+            ).scalars()
+        )
+        if active_ids != set(region_ids):
+            raise HTTPException(status_code=422, detail="Unknown or inactive supplier region")
+    for field in ("supplier_category_ids_json", "supplier_region_ids_json"):
+        if field in values and values[field] is not None:
+            values[field] = [str(item) for item in values[field]]
+    for field, value in values.items():
         setattr(pref, field, value)
     await db.commit()
     await db.refresh(pref)
@@ -64,8 +96,7 @@ async def _owned_project(db, project_id: uuid.UUID, user) -> Project:
     project = await db.get(Project, project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    if not user.company_id or project.buyer_company_id != user.company_id:
-        raise HTTPException(status_code=403, detail="Not your project")
+    await require_customer_project_access(db, user, project)
     return project
 
 
@@ -75,12 +106,15 @@ async def project_amc(project_id: uuid.UUID, db: DB, user: CurrentUser):
     project = await _owned_project(db, project_id, user)
     result = await db.execute(
         select(AMCContract).where(
-            (AMCContract.project_id == project_id)
-            | (AMCContract.customer_id == project.buyer_company_id)
+            or_(AMCContract.workspace_id == project.workspace_id, AMCContract.workspace_id.is_(None)),
+            or_(
+                AMCContract.project_id == project_id,
+                AMCContract.customer_id == project.buyer_company_id,
+            ),
         ).order_by(AMCContract.created_at.desc())
     )
     items = list(result.scalars().all())
-    return {"items": [ls.AMCContractRead.model_validate(i) for i in items], "total": len(items)}
+    return {"items": [ls.AMCContractCustomerRead.model_validate(i) for i in items], "total": len(items)}
 
 
 @router.get("/projects/{project_id}/warranties")
@@ -89,12 +123,21 @@ async def project_warranties(project_id: uuid.UUID, db: DB, user: CurrentUser):
     project = await _owned_project(db, project_id, user)
     result = await db.execute(
         select(CustomerWarranty).where(
-            (CustomerWarranty.project_id == project_id)
-            | (CustomerWarranty.customer_id == project.buyer_company_id)
+            or_(
+                CustomerWarranty.workspace_id == project.workspace_id,
+                CustomerWarranty.workspace_id.is_(None),
+            ),
+            or_(
+                CustomerWarranty.project_id == project_id,
+                CustomerWarranty.customer_id == project.buyer_company_id,
+            ),
         ).order_by(CustomerWarranty.created_at.desc())
     )
     items = list(result.scalars().all())
-    return {"items": [ls.CustomerWarrantyRead.model_validate(i) for i in items], "total": len(items)}
+    return {
+        "items": [ls.CustomerWarrantyCustomerRead.model_validate(i) for i in items],
+        "total": len(items),
+    }
 
 
 @router.get("/projects/{project_id}/monitoring-points")
@@ -131,7 +174,7 @@ async def project_monitoring_points(project_id: uuid.UUID, db: DB, user: Current
             "calibration_due": calibration_due,
             "sites": list(sites.values()),
         },
-        "items": [ls.MonitoringPointRead.model_validate(p) for p in points],
+        "items": [ls.MonitoringPointCustomerRead.model_validate(p) for p in points],
     }
 
 
@@ -144,7 +187,9 @@ async def project_reports(project_id: uuid.UUID, db: DB, user: CurrentUser):
         select(CalibrationRecord).where(CalibrationRecord.project_id == project_id)
         .order_by(CalibrationRecord.calibration_date.desc())
     )
-    calibration_certificates = [ls.CalibrationRecordRead.model_validate(c) for c in cal_result.scalars().all()]
+    calibration_certificates = [
+        ls.CalibrationRecordCustomerRead.model_validate(c) for c in cal_result.scalars().all()
+    ]
 
     maint_result = await db.execute(
         select(MaintenanceSchedule).where(
@@ -152,7 +197,9 @@ async def project_reports(project_id: uuid.UUID, db: DB, user: CurrentUser):
             MaintenanceSchedule.status == "done",
         ).order_by(MaintenanceSchedule.due_date.desc())
     )
-    maintenance_certificates = [ls.MaintenanceScheduleRead.model_validate(m) for m in maint_result.scalars().all()]
+    maintenance_certificates = [
+        ls.MaintenanceScheduleCustomerRead.model_validate(m) for m in maint_result.scalars().all()
+    ]
 
     file_result = await db.execute(
         select(FileAsset).where(
@@ -195,7 +242,7 @@ async def project_tickets(project_id: uuid.UUID, db: DB, user: CurrentUser):
         ).order_by(Ticket.created_at.desc())
     )
     items = list(result.scalars().all())
-    return {"items": [TicketRead.model_validate(i) for i in items], "total": len(items)}
+    return {"items": [TicketCustomerRead.model_validate(i) for i in items], "total": len(items)}
 
 
 @router.get("/projects/{project_id}/workspace")

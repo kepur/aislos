@@ -2,6 +2,7 @@
   <div v-if="product">
     <NuxtLink to="products" class="text-sm text-primary-600 hover:underline">&larr; Back to Products</NuxtLink>
     <h1 class="admin-page-title mt-4 mb-6">Edit Product</h1>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <form class="lg:col-span-2 space-y-6" @submit.prevent="handleSubmit">
@@ -94,6 +95,7 @@
       </div>
     </div>
   </div>
+  <div v-else-if="error" class="text-center py-12 text-red-600">{{ error }}</div>
   <div v-else class="text-center py-12 text-gray-500">{{ $t('common.loading') }}</div>
 </template>
 
@@ -106,6 +108,7 @@ const product = ref<any>(null)
 const loading = ref(false)
 const statusLoading = ref(false)
 const categories = ref<any[]>([])
+const error = ref('')
 
 const form = reactive({
   name: '',
@@ -123,7 +126,7 @@ const form = reactive({
 onMounted(async () => {
   try {
     const [prod, catRes] = await Promise.all([
-      apiFetch<any>(`/products/${route.params.id}`),
+      apiFetch<any>(`/products/admin/${route.params.id}`),
       apiFetch<any>('/product-categories'),
     ])
     product.value = prod
@@ -141,11 +144,14 @@ onMounted(async () => {
       warranty_years: prod.warranty_years,
       service_available: prod.service_available || false,
     })
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Product could not be loaded'
+  }
 })
 
 async function handleSubmit() {
   loading.value = true
+  error.value = ''
   try {
     const payload: Record<string, any> = { ...form }
     if (!payload.category_id) payload.category_id = null
@@ -154,7 +160,7 @@ async function handleSubmit() {
       body: payload,
     })
   } catch (e: any) {
-    console.error('Update failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Product could not be updated'
   } finally {
     loading.value = false
   }
@@ -162,13 +168,14 @@ async function handleSubmit() {
 
 async function handleStatusChange(newStatus: string) {
   statusLoading.value = true
+  error.value = ''
   try {
     product.value = await apiFetch<any>(`/products/${route.params.id}/status`, {
       method: 'PATCH',
       body: { status: newStatus },
     })
   } catch (e: any) {
-    console.error('Status change failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Product status could not be changed'
   } finally {
     statusLoading.value = false
   }

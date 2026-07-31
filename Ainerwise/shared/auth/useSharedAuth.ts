@@ -31,6 +31,7 @@ function resetPortalAccess(clearManifest = false) {
   useState('portal-access-memberships').value = []
   useState('portal-active-workspace').value = null
   useState('portal-access-error').value = ''
+  useState('portal-access-status').value = null
   if (clearManifest) {
     useCookie<string | null>('ainerwise_active_portal').value = null
     useCookie<string | null>('ainerwise_active_workspace').value = null

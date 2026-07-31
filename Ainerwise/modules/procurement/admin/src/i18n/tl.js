@@ -55,7 +55,7 @@ export default {
   },
   login: {
     title: 'Admin Console',
-    subtitle: 'AinerWise Procurement Administration',
+    subtitle: 'AISLOS Market Administration',
     email: 'Email',
     password: 'Password',
     signIn: 'Mag-sign In',

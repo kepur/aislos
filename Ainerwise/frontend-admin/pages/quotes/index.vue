@@ -19,6 +19,7 @@
         </button>
       </div>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -146,6 +147,7 @@ const quotes = ref<any[]>([])
 const statusFilter = ref('')
 const showCreate = ref(false)
 const saving = ref(false)
+const error = ref('')
 
 const createForm = reactive({
   lead_id: '',
@@ -160,26 +162,30 @@ const createForm = reactive({
 })
 
 async function loadQuotes() {
+  error.value = ''
   const params = statusFilter.value ? `?status=${statusFilter.value}` : ''
   try {
     const res = await apiFetch<any>(`/quotes${params}`)
     quotes.value = res.items || []
-  } catch {
+  } catch (e: any) {
     quotes.value = []
+    error.value = e?.data?.detail || e?.message || 'Quotes could not be loaded'
   }
 }
 
 async function changeStatus(id: string, newStatus: string) {
+  error.value = ''
   try {
     await apiFetch(`/quotes/${id}/status`, { method: 'PATCH', body: { status: newStatus } })
     await loadQuotes()
   } catch (e: any) {
-    console.error('Status update failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Quote status could not be updated'
   }
 }
 
 async function createQuote() {
   saving.value = true
+  error.value = ''
   try {
     const body: any = {
       device_total: createForm.device_total,
@@ -197,13 +203,14 @@ async function createQuote() {
     showCreate.value = false
     await loadQuotes()
   } catch (e: any) {
-    console.error('Create quote failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Quote could not be created'
   } finally {
     saving.value = false
   }
 }
 
 async function downloadPdf(id: string) {
+  error.value = ''
   try {
     const { token } = useAuth()
     const baseUrl = useApiBase()
@@ -219,7 +226,7 @@ async function downloadPdf(id: string) {
     a.click()
     URL.revokeObjectURL(url)
   } catch (e: any) {
-    console.error('PDF download failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Quote PDF could not be downloaded'
   }
 }
 

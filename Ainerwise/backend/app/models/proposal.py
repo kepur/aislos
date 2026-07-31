@@ -14,6 +14,9 @@ class ProposalPlan(Base, UUIDMixin, TimestampMixin):
     """One of the four proposal tiers generated for a lead/project."""
     __tablename__ = "proposal_plans"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     lead_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("leads.id"), nullable=True
     )
@@ -55,6 +58,9 @@ class BOMItem(Base, UUIDMixin, TimestampMixin):
     """Individual line item in an editable BOM sheet."""
     __tablename__ = "bom_items"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     proposal_plan_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("proposal_plans.id"), nullable=False
     )

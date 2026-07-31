@@ -38,10 +38,21 @@ class Agent(Base, UUIDMixin, TimestampMixin):
 
 class AgentGrant(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "agent_grants"
-    __table_args__ = (UniqueConstraint("agent_id", "scope", name="uq_agent_grants_agent_scope"),)
+    __table_args__ = (
+        UniqueConstraint(
+            "agent_id",
+            "scope",
+            "workspace_id",
+            name="uq_agent_grants_agent_scope_workspace",
+            postgresql_nulls_not_distinct=True,
+        ),
+    )
 
     agent_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("agents.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id", ondelete="CASCADE"), nullable=True, index=True
     )
     scope: Mapped[str] = mapped_column(String(50), nullable=False)
     granted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
@@ -56,12 +67,17 @@ class AgentObjectGrant(Base, UUIDMixin, TimestampMixin):
     __table_args__ = (
         UniqueConstraint(
             "agent_id", "object_type", "object_id", "scope",
+            "workspace_id",
             name="uq_agent_object_grants_target_scope",
+            postgresql_nulls_not_distinct=True,
         ),
     )
 
     agent_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("agents.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id", ondelete="CASCADE"), nullable=True, index=True
     )
     object_type: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
     object_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, index=True)

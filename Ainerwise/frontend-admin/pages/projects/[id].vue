@@ -1,6 +1,7 @@
 <template>
   <div v-if="project">
     <NuxtLink to="/projects" class="text-sm text-primary-600 hover:underline">&larr; Back to Projects</NuxtLink>
+    <div v-if="actionError" class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ actionError }}</div>
 
     <div class="mt-4 flex items-center justify-between">
       <h1 class="admin-page-title">{{ project.title }}</h1>
@@ -274,6 +275,7 @@
       </div>
     </div>
   </div>
+  <div v-else-if="loadError" class="text-center py-12 text-red-600">{{ loadError }}</div>
   <div v-else class="text-center py-12 text-gray-500">Loading...</div>
 </template>
 
@@ -283,6 +285,8 @@ definePageMeta({ layout: 'default' })
 const route = useRoute()
 const { apiFetch } = useApi()
 const project = ref<any>(null)
+const loadError = ref('')
+const actionError = ref('')
 const notes = ref('')
 const statusLoading = ref(false)
 const notesLoading = ref(false)
@@ -346,7 +350,10 @@ onMounted(async () => {
   try {
     project.value = await apiFetch<any>(`/projects/${route.params.id}`)
     notes.value = project.value?.notes || ''
-  } catch {}
+  } catch (e: any) {
+    loadError.value = e?.data?.detail || e?.message || 'Project could not be loaded'
+    return
+  }
   loadPartners()
   loadDispatches()
   loadAgentGrants()
@@ -354,11 +361,13 @@ onMounted(async () => {
 
 async function loadPartners() {
   partnersLoading.value = true
+  assignError.value = null
   try {
     const res = await apiFetch<any>('/service-partners?verification_status=verified&limit=100')
     availablePartners.value = res.items || []
-  } catch {
+  } catch (e: any) {
     availablePartners.value = []
+    assignError.value = e?.data?.detail || e?.message || 'Verified partners could not be loaded'
   } finally {
     partnersLoading.value = false
   }
@@ -381,7 +390,6 @@ async function assignPartner() {
     assignForm.role = 'installer'
   } catch (e: any) {
     assignError.value = e?.data?.detail || e?.message || 'Failed to assign partner'
-    console.error('Assign partner failed:', e)
   } finally {
     assignLoading.value = false
   }
@@ -390,23 +398,26 @@ async function assignPartner() {
 async function removePartner(partnerId: string) {
   if (!partnerId) return
   removeLoading.value = partnerId
+  actionError.value = ''
   try {
     project.value = await apiFetch<any>(`/projects/${route.params.id}/team/${partnerId}`, {
       method: 'DELETE',
     })
   } catch (e: any) {
-    console.error('Remove partner failed:', e)
+    actionError.value = e?.data?.detail || e?.message || 'Failed to remove partner'
   } finally {
     removeLoading.value = null
   }
 }
 
 async function loadDispatches() {
+  dispatchError.value = null
   try {
     const response = await apiFetch<any>(`/projects/${route.params.id}/dispatches`)
     dispatches.value = response.items || []
-  } catch {
+  } catch (e: any) {
     dispatches.value = []
+    dispatchError.value = e?.data?.detail || e?.message || 'Dispatched tasks could not be loaded'
   }
 }
 
@@ -414,8 +425,9 @@ async function loadAgentGrants() {
   try {
     const response = await apiFetch<any>(`/admin/projects/${route.params.id}/agent-grants`)
     projectAgentGrants.value = response.items || []
-  } catch {
+  } catch (e: any) {
     projectAgentGrants.value = []
+    actionError.value = e?.data?.detail || e?.message || 'Project AI grants could not be loaded'
   }
 }
 
@@ -467,13 +479,14 @@ async function dispatchTask() {
 
 async function handleStatusChange(newStatus: string) {
   statusLoading.value = true
+  actionError.value = ''
   try {
     project.value = await apiFetch<any>(`/projects/${route.params.id}/status`, {
       method: 'PATCH',
       body: { status: newStatus },
     })
   } catch (e: any) {
-    console.error('Status update failed:', e)
+    actionError.value = e?.data?.detail || e?.message || 'Status update failed'
   } finally {
     statusLoading.value = false
   }
@@ -481,13 +494,14 @@ async function handleStatusChange(newStatus: string) {
 
 async function saveNotes() {
   notesLoading.value = true
+  actionError.value = ''
   try {
     project.value = await apiFetch<any>(`/projects/${route.params.id}/notes`, {
       method: 'PATCH',
       body: { notes: notes.value },
     })
   } catch (e: any) {
-    console.error('Notes update failed:', e)
+    actionError.value = e?.data?.detail || e?.message || 'Notes update failed'
   } finally {
     notesLoading.value = false
   }

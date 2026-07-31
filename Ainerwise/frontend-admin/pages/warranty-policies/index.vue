@@ -9,6 +9,7 @@
         + Add Policy
       </button>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <!-- Filters -->
     <div class="flex gap-3 mb-4">
@@ -159,6 +160,7 @@ const activeOnly = ref(false)
 const showModal = ref(false)
 const editingPolicy = ref<any>(null)
 const saving = ref(false)
+const error = ref('')
 
 const defaultForm = () => ({
   product_id: '',
@@ -176,6 +178,7 @@ const defaultForm = () => ({
 const form = reactive(defaultForm())
 
 async function load() {
+  error.value = ''
   const params = new URLSearchParams()
   params.set('skip', String(page.value * limit))
   params.set('limit', String(limit))
@@ -185,7 +188,9 @@ async function load() {
     const res = await apiFetch<any>(`/warranty-policies?${params}`)
     items.value = res.items || []
     total.value = res.total || 0
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Warranty policies could not be loaded'
+  }
 }
 
 function openCreate() {
@@ -211,13 +216,14 @@ function openEdit(policy: any) {
   showModal.value = true
 }
 
-function tryParseJson(str: string): any {
+function tryParseJson(str: string, label: string): any {
   if (!str.trim()) return null
-  try { return JSON.parse(str) } catch { return null }
+  try { return JSON.parse(str) } catch { throw new Error(`${label} must be valid JSON`) }
 }
 
 async function savePolicy() {
   saving.value = true
+  error.value = ''
   try {
     const body: Record<string, any> = {
       region: form.region || null,
@@ -226,8 +232,8 @@ async function savePolicy() {
       platform_support_months: form.platform_support_months,
       local_installation_warranty_months: form.local_installation_warranty_months,
       exclusions_text: form.exclusions_text || null,
-      spare_parts_policy_json: tryParseJson(form.spare_parts_json_str),
-      response_sla_json: tryParseJson(form.response_sla_json_str),
+      spare_parts_policy_json: tryParseJson(form.spare_parts_json_str, 'Spare parts policy'),
+      response_sla_json: tryParseJson(form.response_sla_json_str, 'Response SLA'),
     }
     if (form.product_id) body.product_id = form.product_id
     if (form.supplier_id) body.supplier_id = form.supplier_id
@@ -240,7 +246,7 @@ async function savePolicy() {
     showModal.value = false
     await load()
   } catch (e: any) {
-    console.error('Save policy failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Warranty policy could not be saved'
   } finally {
     saving.value = false
   }
@@ -248,10 +254,13 @@ async function savePolicy() {
 
 async function deletePolicy(id: string) {
   if (!confirm('Delete this warranty policy?')) return
+  error.value = ''
   try {
     await apiFetch(`/warranty-policies/${id}`, { method: 'DELETE' })
     await load()
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Warranty policy could not be deleted'
+  }
 }
 
 watch([page, regionFilter, activeOnly], () => load())

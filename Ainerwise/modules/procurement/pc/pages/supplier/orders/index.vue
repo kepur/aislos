@@ -59,7 +59,7 @@
           <span class="font-medium text-slate-900">{{ formatPrice(row.total_amount_minor, row.currency) }}</span>
         </template>
         <template #status-data="{ row }">
-          <UBadge :color="getStatusColor(row.status)" variant="subtle">{{ row.status }}</UBadge>
+          <UBadge :color="getStatusColor(row.status)" variant="subtle">{{ orderStatusLabel(row.status) }}</UBadge>
         </template>
         <template #actions-data="{ row }">
           <UButton size="xs" color="indigo" variant="soft" :to="`/supplier/orders/${row.id}`">Manage Delivery</UButton>
@@ -99,11 +99,11 @@ const statusOptions = [
   { label: 'All Statuses', value: '' },
   { label: 'Created', value: 'CREATED' },
   { label: 'Awaiting Payment', value: 'AWAITING_PAYMENT' },
-  { label: 'Paid in Escrow', value: 'PAID_IN_ESCROW' },
+  { label: 'Payment Recorded', value: 'PAID_IN_ESCROW' },
   { label: 'In Progress', value: 'IN_PROGRESS' },
   { label: 'Delivered', value: 'DELIVERED' },
-  { label: 'Accepted', value: 'ACCEPTED' },
-  { label: 'Payout Released', value: 'PAYOUT_RELEASED' },
+  { label: 'Completed', value: 'ACCEPTED' },
+  { label: 'Settled', value: 'PAYOUT_RELEASED' },
   { label: 'Disputed', value: 'DISPUTED' },
   { label: 'Canceled', value: 'CANCELED' },
 ]

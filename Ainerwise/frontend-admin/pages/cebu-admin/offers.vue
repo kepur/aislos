@@ -1,0 +1,2 @@
+<template><CebuAdminResourceTable title="Cebu Supplier Offers" endpoint="/admin/cebu/offers" :columns="columns" status-path="/admin/cebu/offers/{id}/status" :status-options="statuses" /></template>
+<script setup lang="ts">definePageMeta({layout:'default',middleware:['auth']});const columns=[{key:'procurement_request_id',label:'Request'},{key:'supplier_company_id',label:'Supplier'},{key:'price_minor',label:'Price Minor'},{key:'currency',label:'Currency'},{key:'status',label:'Status',badge:true}];const statuses=['draft','submitted','withdrawn','awarded','rejected']</script>

@@ -7,7 +7,7 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.procurement import ProcurementProjectFact
+from app.models.procurement import ProcurementProject, ProcurementProjectFact
 
 
 class ProcurementFactError(ValueError):
@@ -15,23 +15,27 @@ class ProcurementFactError(ValueError):
 
 
 async def list_facts(
-    db: AsyncSession, project_id: uuid.UUID
+    db: AsyncSession, project: ProcurementProject
 ) -> list[ProcurementProjectFact]:
     result = await db.execute(
         select(ProcurementProjectFact)
-        .where(ProcurementProjectFact.project_id == project_id)
+        .where(
+            ProcurementProjectFact.project_id == project.id,
+            ProcurementProjectFact.workspace_id == project.workspace_id,
+        )
         .order_by(ProcurementProjectFact.template_key)
     )
     return list(result.scalars().all())
 
 
 async def get_fact_for_project(
-    db: AsyncSession, project_id: uuid.UUID, fact_id: uuid.UUID
+    db: AsyncSession, project: ProcurementProject, fact_id: uuid.UUID
 ) -> ProcurementProjectFact | None:
     result = await db.execute(
         select(ProcurementProjectFact).where(
             ProcurementProjectFact.id == fact_id,
-            ProcurementProjectFact.project_id == project_id,
+            ProcurementProjectFact.project_id == project.id,
+            ProcurementProjectFact.workspace_id == project.workspace_id,
         )
     )
     return result.scalar_one_or_none()

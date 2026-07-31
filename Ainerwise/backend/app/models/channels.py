@@ -26,6 +26,9 @@ class ChannelThread(Base, UUIDMixin, TimestampMixin):
         {"schema": "channels"},
     )
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     account_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("channels.channel_accounts.id", ondelete="CASCADE"),

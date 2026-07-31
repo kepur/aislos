@@ -129,20 +129,22 @@
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
       <!-- Top Header -->
-      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10">
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-3 px-6 z-10">
         <div class="flex items-center gap-3 flex-1 min-w-0">
-          <UInput icon="i-heroicons-magnifying-glass" :placeholder="appStore.t('layout.searchBuyer')" class="w-full max-w-md hidden sm:block" />
+          <UInput icon="i-heroicons-magnifying-glass" size="lg" :placeholder="appStore.t('layout.searchBuyer')" class="w-full max-w-2xl hidden sm:block" />
         </div>
 
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4 flex-shrink-0">
           <ClientOnly>
-            <div class="hidden md:flex items-center space-x-2 border-r border-slate-200 pr-4 mr-2">
+            <div class="hidden lg:flex items-center space-x-2 border-r border-slate-200 pr-4 mr-2">
               <USelect v-model="appStore.language" :options="appStore.languageOptions" option-attribute="label" value-attribute="code" size="sm" class="w-36" @update:model-value="appStore.setLanguage" />
               <USelect v-model="appStore.currency" :options="appStore.currencyOptions" option-attribute="label" value-attribute="code" size="sm" class="w-36" @update:model-value="appStore.setCurrency" />
             </div>
           </ClientOnly>
+
+          <a :href="$config.public.aislosSiteUrl" class="hidden text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600 lg:inline">AinerWise 官网 ↗</a>
 
           <!-- Notification Bell -->
           <div class="relative" ref="notifRef">
@@ -227,7 +229,7 @@
       </header>
 
       <!-- Page Content -->
-      <main class="flex-1 overflow-y-auto bg-slate-50 p-6">
+      <main class="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 p-6">
         <slot />
       </main>
     </div>

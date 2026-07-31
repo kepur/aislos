@@ -8,6 +8,7 @@ class UserRole(str, enum.Enum):
     SALES_MANAGER = "sales_manager"
     PROJECT_MANAGER = "project_manager"
     FINANCE = "finance"
+    MARKETING_OPERATOR = "marketing_operator"
     # customers (frontend-h5; UI shows "Customer", backend keeps `buyer` = owner)
     BUYER = "buyer"
     CUSTOMER_USER = "customer_user"
@@ -22,7 +23,18 @@ class UserRole(str, enum.Enum):
 # Sensitive operations (settings, finance writes, awards) stay with these two
 # until real staff exist — granular staff permissions come with real hires.
 ADMIN_ROLES = {UserRole.SUPER_ADMIN, UserRole.ADMIN}
-STAFF_ROLES = ADMIN_ROLES | {UserRole.SALES_MANAGER, UserRole.PROJECT_MANAGER, UserRole.FINANCE}
+STAFF_ROLES = ADMIN_ROLES | {
+    UserRole.SALES_MANAGER,
+    UserRole.PROJECT_MANAGER,
+    UserRole.FINANCE,
+    UserRole.MARKETING_OPERATOR,
+}
 PARTNER_ROLES = {UserRole.SERVICE_PARTNER, UserRole.PARTNER_WORKER, UserRole.MAINTENANCE_WORKER}
 CUSTOMER_ROLES = {UserRole.BUYER, UserRole.CUSTOMER_USER}
+PUBLIC_REGISTRATION_ROLES = {
+    UserRole.BUYER,
+    UserRole.VENDOR,
+    UserRole.DEVELOPER,
+    UserRole.SERVICE_PARTNER,
+}
 ALL_ROLES = set(UserRole)

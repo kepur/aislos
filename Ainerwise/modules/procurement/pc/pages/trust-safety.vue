@@ -10,7 +10,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
             <h3 class="text-2xl font-bold text-slate-900 mb-4">KYB (Know Your Business) Verification</h3>
-            <p class="text-slate-600 mb-6">Every buyer and supplier on AinerWise Procurement undergoes rigorous identity verification, business registration checks, and sanctions screening before they can transact.</p>
+            <p class="text-slate-600 mb-6">Every buyer and supplier on AISLOS Market undergoes rigorous identity verification, business registration checks, and sanctions screening before they can transact.</p>
             <ul class="space-y-3">
               <li class="flex items-start">
                 <UIcon name="i-heroicons-check-circle" class="w-6 h-6 text-green-500 mr-2 shrink-0" />

@@ -45,6 +45,7 @@ def _bid_dict(bid: PartnerBid | None) -> dict | None:
         return None
     return {
         "id": str(bid.id),
+        "workspace_id": str(bid.workspace_id) if bid.workspace_id else None,
         "amount": float(bid.amount),
         "currency": bid.currency,
         "lead_time_days": bid.lead_time_days,
@@ -78,7 +79,11 @@ async def _invited_rfq(db: DB, partner_id: uuid.UUID, rfq_id: uuid.UUID) -> tupl
         await db.execute(
             select(RFQ, RFQInvitation)
             .join(RFQInvitation, RFQInvitation.rfq_id == RFQ.id)
-            .where(RFQ.id == rfq_id, RFQInvitation.partner_id == partner_id)
+            .where(
+                RFQ.id == rfq_id,
+                RFQInvitation.partner_id == partner_id,
+                RFQInvitation.workspace_id == RFQ.workspace_id,
+            )
         )
     ).first()
     if row is None:
@@ -86,11 +91,20 @@ async def _invited_rfq(db: DB, partner_id: uuid.UUID, rfq_id: uuid.UUID) -> tupl
     return row[0], row[1]
 
 
-async def _latest_bid(db: DB, partner_id: uuid.UUID, rfq_id: uuid.UUID) -> PartnerBid | None:
+async def _latest_bid(
+    db: DB,
+    partner_id: uuid.UUID,
+    rfq_id: uuid.UUID,
+    workspace_id: uuid.UUID | None,
+) -> PartnerBid | None:
     return (
         await db.execute(
             select(PartnerBid)
-            .where(PartnerBid.partner_id == partner_id, PartnerBid.rfq_id == rfq_id)
+            .where(
+                PartnerBid.partner_id == partner_id,
+                PartnerBid.rfq_id == rfq_id,
+                PartnerBid.workspace_id == workspace_id,
+            )
             .order_by(PartnerBid.created_at.desc())
             .limit(1)
         )
@@ -162,11 +176,20 @@ async def list_partner_rfqs(
     query = (
         select(RFQ, RFQInvitation)
         .join(RFQInvitation, RFQInvitation.rfq_id == RFQ.id)
-        .where(RFQInvitation.partner_id == partner.id)
+        .where(
+            RFQInvitation.partner_id == partner.id,
+            RFQInvitation.workspace_id == RFQ.workspace_id,
+        )
         .order_by(RFQInvitation.created_at.desc())
     )
-    count_query = select(func.count()).select_from(RFQInvitation).where(
-        RFQInvitation.partner_id == partner.id
+    count_query = (
+        select(func.count())
+        .select_from(RFQInvitation)
+        .join(RFQ, RFQ.id == RFQInvitation.rfq_id)
+        .where(
+            RFQInvitation.partner_id == partner.id,
+            RFQInvitation.workspace_id == RFQ.workspace_id,
+        )
     )
     if status:
         query = query.where(RFQInvitation.status == status)
@@ -175,7 +198,13 @@ async def list_partner_rfqs(
     rows = (await db.execute(query.offset(skip).limit(limit))).all()
     items = []
     for rfq, invitation in rows:
-        items.append(_rfq_dict(rfq, invitation, await _latest_bid(db, partner.id, rfq.id)))
+        items.append(
+            _rfq_dict(
+                rfq,
+                invitation,
+                await _latest_bid(db, partner.id, rfq.id, rfq.workspace_id),
+            )
+        )
     return {"items": items, "total": total}
 
 
@@ -187,7 +216,11 @@ async def get_partner_rfq(id: uuid.UUID, db: DB, user: ServicePartnerUser):
         invitation.status = "viewed"
         db.add(invitation)
         await db.commit()
-    return _rfq_dict(rfq, invitation, await _latest_bid(db, partner.id, rfq.id))
+    return _rfq_dict(
+        rfq,
+        invitation,
+        await _latest_bid(db, partner.id, rfq.id, rfq.workspace_id),
+    )
 
 
 @router.post("/rfqs/{id}/decline")
@@ -222,7 +255,7 @@ async def submit_partner_bid(id: uuid.UUID, data: PartnerBidCreate, db: DB, user
         raise HTTPException(status_code=409, detail=f"RFQ already {rfq.status}")
     if invitation.status == "declined":
         raise HTTPException(status_code=409, detail="Invitation was declined")
-    if await _latest_bid(db, partner.id, rfq.id):
+    if await _latest_bid(db, partner.id, rfq.id, rfq.workspace_id):
         raise HTTPException(status_code=409, detail="A bid has already been submitted")
     bid = await record_bid(
         db,

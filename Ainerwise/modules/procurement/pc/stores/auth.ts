@@ -142,7 +142,7 @@ export const useAuthStore = defineStore("auth", {
           this.logout();
         }
       } catch {
-        this.systemMode = { demo_mode: false, registration_enabled: true, app_name: "AinerWise Procurement", intent_max_attachments: 10 };
+        this.systemMode = { demo_mode: false, registration_enabled: true, app_name: "AISLOS Market", intent_max_attachments: 10 };
       }
     },
 

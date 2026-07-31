@@ -97,7 +97,7 @@
             <div class="flex-1">
               <div class="flex flex-wrap items-center justify-between gap-3">
                 <h4 class="font-bold text-yellow-950">Order #{{ shortId(order.id).toUpperCase() }}</h4>
-                <UBadge :color="statusColor(order.status)" variant="subtle">{{ order.status }}</UBadge>
+                <UBadge :color="statusColor(order.status)" variant="subtle">{{ orderStatusLabel(order.status) }}</UBadge>
               </div>
               <p class="mt-1 text-sm text-yellow-800">
                 {{ formatPrice(order.total_amount_minor, order.currency) }} · Created {{ formatDate(order.created_at) }}

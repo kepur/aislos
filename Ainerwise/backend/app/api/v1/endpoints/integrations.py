@@ -2,14 +2,16 @@
 from __future__ import annotations
 
 from typing import Any
+import uuid
 
 import httpx
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel, Field
 
 from app.api.deps import AdminUser, DB
 from app.models.settings import INTEGRATION_CATEGORIES
-from app.services import ai_agent, email
+from app.services import ai_agent
+from app.services.channel_gateway import send_channel_message
 from app.services.integrations import (
     get_config,
     get_setting,
@@ -17,6 +19,7 @@ from app.services.integrations import (
     telegram_credentials,
     upsert_config,
 )
+from app.services.rate_limit import redis_fixed_window_limited
 
 router = APIRouter(tags=["integrations"])
 
@@ -60,10 +63,18 @@ class SmtpTest(BaseModel):
 
 @router.post("/admin/integrations/smtp/test")
 async def test_smtp(data: SmtpTest, db: DB, admin: AdminUser):
-    return await email.send_email(
-        db, to=data.to, subject="AinerWise SMTP test",
-        body="This is a test email from your AinerWise admin integration settings.",
+    config = await get_config(db, "smtp")
+    if not config.get("_enabled"):
+        return {"sent": False, "reason": "smtp_disabled"}
+    status = await send_channel_message(
+        message_id=uuid.uuid4(),
+        channel="email",
+        external_thread_id=data.to,
+        content="This is a test email from your AinerWise admin integration settings.",
+        metadata={"subject": "AinerWise SMTP test", "source": "admin_integration_test"},
+        account_name="AinerWise Email",
     )
+    return {"sent": status == "sent", "status": status}
 
 
 @router.post("/admin/integrations/telegram/test")
@@ -81,6 +92,26 @@ async def test_telegram(db: DB, admin: AdminUser):
     except Exception as exc:  # noqa: BLE001
         return {"sent": False, "reason": str(exc)}
     return {"sent": True}
+
+
+class WhatsAppTest(BaseModel):
+    to: str = Field(min_length=7, max_length=21, pattern=r"^\+?[1-9]\d{6,19}$")
+
+
+@router.post("/admin/integrations/whatsapp/test")
+async def test_whatsapp(data: WhatsAppTest, db: DB, admin: AdminUser):
+    config = await get_config(db, "whatsapp")
+    if not config.get("_enabled"):
+        return {"sent": False, "reason": "whatsapp_disabled"}
+    status = await send_channel_message(
+        message_id=uuid.uuid4(),
+        channel="whatsapp",
+        external_thread_id=data.to.lstrip("+"),
+        content="AinerWise WhatsApp test",
+        metadata={"source": "admin_integration_test"},
+        account_name="AinerWise WhatsApp",
+    )
+    return {"sent": status == "sent", "status": status}
 
 
 @router.post("/admin/integrations/ai/test")
@@ -115,20 +146,38 @@ async def test_voice(db: DB, admin: AdminUser):
 # --- public: AI assistant for the facility assessment ----------------------
 
 class AssistantRequest(BaseModel):
-    category: str
-    messages: list[dict[str, str]]
-    collected: dict[str, Any] = {}
+    category: str = Field(min_length=1, max_length=80)
+    messages: list[dict[str, str]] = Field(default_factory=list, max_length=20)
+    collected: dict[str, Any] = Field(default_factory=dict)
 
 
 @router.post("/ai/assistant")
-async def ai_assistant(data: AssistantRequest, db: DB):
+async def ai_assistant(data: AssistantRequest, request: Request, db: DB):
     """Drive one assistant turn during the conversational intake.
 
     Returns {configured: false} when no AI is set up, so the frontend falls back
     to its scripted question flow with no regression.
     """
+    ip = request.client.host if request.client else "unknown"
+    if await redis_fixed_window_limited(
+        bucket="ai-assessment",
+        subject=ip,
+        limit=60,
+        window_seconds=3600,
+    ):
+        raise HTTPException(status_code=429, detail="AI assessment rate limit reached")
+    messages = [
+        {
+            "role": str(message.get("role") or "user")[:20],
+            "content": str(message.get("content") or "")[:2000],
+        }
+        for message in data.messages[-20:]
+    ]
     return await ai_agent.run_assistant(
-        db, category=data.category, messages=data.messages, collected=data.collected,
+        db,
+        category=data.category,
+        messages=messages,
+        collected=data.collected,
     )
 
 

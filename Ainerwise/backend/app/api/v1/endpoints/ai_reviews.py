@@ -127,10 +127,13 @@ async def get_conversation_messages(id: uuid.UUID, db: DB, admin: AdminUser):
     convo = await db.get(Conversation, id)
     if convo is None:
         raise HTTPException(status_code=404, detail="Conversation not found")
+    message_query = select(ConversationMessage).where(ConversationMessage.conversation_id == id)
+    if convo.workspace_id is not None:
+        message_query = message_query.where(ConversationMessage.workspace_id == convo.workspace_id)
+    else:
+        message_query = message_query.where(ConversationMessage.workspace_id.is_(None))
     result = await db.execute(
-        select(ConversationMessage)
-        .where(ConversationMessage.conversation_id == id)
-        .order_by(ConversationMessage.created_at)
+        message_query.order_by(ConversationMessage.created_at)
     )
     return {
         "conversation": ConversationRead.model_validate(convo),

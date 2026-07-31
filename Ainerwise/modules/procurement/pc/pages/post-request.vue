@@ -134,6 +134,18 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="md:col-span-1 space-y-6">
             <div class="space-y-1">
+              <label class="block text-sm font-medium text-slate-700">Delivery Country <span class="text-red-500">*</span></label>
+              <select
+                v-model="form.country"
+                class="w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              >
+                <option v-for="region in regionOptions" :key="region.code" :value="region.code">
+                  {{ region.name }} ({{ region.code }})
+                </option>
+              </select>
+            </div>
+
+            <div class="space-y-1">
               <label class="block text-sm font-medium text-slate-700">Delivery City/Area <span class="text-red-500">*</span></label>
               <div class="relative">
                 <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -163,8 +175,8 @@
           </div>
 
           <div class="md:col-span-2 bg-slate-100 rounded-xl relative overflow-hidden min-h-[300px] border border-slate-200 flex items-center justify-center">
-            <!-- Map Placeholder -->
-            <div class="absolute inset-0 opacity-50 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=Cebu+City,Philippines&zoom=11&size=800x400&maptype=roadmap')] bg-cover bg-center mix-blend-multiply"></div>
+            <!-- Map placeholder (offline grid — no external tiles) -->
+            <div class="absolute inset-0 opacity-60 bg-[linear-gradient(rgba(100,116,139,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(100,116,139,0.14)_1px,transparent_1px)] bg-[length:32px_32px]"></div>
 
             <!-- Radius overlay simulation -->
             <div class="absolute w-64 h-64 bg-indigo-500/20 rounded-full border border-indigo-500 flex items-center justify-center z-10 shadow-lg backdrop-blur-[1px]">
@@ -181,13 +193,13 @@
 
       <!-- Step 3: Payment -->
       <div v-if="step === 3" class="space-y-6 animate-fade-in">
-        <h2 class="text-2xl font-bold text-slate-900 mb-6">Payment & Escrow Authorization</h2>
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">Payment Terms</h2>
 
         <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-6 mb-6 flex items-start">
           <UIcon name="i-heroicons-shield-check" class="w-8 h-8 text-green-600 mr-4 flex-shrink-0" />
           <div>
-            <h4 class="font-bold text-indigo-900 mb-1">Escrow Protection Active</h4>
-            <p class="text-sm text-indigo-800">You will authorize funds now, but they will not be captured until you select a winning offer. Funds are only released to the supplier after you confirm delivery.</p>
+            <h4 class="font-bold text-indigo-900 mb-1">Milestone-Based Payments</h4>
+            <p class="text-sm text-indigo-800">No funds are charged now. After you select a winning offer, you agree a milestone payment plan with the supplier and pay them directly — confirming each milestone as work is delivered. AISLOS Market keeps the records; it never holds your money.</p>
           </div>
         </div>
 
@@ -234,7 +246,7 @@
             </div>
             <div>
               <div class="text-xs text-slate-500 uppercase font-semibold tracking-wider">Location</div>
-              <div class="font-medium text-slate-900">{{ form.location || 'Mandaue City, Cebu' }}</div>
+              <div class="font-medium text-slate-900">{{ form.location || '—' }}<span v-if="form.country" class="text-slate-400">, {{ form.country }}</span></div>
             </div>
             <div>
               <div class="text-xs text-slate-500 uppercase font-semibold tracking-wider">Radius</div>
@@ -292,6 +304,7 @@ definePageMeta({
 const router = useRouter()
 const config = useRuntimeConfig()
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const intentStore = useIntentStore()
 const apiFetch = useApiFetch()
 const maxAttachments = computed(() => Math.max(0, Number(authStore.systemMode?.intent_max_attachments ?? 10)))
@@ -317,14 +330,34 @@ const form = ref({
   budgetMin: null,
   budgetMax: null,
   description: '',
-  location: 'Cebu City',
+  location: '',
+  country: '',
   radius: 25,
   attachments: [] as string[],
 })
 
+// Admin-managed regions (system-mode ← localization config); RS fallback.
+const regionOptions = computed(() => {
+  const regions = (authStore.systemMode as any)?.regions
+  if (Array.isArray(regions) && regions.length) {
+    return regions.map((region: any) => ({
+      code: String(region.code || '').toUpperCase(),
+      name: region.name || region.label || region.code,
+    }))
+  }
+  return [{ code: 'RS', name: 'Serbia' }]
+})
+
+watch(regionOptions, (options) => {
+  if (!form.value.country && options.length) form.value.country = options[0].code
+}, { immediate: true })
+
 onMounted(async () => {
   if (!authStore.systemMode) {
     await authStore.fetchSystemMode()
+  }
+  if (!form.value.country && regionOptions.value.length) {
+    form.value.country = regionOptions.value[0].code
   }
   try {
     const data = await $fetch<Array<{ id: string; name: string }>>(`${config.public.apiBase}/categories`)
@@ -401,10 +434,10 @@ const submit = async () => {
       unit: form.value.unit || 'piece',
       budget_min_minor: form.value.budgetMin ? Number(form.value.budgetMin) * 100 : undefined,
       budget_max_minor: form.value.budgetMax ? Number(form.value.budgetMax) * 100 : undefined,
-      currency: 'PHP',
+      currency: appStore.currency || 'EUR',
       notes: form.value.description || undefined,
       city: form.value.location || undefined,
-      country: 'PH',
+      country: form.value.country || 'RS',
       radius_km: Number(form.value.radius || 25),
       attachments: form.value.attachments,
       expires_at: expiresAt.toISOString(),

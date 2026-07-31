@@ -1,6 +1,10 @@
 <template>
   <div>
     <h1 class="admin-page-title mb-6">{{ $t('admin.vendors') }}</h1>
+    <div v-if="loadError" class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {{ loadError }}
+      <button class="ml-2 font-semibold underline" @click="loadVendors">Retry</button>
+    </div>
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
         <thead>
@@ -36,11 +40,17 @@ definePageMeta({ layout: 'default' })
 
 const { apiFetch } = useApi()
 const vendors = ref<any[]>([])
+const loadError = ref('')
 
-onMounted(async () => {
+async function loadVendors() {
+  loadError.value = ''
   try {
     const res = await apiFetch<any>('/vendors')
     vendors.value = res.items || res || []
-  } catch {}
-})
+  } catch (e: any) {
+    loadError.value = e?.data?.detail || e?.message || 'Unable to load vendors.'
+  }
+}
+
+onMounted(loadVendors)
 </script>

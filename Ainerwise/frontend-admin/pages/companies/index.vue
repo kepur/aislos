@@ -12,6 +12,10 @@
         <option value="service_partner">Service Partner</option>
       </select>
     </div>
+    <div v-if="loadError" class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {{ loadError }}
+      <button class="ml-2 font-semibold underline" @click="loadData">Retry</button>
+    </div>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -55,17 +59,21 @@ const companies = ref<any[]>([])
 const total = ref(0)
 const skip = ref(0)
 const typeFilter = ref('')
+const loadError = ref('')
 
 onMounted(loadData)
 
 async function loadData() {
+  loadError.value = ''
   try {
     let url = `/companies?skip=${skip.value}&limit=20`
     if (typeFilter.value) url += `&type=${typeFilter.value}`
     const res = await apiFetch<any>(url)
     companies.value = res.items || []
     total.value = res.total || 0
-  } catch {}
+  } catch (e: any) {
+    loadError.value = e?.data?.detail || e?.message || 'Unable to load companies.'
+  }
 }
 
 function prevPage() { skip.value = Math.max(0, skip.value - 20); loadData() }

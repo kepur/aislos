@@ -333,7 +333,8 @@ def test_e2e_freeze_gates_enforced():
                 json={},
                 headers=auth(buyer, "aislos"),
             )
-            assert freeze.status_code in (400, 404)
+            assert freeze.status_code == 404
+            assert freeze.json()["detail"] == "No BOQ version for project"
 
     asyncio.run(_run())
 
@@ -400,6 +401,8 @@ def test_e2e_commercial_snapshot_immutable_and_no_leak():
             terms["quote_expiry"].replace("Z", "+00:00")
         )
         async with async_session_factory() as db:
+            from app.services.portal_access import get_default_workspace
+
             policy = (
                 await db.execute(
                     select(PortalPolicy).where(
@@ -408,6 +411,8 @@ def test_e2e_commercial_snapshot_immutable_and_no_leak():
                     )
                 )
             ).scalar_one()
+            workspace = await get_default_workspace(db)
+            assert workspace is not None
             user = User(
                 email=f"snap-{uuid.uuid4().hex[:8]}@t.local",
                 password_hash=hash_password("x"),
@@ -418,6 +423,7 @@ def test_e2e_commercial_snapshot_immutable_and_no_leak():
             db.add(user)
             await db.flush()
             project = ProcurementProject(
+                workspace_id=workspace.id,
                 owner_user_id=user.id,
                 portal_key="aislos",
                 portal_policy_id=policy.id,
@@ -429,10 +435,16 @@ def test_e2e_commercial_snapshot_immutable_and_no_leak():
             )
             db.add(project)
             await db.flush()
-            boq = BoqVersion(project_id=project.id, version=1, status="frozen")
+            boq = BoqVersion(
+                workspace_id=workspace.id,
+                project_id=project.id,
+                version=1,
+                status="frozen",
+            )
             db.add(boq)
             await db.flush()
             pkg = ProcurementPackage(
+                workspace_id=workspace.id,
                 project_id=project.id,
                 boq_version_id=boq.id,
                 title="P",

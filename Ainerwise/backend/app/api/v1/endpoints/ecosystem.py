@@ -30,18 +30,20 @@ from app.services.ecosystem import (
     resubmit_marketplace_listing,
     store_order_dict,
     update_store_order_status,
+    require_agent_install_manager,
 )
+from app.services.portal_access import resolve_workspace_scope
 
 router = APIRouter(tags=["ecosystem portals"])
 
 
-async def _order_with_items(db: DB, order: StoreOrder) -> dict:
+async def _order_with_items(db: DB, order: StoreOrder, *, include_internal: bool = False) -> dict:
     items = (
         await db.execute(
             select(StoreOrderItem).where(StoreOrderItem.order_id == order.id).order_by(StoreOrderItem.created_at)
         )
     ).scalars().all()
-    return store_order_dict(order, list(items))
+    return store_order_dict(order, list(items), include_internal=include_internal)
 
 
 @router.get("/store/catalog")
@@ -91,7 +93,11 @@ async def admin_store_orders(db: DB, admin: AdminUser, order_status: str | None 
     if order_status:
         query = query.where(StoreOrder.status == order_status)
     orders = (await db.execute(query.order_by(StoreOrder.created_at.desc()))).scalars().all()
-    return {"items": [await _order_with_items(db, order) for order in orders]}
+    return {
+        "items": [
+            await _order_with_items(db, order, include_internal=True) for order in orders
+        ]
+    }
 
 
 @router.patch("/admin/store/orders/{order_id}/status")
@@ -112,7 +118,7 @@ async def admin_update_store_order(
         before={"status": before},
         after={"status": order.status},
     )
-    return await _order_with_items(db, order)
+    return await _order_with_items(db, order, include_internal=True)
 
 
 @router.get("/marketplace/listings")
@@ -149,27 +155,66 @@ async def install_listing(
     listing = await db.get(MarketplaceListing, listing_id)
     if listing is None:
         raise HTTPException(status_code=404, detail="Marketplace Agent not found")
-    installation = await install_marketplace_agent(
-        db, listing=listing, user=current_user, config_json=data.config_json
-    )
+    try:
+        workspace_id = await resolve_workspace_scope(
+            db,
+            user_id=current_user.id,
+            requested_workspace_id=data.workspace_id,
+        )
+        if workspace_id is None:
+            raise PermissionError("Active Workspace membership required")
+        installation = await install_marketplace_agent(
+            db,
+            listing=listing,
+            user=current_user,
+            workspace_id=workspace_id,
+            config_json=data.config_json,
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from None
     await log_action(
         db,
         actor_user_id=current_user.id,
         action="marketplace_agent_installed",
         entity_type="agent_installation",
         entity_id=installation.id,
-        after={"listing_id": str(listing.id), "agent_id": str(installation.agent_id)},
+        after={
+            "listing_id": str(listing.id),
+            "agent_id": str(installation.agent_id),
+            "workspace_id": str(installation.workspace_id),
+        },
     )
     return installation_dict(installation, listing)
 
 
 @router.get("/marketplace/installations/my")
-async def my_installations(db: DB, current_user: CurrentUser):
+async def my_installations(
+    db: DB,
+    current_user: CurrentUser,
+    workspace_id: uuid.UUID | None = None,
+):
+    try:
+        resolved_workspace_id = await resolve_workspace_scope(
+            db,
+            user_id=current_user.id,
+            requested_workspace_id=workspace_id,
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from None
+    if resolved_workspace_id is None:
+        raise HTTPException(status_code=403, detail="Active Workspace membership required")
     rows = (
         await db.execute(
             select(AgentInstallation, MarketplaceListing)
             .join(MarketplaceListing, MarketplaceListing.id == AgentInstallation.listing_id)
-            .where(AgentInstallation.installed_by == current_user.id)
+            .where(
+                AgentInstallation.installed_by == current_user.id,
+                AgentInstallation.workspace_id == resolved_workspace_id,
+            )
             .order_by(AgentInstallation.installed_at.desc())
         )
     ).all()
@@ -181,6 +226,14 @@ async def uninstall_agent(installation_id: uuid.UUID, db: DB, current_user: Curr
     installation = await db.get(AgentInstallation, installation_id)
     if installation is None or installation.installed_by != current_user.id:
         raise HTTPException(status_code=404, detail="Installation not found")
+    try:
+        await require_agent_install_manager(
+            db,
+            user_id=current_user.id,
+            workspace_id=installation.workspace_id,
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
     installation.status = "uninstalled"
     installation.uninstalled_at = datetime.now(timezone.utc)
     db.add(installation)

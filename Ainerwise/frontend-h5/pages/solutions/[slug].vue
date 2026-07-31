@@ -123,9 +123,15 @@
       </div>
     </div>
 
-    <div v-else class="text-center py-20 text-slate-400">
-      <div class="text-4xl mb-3">🔍</div>
+    <div v-else-if="loading" class="text-center py-20 text-slate-400">
       <p class="text-sm">Loading solution details...</p>
+    </div>
+    <div v-else-if="error" class="rounded-xl border border-red-100 bg-red-50 p-5 text-center text-xs text-red-700">
+      <p>{{ error }}</p>
+      <button class="mt-3 rounded-full bg-red-600 px-4 py-2 font-semibold text-white" @click="loadSolution">Retry</button>
+    </div>
+    <div v-else class="rounded-xl border border-slate-100 bg-white p-8 text-center text-sm text-slate-400">
+      This solution is not available.
     </div>
   </div>
 </template>
@@ -133,16 +139,25 @@
 <script setup lang="ts">
 const route = useRoute()
 const { apiFetch } = useApi()
-const { demoSolutions } = useDemoCatalog()
-const solution = ref<any>(demoSolutions.find((item) => item.slug === route.params.slug) || null)
+const solution = ref<any>(null)
+const loading = ref(true)
+const error = ref('')
 
-onMounted(async () => {
+async function loadSolution() {
+  loading.value = true
+  error.value = ''
   try {
     const res = await apiFetch<any>(`/solutions/${route.params.slug}`)
     solution.value = res
-  } catch {}
-  if (!solution.value) {
-    solution.value = demoSolutions.find((item) => item.slug === route.params.slug)
+  } catch (e: any) {
+    solution.value = null
+    if (e?.response?.status !== 404) {
+      error.value = e?.data?.detail || e?.message || 'Unable to load this solution.'
+    }
+  } finally {
+    loading.value = false
   }
-})
+}
+
+onMounted(loadSolution)
 </script>

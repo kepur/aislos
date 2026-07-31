@@ -23,6 +23,7 @@ from sqlalchemy import desc, or_, select
 
 from app.api.deps import DB, AdminUser
 from app.core.config import settings
+from app.core.product_catalog import PUBLIC_PRODUCT_STATUSES
 from app.models.ai import Conversation, ConversationMessage
 from app.models.lead import Lead
 from app.models.lifecycle import InventoryItem, StockMovement
@@ -30,8 +31,10 @@ from app.models.payment import LedgerEntry
 from app.models.product import Product
 from app.models.showroom import KioskDevice, ShowroomOrder, ShowroomSession, Store
 from app.models.agent import Agent
+from app.models.portal_access import Workspace
 from app.services.agent_runtime import AgentAuthorizationError, require_agent
 from app.services.audit import log_action
+from app.services.portal_access import get_default_workspace
 
 router = APIRouter(prefix="/showroom", tags=["showroom"])
 admin_router = APIRouter(prefix="/admin/showroom", tags=["showroom-admin"])
@@ -40,8 +43,6 @@ admin_router = APIRouter(prefix="/admin/showroom", tags=["showroom-admin"])
 AI_DISCLOSURE = "You are talking to an AI assistant."
 
 KIOSK_SCOPES = ("product_data",)
-PUBLIC_PRODUCT_STATUSES_EXCLUDED = ("draft", "pending", "archived")
-
 REALTIME_TOOLS = [
     {
         "type": "function",
@@ -125,6 +126,18 @@ async def _gate(db, device: KioskDevice, *extra_scopes: str) -> Agent:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
 
 
+async def _device_workspace_id(db, device: KioskDevice) -> uuid.UUID:
+    if device.workspace_id is not None:
+        return device.workspace_id
+    store = await db.get(Store, device.store_id)
+    if store is not None and store.workspace_id is not None:
+        return store.workspace_id
+    workspace = await get_default_workspace(db)
+    if workspace is None or workspace.status != "active":
+        raise HTTPException(status_code=503, detail="Showroom Workspace is unavailable")
+    return workspace.id
+
+
 def _product_card(p: Product) -> dict:
     return {
         "id": str(p.id),
@@ -177,13 +190,16 @@ class SessionStart(BaseModel):
 async def start_session(data: SessionStart, db: DB, x_kiosk_token: str | None = Header(default=None)):
     device = await _get_device(db, x_kiosk_token)
     await _gate(db, device)
+    workspace_id = await _device_workspace_id(db, device)
     conversation = Conversation(
+        workspace_id=workspace_id,
         channel="showroom", lang=data.lang or device.default_lang,
         meta_json={"device_id": str(device.id), "agent_slug": device.agent_slug},
     )
     db.add(conversation)
     await db.flush()
     session = ShowroomSession(
+        workspace_id=workspace_id,
         device_id=device.id, conversation_id=conversation.id,
         lang=data.lang or device.default_lang,
         started_at=datetime.now(timezone.utc), products_viewed_json=[],
@@ -224,6 +240,9 @@ async def _own_session(db, device: KioskDevice, session_id: uuid.UUID) -> Showro
     ).scalar_one_or_none()
     if session is None or session.device_id != device.id:
         raise HTTPException(status_code=404, detail="Session not found for this device")
+    device_workspace_id = await _device_workspace_id(db, device)
+    if session.workspace_id is not None and session.workspace_id != device_workspace_id:
+        raise HTTPException(status_code=409, detail="Session and Device use different Workspaces")
     return session
 
 
@@ -247,6 +266,7 @@ async def log_transcript(session_id: uuid.UUID, data: TranscriptTurn, db: DB,
     device = await _get_device(db, x_kiosk_token)
     session = await _own_session(db, device, session_id)
     message = ConversationMessage(
+        workspace_id=session.workspace_id,
         conversation_id=session.conversation_id, role=data.role, content=data.content
     )
     db.add(message)
@@ -259,7 +279,7 @@ async def search_products(db: DB, q: str = "", limit: int = 8,
                           x_kiosk_token: str | None = Header(default=None)):
     device = await _get_device(db, x_kiosk_token)
     await _gate(db, device)
-    stmt = select(Product).where(Product.status.notin_(PUBLIC_PRODUCT_STATUSES_EXCLUDED))
+    stmt = select(Product).where(Product.status.in_(PUBLIC_PRODUCT_STATUSES))
     if q.strip():
         like = f"%{q.strip()}%"
         stmt = stmt.where(or_(
@@ -282,7 +302,12 @@ async def compare_products(data: CompareRequest, db: DB,
     device = await _get_device(db, x_kiosk_token)
     await _gate(db, device)
     products = (
-        await db.execute(select(Product).where(Product.id.in_(data.product_ids)))
+        await db.execute(
+            select(Product).where(
+                Product.id.in_(data.product_ids),
+                Product.status.in_(PUBLIC_PRODUCT_STATUSES),
+            )
+        )
     ).scalars().all()
     if len(products) < 2:
         raise HTTPException(status_code=404, detail="Products not found")
@@ -308,6 +333,16 @@ async def check_stock(product_id: uuid.UUID, db: DB,
                       x_kiosk_token: str | None = Header(default=None)):
     device = await _get_device(db, x_kiosk_token)
     await _gate(db, device)
+    product = (
+        await db.execute(
+            select(Product).where(
+                Product.id == product_id,
+                Product.status.in_(PUBLIC_PRODUCT_STATUSES),
+            )
+        )
+    ).scalar_one_or_none()
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
     items = (
         await db.execute(select(InventoryItem).where(InventoryItem.product_id == product_id))
     ).scalars().all()
@@ -342,7 +377,10 @@ async def create_showroom_order(data: OrderCreate, db: DB,
     products = {
         str(p.id): p for p in (
             await db.execute(
-                select(Product).where(Product.id.in_([i.product_id for i in data.items]))
+                select(Product).where(
+                    Product.id.in_([i.product_id for i in data.items]),
+                    Product.status.in_(PUBLIC_PRODUCT_STATUSES),
+                )
             )
         ).scalars().all()
     }
@@ -358,6 +396,7 @@ async def create_showroom_order(data: OrderCreate, db: DB,
         })
         total += unit_price * item.qty
     order = ShowroomOrder(
+        workspace_id=session.workspace_id or await _device_workspace_id(db, device),
         session_id=session.id, store_id=device.store_id, items_json=items_json,
         total=total, currency="EUR", status="draft",
         pickup_code=_new_pickup_code(), notes=data.notes,
@@ -389,7 +428,9 @@ async def create_showroom_lead(data: LeadCreate, db: DB,
     device = await _get_device(db, x_kiosk_token)
     await _gate(db, device, "customer_data")
     session = await _own_session(db, device, data.session_id)
+    workspace_id = session.workspace_id or await _device_workspace_id(db, device)
     lead = Lead(
+        workspace_id=workspace_id,
         contact_name=data.contact_name, contact_phone=data.contact_phone,
         contact_email=data.contact_email, description=data.description,
         budget_range=data.budget_range, project_type=data.project_type,
@@ -400,8 +441,15 @@ async def create_showroom_lead(data: LeadCreate, db: DB,
     db.add(lead)
     await db.flush()
     session.lead_id = lead.id
+    session.workspace_id = workspace_id
     session.outcome = session.outcome or "lead"
     db.add(session)
+    if session.conversation_id is not None:
+        conversation = await db.get(Conversation, session.conversation_id)
+        if conversation is not None:
+            conversation.workspace_id = workspace_id
+            conversation.lead_id = lead.id
+            db.add(conversation)
     await db.commit()
     return {"id": str(lead.id), "status": lead.status}
 
@@ -527,7 +575,7 @@ async def realtime_tool_call(
     if data.name == "search_products":
         query = str(args.get("query") or "").strip()[:120]
         limit = min(max(int(args.get("limit") or 6), 1), 12)
-        stmt = select(Product).where(Product.status.notin_(PUBLIC_PRODUCT_STATUSES_EXCLUDED))
+        stmt = select(Product).where(Product.status.in_(PUBLIC_PRODUCT_STATUSES))
         if query:
             like = f"%{query}%"
             stmt = stmt.where(or_(
@@ -546,7 +594,16 @@ async def realtime_tool_call(
             raise HTTPException(status_code=400, detail="Invalid product IDs") from None
         if len(ids) < 2:
             raise HTTPException(status_code=400, detail="At least two product IDs are required")
-        products = (await db.execute(select(Product).where(Product.id.in_(ids)))).scalars().all()
+        products = (
+            await db.execute(
+                select(Product).where(
+                    Product.id.in_(ids),
+                    Product.status.in_(PUBLIC_PRODUCT_STATUSES),
+                )
+            )
+        ).scalars().all()
+        if len(products) != len(set(ids)):
+            raise HTTPException(status_code=404, detail="Products not found")
         spec_keys = list(dict.fromkeys(
             key for product in products for key in (product.specs_json or {})
         ))
@@ -564,6 +621,16 @@ async def realtime_tool_call(
             product_id = uuid.UUID(str(args.get("product_id") or ""))
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid product ID") from None
+        product = (
+            await db.execute(
+                select(Product).where(
+                    Product.id == product_id,
+                    Product.status.in_(PUBLIC_PRODUCT_STATUSES),
+                )
+            )
+        ).scalar_one_or_none()
+        if product is None:
+            raise HTTPException(status_code=404, detail="Product not found")
         items = (
             await db.execute(select(InventoryItem).where(InventoryItem.product_id == product_id))
         ).scalars().all()
@@ -599,6 +666,7 @@ async def kiosk_chat(data: KioskChat, db: DB,
     await _gate(db, device)
     session = await _own_session(db, device, data.session_id)
     db.add(ConversationMessage(
+        workspace_id=session.workspace_id,
         conversation_id=session.conversation_id, role="user", content=data.message
     ))
     answer, configured = None, False
@@ -628,7 +696,7 @@ async def kiosk_chat(data: KioskChat, db: DB,
         products = (
             await db.execute(
                 select(Product)
-                .where(Product.status.notin_(PUBLIC_PRODUCT_STATUSES_EXCLUDED))
+                .where(Product.status.in_(PUBLIC_PRODUCT_STATUSES))
                 .where(or_(Product.name.ilike(like), Product.description.ilike(like)))
                 .limit(4)
             )
@@ -636,6 +704,7 @@ async def kiosk_chat(data: KioskChat, db: DB,
         fallback_products = [_product_card(p) for p in products]
     if answer:
         db.add(ConversationMessage(
+            workspace_id=session.workspace_id,
             conversation_id=session.conversation_id, role="assistant", content=answer
         ))
     await db.commit()
@@ -649,6 +718,7 @@ async def kiosk_chat(data: KioskChat, db: DB,
 # ---------------------------------------------------------------------------
 
 class StoreCreate(BaseModel):
+    workspace_id: uuid.UUID | None = None
     name: str = Field(min_length=1, max_length=255)
     address: str | None = None
     city: str | None = None
@@ -668,7 +738,8 @@ class StoreUpdate(BaseModel):
 async def list_stores(db: DB, admin: AdminUser):
     stores = (await db.execute(select(Store).order_by(Store.created_at))).scalars().all()
     return {"items": [
-        {"id": str(s.id), "name": s.name, "address": s.address, "city": s.city,
+        {"id": str(s.id), "workspace_id": str(s.workspace_id) if s.workspace_id else None,
+         "name": s.name, "address": s.address, "city": s.city,
          "country": s.country, "status": s.status}
         for s in stores
     ]}
@@ -676,12 +747,21 @@ async def list_stores(db: DB, admin: AdminUser):
 
 @admin_router.post("/stores", status_code=201)
 async def create_store(data: StoreCreate, db: DB, admin: AdminUser):
-    store = Store(**data.model_dump())
+    workspace = (
+        await db.get(Workspace, data.workspace_id)
+        if data.workspace_id is not None
+        else await get_default_workspace(db)
+    )
+    if workspace is None or workspace.status != "active":
+        raise HTTPException(status_code=400, detail="Active Showroom Workspace is required")
+    store = Store(**data.model_dump(exclude={"workspace_id"}), workspace_id=workspace.id)
     db.add(store)
     await db.flush()
     await log_action(db, actor_user_id=admin.id, action="store_create",
-                     entity_type="store", entity_id=store.id, after=data.model_dump())
-    return {"id": str(store.id), "name": store.name, "status": store.status}
+                     entity_type="store", entity_id=store.id,
+                     after={**data.model_dump(mode="json"), "workspace_id": str(workspace.id)})
+    return {"id": str(store.id), "workspace_id": str(store.workspace_id),
+            "name": store.name, "status": store.status}
 
 
 @admin_router.patch("/stores/{store_id}")
@@ -713,7 +793,8 @@ class DeviceUpdate(BaseModel):
 
 
 def _device_dict(d: KioskDevice) -> dict:
-    return {"id": str(d.id), "store_id": str(d.store_id), "name": d.name,
+    return {"id": str(d.id), "workspace_id": str(d.workspace_id) if d.workspace_id else None,
+            "store_id": str(d.store_id), "name": d.name,
             "agent_slug": d.agent_slug, "default_lang": d.default_lang,
             "voice_mode": d.voice_mode, "status": d.status,
             "last_seen_at": d.last_seen_at.isoformat() if d.last_seen_at else None}
@@ -732,8 +813,12 @@ async def create_device(data: DeviceCreate, db: DB, admin: AdminUser):
     ).scalar_one_or_none()
     if agent is None:
         raise HTTPException(status_code=400, detail=f"Agent '{data.agent_slug}' is not registered")
+    store = await db.get(Store, data.store_id)
+    if store is None:
+        raise HTTPException(status_code=404, detail="Store not found")
     token = secrets.token_urlsafe(32)
     device = KioskDevice(
+        workspace_id=store.workspace_id,
         store_id=data.store_id, name=data.name, agent_slug=data.agent_slug,
         default_lang=data.default_lang, voice_mode=data.voice_mode,
         device_token_hash=_hash_token(token),
@@ -784,7 +869,8 @@ async def list_sessions(db: DB, admin: AdminUser, limit: int = 50):
         )
     ).scalars().all()
     return {"items": [
-        {"id": str(s.id), "device_id": str(s.device_id), "lang": s.lang,
+        {"id": str(s.id), "workspace_id": str(s.workspace_id) if s.workspace_id else None,
+         "device_id": str(s.device_id), "lang": s.lang,
          "started_at": s.started_at.isoformat() if s.started_at else None,
          "ended_at": s.ended_at.isoformat() if s.ended_at else None,
          "need_category": s.need_category,
@@ -804,7 +890,8 @@ async def list_orders(db: DB, admin: AdminUser, status: str | None = None, limit
         stmt = stmt.where(ShowroomOrder.status == status)
     orders = (await db.execute(stmt)).scalars().all()
     return {"items": [
-        {"id": str(o.id), "store_id": str(o.store_id), "items": o.items_json,
+        {"id": str(o.id), "workspace_id": str(o.workspace_id) if o.workspace_id else None,
+         "store_id": str(o.store_id), "items": o.items_json,
          "total": float(o.total), "currency": o.currency, "status": o.status,
          "pickup_code": o.pickup_code,
          "created_at": o.created_at.isoformat() if o.created_at else None}
@@ -842,10 +929,10 @@ async def confirm_order(order_id: uuid.UUID, db: DB, admin: AdminUser):
             ))
 
     entry_group = uuid.uuid4()
-    db.add(LedgerEntry(entry_group=entry_group, account="bank:pos_store",
+    db.add(LedgerEntry(workspace_id=order.workspace_id, entry_group=entry_group, account="bank:pos_store",
                        direction="debit", amount=order.total, currency=order.currency,
                        memo=f"Showroom order {order.pickup_code}"))
-    db.add(LedgerEntry(entry_group=entry_group, account="platform:revenue",
+    db.add(LedgerEntry(workspace_id=order.workspace_id, entry_group=entry_group, account="platform:revenue",
                        direction="credit", amount=order.total, currency=order.currency,
                        memo=f"Showroom order {order.pickup_code}"))
 

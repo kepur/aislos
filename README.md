@@ -19,7 +19,11 @@ Aislos/
 cd Ainerwise
 cp .env.example .env
 ./scripts/shared-platform/up-core.sh
+# 初始化测试账户 + Demo 假数据
+docker exec ainerwise-backend-1 python -m scripts.seed_demo_environment
 ```
+
+测试账户与密码见 **[TEST_ACCOUNTS.md](TEST_ACCOUNTS.md)**。
 
 | 服务 | 地址 |
 |------|------|
@@ -38,6 +42,15 @@ cp .env.example .env
 ## Phase 1 采购
 
 C01–C09 已全部 `VERIFIED`。运行手册：`Ainerwise/docs/procurement_phase1_runbook.md`。
+
+## Integration Phase 2 / 3
+
+| 阶段 | 状态 | 文档 |
+|------|------|------|
+| IP2-01～10 Cebu 交易域迁入 Core | `VERIFIED` | `INTEGRATION_PHASE2_EXECUTION_TASKS.md` |
+| P3-01～07 Portal 收敛 + Cebu 前端切 Core | `VERIFIED` | `INTEGRATION_PHASE3_EXECUTION_TASKS.md` |
+
+Cebu PC 入口：`http://cebu.localhost/cebu`（API 经 nginx → Core `/api/v1/commerce/*`）
 
 ## Shared Platform
 

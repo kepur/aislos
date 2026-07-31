@@ -15,9 +15,10 @@
     "submitRequirement": "提交需求",
     "supplierApplication": "成为供应商",
     "aiBrain": "AI 大脑",
-    "store": "精品商店",
+    "store": "产品目录",
     "marketplace": "Agent 商店",
-    "developers": "开发者"
+    "developers": "开发者",
+    "procurementMarket": "Market"
   },
   "home": {
     "heroKicker": "AISLOS — 企业级 AI 操作系统",
@@ -447,7 +448,7 @@
     "backToList": "返回项目列表",
     "brands": {
       "aislos": "AISLOS 采购",
-      "cebu": "Cebu 采购门户"
+      "cebu": "AinerWise Market"
     },
     "mode": "采购模式",
     "priceRule": "价格可见性",

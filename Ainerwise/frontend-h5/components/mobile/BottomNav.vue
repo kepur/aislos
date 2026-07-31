@@ -2,7 +2,7 @@
   <nav class="bottom-nav safe-bottom">
     <NuxtLink
       v-for="tab in tabs"
-      :key="tab.to"
+      :key="`${activePortalKey}:${tab.to}`"
       :to="tab.to"
       :class="['bottom-nav-item', { 'is-center': tab.center }]"
       :active-class="tab.center ? '' : 'active'"
@@ -27,6 +27,8 @@ import { h } from 'vue'
 const route = useRoute()
 const { t } = useI18n({ useScope: 'global' })
 const { mode } = usePortalMode()
+const { manifest } = usePortalManifest()
+const activePortalKey = computed(() => manifest.value?.portal_key || (mode === 'partner' ? 'partner_company' : mode))
 
 function isActive(path: string) {
   return route.path === path || route.path.startsWith(path + '/')
@@ -58,13 +60,62 @@ const IconCalendar = () => h('svg', { class: 'w-5 h-5', viewBox: '0 0 24 24', fi
 ])
 
 const tabs = computed(() => {
-  if (mode === 'partner') {
+  if (['field_worker', 'field_worker_h5'].includes(activePortalKey.value)) {
+    return [
+      { to: '/field/today', label: 'Today', icon: IconDashboard },
+      { to: '/profile', label: t('nav.profile'), icon: IconProfile },
+    ]
+  }
+  if (activePortalKey.value === 'crew_lead_h5') {
+    return [
+      { to: '/crew', label: 'Overview', icon: IconDashboard },
+      { to: '/crew/tasks', label: 'Crew tasks', icon: IconProjects },
+      { to: '/crew/members', label: 'Members', icon: IconProfile },
+    ]
+  }
+  if (['supplier', 'supplier_h5'].includes(activePortalKey.value)) {
+    return [
+      { to: '/supplier', label: 'Supplier', icon: IconDashboard },
+      { to: '/supplier/pings', label: 'Pings', icon: IconSolutions },
+      { to: '/supplier/catalog', label: 'Catalog', center: true },
+      { to: '/supplier/offers', label: 'Offers', icon: IconProjects },
+      { to: '/supplier/orders', label: 'Orders', icon: IconProjects },
+    ]
+  }
+  if (['partner_company', 'partner_company_h5'].includes(activePortalKey.value)) {
     return [
       { to: '/partner', label: t('partner.work'), icon: IconDashboard },
       { to: '/partner/rfqs', label: t('partner.requests'), icon: IconProjects },
+      { to: '/partner/work-packages', label: 'Delivery', icon: IconSolutions },
+      { to: '/partner/crews', label: 'Crews', icon: IconProfile },
       { to: '/partner/calendar', label: t('partner.calendar'), icon: IconCalendar },
-      { to: '/partner/tasks', label: t('partner.tasks'), icon: IconSolutions },
-      { to: '/profile', label: t('nav.profile'), icon: IconProfile },
+    ]
+  }
+  if (['cebu_buyer', 'cebu_buyer_h5'].includes(activePortalKey.value)) {
+    return [
+      { to: '/buyer', label: 'Home', icon: IconDashboard },
+      { to: '/buyer/requests', label: 'Requests', icon: IconProjects },
+      { to: '/buyer/post-request', label: 'Post', center: true },
+      { to: '/buyer/orders', label: 'Orders', icon: IconSolutions },
+      { to: '/buyer/messages', label: 'Messages', icon: IconProfile },
+    ]
+  }
+  if (activePortalKey.value === 'marketing_h5') {
+    return [
+      { to: '/marketing-mobile', label: 'Overview', icon: IconDashboard },
+      { to: '/marketing-mobile/briefs', label: 'Briefs', icon: IconProjects },
+      { to: '/marketing-mobile/review', label: 'Review', icon: IconSolutions },
+      { to: '/marketing-mobile/assets', label: 'Assets', icon: IconProfile },
+      { to: '/marketing-mobile/schedule', label: 'Schedule', icon: IconCalendar },
+    ]
+  }
+  if (['customer', 'customer_h5'].includes(activePortalKey.value)) {
+    return [
+      { to: '/dashboard', label: 'Overview', icon: IconDashboard },
+      { to: '/projects', label: 'Projects', icon: IconProjects },
+      { to: '/customer/approvals', label: 'Approvals', icon: IconSolutions },
+      { to: '/customer/installations', label: 'Install', icon: IconCalendar },
+      { to: '/customer/assets', label: 'Assets', icon: IconProfile },
     ]
   }
   return [

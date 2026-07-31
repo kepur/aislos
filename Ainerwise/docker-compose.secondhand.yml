@@ -1,0 +1,26 @@
+services:
+  secondhand-pc:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    restart: unless-stopped
+    environment:
+      NUXT_PUBLIC_API_BASE: /api
+      NUXT_CORE_API_INTERNAL: http://backend:8000
+      NUXT_PUBLIC_APP_NAME: 2Hands
+      NUXT_PUBLIC_APP_DOMAIN: 2hands.localhost
+      NUXT_PUBLIC_AISLOS_SITE_URL: http://${AINERWISE_PUBLIC_HOST:-localhost}:4099
+      NUXT_PUBLIC_DEFAULT_CURRENCY: EUR
+      NUXT_PUBLIC_DEFAULT_COUNTRY: RS
+    volumes:
+      - ./modules/secondhand/pc:/app
+      - secondhand_pc_node_modules:/app/node_modules
+    ports:
+      - "4105:4105"
+    command: >
+      sh -lc "
+        npm install &&
+        npm run dev -- --host 0.0.0.0 --port 4105
+      "
+
+volumes:
+  secondhand_pc_node_modules:

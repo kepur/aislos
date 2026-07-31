@@ -20,6 +20,7 @@ class CaseStudy(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "cases"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True)
     region_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("regions.id"))
     project_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("projects.id"))
     title: Mapped[str] = mapped_column(String(500), nullable=False)

@@ -1,8 +1,8 @@
 # Shared Platform Resource Manifest
 
-日期：2026-06-11  
+日期：2026-06-12
 Owner：Platform Engineering / Ainerwise Core  
-状态：SP01 草案（文档 only，不修改运行环境）
+状态：当前运行资源清单
 
 ## 1. Canonical Workspace
 
@@ -14,21 +14,13 @@ Owner：Platform Engineering / Ainerwise Core
 | **Working directory** | `/Users/mac/Code_Start/Aislos/Ainerwise` |
 | **正式实现目录** | 仅 `Aislos/Ainerwise`；禁止在 `/Users/mac/Code_Start/Ainerwise` 开发 |
 
-### 1.1 混用 checkout 风险（当前观测）
+### 1.1 Checkout 绑定（当前观测）
 
-截至 2026-06-11，运行中容器存在**同一 compose project 绑定两个源码 checkout** 的情况：
-
-| 服务 | bind mount 来源 | 风险 |
-|---|---|---|
-| `backend`, `marketing-portal` | `/Users/mac/Code_Start/Aislos/Ainerwise/...` | ✅ canonical |
-| `frontend-pc`, `frontend-h5`, `frontend-admin`, `celery-*`, `ai-orchestrator`, `channel-gateway`, `nginx` 等 | `/Users/mac/Code_Start/Ainerwise/...` | ⚠️ 旧 checkout，与 canonical 代码漂移 |
-
-**切换方案（SP02 前不得擅自重建容器）：**
-
-1. 在维护窗口内，对每个仍绑定旧路径的服务执行 `docker compose up -d <service>`（从 canonical working directory），使 bind mount 指向 `Aislos/Ainerwise`。
-2. 切换后验证：各 Portal 页面、API smoke、Celery worker 队列消费正常。
-3. 旧目录 `/Users/mac/Code_Start/Ainerwise` 保留为只读参考，直至 SP02 profile 验证通过。
-4. **禁止**在未获用户批准前停止、删除或重建全部容器。
+截至 2026-06-12，已通过 `docker inspect` 确认运行中的 Backend、三个物理前端、
+逻辑 Portal 容器、Celery、AI Orchestrator、Channel Gateway 与 Nginx 均绑定
+`/Users/mac/Code_Start/Aislos/Ainerwise` canonical workspace。旧 checkout 不再被
+当前 compose project 挂载；`scripts/shared-platform/rebind-canonical.sh` 继续作为
+重建后的漂移修复工具。
 
 ## 2. 服务 Owner 与环境
 
@@ -40,7 +32,7 @@ Owner：Platform Engineering / Ainerwise Core
 | `backend` | Ainerwise Core | local dev | FastAPI 模块化单体 API |
 | `celery-worker` / `celery-beat` | Ainerwise Core | local dev | 异步任务 |
 | `ai-orchestrator` | AI Platform | local dev（内网） | LLM/embedding 编排，不对外暴露端口 |
-| `channel-gateway` | Messaging | local dev（内网） | Telegram 等渠道 webhook |
+| `channel-gateway` | Messaging | local dev（内网） | Telegram、WhatsApp Business、Email 统一收发与 webhook |
 | `nginx` | Platform Gateway | local dev | 反向代理、Portal Context 注入 |
 | `frontend-*` / `*-portal` | Portal Teams | local dev | 多品牌 Nuxt 前端 |
 | Cebu Legacy Backend | CebuProjects（过渡） | 待迁入 | 采购交易域迁移来源，**非写入目标** |
@@ -57,7 +49,7 @@ Owner：Platform Engineering / Ainerwise Core
 - 金额字段：NUMERIC/Decimal，禁止 Float。
 - 新状态：小写字符串。
 - 关键引用：真实 Foreign Key。
-- 当前 Alembic head：`028`（单一 head 要求见 MIGRATION_COORDINATION.md）。
+- 当前 Alembic head：`078`（单一 head 要求见 MIGRATION_COORDINATION.md）。
 
 ## 4. Redis 隔离
 
@@ -66,8 +58,8 @@ Owner：Platform Engineering / Ainerwise Core
 | Celery default | queue `default` | Core | 用户可见延迟任务、outbox relay |
 | Celery AI | queue `ai_ingestion` | Core | 知识库 embedding |
 | Celery automation | queue `automation` | Core | 生命周期/营销批处理 |
-| Domain events | stream `stream:events` | Core | transactional outbox → Redis Stream |
-| Cebu Legacy（规划） | prefix `cebu:` | Cebu 过渡 | SP02 启用独立 prefix，禁止与 Core 键冲突 |
+| Domain events | stream `ainerwise:stream:events` / group `automation` | Core | transactional outbox → Redis Stream |
+| Cebu Legacy（规划） | prefix `cebu-legacy:` | Cebu 过渡 | SP02 启用独立 prefix，禁止与 Core 键冲突 |
 
 - 认证：Redis `requirepass`（dev 占位符见 `.env.example`，**非真实生产 secret**）。
 - 外部媒体系统：**不得**持有 Redis 访问权。

@@ -1,0 +1,1 @@
+<template><div class="space-y-5"><h1 class="admin-page-title">Cebu Integrations</h1><IntegrationSettings/></div></template><script setup lang="ts">definePageMeta({layout:'default',middleware:['auth']})</script>

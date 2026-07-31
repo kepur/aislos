@@ -6,6 +6,7 @@ from app.schemas.base import BaseSchema
 
 class InquiryRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     buyer_company_id: uuid.UUID | None = None
     buyer_user_id: uuid.UUID | None = None
     product_id: uuid.UUID | None = None
@@ -30,7 +31,21 @@ class InquiryRead(BaseSchema):
     created_at: datetime
 
 
+class InquiryCustomerRead(BaseSchema):
+    id: uuid.UUID
+    product_id: uuid.UUID | None = None
+    lead_id: uuid.UUID | None = None
+    contact_name: str | None = None
+    contact_email: str | None = None
+    contact_phone: str | None = None
+    message: str | None = None
+    quantity: int | None = None
+    status: str
+    created_at: datetime
+
+
 class InquiryCreate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     product_id: uuid.UUID | None = None
     contact_name: str | None = None
     contact_email: str | None = None

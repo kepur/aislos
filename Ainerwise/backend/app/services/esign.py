@@ -7,7 +7,6 @@ provider in a later phase if a market requires it.
 """
 from __future__ import annotations
 
-import base64
 import hashlib
 import io
 import secrets
@@ -18,6 +17,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.core.signature_image import validate_signature_data_url
 from app.models.content import DocumentSignature, GeneratedDocument
 from app.services.documents import DOCUMENTS_BUCKET, store_pdf
 from app.services.event_bus import emit_event
@@ -121,13 +121,7 @@ async def apply_signature(
         raise ValueError("Document changed after it was sent — request a new signing link")
 
     # store the drawn signature image
-    try:
-        header, payload = signature_data_url.split(",", 1)
-        if "image/" not in header:
-            raise ValueError
-        image_bytes = base64.b64decode(payload)
-    except (ValueError, IndexError):
-        raise ValueError("Invalid signature image") from None
+    image_bytes = validate_signature_data_url(signature_data_url)
     client = get_minio_client()
     if not client.bucket_exists(DOCUMENTS_BUCKET):
         client.make_bucket(DOCUMENTS_BUCKET)

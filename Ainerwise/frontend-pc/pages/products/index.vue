@@ -9,15 +9,6 @@
           Xiaomi ecosystem, leading CCTV/access vendors, and verified OEM/ODM partners. These are solution-ready building
           blocks, not cheap commodity products.
         </p>
-        <div class="mt-5 flex flex-wrap justify-center gap-2">
-          <span
-            v-for="partner in demoSupplyPartners"
-            :key="partner.name"
-            class="border border-primary-500/30 bg-primary-900/30 text-primary-200 px-3 py-1 text-xs"
-          >
-            {{ partner.name }}
-          </span>
-        </div>
       </div>
 
       <div class="flex flex-col lg:flex-row gap-8">
@@ -52,7 +43,15 @@
 
         <!-- Product Grid -->
         <div class="flex-1">
-          <div v-if="filteredProducts.length" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div v-if="loading" class="glass-panel p-8 text-center text-sm text-slate-400">
+            Loading products...
+          </div>
+          <div v-else-if="error" class="glass-panel border-red-400/30 p-8 text-center">
+            <p class="font-semibold text-red-300">Products could not be loaded.</p>
+            <p class="mt-2 text-sm text-red-200/70">{{ error }}</p>
+            <button type="button" class="btn-primary mt-4" @click="loadProducts">Retry</button>
+          </div>
+          <div v-else-if="filteredProducts.length" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             <NuxtLink
               v-for="product in filteredProducts"
               :key="product.id"
@@ -111,11 +110,12 @@
 
 <script setup lang="ts">
 const { apiFetch } = useApi()
-const { demoCategories, demoProducts, demoSupplyPartners } = useDemoCatalog()
-const products = ref<any[]>(demoProducts)
-const categories = ref<any[]>(demoCategories)
+const products = ref<any[]>([])
+const categories = ref<any[]>([])
 const search = ref('')
 const selectedCategory = ref<string | null>(null)
+const loading = ref(true)
+const error = ref('')
 
 const filteredProducts = computed(() => {
   const term = search.value.trim().toLowerCase()
@@ -127,7 +127,9 @@ const filteredProducts = computed(() => {
   })
 })
 
-onMounted(async () => {
+async function loadProducts() {
+  loading.value = true
+  error.value = ''
   try {
     const [prodRes, catRes] = await Promise.all([
       apiFetch<any>('/products'),
@@ -135,13 +137,14 @@ onMounted(async () => {
     ])
     products.value = prodRes.items || prodRes || []
     categories.value = catRes.items || catRes || []
-  } catch {}
+  } catch (cause: any) {
+    products.value = []
+    categories.value = []
+    error.value = cause?.data?.detail || cause?.message || 'Please try again.'
+  } finally {
+    loading.value = false
+  }
+}
 
-  if (!products.value.length) {
-    products.value = demoProducts
-  }
-  if (!categories.value.length) {
-    categories.value = demoCategories
-  }
-})
+onMounted(loadProducts)
 </script>

@@ -2,6 +2,7 @@
   <div>
     <NuxtLink to="solutions" class="text-sm text-primary-600 hover:underline">&larr; Back to Solutions</NuxtLink>
     <h1 class="admin-page-title mt-4 mb-6">Create Solution</h1>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <form class="max-w-3xl space-y-6" @submit.prevent="handleSubmit">
       <div class="admin-card space-y-4">
@@ -71,6 +72,7 @@ definePageMeta({ layout: 'default' })
 
 const { apiFetch } = useApi()
 const loading = ref(false)
+const error = ref('')
 
 const form = reactive({
   title: '',
@@ -90,6 +92,7 @@ function splitCSV(str: string): string[] {
 
 async function handleSubmit() {
   loading.value = true
+  error.value = ''
   try {
     const payload: Record<string, any> = {
       ...form,
@@ -101,7 +104,7 @@ async function handleSubmit() {
     await apiFetch('/solutions', { method: 'POST', body: payload })
     navigateTo('solutions')
   } catch (e: any) {
-    console.error('Create failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Solution could not be created'
   } finally {
     loading.value = false
   }

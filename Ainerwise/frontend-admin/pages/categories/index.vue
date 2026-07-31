@@ -4,6 +4,10 @@
       <h1 class="admin-page-title">{{ $t('admin.categories') }}</h1>
       <button @click="showCreateModal = true" class="btn-primary text-sm">{{ $t('common.create') }}</button>
     </div>
+    <div v-if="error" class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {{ error }}
+      <button class="ml-2 font-semibold underline" @click="loadData">Retry</button>
+    </div>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -88,6 +92,7 @@ const categories = ref<any[]>([])
 const showCreateModal = ref(false)
 const editingCat = ref<any>(null)
 const saving = ref(false)
+const error = ref('')
 
 const form = reactive({
   name: '',
@@ -102,10 +107,13 @@ const rootCategories = computed(() => categories.value.filter(c => !c.parent_id)
 onMounted(loadData)
 
 async function loadData() {
+  error.value = ''
   try {
     const res = await apiFetch<any>('/product-categories')
     categories.value = res.items || res || []
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Unable to load categories.'
+  }
 }
 
 function getParentName(parentId: string | null): string {
@@ -133,6 +141,7 @@ function startEdit(cat: any) {
 
 async function handleCreate() {
   saving.value = true
+  error.value = ''
   try {
     const payload: Record<string, any> = { ...form }
     if (!payload.parent_id) delete payload.parent_id
@@ -140,12 +149,13 @@ async function handleCreate() {
     await apiFetch('/product-categories', { method: 'POST', body: payload })
     closeModal()
     await loadData()
-  } catch (e: any) { console.error(e) }
+  } catch (e: any) { error.value = e?.data?.detail || e?.message || 'Unable to create category.' }
   finally { saving.value = false }
 }
 
 async function handleUpdate() {
   saving.value = true
+  error.value = ''
   try {
     const payload: Record<string, any> = { ...form }
     if (!payload.parent_id) payload.parent_id = null
@@ -153,7 +163,7 @@ async function handleUpdate() {
     await apiFetch(`/product-categories/${editingCat.value.id}`, { method: 'PUT', body: payload })
     closeModal()
     await loadData()
-  } catch (e: any) { console.error(e) }
+  } catch (e: any) { error.value = e?.data?.detail || e?.message || 'Unable to update category.' }
   finally { saving.value = false }
 }
 </script>

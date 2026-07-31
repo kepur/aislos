@@ -7,18 +7,12 @@ type DemoAccount = {
 
 type DemoMode = {
   enabled: boolean
-  buyer: DemoAccount
+  buyer?: DemoAccount
   admin?: DemoAccount
 }
 
 const defaultDemoMode: DemoMode = {
-  enabled: true,
-  buyer: {
-    label: 'Demo Customer',
-    email: 'demo@ainerwise.com',
-    password: 'demo123',
-    description: 'Explore customer portal, AI assessment, leads, quotes, tickets, and project previews.',
-  },
+  enabled: false,
 }
 
 export function useDemoMode() {

@@ -19,6 +19,8 @@ class NotificationPreferenceRead(BaseSchema):
     reports_enabled: bool
     maintenance_enabled: bool
     renewal_enabled: bool
+    supplier_category_ids_json: list[uuid.UUID] | None = None
+    supplier_region_ids_json: list[uuid.UUID] | None = None
 
 
 class NotificationPreferenceUpdate(BaseSchema):
@@ -32,10 +34,13 @@ class NotificationPreferenceUpdate(BaseSchema):
     reports_enabled: bool | None = None
     maintenance_enabled: bool | None = None
     renewal_enabled: bool | None = None
+    supplier_category_ids_json: list[uuid.UUID] | None = None
+    supplier_region_ids_json: list[uuid.UUID] | None = None
 
 
 class ReportJobRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     report_type: str
     period_label: str | None = None

@@ -1,0 +1,1 @@
+<template><CebuAdminTradeSection title="Cebu Marketplace Listings" section="supplier_listings" :summary-fields="['company_id','price_minor','currency','status']" /></template><script setup lang="ts">definePageMeta({layout:'default',middleware:['auth']})</script>

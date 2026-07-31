@@ -7,12 +7,14 @@ from sqlalchemy import func, select
 from app.api.deps import DB, AdminUser
 from app.models.case_library import CaseStudy
 from app.services.cases import embed_case
+from app.services.lifecycle_access import resolve_lifecycle_workspace
 from app.tasks.celery_app import celery_app
 
 router = APIRouter(tags=["cases"])
 
 
 class CaseUpsert(BaseModel):
+    workspace_id: uuid.UUID | None = None
     title: str
     region_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
@@ -45,6 +47,7 @@ def _case_dict(c: CaseStudy, *, internal: bool) -> dict:
         "public_visible": c.public_visible, "created_at": c.created_at.isoformat(),
     }
     if internal:
+        data["workspace_id"] = str(c.workspace_id) if c.workspace_id else None
         data["gross_margin_pct"] = float(c.gross_margin_pct) if c.gross_margin_pct is not None else None
         data["rework_count"] = c.rework_count
         data["satisfaction_score"] = float(c.satisfaction_score) if c.satisfaction_score is not None else None
@@ -57,7 +60,14 @@ def _case_dict(c: CaseStudy, *, internal: bool) -> dict:
 
 @router.post("/admin/cases")
 async def create_case(data: CaseUpsert, db: DB, admin: AdminUser):
-    case = CaseStudy(**data.model_dump())
+    payload = data.model_dump()
+    try:
+        payload["workspace_id"] = await resolve_lifecycle_workspace(
+            db, requested_workspace_id=data.workspace_id, project_id=data.project_id
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+    case = CaseStudy(**payload)
     db.add(case)
     await db.flush()
     document = await embed_case(db, case)
@@ -72,7 +82,16 @@ async def update_case(id: uuid.UUID, data: CaseUpsert, db: DB, admin: AdminUser)
     case = await db.get(CaseStudy, id)
     if case is None:
         raise HTTPException(status_code=404, detail="Case not found")
-    for key, value in data.model_dump(exclude_unset=True).items():
+    payload = data.model_dump(exclude_unset=True)
+    try:
+        payload["workspace_id"] = await resolve_lifecycle_workspace(
+            db,
+            requested_workspace_id=payload.get("workspace_id", case.workspace_id),
+            project_id=payload.get("project_id", case.project_id),
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+    for key, value in payload.items():
         setattr(case, key, value)
     db.add(case)
     await db.flush()

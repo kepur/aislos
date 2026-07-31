@@ -125,9 +125,9 @@
         <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-start">
           <UIcon name="i-heroicons-shield-check" class="w-6 h-6 text-blue-600 mr-3 flex-shrink-0" />
           <div>
-            <h4 class="text-sm font-bold text-blue-900">Escrow Protection</h4>
+            <h4 class="text-sm font-bold text-blue-900">Milestone Payments</h4>
             <p class="text-xs text-blue-800 mt-1">
-              If you award this offer, {{ formatMinor(offer.total_price_minor, offer.currency) }} will be held in escrow until delivery is accepted.
+              If you award this offer, you'll agree a milestone plan for {{ formatMinor(offer.total_price_minor, offer.currency) }} and pay the supplier directly — confirming each milestone as work is delivered. The platform keeps the records, not your funds.
             </p>
           </div>
         </div>

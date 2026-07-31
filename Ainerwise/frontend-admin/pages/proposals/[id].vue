@@ -1,6 +1,7 @@
 <template>
   <div v-if="plan">
     <NuxtLink to="proposals" class="text-sm text-primary-600 hover:underline">&larr; Back to Proposals</NuxtLink>
+    <p v-if="error" class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <!-- Proposal Header -->
     <div class="mt-4 flex items-center justify-between">
@@ -234,6 +235,9 @@
     </div>
   </div>
 
+  <div v-else-if="error" class="flex items-center justify-center py-20">
+    <p class="text-red-600">{{ error }}</p>
+  </div>
   <div v-else class="flex items-center justify-center py-20">
     <p class="text-gray-500">Loading proposal...</p>
   </div>
@@ -251,6 +255,7 @@ const bomItems = ref<any[]>([])
 const showItemModal = ref(false)
 const savingItem = ref(false)
 const editItemId = ref<string | null>(null)
+const error = ref('')
 
 const defaultItemForm = () => ({
   name: '',
@@ -293,10 +298,12 @@ function formatCurrency(v: number) {
 }
 
 async function loadPlan() {
+  error.value = ''
   try {
     plan.value = await apiFetch<any>(`/proposals/${planId}`)
-  } catch {
+  } catch (e: any) {
     plan.value = null
+    error.value = e?.data?.detail || e?.message || 'Proposal could not be loaded'
   }
 }
 
@@ -304,8 +311,9 @@ async function loadBom() {
   try {
     const res = await apiFetch<any>(`/proposals/${planId}/bom`)
     bomItems.value = res.items || []
-  } catch {
+  } catch (e: any) {
     bomItems.value = []
+    error.value = e?.data?.detail || e?.message || 'Proposal BOM could not be loaded'
   }
 }
 
@@ -340,6 +348,7 @@ function openEditItem(item: any) {
 
 async function saveItem() {
   savingItem.value = true
+  error.value = ''
   try {
     const body: any = { ...itemForm }
     if (!body.category) body.category = null
@@ -356,7 +365,7 @@ async function saveItem() {
     showItemModal.value = false
     await loadBom()
   } catch (e: any) {
-    console.error('Save BOM item failed:', e)
+    error.value = e?.data?.detail || e?.message || 'BOM item could not be saved'
   } finally {
     savingItem.value = false
   }
@@ -364,11 +373,12 @@ async function saveItem() {
 
 async function deleteItem(itemId: string) {
   if (!confirm('Remove this BOM item?')) return
+  error.value = ''
   try {
     await apiFetch(`/proposals/${planId}/bom/${itemId}`, { method: 'DELETE' })
     await loadBom()
   } catch (e: any) {
-    console.error('Delete BOM item failed:', e)
+    error.value = e?.data?.detail || e?.message || 'BOM item could not be deleted'
   }
 }
 

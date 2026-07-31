@@ -14,6 +14,7 @@
         </div>
 
         <div class="flex items-center gap-3">
+          <PortalSwitcher />
           <ThemeToggle />
           <LanguageSwitcher />
           <button class="relative p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition">
@@ -46,7 +47,11 @@
 <script setup lang="ts">
 const { user, logout, isLoggedIn, isAdmin } = useAuth()
 const { isLight } = useAdminTheme()
-const { portal } = usePortalMode()
+const { portal: legacyPortal } = usePortalMode()
+const { manifest } = usePortalManifest()
+const portal = computed(() => ({
+  shortName: manifest.value?.display_name || legacyPortal.shortName,
+}))
 
 const userInitial = computed(() => {
   const name = user.value?.full_name || user.value?.email || 'A'

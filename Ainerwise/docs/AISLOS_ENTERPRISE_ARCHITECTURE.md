@@ -300,7 +300,7 @@ Row-level 隔离，基于现有 `regions` 表：
 ```
 Telegram webhook ─┐
 WhatsApp Business ─┤→ nginx /webhooks/{channel} → channel-gateway
-Email (IMAP poll) ─┘        │
+Email relay webhook ─┘      │
                             ├─ 统一 Message 模型 → channels.channel_messages
                             ├─ 绑定/创建 ai.conversations
                             ├─ → orchestrator /agent/chat（客户消息）
@@ -308,7 +308,7 @@ Email (IMAP poll) ─┘        │
 ```
 
 - 每个渠道一个 adapter（同进程内的 Python 模块），实现 `receive() / send() / normalize()` 三个接口。
-- 阶段：Telegram（已有代码迁入）→ WhatsApp Business Cloud API → Email。
+- 状态：Telegram、WhatsApp Business Cloud API、Email/SMTP adapter 已统一接入；外部 provider 凭据与生产 webhook replay 仍需独立验收。
 - 发送侧幂等：`delivery_log` 记录 message_id，重试不重发。
 
 ---
@@ -332,7 +332,7 @@ Email (IMAP poll) ─┘        │
 | Workflow Automation | ✅ lifecycle_automation 等 | 事件总线正式化（5.2） |
 | Customer Portal | ✅ frontend-h5 | — |
 | Analytics | 部分（finance/recurring_revenue） | 后期加 dashboard 聚合 API |
-| 渠道（WhatsApp/Email） | ❌ 仅 Telegram 通知 | channel-gateway（第二优先级） |
+| 渠道（WhatsApp/Email） | ✅ 统一 adapter、签名 webhook、持久化发送 | 生产 provider replay 与告警验收 |
 
 **结论：脑暴清单里约 90% 的业务模块已有代码。真正要建的是三样：ai schema + RAG 管道、orchestrator 实装、channel-gateway。**
 

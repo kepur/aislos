@@ -20,6 +20,7 @@ from app.models.rfq import RFQ, PartnerBid, PartnerMetric, RFQInvitation
 from app.models.service import ServicePartner
 from app.services.channel_gateway import send_channel_message
 from app.services.event_bus import emit_event
+from app.services.project_access import infer_company_project_workspace
 
 EVENT_RFQ_CREATED = "rfq.created"
 EVENT_RFQ_PARTNER_INVITED = "rfq.partner_invited"
@@ -116,12 +117,16 @@ def _invitation_text(rfq: RFQ) -> str:
 
 
 async def invite_partners(db: AsyncSession, rfq: RFQ, partner_ids: list[uuid.UUID]) -> list[RFQInvitation]:
+    if rfq.workspace_id is None:
+        raise ValueError("RFQ requires a Workspace")
     invitations = []
     for partner_id in partner_ids:
         existing = (
             await db.execute(
                 select(RFQInvitation).where(
-                    RFQInvitation.rfq_id == rfq.id, RFQInvitation.partner_id == partner_id
+                    RFQInvitation.rfq_id == rfq.id,
+                    RFQInvitation.partner_id == partner_id,
+                    RFQInvitation.workspace_id == rfq.workspace_id,
                 )
             )
         ).scalar_one_or_none()
@@ -132,6 +137,7 @@ async def invite_partners(db: AsyncSession, rfq: RFQ, partner_ids: list[uuid.UUI
         if partner is None:
             continue
         invitation = RFQInvitation(
+            workspace_id=rfq.workspace_id,
             rfq_id=rfq.id, partner_id=partner_id, status="sent",
             sent_via="pending",
         )
@@ -178,7 +184,10 @@ async def record_bid(
     db: AsyncSession, rfq: RFQ, *, partner_id: uuid.UUID,
     amount: float, currency: str | None, lead_time_days: int | None, notes: str | None,
 ) -> PartnerBid:
+    if rfq.workspace_id is None:
+        raise ValueError("RFQ requires a Workspace")
     bid = PartnerBid(
+        workspace_id=rfq.workspace_id,
         rfq_id=rfq.id, partner_id=partner_id,
         amount=Decimal(str(amount)), currency=currency or rfq.currency,
         lead_time_days=lead_time_days, notes=notes, status="submitted",
@@ -186,7 +195,11 @@ async def record_bid(
     db.add(bid)
     invitation = (
         await db.execute(
-            select(RFQInvitation).where(RFQInvitation.rfq_id == rfq.id, RFQInvitation.partner_id == partner_id)
+            select(RFQInvitation).where(
+                RFQInvitation.rfq_id == rfq.id,
+                RFQInvitation.partner_id == partner_id,
+                RFQInvitation.workspace_id == rfq.workspace_id,
+            )
         )
     ).scalar_one_or_none()
     if invitation:
@@ -205,7 +218,15 @@ async def record_bid(
 async def evaluate_bids(db: AsyncSession, rfq: RFQ) -> AIReview:
     """Deterministic explainable scoring; recommendation goes to ai_reviews."""
     bids = (
-        (await db.execute(select(PartnerBid).where(PartnerBid.rfq_id == rfq.id, PartnerBid.status == "submitted")))
+        (
+            await db.execute(
+                select(PartnerBid).where(
+                    PartnerBid.rfq_id == rfq.id,
+                    PartnerBid.workspace_id == rfq.workspace_id,
+                    PartnerBid.status == "submitted",
+                )
+            )
+        )
         .scalars().all()
     )
     if not bids:
@@ -281,7 +302,14 @@ async def evaluate_bids(db: AsyncSession, rfq: RFQ) -> AIReview:
 
 
 async def award_bid(db: AsyncSession, rfq: RFQ, bid_id: uuid.UUID, admin_id: uuid.UUID | None) -> PartnerBid:
-    bids = (await db.execute(select(PartnerBid).where(PartnerBid.rfq_id == rfq.id))).scalars().all()
+    bids = (
+        await db.execute(
+            select(PartnerBid).where(
+                PartnerBid.rfq_id == rfq.id,
+                PartnerBid.workspace_id == rfq.workspace_id,
+            )
+        )
+    ).scalars().all()
     winner = next((b for b in bids if b.id == bid_id), None)
     if winner is None:
         raise ValueError("Bid does not belong to this RFQ")
@@ -308,7 +336,21 @@ async def award_bid(db: AsyncSession, rfq: RFQ, bid_id: uuid.UUID, admin_id: uui
         db.add(review)
 
     if rfq.project_id is None and rfq.lead_id is not None:
-        project = Project(lead_id=rfq.lead_id, title=f"{rfq.title} (RFQ awarded)", status="planning")
+        from app.models.lead import Lead
+
+        lead = await db.get(Lead, rfq.lead_id)
+        workspace_id = (
+            rfq.workspace_id
+            or (lead.workspace_id if lead and lead.workspace_id is not None else None)
+            or await infer_company_project_workspace(db, lead.buyer_company_id if lead else None)
+        )
+        project = Project(
+            workspace_id=workspace_id,
+            lead_id=rfq.lead_id,
+            buyer_company_id=lead.buyer_company_id if lead else None,
+            title=f"{rfq.title} (RFQ awarded)",
+            status="planning",
+        )
         db.add(project)
         await db.flush()
         rfq.project_id = project.id

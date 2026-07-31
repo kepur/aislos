@@ -460,7 +460,16 @@ async function handleRealtimeEvent(event: any) {
   }
   if (event.type === 'response.function_call_arguments.done') {
     let args = {}
-    try { args = JSON.parse(event.arguments || '{}') } catch {}
+    try {
+      args = JSON.parse(event.arguments || '{}')
+    } catch {
+      realtimeDc?.send(JSON.stringify({
+        type: 'conversation.item.create',
+        item: { type: 'function_call_output', call_id: event.call_id, output: JSON.stringify({ error: 'Invalid tool arguments' }) },
+      }))
+      realtimeDc?.send(JSON.stringify({ type: 'response.create' }))
+      return
+    }
     const result = await kioskFetch<any>('/realtime-tool-call', {
       method: 'POST',
       body: { session_id: sessionId.value, name: event.name, arguments: args },

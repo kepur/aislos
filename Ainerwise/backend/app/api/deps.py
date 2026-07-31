@@ -35,6 +35,28 @@ async def get_current_user(
     return user
 
 
+async def require_marketing_user(
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> User:
+    if current_user.role in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
+        return current_user
+    if current_user.role != UserRole.MARKETING_OPERATOR.value:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Marketing access required")
+
+    from app.services.portal_access import user_has_grant_in_any_workspace
+
+    for portal_key in ("admin_marketing", "marketing_pc", "marketing_h5"):
+        if await user_has_grant_in_any_workspace(
+            db,
+            current_user.id,
+            "admin.marketing.read",
+            portal_key=portal_key,
+        ):
+            return current_user
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Marketing portal grant required")
+
+
 def require_role(*roles: UserRole):
     async def role_checker(
         current_user: Annotated[User, Depends(get_current_user)],
@@ -47,6 +69,16 @@ def require_role(*roles: UserRole):
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
 AdminUser = Annotated[User, Depends(require_role(UserRole.SUPER_ADMIN, UserRole.ADMIN))]
+MarketingUser = Annotated[User, Depends(require_marketing_user)]
+FinanceUser = Annotated[User, Depends(require_role(
+    UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.FINANCE,
+))]
+CRMUser = Annotated[User, Depends(require_role(
+    UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.SALES_MANAGER,
+))]
+ProjectOpsUser = Annotated[User, Depends(require_role(
+    UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.PROJECT_MANAGER,
+))]
 # Internal staff: same admin surface for now; granular menus come with real hires.
 StaffUser = Annotated[User, Depends(require_role(
     UserRole.SUPER_ADMIN, UserRole.ADMIN,

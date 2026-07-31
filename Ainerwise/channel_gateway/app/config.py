@@ -13,6 +13,12 @@ class Settings(BaseSettings):
     SERVICE_TOKEN: str = "ainerwise_service_dev"
     TELEGRAM_BOT_TOKEN: str = ""
     TELEGRAM_WEBHOOK_SECRET: str = ""
+    WHATSAPP_ACCESS_TOKEN: str = ""
+    WHATSAPP_PHONE_NUMBER_ID: str = ""
+    WHATSAPP_GRAPH_API_VERSION: str = "v23.0"
+    WHATSAPP_APP_SECRET: str = ""
+    WHATSAPP_VERIFY_TOKEN: str = ""
+    EMAIL_WEBHOOK_SECRET: str = ""
 
     @computed_field
     @property

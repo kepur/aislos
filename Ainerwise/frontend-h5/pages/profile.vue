@@ -70,6 +70,7 @@
           </div>
         </div>
       </div>
+      <p v-if="error" class="mb-4 rounded-xl bg-red-50 p-3 text-xs text-red-600">{{ error }}</p>
 
       <!-- Profile form -->
       <form @submit.prevent="handleSaveProfile" class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-4 mb-4">
@@ -103,6 +104,28 @@
 
       <!-- Actions -->
       <div class="space-y-2">
+        <section class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+          <h3 class="text-sm font-bold text-slate-800">Privacy & Data</h3>
+          <p class="text-xs text-slate-500">Download your account data or request verified account deletion. Required transaction and audit evidence is retained after anonymization.</p>
+          <p v-if="privacyMessage" class="rounded-xl bg-blue-50 p-2 text-xs text-blue-700">{{ privacyMessage }}</p>
+          <button class="w-full rounded-xl bg-blue-500 py-2.5 text-sm font-semibold text-white disabled:opacity-50" :disabled="privacyBusy" @click="createExport">Create data export</button>
+	          <button class="w-full rounded-xl bg-red-50 py-2.5 text-sm font-semibold text-red-600 disabled:opacity-50" :disabled="privacyBusy || pendingDeletion" @click="requestDeletion">{{ pendingDeletion ? 'Deletion requested' : 'Request account deletion' }}</button>
+	          <article v-for="item in privacyRequests" :key="item.id" class="rounded-xl border border-slate-100 p-3 text-xs">
+	            <div class="flex items-center justify-between">
+	              <span class="font-semibold capitalize">{{ item.request_type }} · {{ item.status }}</span>
+	              <div class="flex gap-2">
+	                <button
+	                  v-if="item.request_type === 'export' && item.status === 'ready'"
+	                  class="text-blue-600"
+	                  @click="downloadExport(item.id)"
+	                >
+	                  Download
+	                </button>
+	                <button v-if="item.status === 'requested'" class="text-red-600" @click="cancelPrivacy(item.id)">Cancel</button>
+	              </div>
+	            </div>
+	          </article>
+        </section>
         <NuxtLink to="/about" class="flex items-center justify-between bg-white rounded-xl px-4 py-3.5 border border-slate-100 shadow-sm">
           <div class="flex items-center gap-3">
             <span class="text-lg">🏢</span>
@@ -137,6 +160,11 @@
 const { user, isLoggedIn, logout, fetchUser } = useAuth()
 const { apiFetch } = useApi()
 const saving = ref(false)
+const error = ref('')
+const privacyRequests = ref<any[]>([])
+const privacyBusy = ref(false)
+const privacyMessage = ref('')
+const pendingDeletion = computed(() => privacyRequests.value.some(item => item.request_type === 'delete' && item.status === 'requested'))
 
 const form = reactive({
   full_name: '',
@@ -161,10 +189,11 @@ watch(user, (u) => {
 
 async function handleSaveProfile() {
   saving.value = true
+  error.value = ''
   try {
-    await apiFetch('/auth/me', { method: 'PUT', body: form })
+    await apiFetch('/users/me', { method: 'PATCH', body: form })
     await fetchUser()
-  } catch (e: any) { console.error(e) }
+  } catch (e: any) { error.value = e?.data?.detail || e?.message || 'Profile could not be saved' }
   finally { saving.value = false }
 }
 
@@ -172,4 +201,45 @@ function handleLogout() {
   logout()
   navigateTo('/')
 }
+
+async function loadPrivacy() {
+  privacyRequests.value = await apiFetch<any[]>('/privacy/requests')
+}
+
+async function createExport() {
+  privacyBusy.value = true
+  try {
+    await apiFetch('/privacy/export', { method: 'POST' })
+    privacyMessage.value = 'Your export is ready for seven days.'
+    await loadPrivacy()
+  } finally { privacyBusy.value = false }
+}
+
+async function downloadExport(id: string) {
+  const blob = await apiFetch<Blob>(`/privacy/exports/${id}`, { responseType: 'blob' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'ainerwise-data-export.json'
+  link.click()
+  URL.revokeObjectURL(url)
+}
+
+async function requestDeletion() {
+  if (!confirm('Request verified account deletion?')) return
+  privacyBusy.value = true
+  try {
+    await apiFetch('/privacy/delete-request', { method: 'POST' })
+    await loadPrivacy()
+  } finally { privacyBusy.value = false }
+}
+
+async function cancelPrivacy(id: string) {
+  await apiFetch(`/privacy/requests/${id}/cancel`, { method: 'POST' })
+  await loadPrivacy()
+}
+
+onMounted(async () => {
+  if (isLoggedIn.value) await loadPrivacy()
+})
 </script>

@@ -6,6 +6,7 @@ from app.schemas.base import BaseSchema
 
 
 class ProjectFinanceInput(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     customer_id: uuid.UUID | None = None
     solution_line: str | None = None

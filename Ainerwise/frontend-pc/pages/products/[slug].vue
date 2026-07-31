@@ -1,5 +1,15 @@
 <template>
-  <div v-if="product" class="section-padding">
+  <div v-if="loading" class="section-padding">
+    <div class="container-main glass-panel p-8 text-center text-sm text-slate-400">Loading product...</div>
+  </div>
+  <div v-else-if="error" class="section-padding">
+    <div class="container-main glass-panel border-red-400/30 p-8 text-center">
+      <p class="font-semibold text-red-300">Product could not be loaded.</p>
+      <p class="mt-2 text-sm text-red-200/70">{{ error }}</p>
+      <button type="button" class="btn-primary mt-4" @click="loadProduct">Retry</button>
+    </div>
+  </div>
+  <div v-else-if="product" class="section-padding">
     <div class="container-main">
       <NuxtLink to="/products" class="text-sm text-primary-400 hover:underline">&larr; {{ $t('products.title') }}</NuxtLink>
 
@@ -135,15 +145,19 @@
       </div>
     </div>
   </div>
+  <div v-else class="section-padding">
+    <div class="container-main glass-panel p-8 text-center text-slate-400">Product not found.</div>
+  </div>
 </template>
 
 <script setup lang="ts">
 const route = useRoute()
 const { apiFetch } = useApi()
 const { isLoggedIn } = useAuth()
-const { demoProducts } = useDemoCatalog()
 
-const product = ref<any>(demoProducts.find((item) => item.slug === route.params.slug) || null)
+const product = ref<any>(null)
+const loading = ref(true)
+const error = ref('')
 const showInquiryModal = ref(false)
 const inquirySuccess = ref(false)
 
@@ -156,13 +170,16 @@ const inquiryForm = ref({
   message: ''
 })
 
-onMounted(async () => {
+async function loadProduct() {
+  loading.value = true
+  error.value = ''
   try {
     product.value = await apiFetch<any>(`/products/${route.params.slug}`)
-  } catch {}
-
-  if (!product.value) {
-    product.value = demoProducts.find((item) => item.slug === route.params.slug)
+  } catch (cause: any) {
+    product.value = null
+    error.value = cause?.data?.detail || cause?.message || 'Please try again.'
+  } finally {
+    loading.value = false
   }
 
   if (product.value) {
@@ -171,7 +188,9 @@ onMounted(async () => {
       inquiryForm.value.quantity = product.value.moq
     }
   }
-})
+}
+
+onMounted(loadProduct)
 
 async function submitInquiry() {
   try {

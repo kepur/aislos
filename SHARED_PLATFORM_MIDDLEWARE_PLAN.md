@@ -14,6 +14,7 @@
 - `/Users/mac/Code_Start/Aislos/PROCUREMENT_PHASE1_EXECUTION_TASKS.md`
 - `/Users/mac/Code_Start/Aislos/Ainerwise/docs/AISLOS_MARKETING_INTEGRATION_V4_TASKS.md`
 - `/Users/mac/Code_Start/Aislos/Ainerwise/docs/PORTAL_FIELD_SERVICE_V1_TASKS.md`
+- `/Users/mac/Code_Start/Aislos/FULL_PORTAL_ZERO_LOSS_EXECUTION_TASKS.md`
 
 ---
 
@@ -130,26 +131,20 @@ flowchart TB
 | Observability | 分散 | 统一 service / portal / region 标签 | 一套日志、指标、告警和审计查询 |
 | Backup / Restore | 分散 | 同集群备份，按 database/bucket 独立恢复测试 | 一套策略，多个独立恢复单元 |
 
-### 3.1 当前已发现的本地运行风险
+### 3.1 当前本地运行状态
 
-2026-06-11 检查发现：
+2026-06-12 复查确认：
 
 - 当前 Docker compose project 名称为 `ainerwise`。
-- `backend` 容器绑定 `/Users/mac/Code_Start/Aislos/Ainerwise/backend`。
-- 其余已运行 Ainerwise 服务多数绑定 `/Users/mac/Code_Start/Ainerwise`。
-- Cebu compose 当前未运行。
-- 当前 Ainerwise migration 链解析结果为单一 head `027`；Cebu migration 链为单一 head `0015`。
+- 运行中的 Backend、三个物理前端、逻辑 Portal 容器、Celery、AI Orchestrator、
+  Channel Gateway 与 Nginx 均绑定 canonical
+  `/Users/mac/Code_Start/Aislos/Ainerwise`。
+- Cebu legacy compose 当前未运行，`CebuProjects` 保持参考源。
+- 当前 Ainerwise migration 链为单一 head `055`。
+- Core 事件流为 `ainerwise:stream:events`，Celery key prefix 为
+  `ainerwise:celery:`。
 
-这意味着本地环境正在混用两个 Ainerwise checkout。任何测试、重启或迁移都可能出现“Backend 是新代码，Worker/Frontend/Orchestrator 是旧代码”的版本漂移。
-
-在修改共享部署前，必须先冻结：
-
-- 唯一 canonical workspace 路径。
-- 唯一明确的 `COMPOSE_PROJECT_NAME`。
-- 每个容器允许绑定的源码路径。
-- 切换 workspace 前的停机、备份和回滚步骤。
-
-未经用户明确批准，不得自动停止、删除或重建当前混合路径容器。
+后续重建仍必须从 canonical workspace 执行，并在切换前保留备份和回滚步骤。
 
 ---
 

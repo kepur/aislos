@@ -17,9 +17,9 @@
               <NuxtLink to="/submit-requirement" class="bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-500 transition">
                 {{ $t('home.heroCta1') }}
               </NuxtLink>
-              <NuxtLink to="/procurement" class="glass-panel text-emerald-300 px-6 py-3 font-semibold hover:bg-white/10 transition">
+              <a :href="marketUrl" class="glass-panel text-emerald-300 px-6 py-3 font-semibold hover:bg-white/10 transition">
                 {{ $t('procurement.title') }}
-              </NuxtLink>
+              </a>
               <NuxtLink to="/ai-building-brain" class="glass-panel text-cyan-300 px-6 py-3 font-semibold hover:bg-white/10 transition">
                 {{ $t('home.heroCta2') }}
               </NuxtLink>
@@ -105,7 +105,15 @@
           <h2 class="text-2xl sm:text-3xl font-bold text-white">{{ $t('mtx.explore') }}</h2>
           <p class="mt-3 text-slate-300 max-w-2xl mx-auto">{{ $t('mtx.exploreDesc') }}</p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-if="contentLoading" class="glass-panel p-8 text-center text-sm text-slate-400">Loading published solutions...</div>
+        <div v-else-if="solutionsError" class="glass-panel border-red-500/30 p-6 text-center text-sm text-red-300">
+          <p>{{ solutionsError }}</p>
+          <button class="btn-primary mt-4" @click="loadPublicContent">Retry</button>
+        </div>
+        <div v-else-if="!solutions.length" class="glass-panel p-8 text-center text-sm text-slate-400">
+          No solutions are currently published.
+        </div>
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <NuxtLink
             v-for="solution in solutions"
             :key="solution.slug"
@@ -154,7 +162,15 @@
           <h2 class="text-2xl sm:text-3xl font-bold text-white">{{ $t('home.servicesTitle') }}</h2>
           <p class="mt-3 text-slate-300 max-w-2xl mx-auto">{{ $t('home.servicesSubtitle') }}</p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div v-if="contentLoading" class="glass-panel p-8 text-center text-sm text-slate-400">Loading service plans...</div>
+        <div v-else-if="servicesError" class="glass-panel border-red-500/30 p-6 text-center text-sm text-red-300">
+          <p>{{ servicesError }}</p>
+          <button class="btn-primary mt-4" @click="loadPublicContent">Retry</button>
+        </div>
+        <div v-else-if="!servicePackages.length" class="glass-panel p-8 text-center text-sm text-slate-400">
+          No service plans are currently published.
+        </div>
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           <div
             v-for="pkg in servicePackages"
             :key="pkg.slug"
@@ -211,10 +227,13 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const { apiFetch } = useApi()
-const { demoServicePackages, demoSolutions } = useDemoCatalog()
+const marketUrl = useRuntimeConfig().public.marketUrl as string
 
-const solutions = ref<any[]>(demoSolutions.slice(0, 6))
-const servicePackages = ref<any[]>(demoServicePackages)
+const solutions = ref<any[]>([])
+const servicePackages = ref<any[]>([])
+const contentLoading = ref(true)
+const solutionsError = ref('')
+const servicesError = ref('')
 
 const heroSignals = [
   'Buildings + Energy',
@@ -276,23 +295,30 @@ const whyReasons = computed(() => [
   { emoji: '&#128337;', title: t('home.whyLifecycle'), desc: t('home.whyLifecycleDesc') },
 ])
 
-onMounted(async () => {
-  try {
-    const [solRes, pkgRes] = await Promise.all([
-      apiFetch<any>('/solutions'),
-      apiFetch<any>('/service-packages'),
-    ])
-    solutions.value = solRes.items || solRes || []
-    servicePackages.value = pkgRes.items || pkgRes || []
-  } catch {
-    // API might not be ready yet during initial development
+async function loadPublicContent() {
+  contentLoading.value = true
+  solutionsError.value = ''
+  servicesError.value = ''
+  const [solutionsResult, servicesResult] = await Promise.allSettled([
+    apiFetch<any>('/solutions'),
+    apiFetch<any>('/service-packages'),
+  ])
+  if (solutionsResult.status === 'fulfilled') {
+    solutions.value = (solutionsResult.value.items || solutionsResult.value || []).slice(0, 6)
+  } else {
+    solutions.value = []
+    const error: any = solutionsResult.reason
+    solutionsError.value = error?.data?.detail || error?.message || 'Unable to load solutions.'
   }
+  if (servicesResult.status === 'fulfilled') {
+    servicePackages.value = servicesResult.value.items || servicesResult.value || []
+  } else {
+    servicePackages.value = []
+    const error: any = servicesResult.reason
+    servicesError.value = error?.data?.detail || error?.message || 'Unable to load service plans.'
+  }
+  contentLoading.value = false
+}
 
-  if (!solutions.value.length) {
-    solutions.value = demoSolutions.slice(0, 6)
-  }
-  if (!servicePackages.value.length) {
-    servicePackages.value = demoServicePackages
-  }
-})
+onMounted(loadPublicContent)
 </script>

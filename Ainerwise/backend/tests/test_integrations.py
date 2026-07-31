@@ -5,6 +5,7 @@ from app.db.session import async_session_factory, engine
 from app.main import app
 from app.services import ai_agent
 from app.services.integrations import mask_config
+from tests.route_utils import registered_route_paths
 
 
 def test_mask_config_hides_secrets():
@@ -17,15 +18,29 @@ def test_mask_config_hides_secrets():
     assert tg["bot_token_set"] is False and tg["admin_chat_id"] == "123"
     voice = mask_config("voice", {"api_key": "secret", "model": "gpt-realtime"})
     assert voice["api_key_set"] is True and "api_key" not in voice
+    whatsapp = mask_config(
+        "whatsapp",
+        {
+            "access_token": "secret",
+            "app_secret": "secret",
+            "verify_token": "secret",
+            "phone_number_id": "123",
+        },
+    )
+    assert whatsapp["access_token_set"] is True and "access_token" not in whatsapp
+    assert whatsapp["app_secret_set"] is True and "app_secret" not in whatsapp
+    assert whatsapp["verify_token_set"] is True and "verify_token" not in whatsapp
+    assert whatsapp["phone_number_id"] == "123"
 
 
 def test_integration_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/admin/integrations",
         "/api/v1/admin/integrations/{category}",
         "/api/v1/admin/integrations/smtp/test",
         "/api/v1/admin/integrations/telegram/test",
+        "/api/v1/admin/integrations/whatsapp/test",
         "/api/v1/admin/integrations/ai/test",
         "/api/v1/admin/integrations/voice/test",
         "/api/v1/ai/assistant",
@@ -39,6 +54,7 @@ def test_voice_is_a_separate_integration_category():
 
     assert "ai" in INTEGRATION_CATEGORIES
     assert "voice" in INTEGRATION_CATEGORIES
+    assert "whatsapp" in INTEGRATION_CATEGORIES
 
 
 def test_ai_assistant_fallback_when_unconfigured():

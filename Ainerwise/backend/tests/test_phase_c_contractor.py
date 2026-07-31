@@ -21,14 +21,16 @@ from app.models import (
     ServicePartner,
 )
 from app.models.ai import KnowledgeDocument
+from app.models.portal_access import Workspace
 from app.services.payments import create_plan_from_quote, mark_milestone_funded, release_milestone
 from app.services.pricing import compute_landed_cost, quote_price
 from app.services.rfq import award_bid, evaluate_bids, invite_partners, match_partners, record_bid
 from app.tasks.celery_app import celery_app
+from tests.route_utils import registered_route_paths
 
 
 def test_phase_c_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/admin/costing/product-costs",
         "/api/v1/admin/costing/price-lists",
@@ -137,17 +139,28 @@ def test_rfq_full_flow():
     async def _run():
         await engine.dispose()
         async with async_session_factory() as db:
+            workspace = Workspace(
+                name=f"RFQ Test {uuid.uuid4().hex[:6]}",
+                slug=f"rfq-test-{uuid.uuid4().hex[:8]}",
+            )
+            db.add(workspace)
+            await db.flush()
             partner_a = ServicePartner(partner_type="electrician", country="Serbia", city="Belgrade",
                                        skills_json=["knx", "electrical"], rating_internal=4.5,
                                        availability_status="available")
             partner_b = ServicePartner(partner_type="electrician", country="Serbia", city="Novi Sad",
                                        skills_json=["knx"], rating_internal=3.0,
                                        availability_status="available")
-            lead = Lead(contact_name="RFQ Test", contact_email="rfq@test.local", status="new")
+            lead = Lead(
+                workspace_id=workspace.id,
+                contact_name="RFQ Test",
+                contact_email="rfq@test.local",
+                status="new",
+            )
             db.add_all([partner_a, partner_b, lead])
             await db.flush()
 
-            rfq = RFQ(title="Villa KNX install", trade="knx",
+            rfq = RFQ(workspace_id=workspace.id, title="Villa KNX install", trade="knx",
                       scope_json={"country": "Serbia", "city": "Belgrade", "summary": "280sqm villa"},
                       currency="EUR", status="draft", lead_id=lead.id)
             db.add(rfq)
@@ -157,13 +170,15 @@ def test_rfq_full_flow():
             candidate_ids = {c["partner_id"] for c in candidates}
             assert str(partner_a.id) in candidate_ids and str(partner_b.id) in candidate_ids
 
-            await invite_partners(db, rfq, [partner_a.id, partner_b.id])
+            invitations = await invite_partners(db, rfq, [partner_a.id, partner_b.id])
             assert rfq.status == "bidding"
+            assert {row.workspace_id for row in invitations} == {workspace.id}
 
-            await record_bid(db, rfq, partner_id=partner_a.id, amount=3000,
-                             currency="EUR", lead_time_days=14, notes=None)
-            await record_bid(db, rfq, partner_id=partner_b.id, amount=2800,
-                             currency="EUR", lead_time_days=30, notes=None)
+            bid_a = await record_bid(db, rfq, partner_id=partner_a.id, amount=3000,
+                                     currency="EUR", lead_time_days=14, notes=None)
+            bid_b = await record_bid(db, rfq, partner_id=partner_b.id, amount=2800,
+                                     currency="EUR", lead_time_days=30, notes=None)
+            assert {bid_a.workspace_id, bid_b.workspace_id} == {workspace.id}
 
             review = await evaluate_bids(db, rfq)
             assert rfq.status == "evaluating"
@@ -191,7 +206,18 @@ def test_payment_plan_lifecycle_and_ledger():
 
             from app.models.payment import LedgerEntry
 
-            quote = Quote(total=10000.0, currency="EUR", status="accepted")
+            workspace = Workspace(
+                name=f"Payment Test {uuid.uuid4().hex[:6]}",
+                slug=f"payment-test-{uuid.uuid4().hex[:8]}",
+            )
+            db.add(workspace)
+            await db.flush()
+            quote = Quote(
+                workspace_id=workspace.id,
+                total=10000.0,
+                currency="EUR",
+                status="accepted",
+            )
             db.add(quote)
             await db.flush()
 

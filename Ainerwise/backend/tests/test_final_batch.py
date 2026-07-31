@@ -6,6 +6,7 @@ from app.main import app
 from app.models.lead import Lead
 from app.services import ai_graph, factorypulse, lifecycle_lines
 from app.services.ai_analysis import _classify
+from tests.route_utils import registered_route_paths
 
 
 # --- FI.7 KitchenGuard / AquaGuard / EnergyGuard ----------------------------
@@ -106,7 +107,7 @@ def test_graph_factorypulse_attaches_industrial_bom():
 # --- 5.15 Telegram webhook --------------------------------------------------
 
 def test_telegram_webhook_route_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     assert "/api/v1/telegram/webhook" in paths
 
 

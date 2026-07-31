@@ -5,6 +5,7 @@ from app.api.v1.endpoints.crm import _with_overall
 from app.db.session import async_session_factory, engine
 from app.main import app
 from app.services import renewal_queue
+from tests.route_utils import iter_registered_routes, registered_route_paths
 
 
 def test_scorecard_overall_is_average_of_dimensions():
@@ -20,7 +21,7 @@ def test_scorecard_overall_skips_missing_dimensions():
 
 
 def test_crm_and_dashboard_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/renewal-queue",
         "/api/v1/supplier-scorecards",
@@ -32,7 +33,7 @@ def test_crm_and_dashboard_routes_registered():
 
 def test_leads_list_accepts_crm_filter_params():
     # The admin leads list endpoint must declare the FI.6.3 filter/sort params.
-    route = next(r for r in app.routes if r.path == "/api/v1/leads" and "GET" in getattr(r, "methods", set()))
+    route = next(r for _p, r in iter_registered_routes(app) if _p == "/api/v1/leads" and "GET" in getattr(r, "methods", set()))
     params = set(route.dependant.query_params and [p.name for p in route.dependant.query_params] or [])
     for expected in ("solution_line", "min_recurring_score", "compliance_risk", "amc_potential", "multi_site", "sort", "order"):
         assert expected in params, expected

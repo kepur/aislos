@@ -1,10 +1,14 @@
 <template>
   <div class="mobile-layout">
-    <MobileHeader />
+    <ClientOnly>
+      <MobileHeader />
+    </ClientOnly>
     <main class="mobile-content">
       <slot />
     </main>
-    <BottomNav />
+    <ClientOnly>
+      <BottomNav />
+    </ClientOnly>
   </div>
 </template>
 

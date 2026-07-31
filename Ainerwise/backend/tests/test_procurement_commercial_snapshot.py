@@ -63,6 +63,7 @@ def test_snapshot_persists_hash():
         terms = _sample_terms()
         terms_hash = compute_terms_hash(terms)
         async with async_session_factory() as db:
+            from app.services.portal_access import get_default_workspace
             from app.models.portal_policy import PortalPolicy
             from app.models.procurement import (
                 BoqVersion,
@@ -90,8 +91,11 @@ def test_snapshot_persists_hash():
                     )
                 )
             ).scalar_one()
+            workspace = await get_default_workspace(db)
+            assert workspace is not None
 
             project = ProcurementProject(
+                workspace_id=workspace.id,
                 owner_user_id=user.id,
                 portal_key="aislos",
                 portal_policy_id=policy.id,
@@ -105,6 +109,7 @@ def test_snapshot_persists_hash():
             await db.flush()
 
             boq = BoqVersion(
+                workspace_id=workspace.id,
                 project_id=project.id,
                 version=1,
                 status="frozen",
@@ -113,6 +118,7 @@ def test_snapshot_persists_hash():
             await db.flush()
 
             package = ProcurementPackage(
+                workspace_id=workspace.id,
                 project_id=project.id,
                 boq_version_id=boq.id,
                 title="Lighting",
@@ -126,6 +132,7 @@ def test_snapshot_persists_hash():
             await db.flush()
 
             snap = CommercialSnapshot(
+                workspace_id=workspace.id,
                 portal_key="aislos",
                 portal_policy_id=policy.id,
                 procurement_project_id=project.id,

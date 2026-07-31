@@ -1,5 +1,5 @@
 {
-  "app_name": "AinerWise Procurement",
+  "app_name": "AISLOS Market",
   "tagline": "Tell suppliers what you need.",
   "common": {
     "submit": "Submit",
@@ -70,6 +70,31 @@
     "me": "Me",
     "pings": "Pings",
     "adCampaigns": "Ad Campaigns"
+  },
+  "market": {
+    "search_placeholder": "Search products...",
+    "near_me": "Near me (all locations)",
+    "categories": "Categories",
+    "seller_type": "Seller Type",
+    "all": "All",
+    "individual": "Individual",
+    "business": "Business",
+    "verified_only": "Verified businesses only",
+    "products": "products",
+    "loading": "Loading...",
+    "near": "Near",
+    "could_not_load": "Could not load marketplace products",
+    "no_products": "No products found",
+    "post_request_instead": "Post a request instead",
+    "ad": "Ad",
+    "buy_now": "Buy Now",
+    "quote": "Quote",
+    "load_more": "Load more",
+    "sort_best": "Best",
+    "sort_new": "New",
+    "sort_popular": "Popular",
+    "sort_price_asc": "Price ↑",
+    "sort_price_desc": "Price ↓"
   },
   "project": {
     "title": "AI Projects",

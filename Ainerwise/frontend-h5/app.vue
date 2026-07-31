@@ -9,11 +9,12 @@
 <script setup lang="ts">
 const route = useRoute()
 const { initAuth, user } = useAuth()
+const { loadAccess } = usePortalManifest()
 const { mode } = usePortalMode()
 
 const partnerRoles = ['service_partner', 'partner_worker', 'maintenance_worker']
 const customerRoles = ['buyer', 'customer_user']
-const customerProtectedPrefixes = ['/dashboard', '/projects', '/profile']
+const customerProtectedPrefixes = ['/dashboard', '/projects', '/customer', '/profile']
 
 function enforcePortalRole() {
   if (!user.value || route.path === '/access-denied' || route.path === '/login') return
@@ -28,6 +29,7 @@ function enforcePortalRole() {
 
 onMounted(async () => {
   await initAuth()
+  await loadAccess()
   enforcePortalRole()
 })
 

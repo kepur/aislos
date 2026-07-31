@@ -17,7 +17,7 @@ from app.models.integration import IntegrationEvent
 from app.models.notification import ReportJob
 from app.models.project import Project
 from app.services import lifecycle_alerts
-from app.services.integration_events import create_integration_event
+from app.services.event_bus import emit_event
 
 
 async def _recent_event_exists(db: AsyncSession, event_type: str, ref: str, *, days: int = 6) -> bool:
@@ -36,7 +36,12 @@ async def _emit(db: AsyncSession, event_type: str, ref: str, payload: dict[str, 
     if await _recent_event_exists(db, event_type, ref):
         return False
     payload = {**payload, "ref": ref}
-    await create_integration_event(db, event_type=event_type, payload=payload)
+    await emit_event(
+        db,
+        event_type=event_type,
+        payload=payload,
+        target_channel="telegram_admin",
+    )
     return True
 
 
@@ -76,6 +81,7 @@ async def scan_and_notify(db: AsyncSession, *, within_days: int = 90) -> dict[st
             "recommended_action": f"Reorder {inv.name} (qty {inv.quantity} <= reorder {inv.reorder_level})",
         }))
 
+    await db.commit()
     return emitted
 
 
@@ -104,6 +110,7 @@ async def generate_report_jobs(db: AsyncSession, *, period_label: str | None = N
         if existing.scalar_one_or_none():
             continue
         db.add(ReportJob(
+            workspace_id=project.workspace_id,
             project_id=project.id,
             report_type="monthly",
             period_label=period_label,

@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import AdminUser, DB
 from app.crud.region import crud_region
-from app.schemas.region import RegionCreate, RegionRead, RegionUpdate
+from app.schemas.region import RegionCreate, RegionPublicRead, RegionRead, RegionUpdate
 
 router = APIRouter(prefix="/regions", tags=["regions"])
 
@@ -14,24 +14,38 @@ async def list_regions(
     db: DB,
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
-    active_only: bool = False,
 ):
     from app.models.region import Region
 
-    filters = []
-    if active_only:
-        filters.append(Region.is_active == True)
     items, total = await crud_region.get_multi(
-        db, skip=skip, limit=limit, filters=filters or None,
+        db, skip=skip, limit=limit, filters=[Region.is_active.is_(True)],
+        order_by=Region.name,
+    )
+    return {"items": [RegionPublicRead.model_validate(i) for i in items], "total": total}
+
+
+@router.get("/admin/all")
+async def list_all_regions(
+    db: DB,
+    admin: AdminUser,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(50, ge=1, le=100),
+):
+    from app.models.region import Region
+
+    items, total = await crud_region.get_multi(
+        db,
+        skip=skip,
+        limit=limit,
         order_by=Region.name,
     )
     return {"items": [RegionRead.model_validate(i) for i in items], "total": total}
 
 
-@router.get("/{id}", response_model=RegionRead)
+@router.get("/{id}", response_model=RegionPublicRead)
 async def get_region(id: uuid.UUID, db: DB):
     region = await crud_region.get(db, id)
-    if not region:
+    if not region or not region.is_active:
         raise HTTPException(status_code=404, detail="Region not found")
     return region
 

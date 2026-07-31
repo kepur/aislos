@@ -14,8 +14,9 @@ from pydantic import BaseModel
 from app.api.deps import DB
 from app.core.config import settings
 from app.models.lead import Lead
+from app.services.event_bus import EventType, emit_event
 from app.services.integrations import get_config
-from app.services.integration_events import create_integration_event
+from app.services.portal_access import get_default_workspace
 
 router = APIRouter(prefix="/internal/v1", tags=["internal"])
 
@@ -46,7 +47,11 @@ class InternalLeadCreate(BaseModel):
 async def create_lead_from_ai(data: InternalLeadCreate, db: DB):
     if not (data.contact_email or data.contact_phone or data.contact_name):
         raise HTTPException(status_code=400, detail="At least one contact field is required")
+    workspace = await get_default_workspace(db)
+    if workspace is None or workspace.status != "active":
+        raise HTTPException(status_code=503, detail="Lead intake Workspace is unavailable")
     lead = Lead(
+        workspace_id=workspace.id,
         contact_name=data.contact_name,
         contact_email=data.contact_email,
         contact_phone=data.contact_phone,
@@ -63,9 +68,9 @@ async def create_lead_from_ai(data: InternalLeadCreate, db: DB):
     )
     db.add(lead)
     await db.flush()
-    await create_integration_event(
+    await emit_event(
         db,
-        event_type="lead.created",
+        event_type=EventType.LEAD_CREATED,
         payload={
             "lead_id": str(lead.id),
             "contact_name": lead.contact_name,
@@ -76,17 +81,25 @@ async def create_lead_from_ai(data: InternalLeadCreate, db: DB):
             "budget_range": lead.budget_range,
             "source": "ai_chat",
         },
+        aggregate_type="lead",
+        aggregate_id=lead.id,
+        target_channel="telegram_admin",
     )
+    await db.commit()
     return {"lead_id": str(lead.id)}
 
 
 @router.get("/channel-config/{channel}", dependencies=[ServiceAuth])
 async def get_channel_config(channel: str, db: DB):
     """Expose channel credentials only to trusted internal adapters."""
-    if channel not in {"telegram"}:
+    category = "smtp" if channel == "email" else channel
+    if category not in {"smtp", "telegram", "whatsapp"}:
         raise HTTPException(status_code=404, detail="Unsupported channel")
-    config = await get_config(db, channel)
-    return {key: value for key, value in config.items() if not key.startswith("_")}
+    config = await get_config(db, category)
+    return {
+        **{key: value for key, value in config.items() if not key.startswith("_")},
+        "enabled": bool(config.get("_enabled")),
+    }
 
 
 class InternalChannelInbound(BaseModel):

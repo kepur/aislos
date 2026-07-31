@@ -1,7 +1,10 @@
-export default defineNuxtRouteMiddleware(() => {
+import { getLocalePrefixFromPath, withLocalePrefix } from '~/utils/localeRoutes'
+
+export default defineNuxtRouteMiddleware((to) => {
   const { isLoggedIn } = useAuth()
+  const prefix = getLocalePrefixFromPath(to.path)
 
   if (!isLoggedIn.value) {
-    return navigateTo('/login')
+    return navigateTo(prefix ? withLocalePrefix('/login', prefix) : '/login')
   }
 })

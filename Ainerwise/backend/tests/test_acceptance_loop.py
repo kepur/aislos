@@ -13,6 +13,7 @@ from app.core.permissions import (
 )
 from app.db.session import async_session_factory, engine
 from app.main import app
+from tests.route_utils import registered_route_paths
 
 TINY_PNG_DATA_URL = "data:image/png;base64," + base64.b64encode(
     base64.b64decode(
@@ -24,11 +25,12 @@ TINY_PNG_DATA_URL = "data:image/png;base64," + base64.b64encode(
 def test_role_matrix():
     values = {r.value for r in UserRole}
     assert {
-        "super_admin", "admin", "sales_manager", "project_manager", "finance",
+        "super_admin", "admin", "sales_manager", "project_manager", "finance", "marketing_operator",
         "buyer", "customer_user", "vendor", "developer",
         "service_partner", "partner_worker", "maintenance_worker",
     } == values
     assert UserRole.SALES_MANAGER in STAFF_ROLES
+    assert UserRole.MARKETING_OPERATOR in STAFF_ROLES
     assert UserRole.PARTNER_WORKER in PARTNER_ROLES
     assert UserRole.MAINTENANCE_WORKER in PARTNER_ROLES
     assert UserRole.CUSTOMER_USER in CUSTOMER_ROLES
@@ -36,7 +38,7 @@ def test_role_matrix():
 
 
 def test_completion_route_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     assert "/api/v1/partner/tasks/{id}/complete" in paths
 
 
@@ -55,20 +57,23 @@ def test_acceptance_closed_loop():
             from app.models.project import Project
             from app.services.acceptance import create_acceptance_request, handle_acceptance_signed
             from app.services.esign import apply_signature
+            from app.services.portal_access import get_default_workspace
 
-            lead = Lead(contact_name="Ana Petrović", contact_email="ana@e2e.local",
+            workspace = await get_default_workspace(db)
+            assert workspace is not None
+            lead = Lead(workspace_id=workspace.id, contact_name="Ana Petrović", contact_email="ana@e2e.local",
                         city="Novi Sad", country="Serbia", status="won")
             db.add(lead)
             await db.flush()
-            project = Project(lead_id=lead.id, title="Novi Sad apartment — KNX retrofit",
+            project = Project(workspace_id=workspace.id, lead_id=lead.id, title="Novi Sad apartment — KNX retrofit",
                               status="installation")
             db.add(project)
             await db.flush()
-            plan = PaymentPlan(project_id=project.id, currency="EUR",
+            plan = PaymentPlan(workspace_id=project.workspace_id, project_id=project.id, currency="EUR",
                                total=Decimal("8000"), status="active")
             db.add(plan)
             await db.flush()
-            milestone = PaymentMilestone(plan_id=plan.id, seq=3, label="acceptance",
+            milestone = PaymentMilestone(workspace_id=plan.workspace_id, plan_id=plan.id, seq=3, label="acceptance",
                                          pct=Decimal("30"), amount=Decimal("2400"),
                                          trigger="on_acceptance", status="funded")
             db.add(milestone)

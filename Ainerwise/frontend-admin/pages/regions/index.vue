@@ -9,6 +9,7 @@
         + Add Region
       </button>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <div
@@ -116,6 +117,7 @@ const editing = ref<any>(null)
 const saving = ref(false)
 const languagesText = ref('')
 const vatRate = ref<number | null>(null)
+const error = ref('')
 
 const form = reactive({
   code: '',
@@ -153,6 +155,7 @@ function openEditModal(region: any) {
 
 async function saveRegion() {
   saving.value = true
+  error.value = ''
   try {
     const body: any = {
       name: form.name,
@@ -175,13 +178,14 @@ async function saveRegion() {
     showModal.value = false
     await loadRegions()
   } catch (e: any) {
-    console.error('Save region failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Region could not be saved'
   } finally {
     saving.value = false
   }
 }
 
 async function toggleActive(region: any) {
+  error.value = ''
   try {
     await apiFetch(`/regions/${region.id}`, {
       method: 'PUT',
@@ -189,16 +193,18 @@ async function toggleActive(region: any) {
     })
     await loadRegions()
   } catch (e: any) {
-    console.error('Toggle active failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Region status could not be changed'
   }
 }
 
 async function loadRegions() {
+  error.value = ''
   try {
-    const res = await apiFetch<any>('/regions?limit=50')
+    const res = await apiFetch<any>('/regions/admin/all?limit=50')
     regions.value = res.items || []
-  } catch {
+  } catch (e: any) {
     regions.value = []
+    error.value = e?.data?.detail || e?.message || 'Regions could not be loaded'
   }
 }
 

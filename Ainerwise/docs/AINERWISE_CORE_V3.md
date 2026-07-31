@@ -62,6 +62,14 @@ Portal 10 设计冻结于 `AISLOS_EXPERIENCE_CENTER.md`；**EC-0 代码骨架已
 `frontend-h5` 的目标 Logical Portal 包含 Customer、Partner Company、Field Worker、
 Supplier 和 Kiosk。完整迁移与现场服务任务见 `PORTAL_FIELD_SERVICE_V1_TASKS.md`。
 
+目标 Portal 不是只按当前兼容端口计算。以下业务体验必须同时具备 PC 与 H5：
+AinerWise 官网/Consumer、Customer Workspace、Cebu Buyer、Supplier、Partner Company
+和 Marketing Operations。Field Worker、Crew Lead 与 Kiosk 主要使用 H5/PWA；
+AISLOS 内部工作台、AI Supervisor 和 Developer Portal 主要使用 PC。
+
+原 Ainerwise、AISLOS 与 CebuProjects 的功能只能增加不能减少。完整零损失迁移基线、
+Portal 矩阵和执行闸门见仓库根目录 `FULL_PORTAL_ZERO_LOSS_EXECUTION_TASKS.md`。
+
 **2026-06-10 创始人解锁指令**：为立即验证 Store 与开发者需求，7–8 的最小数据
 闭环提前上线。此解锁不等于商业 Marketplace 发布：第三方 Agent 执行、数据授权、
 订阅收费、分成结算仍受 Phase I 发布门约束。

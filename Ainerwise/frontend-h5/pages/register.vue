@@ -43,6 +43,7 @@
           <select v-model="form.role"
             class="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-300 bg-white">
             <option value="buyer">{{ $t('auth.buyer') }}</option>
+            <option value="vendor">Supplier</option>
             <option value="service_partner">{{ $t('auth.servicePartner') }}</option>
           </select>
           <p v-if="form.role === 'service_partner'" class="mt-1.5 text-[11px] leading-relaxed text-slate-400">
@@ -67,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'auth', middleware: 'guest' })
+definePageMeta({ layout: 'auth', middleware: 'guest', alias: ['/auth/register'] })
 
 const { register, user } = useAuth()
 const form = reactive({ full_name: '', email: '', password: '', company_name: '', role: 'buyer' })
@@ -79,7 +80,7 @@ async function handleRegister() {
   loading.value = true
   try {
     await register(form)
-    navigateTo(user.value?.role === 'service_partner' ? '/partner' : '/')
+    navigateTo(user.value?.role === 'service_partner' ? '/partner' : user.value?.role === 'vendor' ? '/supplier' : '/')
   } catch (e: any) {
     error.value = e?.data?.detail || 'Registration failed'
   } finally {

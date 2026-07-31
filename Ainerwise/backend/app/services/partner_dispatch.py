@@ -76,6 +76,7 @@ async def dispatch_partner_task(
         raise ValueError("Partner account is not linked to a user")
 
     task = MaintenanceSchedule(
+        workspace_id=project.workspace_id,
         project_id=project.id,
         assigned_to=partner.user_id,
         task_type=task_type,

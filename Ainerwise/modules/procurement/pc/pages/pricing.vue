@@ -20,10 +20,10 @@
           </p>
           <ul role="list" class="mt-8 space-y-3 text-sm leading-6 text-gray-600">
             <li class="flex gap-x-3"><UIcon name="i-heroicons-check" class="h-6 w-5 flex-none text-indigo-600" /> Unlimited RFQs</li>
-            <li class="flex gap-x-3"><UIcon name="i-heroicons-check" class="h-6 w-5 flex-none text-indigo-600" /> Escrow protection included</li>
+            <li class="flex gap-x-3"><UIcon name="i-heroicons-check" class="h-6 w-5 flex-none text-indigo-600" /> Milestone payment tracking</li>
             <li class="flex gap-x-3"><UIcon name="i-heroicons-check" class="h-6 w-5 flex-none text-indigo-600" /> Buyer protection policy</li>
           </ul>
-          <UButton block color="indigo" variant="outline" class="mt-8" to="/register">Create Buyer Account</UButton>
+          <UButton block color="indigo" variant="outline" class="mt-8" to="/register-buyer">Create Buyer Account</UButton>
         </div>
 
         <!-- Supplier Pricing -->
@@ -39,10 +39,10 @@
           </p>
           <ul role="list" class="mt-8 space-y-3 text-sm leading-6 text-gray-600">
             <li class="flex gap-x-3"><UIcon name="i-heroicons-check" class="h-6 w-5 flex-none text-indigo-600" /> No monthly subscription</li>
-            <li class="flex gap-x-3"><UIcon name="i-heroicons-check" class="h-6 w-5 flex-none text-indigo-600" /> Guaranteed escrow payouts</li>
+            <li class="flex gap-x-3"><UIcon name="i-heroicons-check" class="h-6 w-5 flex-none text-indigo-600" /> Milestone-based payment records</li>
             <li class="flex gap-x-3"><UIcon name="i-heroicons-check" class="h-6 w-5 flex-none text-indigo-600" /> Premium matchmaking algorithm</li>
           </ul>
-          <UButton block color="indigo" class="mt-8" to="/register">Apply as Supplier</UButton>
+          <UButton block color="indigo" class="mt-8" to="/register-supplier">Apply as Supplier</UButton>
         </div>
 
       </div>

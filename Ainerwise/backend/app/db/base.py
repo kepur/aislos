@@ -1,6 +1,6 @@
 from app.models.base_model import Base
 
-from app.models.user import User, Company  # noqa: F401
+from app.models.user import User, Company, PasswordResetToken  # noqa: F401
 from app.models.product import Product, ProductCategory, ProductCompatibility  # noqa: F401
 from app.models.solution import Solution, SolutionPackage  # noqa: F401
 from app.models.lead import Lead, SiteSurvey  # noqa: F401
@@ -14,8 +14,13 @@ from app.models.file import FileAsset  # noqa: F401
 from app.models.certification import CertificationRecord, WarrantyPolicy  # noqa: F401
 from app.models.region import Region  # noqa: F401
 from app.models.audit import AuditLog  # noqa: F401
+from app.models.backup import BackupJob, BackupSchedule  # noqa: F401
+from app.models.admin_config import AdminNote, NotificationTemplate, PlatformSetting  # noqa: F401
+from app.models.commerce_geo import CompanyBranch, ServiceArea  # noqa: F401
 from app.models.legacy_bridge import LegacyBridgeIdempotency, LegacyIdentityMapping  # noqa: F401
+from app.models.legacy_migration import LegacyMigrationRecord, LegacyMigrationRun  # noqa: F401
 from app.models.portal_policy import PortalPolicy  # noqa: F401
+from app.models.privacy import PrivacyRequest  # noqa: F401
 from app.models.procurement import (  # noqa: F401
     BoqItem,
     BoqItemOption,
@@ -71,5 +76,48 @@ from app.models.content import (  # noqa: F401
 from app.models.agent import Agent, AgentGrant, AgentObjectGrant  # noqa: F401
 from app.models.mission import AgentMission, AgentMissionTask  # noqa: F401
 from app.models.ecosystem import AgentInstallation, MarketplaceListing, StoreOrder, StoreOrderItem  # noqa: F401
+from app.modules.cebu_trade.models import (  # noqa: F401
+    Wallet,
+    WalletTransaction,
+    WalletDeposit,
+    Address,
+    ShippingRoute,
+    ShippingRate,
+    OrderShipping,
+    AdCampaign,
+    EscrowTransaction,
+    FeeLineItem,
+    FeeRule,
+    FxQuote,
+    Payout,
+    PaymentEvent,
+    PaymentMethodConfig,
+    PaymentQuote,
+    ProviderPaymentIntent,
+    RegionPaymentConfig,
+    CurrencyConfig,
+    SettlementAdjustment,
+    SettlementEvent,
+)
+from app.modules.kyc.models import (  # noqa: F401
+    CompanyDocument,
+    KYCAnalysisResult,
+    VerificationReview,
+)
+from app.modules.buyer_project.models import (  # noqa: F401
+    BuyerProject,
+    ProjectFile,
+    ProjectAIRun,
+    ProjectLineItem,
+    ProjectMessage,
+    ProjectMetricTemplate,
+    ProjectMetricValue,
+    ProjectPriceSnapshot,
+    ProjectReport,
+    ProjectReportVersion,
+    ProjectReportColumn,
+    ProjectReportRow,
+    ProjectReportChangeLog,
+)
 
 __all__ = ["Base"]

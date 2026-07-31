@@ -33,11 +33,19 @@ from app.models.lifecycle import (
     SupplierWarranty,
 )
 from app.schemas import lifecycle as s
+from app.services.lifecycle_access import resolve_lifecycle_payload_workspace
 
 router = APIRouter(tags=["lifecycle"])
 
 # Optional list filters applied only when the model actually has the column.
-_FILTER_FIELDS = ("project_id", "product_id", "supplier_id", "monitoring_point_id", "inventory_item_id")
+_FILTER_FIELDS = (
+    "workspace_id",
+    "project_id",
+    "product_id",
+    "supplier_id",
+    "monitoring_point_id",
+    "inventory_item_id",
+)
 
 
 def _register_crud(prefix: str, crud: CRUDBase, model: type[Base], read, create, update) -> None:
@@ -49,6 +57,7 @@ def _register_crud(prefix: str, crud: CRUDBase, model: type[Base], read, create,
         admin: AdminUser,
         skip: int = Query(0, ge=0),
         limit: int = Query(50, ge=1, le=200),
+        workspace_id: uuid.UUID | None = None,
         project_id: uuid.UUID | None = None,
         product_id: uuid.UUID | None = None,
         supplier_id: uuid.UUID | None = None,
@@ -76,7 +85,13 @@ def _register_crud(prefix: str, crud: CRUDBase, model: type[Base], read, create,
 
     @sub.post("", response_model=read, status_code=201)
     async def create_item(data: create, db: DB, admin: AdminUser):
-        return await crud.create(db, obj_in=data.model_dump())
+        payload = data.model_dump()
+        if hasattr(model, "workspace_id"):
+            try:
+                payload["workspace_id"] = await resolve_lifecycle_payload_workspace(db, payload)
+            except ValueError as exc:
+                raise HTTPException(status_code=409, detail=str(exc)) from None
+        return await crud.create(db, obj_in=payload)
 
     if update is not None:
         @sub.put("/{id}", response_model=read)
@@ -84,7 +99,15 @@ def _register_crud(prefix: str, crud: CRUDBase, model: type[Base], read, create,
             obj = await crud.get(db, id)
             if not obj:
                 raise HTTPException(status_code=404, detail="Not found")
-            return await crud.update(db, db_obj=obj, obj_in=data.model_dump(exclude_unset=True))
+            payload = data.model_dump(exclude_unset=True)
+            if hasattr(model, "workspace_id"):
+                try:
+                    payload["workspace_id"] = await resolve_lifecycle_payload_workspace(
+                        db, payload, existing=obj
+                    )
+                except ValueError as exc:
+                    raise HTTPException(status_code=409, detail=str(exc)) from None
+            return await crud.update(db, db_obj=obj, obj_in=payload)
 
     @sub.delete("/{id}")
     async def delete_item(id: uuid.UUID, db: DB, admin: AdminUser):

@@ -11,7 +11,7 @@ def send_daily_briefing():
 
     from app.core.config import settings
     from app.services.agent_runtime import AgentAuthorizationError, require_agent
-    from app.services.integration_events import create_integration_event
+    from app.services.event_bus import emit_event
 
     async def _run(db):
         try:
@@ -30,12 +30,13 @@ def send_daily_briefing():
             )
             response.raise_for_status()
             briefing = response.json()
-        await create_integration_event(
+        await emit_event(
             db,
             event_type="briefing.daily",
             payload={"text": briefing.get("text"), "metrics": briefing.get("metrics")},
             target_channel="telegram_admin",
         )
+        await db.commit()
         return {"delivered": True}
 
     return run_db_task(_run)

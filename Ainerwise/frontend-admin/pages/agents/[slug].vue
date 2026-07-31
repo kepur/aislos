@@ -1,4 +1,12 @@
 <template>
+  <div v-if="pageError" class="admin-panel border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+    <h1 class="font-medium">Agent access unavailable</h1>
+    <p class="mt-1">{{ pageError }}</p>
+    <select v-if="memberships.length" v-model="selectedWorkspaceId" class="input-field mt-4 w-full" @change="load">
+      <option value="" disabled>Select installed Workspace</option>
+      <option v-for="membership in memberships" :key="membership.id" :value="membership.workspace_id">{{ membership.membership_type }} · {{ membership.workspace_id }}</option>
+    </select>
+  </div>
   <div v-if="agent">
     <NuxtLink to="/agents" class="text-xs text-gray-500 hover:underline">← AI Employees</NuxtLink>
     <div class="flex items-center justify-between mt-1 mb-6">
@@ -32,7 +40,11 @@
 
       <div class="admin-panel p-5">
         <h2 class="font-medium text-gray-900 mb-1">Data grants</h2>
-        <p class="text-xs text-gray-400 mb-3">Core registered workflows enforce these scopes. Changes are audited; future third-party agents start at zero.</p>
+        <p class="text-xs text-gray-400 mb-3">Core registered workflows enforce these scopes. Official Agents use global Core grants; third-party Agents use the selected Workspace and always start at zero.</p>
+        <select v-if="agent.vendor === 'third_party'" v-model="selectedWorkspaceId" class="input-field mb-3 w-full" @change="load">
+          <option value="" disabled>Select installed Workspace</option>
+          <option v-for="membership in memberships" :key="membership.id" :value="membership.workspace_id">{{ membership.membership_type }} · {{ membership.workspace_id }}</option>
+        </select>
         <div class="space-y-2">
           <label v-for="g in agent.grants" :key="g.scope" class="flex items-center justify-between text-sm border-b pb-2">
             <span class="text-gray-700">{{ scopeLabels[g.scope] || g.scope }}</span>
@@ -69,6 +81,9 @@ const { apiFetch } = useApi()
 const agent = ref<any>(null)
 const config = ref<any>({})
 const busy = ref(false)
+const pageError = ref('')
+const { memberships, activeWorkspaceId, loadAccess } = usePortalManifest()
+const selectedWorkspaceId = ref('')
 
 const scopeLabels: Record<string, string> = {
   product_data: 'Read product data',
@@ -82,8 +97,15 @@ const scopeLabels: Record<string, string> = {
 }
 
 async function load() {
-  agent.value = await apiFetch<any>(`/admin/agents/${route.params.slug}`)
-  config.value = { ...(agent.value.config_json || {}) }
+  const query = selectedWorkspaceId.value ? `?workspace_id=${selectedWorkspaceId.value}` : ''
+  pageError.value = ''
+  agent.value = null
+  try {
+    agent.value = await apiFetch<any>(`/admin/agents/${route.params.slug}${query}`)
+    config.value = { ...(agent.value.config_json || {}) }
+  } catch (error: any) {
+    pageError.value = error?.data?.detail || error?.message || 'This Agent is not installed in the selected Workspace.'
+  }
 }
 
 async function saveConfig() {
@@ -114,7 +136,11 @@ async function toggleGrant(g: any) {
   try {
     await apiFetch(`/admin/agents/${route.params.slug}/grants`, {
       method: 'POST',
-      body: { scope: g.scope, granted: !g.granted },
+      body: {
+        scope: g.scope,
+        granted: !g.granted,
+        workspace_id: agent.value.vendor === 'third_party' ? selectedWorkspaceId.value : null,
+      },
     })
     await load()
   } finally {
@@ -122,5 +148,9 @@ async function toggleGrant(g: any) {
   }
 }
 
-onMounted(load)
+onMounted(async () => {
+  await loadAccess()
+  selectedWorkspaceId.value = activeWorkspaceId.value || (memberships.value.length === 1 ? memberships.value[0].workspace_id : '')
+  await load()
+})
 </script>

@@ -4,6 +4,7 @@
       <h1 class="admin-page-title">{{ t('lc.rqTitle') }}</h1>
       <p class="admin-page-desc">{{ t('lc.rqDesc') }}</p>
     </div>
+    <p v-if="error" class="rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div v-if="Object.keys(queue.counts || {}).length" class="flex flex-wrap gap-2">
       <span v-for="(count, type) in queue.counts" :key="type"
@@ -52,6 +53,7 @@ definePageMeta({ layout: 'default' })
 const { apiFetch } = useApi()
 const { t } = useI18n({ useScope: 'global' })
 const queue = ref<any>({ opportunities: [], counts: {} })
+const error = ref('')
 
 function priorityClass(p: string) {
   if (p === 'high') return 'bg-red-50 text-red-600'
@@ -62,8 +64,9 @@ function priorityClass(p: string) {
 onMounted(async () => {
   try {
     queue.value = await apiFetch<any>('/renewal-queue')
-  } catch {
+  } catch (e: any) {
     queue.value = { opportunities: [], counts: {} }
+    error.value = e?.data?.detail || e?.message || 'Renewal queue could not be loaded'
   }
 })
 </script>

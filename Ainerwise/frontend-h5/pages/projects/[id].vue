@@ -6,6 +6,7 @@
       </svg>
       {{ $t('ws.backToProjects') }}
     </NuxtLink>
+    <p v-if="workspaceError" class="mb-4 text-xs text-amber-700 bg-amber-50 rounded-xl p-3">{{ workspaceError }}</p>
 
     <div v-if="project" class="space-y-4">
       <!-- Header -->
@@ -296,18 +297,21 @@
       </template>
     </div>
 
+    <div v-else-if="loadError" class="text-center py-20 text-red-500"><p class="text-sm">{{ loadError }}</p></div>
     <div v-else class="text-center py-20 text-slate-400"><p class="text-sm">{{ $t('ws.loadingProject') }}</p></div>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({ middleware: 'auth' })
+definePageMeta({ layout: 'customer-mobile', middleware: 'auth' })
 
 const route = useRoute()
 const { apiFetch } = useApi()
 const { t } = useI18n()
 const project = ref<any>(null)
 const projectId = route.params.id as string
+const loadError = ref('')
+const workspaceError = ref('')
 
 const activeTab = ref('overview')
 const loaded = reactive<Record<string, boolean>>({})
@@ -432,7 +436,14 @@ async function submitMission() {
 onMounted(async () => {
   try {
     project.value = await apiFetch<any>(`/projects/${projectId}`)
+  } catch (e: any) {
+    loadError.value = e?.data?.detail || e?.message || 'Project could not be loaded'
+    return
+  }
+  try {
     workspace.value = await apiFetch<any>(`/portal/projects/${projectId}/workspace`)
-  } catch {}
+  } catch (e: any) {
+    workspaceError.value = e?.data?.detail || e?.message || 'Some project workspace features could not be loaded'
+  }
 })
 </script>

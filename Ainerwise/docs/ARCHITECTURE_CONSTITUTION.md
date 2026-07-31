@@ -57,6 +57,19 @@ Marketing、AI Supervisor、Field Operations 或 Finance 重复登录外观相�
 
 完整执行规则见 `docs/PORTAL_FIELD_SERVICE_V1_TASKS.md`。
 
+### Feature Superset 与 Zero-Loss Migration（强制）
+
+原有 Ainerwise、AISLOS 与 CebuProjects 的功能只能增加，不能减少。项目整合后的 Core
+和 Portal 必须是原系统能力的超集。任何原页面、按钮、API、工作流、数据、权限、
+后台任务和外部集成都必须进入 Feature Parity Ledger，并拥有明确的新归属和验证证据。
+
+物理前端收敛不得被解释为界面或功能收缩。AinerWise 官网、Customer、Marketing 和
+Partner Company 必须同时提供独立 PC 与 H5 体验；Field Worker、Crew Lead 与 Kiosk
+提供任务化 H5/PWA。原 Cebu PC、H5、Admin 全部界面和能力在零损失发布闸门通过、
+且创始人逐项批准退役前必须保留。
+
+完整执行规则见仓库根目录 `FULL_PORTAL_ZERO_LOSS_EXECUTION_TASKS.md`。
+
 ---
 
 ## 品牌三层（v3 新增，冻结）

@@ -1,4 +1,4 @@
-"""Integration config access + secret masking (SMTP / Telegram / AI)."""
+"""Integration config access + secret masking."""
 from __future__ import annotations
 
 from typing import Any
@@ -13,13 +13,18 @@ from app.models.settings import SECRET_KEYS, IntegrationSetting
 DEFAULTS: dict[str, dict[str, Any]] = {
     "smtp": {"host": "", "port": 587, "username": "", "from_email": "", "from_name": "AinerWise", "use_tls": True, "use_ssl": False},
     "telegram": {"admin_chat_id": "", "webhook_url": ""},
+    "whatsapp": {"phone_number_id": "", "graph_api_version": "v23.0"},
     "ai": {"base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini", "temperature": 0.3, "system_prompt": "", "embedding_model": "text-embedding-3-small"},
-    # Image generation (OpenAI-compatible /images/generations endpoint).
-    "ai_media": {"base_url": "https://api.openai.com/v1", "image_model": "gpt-image-1", "image_size": "1024x1024"},
     # Social publishing aggregator (Ayrshare-style REST: POST {base_url}/post).
     "social": {"base_url": "https://app.ayrshare.com/api", "default_platforms": ["linkedin", "facebook"]},
     # Stripe Connect (requires EU platform entity — see ARCHITECTURE_CONSTITUTION Art.3).
     "stripe": {"success_url": "", "cancel_url": ""},
+    # AISLOS Market payment-mode gate. wallet_payments_enabled=False →
+    # records-first direct payments only (no custody). Locales/regions live in
+    # the localization config (endpoints/localization.py), not here.
+    "market": {
+        "wallet_payments_enabled": False,
+    },
     # Kiosk realtime voice (Experience Center). OpenAI-Realtime-compatible:
     # ephemeral client secrets are minted server-side; the key never reaches tablets.
     "voice": {

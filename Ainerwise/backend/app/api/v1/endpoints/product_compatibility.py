@@ -2,7 +2,7 @@ import uuid
 
 from fastapi import APIRouter, HTTPException, Query
 
-from app.api.deps import AdminUser, CurrentUser, DB
+from app.api.deps import AdminUser, DB
 from app.crud.product_compatibility import crud_product_compatibility
 from app.models.product import ProductCompatibility
 from app.schemas.product_compatibility import (
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/product-compatibility", tags=["product-compatibility
 @router.get("")
 async def list_product_compatibility(
     db: DB,
-    current_user: CurrentUser,
+    admin: AdminUser,
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
     product_id: uuid.UUID | None = Query(None),
@@ -35,7 +35,7 @@ async def list_product_compatibility(
 
 
 @router.get("/{id}", response_model=ProductCompatibilityRead)
-async def get_product_compatibility(id: uuid.UUID, db: DB, current_user: CurrentUser):
+async def get_product_compatibility(id: uuid.UUID, db: DB, admin: AdminUser):
     record = await crud_product_compatibility.get(db, id)
     if not record:
         raise HTTPException(status_code=404, detail="Compatibility record not found")

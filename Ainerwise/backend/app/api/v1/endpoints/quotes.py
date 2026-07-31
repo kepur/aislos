@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import Response
 from pydantic import BaseModel
+from sqlalchemy import or_, select
 
 from datetime import date, timedelta
 
@@ -11,8 +12,30 @@ from app.crud.quote import crud_quote
 from app.schemas.quote import QuoteCreate, QuoteRead, QuoteStatusUpdate, QuoteUpdate
 from app.services import finance as finance_svc
 from app.services.audit import log_action
+from app.services.crm_access import customer_workspace_ids, require_customer_workspace_resource
+from app.services.project_access import customer_project_ids_query, resolve_linked_resource_workspace
 
 router = APIRouter(prefix="/quotes", tags=["quotes"])
+
+
+async def _require_quote_access(db, quote, user) -> None:
+    if user.role in ("admin", "super_admin"):
+        return
+    if not user.company_id:
+        raise HTTPException(status_code=403, detail="Not your quote")
+    from app.models.lead import Lead
+    from app.models.project import Project
+
+    owned = False
+    if quote.lead_id:
+        lead = await db.get(Lead, quote.lead_id)
+        owned = bool(lead and lead.buyer_company_id == user.company_id)
+    if not owned and quote.project_id:
+        project = await db.get(Project, quote.project_id)
+        owned = bool(project and project.buyer_company_id == user.company_id)
+    if not owned:
+        raise HTTPException(status_code=403, detail="Not your quote")
+    await require_customer_workspace_resource(db, user, workspace_id=quote.workspace_id)
 
 
 @router.get("")
@@ -41,15 +64,25 @@ async def list_my_quotes(
 ):
     from app.models.lead import Lead
     from app.models.quote import Quote
-    from sqlalchemy import select
-    from sqlalchemy.ext.asyncio import AsyncSession
-
-    # Get quotes linked to leads belonging to this user's company
     filters = []
     if current_user.company_id:
-        filters.append(Quote.lead_id.in_(
-            select(Lead.id).where(Lead.buyer_company_id == current_user.company_id)
-        ))
+        workspace_ids = await customer_workspace_ids(db, current_user)
+        project_ids = await customer_project_ids_query(db, current_user)
+        filters.extend(
+            [
+                (
+                    or_(Quote.workspace_id.in_(workspace_ids), Quote.workspace_id.is_(None))
+                    if workspace_ids
+                    else Quote.workspace_id.is_(None)
+                ),
+                or_(
+                    Quote.lead_id.in_(
+                        select(Lead.id).where(Lead.buyer_company_id == current_user.company_id)
+                    ),
+                    Quote.project_id.in_(project_ids),
+                ),
+            ]
+        )
     else:
         # User without company — return empty
         return {"items": [], "total": 0}
@@ -62,12 +95,23 @@ async def get_quote(id: uuid.UUID, db: DB, current_user: CurrentUser):
     quote = await crud_quote.get(db, id)
     if not quote:
         raise HTTPException(status_code=404, detail="Quote not found")
+    await _require_quote_access(db, quote, current_user)
     return quote
 
 
 @router.post("", response_model=QuoteRead, status_code=201)
 async def create_quote(data: QuoteCreate, db: DB, admin: AdminUser):
-    return await crud_quote.create(db, obj_in=data.model_dump())
+    obj = data.model_dump()
+    try:
+        obj["workspace_id"] = await resolve_linked_resource_workspace(
+            db,
+            requested_workspace_id=data.workspace_id,
+            lead_id=data.lead_id,
+            project_id=data.project_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+    return await crud_quote.create(db, obj_in=obj)
 
 
 @router.put("/{id}", response_model=QuoteRead)
@@ -83,6 +127,12 @@ async def update_quote_status(id: uuid.UUID, data: QuoteStatusUpdate, db: DB, cu
     quote = await crud_quote.get(db, id)
     if not quote:
         raise HTTPException(status_code=404, detail="Quote not found")
+    await _require_quote_access(db, quote, current_user)
+    if current_user.role not in ("admin", "super_admin"):
+        if quote.status not in ("sent", "revised", "client_questions"):
+            raise HTTPException(status_code=409, detail="Quote is not awaiting customer response")
+        if data.status not in ("accepted", "rejected", "client_questions"):
+            raise HTTPException(status_code=403, detail="Customer may only accept, reject, or ask questions")
     return await crud_quote.update(db, db_obj=quote, obj_in={"status": data.status})
 
 
@@ -141,6 +191,7 @@ async def download_quote_pdf(id: uuid.UUID, db: DB, current_user: CurrentUser):
     quote = await crud_quote.get(db, id)
     if not quote:
         raise HTTPException(status_code=404, detail="Quote not found")
+    await _require_quote_access(db, quote, current_user)
 
     quote_dict = QuoteRead.model_validate(quote).model_dump(mode="json")
 
@@ -174,7 +225,12 @@ async def draft_quote_from_lead(lead_id: uuid.UUID, db: DB, admin: AdminUser):
 
     # Collect site survey data if available
     surveys, _ = await crud_site_survey.get_multi(
-        db, filters=[SiteSurvey.lead_id == lead_id], limit=1
+        db,
+        filters=[
+            SiteSurvey.lead_id == lead_id,
+            SiteSurvey.workspace_id == lead.workspace_id,
+        ],
+        limit=1,
     )
     survey = surveys[0] if surveys else None
     survey_data = survey.survey_json if survey else {}
@@ -226,6 +282,7 @@ async def draft_quote_from_lead(lead_id: uuid.UUID, db: DB, admin: AdminUser):
             notes_parts.append(f"Floors: {floors}")
 
     quote_obj = {
+        "workspace_id": await resolve_linked_resource_workspace(db, lead_id=lead.id),
         "lead_id": lead.id,
         "quote_items_json": items,
         "device_total": 0,

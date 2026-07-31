@@ -27,6 +27,7 @@
           + New
         </NuxtLink>
       </div>
+      <p v-if="error" class="mb-4 rounded-xl bg-red-50 p-3 text-xs text-red-600">{{ error }}</p>
 
       <!-- Stats -->
       <div class="grid grid-cols-3 gap-2 mb-4">
@@ -89,10 +90,12 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ layout: 'customer-mobile', middleware: 'auth' })
 const { isLoggedIn } = useAuth()
 const { apiFetch } = useApi()
 const projects = ref<any[]>([])
 const loading = ref(true)
+const error = ref('')
 const stats = reactive({ total: 0, active: 0, completed: 0 })
 
 const statusSteps = ['planning', 'site_survey', 'quotation_confirmed', 'procurement', 'delivery', 'installation', 'testing', 'handover', 'maintenance', 'closed']
@@ -115,8 +118,9 @@ onMounted(async () => {
     stats.total = res.total || projects.value.length
     stats.active = projects.value.filter((p: any) => !['closed', 'handover', 'maintenance'].includes(p.status)).length
     stats.completed = projects.value.filter((p: any) => ['closed', 'handover'].includes(p.status)).length
-  } catch {
+  } catch (e: any) {
     projects.value = []
+    error.value = e?.data?.detail || e?.message || 'Projects could not be loaded'
   } finally {
     loading.value = false
   }

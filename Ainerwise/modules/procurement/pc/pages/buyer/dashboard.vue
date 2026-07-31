@@ -234,7 +234,7 @@
 
     <!-- Business Enterprise Links (shown only for BUSINESS account type) -->
     <div v-if="isBusiness" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <NuxtLink to="/buyer/company" class="flex items-center gap-3 bg-white rounded-2xl border border-blue-100 p-4 hover:border-blue-300 hover:shadow-sm transition-all group">
+      <NuxtLink to="/buyer/company-profile" class="flex items-center gap-3 bg-white rounded-2xl border border-blue-100 p-4 hover:border-blue-300 hover:shadow-sm transition-all group">
         <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-xl">🏢</div>
         <div>
           <p class="text-sm font-semibold text-slate-900 group-hover:text-blue-700">Company Profile</p>
@@ -248,18 +248,18 @@
           <p class="text-xs text-slate-400">Invite & manage team</p>
         </div>
       </NuxtLink>
-      <NuxtLink to="/buyer/kyb" class="flex items-center gap-3 bg-white rounded-2xl border border-amber-100 p-4 hover:border-amber-300 hover:shadow-sm transition-all group">
+      <NuxtLink to="/buyer/company-profile" class="flex items-center gap-3 bg-white rounded-2xl border border-amber-100 p-4 hover:border-amber-300 hover:shadow-sm transition-all group">
         <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-xl">✅</div>
         <div>
           <p class="text-sm font-semibold text-slate-900 group-hover:text-amber-700">KYB Verification</p>
           <p class="text-xs text-slate-400">Business verification</p>
         </div>
       </NuxtLink>
-      <NuxtLink to="/buyer/contracts" class="flex items-center gap-3 bg-white rounded-2xl border border-green-100 p-4 hover:border-green-300 hover:shadow-sm transition-all group">
+      <NuxtLink to="/buyer/orders" class="flex items-center gap-3 bg-white rounded-2xl border border-green-100 p-4 hover:border-green-300 hover:shadow-sm transition-all group">
         <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-xl">📄</div>
         <div>
-          <p class="text-sm font-semibold text-slate-900 group-hover:text-green-700">Contracts</p>
-          <p class="text-xs text-slate-400">B2B contracts & POs</p>
+          <p class="text-sm font-semibold text-slate-900 group-hover:text-green-700">Orders & POs</p>
+          <p class="text-xs text-slate-400">B2B orders & records</p>
         </div>
       </NuxtLink>
     </div>

@@ -6,6 +6,7 @@ from app.schemas.base import BaseSchema
 
 class SiteSurveyRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     lead_id: uuid.UUID
     survey_type: str
     survey_json: dict | None = None

@@ -1,0 +1,26 @@
+services:
+  backend:
+    environment:
+      PYTHONPATH: /app
+      CORS_ORIGINS: http://localhost:4106,http://localhost:4107,http://procurement.localhost,http://procurement-h5.localhost,http://cebu.localhost,http://cebu-h5.localhost
+    command: >
+      sh -lc "
+        pip install --no-cache-dir psycopg2-binary==2.9.10 email-validator==2.2.0 &&
+        cd /app &&
+        alembic upgrade head &&
+        python seed.py &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000
+      "
+
+  admin-backend:
+    environment:
+      PYTHONPATH: /srv/backend:/srv/admin-backend
+      CORS_ORIGINS: http://localhost:4108,http://localhost:5173,http://procurement-admin.localhost,http://cebu-admin.localhost
+    command: >
+      sh -lc "
+        pip install --no-cache-dir psycopg2-binary==2.9.10 email-validator==2.2.0 &&
+        cd /srv/backend &&
+        alembic upgrade head &&
+        cd /srv/admin-backend &&
+        uvicorn main:app --host 0.0.0.0 --port 8010
+      "

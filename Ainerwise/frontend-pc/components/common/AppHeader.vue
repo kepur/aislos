@@ -14,8 +14,15 @@
       </nav>
 
       <div class="flex items-center gap-3">
+        <button
+          type="button"
+          :aria-label="isDark ? 'Switch to light theme' : 'Switch to dark theme'"
+          class="rounded-lg px-2 py-1.5 text-base leading-none text-slate-300 transition hover:bg-white/10"
+          @click="toggleTheme"
+        >{{ isDark ? '☀️' : '🌙' }}</button>
         <LanguageSwitcher />
         <template v-if="isLoggedIn">
+          <PortalSwitcher />
           <a :href="dashboardUrl" class="text-sm font-medium text-primary-400 hover:text-primary-300">
             {{ $t('nav.dashboard') }}
           </a>
@@ -47,31 +54,64 @@
 </template>
 
 <script setup lang="ts">
+import { prefixForLocale, withLocalePrefix } from '~/utils/localeRoutes'
+
+const { isDark, toggle: toggleTheme } = useTheme()
 const { isLoggedIn, isAdmin, logout } = useAuth()
-const { t } = useI18n({ useScope: 'global' })
-const { mode, portal, urls } = usePortalMode()
+const { t, locale } = useI18n({ useScope: 'global' })
+const { mode, portal: legacyPortal, urls } = usePortalMode()
+const { manifest } = usePortalManifest()
+const portal = computed(() => ({
+  name: manifest.value?.portal_key === 'store' || mode === 'store'
+    ? `AISLOS ${t('nav.products')}`
+    : manifest.value?.display_name || legacyPortal.name,
+  home: localPath(manifest.value?.home_route || legacyPortal.home),
+}))
 const mobileMenuOpen = ref(false)
+
+function localPath(path: string) {
+  const prefix = prefixForLocale(locale.value)
+  return prefix ? withLocalePrefix(path, prefix) : path
+}
+
+function externalPath(baseUrl: string, path = '/') {
+  const prefix = prefixForLocale(locale.value)
+  const targetPath = prefix ? withLocalePrefix(path, prefix) : path
+  try {
+    return new URL(targetPath, baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`).toString()
+  } catch {
+    return `${baseUrl.replace(/\/$/, '')}${targetPath}`
+  }
+}
 
 const navItems = computed(() => {
   if (mode === 'store') {
     return [
-      { to: '/store', label: t('nav.store'), external: false },
-      { to: '/products', label: 'Products', external: false },
-      { to: urls.aislos, label: 'AISLOS', external: true },
+      { to: externalPath(urls.aislos, '/ai-building-brain-demo'), label: t('nav.aiBrain'), external: true },
+      { to: externalPath(urls.aislos, '/solutions'), label: t('nav.solutions'), external: true },
+      { to: localPath('/products'), label: t('nav.products'), external: false },
+      { to: externalPath(urls.developer, '/developers'), label: t('nav.developers'), external: true },
+      { to: externalPath(urls.developer, '/marketplace'), label: t('nav.marketplace'), external: true },
+      { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
     ]
   }
   if (mode === 'developer') {
     return [
-      { to: '/developers', label: t('nav.developers'), external: false },
-      { to: '/marketplace', label: t('nav.marketplace'), external: false },
-      { to: urls.aislos, label: 'AISLOS', external: true },
+      { to: externalPath(urls.aislos, '/ai-building-brain-demo'), label: t('nav.aiBrain'), external: true },
+      { to: externalPath(urls.aislos, '/solutions'), label: t('nav.solutions'), external: true },
+      { to: externalPath(urls.store, '/products'), label: t('nav.products'), external: true },
+      { to: localPath('/developers'), label: t('nav.developers'), external: false },
+      { to: localPath('/marketplace'), label: t('nav.marketplace'), external: false },
+      { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
     ]
   }
   return [
-    { to: '/solutions', label: t('nav.solutions'), external: false },
-    { to: '/ai-building-brain-demo', label: t('nav.aiBrain'), external: false },
-    { to: urls.store, label: t('nav.store'), external: true },
-    { to: urls.developer, label: t('nav.developers'), external: true },
+    { to: localPath('/ai-building-brain-demo'), label: t('nav.aiBrain'), external: false },
+    { to: localPath('/solutions'), label: t('nav.solutions'), external: false },
+    { to: externalPath(urls.store, '/products'), label: t('nav.products'), external: true },
+    { to: externalPath(urls.developer, '/developers'), label: t('nav.developers'), external: true },
+    { to: externalPath(urls.developer, '/marketplace'), label: t('nav.marketplace'), external: true },
+    { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
   ]
 })
 
@@ -81,6 +121,6 @@ const dashboardUrl = computed(() => {
   if (isAdmin.value) return urls.admin
   if (mode === 'store') return `${urls.store}/store/orders`
   if (mode === 'developer') return `${urls.developer}/developers/listings`
-  return urls.customer
+  return '/portal'
 })
 </script>

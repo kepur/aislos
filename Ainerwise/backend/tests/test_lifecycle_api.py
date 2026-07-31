@@ -1,9 +1,10 @@
 """Route registration tests for the lifecycle CRUD API (FI.2.12)."""
 from app.main import app
+from tests.route_utils import iter_registered_routes, registered_route_paths
 
 
 def _paths() -> set[str]:
-    return {route.path for route in app.routes}
+    return registered_route_paths(app)
 
 
 def test_lifecycle_collection_routes_registered():
@@ -24,8 +25,8 @@ def test_lifecycle_collection_routes_registered():
 
 def test_stock_movements_have_no_update_route():
     methods = set()
-    for route in app.routes:
-        if route.path == "/api/v1/stock-movements/{id}":
+    for path, route in iter_registered_routes(app):
+        if path == "/api/v1/stock-movements/{id}":
             methods |= route.methods
     # append-only: GET + DELETE, but never PUT
     assert "PUT" not in methods
@@ -34,10 +35,10 @@ def test_stock_movements_have_no_update_route():
 
 def test_monitoring_points_full_crud():
     get_methods, item_methods = set(), set()
-    for route in app.routes:
-        if route.path == "/api/v1/monitoring-points":
+    for path, route in iter_registered_routes(app):
+        if path == "/api/v1/monitoring-points":
             get_methods |= route.methods
-        if route.path == "/api/v1/monitoring-points/{id}":
+        if path == "/api/v1/monitoring-points/{id}":
             item_methods |= route.methods
     assert {"GET", "POST"}.issubset(get_methods)
     assert {"GET", "PUT", "DELETE"}.issubset(item_methods)

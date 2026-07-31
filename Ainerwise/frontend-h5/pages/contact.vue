@@ -47,6 +47,7 @@
         {{ sending ? 'Sending...' : 'Send Message' }}
       </button>
       <p v-if="sent" class="text-sm text-emerald-500 font-medium text-center">Message sent successfully!</p>
+      <p v-if="error" class="text-sm text-red-500 font-medium text-center">{{ error }}</p>
     </form>
   </div>
 </template>
@@ -56,14 +57,19 @@ const { apiFetch } = useApi()
 const form = reactive({ name: '', email: '', message: '' })
 const sending = ref(false)
 const sent = ref(false)
+const error = ref('')
 
 async function handleSubmit() {
   sending.value = true
+  sent.value = false
+  error.value = ''
   try {
     await apiFetch('/contact', { method: 'POST', body: form })
     sent.value = true
     Object.assign(form, { name: '', email: '', message: '' })
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Message could not be sent. Please try again.'
+  }
   finally { sending.value = false }
 }
 </script>

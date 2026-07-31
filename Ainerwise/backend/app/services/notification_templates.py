@@ -130,6 +130,23 @@ def _supplier_claim(p: dict) -> str:
     )
 
 
+def _commerce_dispute(p: dict) -> str:
+    return (
+        "[Commerce] Dispute opened\n"
+        f"Order: {_g(p, 'order_id')}\n"
+        f"Reason: {_g(p, 'reason_code')}\n"
+        f"Opened by: {_g(p, 'opened_by_role')}"
+    )
+
+
+def _commerce_offer(p: dict) -> str:
+    return (
+        "[Commerce] Supplier offer\n"
+        f"Request: {_g(p, 'request_id')}\n"
+        f"Offer: {_g(p, 'offer_id')}"
+    )
+
+
 def _payment_due(p: dict) -> str:
     return (
         "[AinerWise] Payment due\n"
@@ -154,6 +171,8 @@ _TEMPLATES: dict[str, Callable[[dict], str]] = {
     "ticket.opened": _ticket_opened,
     "supplier.claim": _supplier_claim,
     "briefing.daily": lambda p: f"🧠 AinerWise Business Brain\n\n{p.get('text') or 'No briefing text.'}",
+    "commerce.dispute.opened": _commerce_dispute,
+    "procurement.offer.submitted": _commerce_offer,
 }
 
 

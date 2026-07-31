@@ -80,6 +80,7 @@ async def prepare_campaign_drafts(
     audience = campaign.audience_json or {}
     segments = audience.get("segments") or []
     query = select(MarketingContact).where(
+        MarketingContact.workspace_id == campaign.workspace_id,
         MarketingContact.consent_status == "opted_in",
         MarketingContact.status != "unsubscribed",
         or_(MarketingContact.email.is_not(None), MarketingContact.phone.is_not(None)),
@@ -109,6 +110,7 @@ async def prepare_campaign_drafts(
             skipped += 1
             continue
         activity = MarketingActivity(
+            workspace_id=campaign.workspace_id,
             campaign_id=campaign.id,
             contact_id=contact.id,
             activity_type="campaign_outreach",
@@ -156,15 +158,20 @@ async def _upsert_contact(
     language: str,
     source: str | None,
     lead_id=None,
+    workspace_id=None,
 ) -> MarketingContact:
     contact = None
     if email and "unknown@" not in email:
         result = await db.execute(
-            select(MarketingContact).where(MarketingContact.email == email).limit(1)
+            select(MarketingContact).where(
+                MarketingContact.email == email,
+                MarketingContact.workspace_id == workspace_id,
+            ).limit(1)
         )
         contact = result.scalar_one_or_none()
     if contact is None:
         contact = MarketingContact(
+            workspace_id=workspace_id,
             contact_name=contact_name,
             email=email if email and "unknown@" not in email else None,
             phone=phone,
@@ -206,6 +213,7 @@ async def ensure_lead_follow_up(db: AsyncSession, lead: Lead) -> MarketingActivi
         language=lead.language,
         source=lead.source_channel,
         lead_id=lead.id,
+        workspace_id=lead.workspace_id,
     )
     draft = build_lead_follow_up_draft(lead)
     site_info = lead.site_info_json or {}
@@ -214,6 +222,7 @@ async def ensure_lead_follow_up(db: AsyncSession, lead: Lead) -> MarketingActivi
     )
     contact.next_follow_up_at = scheduled_at
     activity = MarketingActivity(
+        workspace_id=lead.workspace_id,
         campaign_id=lead.campaign_id,
         contact_id=contact.id,
         lead_id=lead.id,
@@ -251,10 +260,12 @@ async def ensure_inquiry_follow_up(db: AsyncSession, inquiry: Inquiry) -> Market
         phone=inquiry.contact_phone,
         language="en",
         source=inquiry.source_channel,
+        workspace_id=inquiry.workspace_id,
     )
     scheduled_at = datetime.now(timezone.utc) + timedelta(hours=4)
     contact.next_follow_up_at = scheduled_at
     activity = MarketingActivity(
+        workspace_id=inquiry.workspace_id,
         campaign_id=inquiry.campaign_id,
         contact_id=contact.id,
         inquiry_id=inquiry.id,

@@ -1,6 +1,28 @@
+const localeRoutePrefixes = ['/en', '/cn', '/rs']
+
+function addLocaleAliases(pages: any[]) {
+  for (const page of pages) {
+    if (page.path) {
+      const basePath = page.path === '/' ? '' : page.path
+      const aliases = localeRoutePrefixes.map(prefix => `${prefix}${basePath}`)
+      page.alias = Array.from(new Set([
+        ...(Array.isArray(page.alias) ? page.alias : page.alias ? [page.alias] : []),
+        ...aliases,
+      ]))
+    }
+    if (page.children) addLocaleAliases(page.children)
+  }
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
+
+  hooks: {
+    'pages:extend'(pages) {
+      addLocaleAliases(pages)
+    },
+  },
 
   modules: [
     '@nuxtjs/tailwindcss',

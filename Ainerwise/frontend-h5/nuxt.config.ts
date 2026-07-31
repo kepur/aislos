@@ -1,9 +1,31 @@
 import { fileURLToPath } from 'node:url'
 
+const localeRoutePrefixes = ['/en', '/cn', '/rs']
+
+function addLocaleAliases(pages: any[]) {
+  for (const page of pages) {
+    if (page.path) {
+      const basePath = page.path === '/' ? '' : page.path
+      const aliases = localeRoutePrefixes.map(prefix => `${prefix}${basePath}`)
+      page.alias = Array.from(new Set([
+        ...(Array.isArray(page.alias) ? page.alias : page.alias ? [page.alias] : []),
+        ...aliases,
+      ]))
+    }
+    if (page.children) addLocaleAliases(page.children)
+  }
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
   experimental: { appManifest: false },
+
+  hooks: {
+    'pages:extend'(pages) {
+      addLocaleAliases(pages)
+    },
+  },
 
   alias: {
     '@ainerwise/shared-auth': fileURLToPath(new URL('../shared/auth/useSharedAuth.ts', import.meta.url)),
@@ -45,6 +67,9 @@ export default defineNuxtConfig({
   },
 
   i18n: {
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
     locales: [
       { code: 'en', name: 'English', file: 'en.json' },
       { code: 'zh', name: '中文', file: 'zh.json' },

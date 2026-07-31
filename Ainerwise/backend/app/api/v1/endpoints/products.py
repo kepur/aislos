@@ -3,11 +3,12 @@ import uuid
 from fastapi import APIRouter, HTTPException, Query, status
 from slugify import slugify
 
-from app.api.deps import AdminUser, CurrentUser, DB
+from app.api.deps import AdminUser, DB
+from app.core.product_catalog import PUBLIC_PRODUCT_STATUSES
 from app.crud.product import crud_product
 from app.schemas.product import ProductCreate, ProductRead, ProductStatusUpdate, ProductUpdate
 from app.services.audit import log_action
-from app.services.integration_events import create_integration_event
+from app.services.event_bus import emit_event
 
 router = APIRouter(prefix="/products", tags=["products"])
 
@@ -19,15 +20,30 @@ async def list_products(
     limit: int = Query(20, ge=1, le=100),
     category_id: uuid.UUID | None = None,
     search: str | None = None,
-    include_all: bool = False,
 ):
-    if include_all:
-        items, total = await crud_product.get_multi(db, skip=skip, limit=limit)
-    else:
-        items, total = await crud_product.get_public(
-            db, skip=skip, limit=limit, category_id=category_id, search=search
-        )
+    items, total = await crud_product.get_public(
+        db, skip=skip, limit=limit, category_id=category_id, search=search
+    )
     return {"items": [ProductRead.model_validate(i) for i in items], "total": total}
+
+
+@router.get("/admin/all")
+async def list_all_products(
+    db: DB,
+    admin: AdminUser,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=200),
+):
+    items, total = await crud_product.get_multi(db, skip=skip, limit=limit)
+    return {"items": [ProductRead.model_validate(i) for i in items], "total": total}
+
+
+@router.get("/admin/{id}", response_model=ProductRead)
+async def get_admin_product(id: uuid.UUID, db: DB, admin: AdminUser):
+    product = await crud_product.get(db, id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
 
 
 @router.get("/{slug_or_id}", response_model=ProductRead)
@@ -38,7 +54,7 @@ async def get_product(slug_or_id: str, db: DB):
         product = await crud_product.get(db, uid)
     except ValueError:
         product = await crud_product.get_by_slug(db, slug_or_id)
-    if not product:
+    if not product or product.status not in PUBLIC_PRODUCT_STATUSES:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
@@ -48,9 +64,9 @@ async def create_product(data: ProductCreate, db: DB, admin: AdminUser):
     obj = data.model_dump()
     if not obj.get("slug"):
         obj["slug"] = slugify(obj["name"])
-    product = await crud_product.create(db, obj_in=obj)
+    product = await crud_product.create_in_transaction(db, obj_in=obj)
     if product.status in {"pending", "draft"}:
-        await create_integration_event(
+        await emit_event(
             db,
             event_type="product.submitted",
             payload={
@@ -60,7 +76,12 @@ async def create_product(data: ProductCreate, db: DB, admin: AdminUser):
                 "status": product.status,
                 "source_type": product.source_type,
             },
+            aggregate_type="product",
+            aggregate_id=product.id,
+            target_channel="telegram_admin",
         )
+    await db.commit()
+    await db.refresh(product)
     return product
 
 

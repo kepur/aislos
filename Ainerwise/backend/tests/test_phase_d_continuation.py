@@ -11,10 +11,11 @@ from app.db.session import async_session_factory, engine
 from app.main import app
 from app.services.documents import markdown_to_pdf_bytes, render_template
 from app.tasks.celery_app import celery_app
+from tests.route_utils import registered_route_paths
 
 
 def test_phase_d_continuation_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/admin/business-brain/latest",
         "/api/v1/admin/business-brain/run",

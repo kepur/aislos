@@ -1,17 +1,19 @@
 import uuid
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, Request, status
 
 from app.api.deps import AdminUser, DB
 from app.crud.vendor import crud_vendor
 from app.schemas.vendor import VendorApply, VendorRead, VendorStatusUpdate
-from app.services.integration_events import create_integration_event
+from app.services.event_bus import emit_event
+from app.services.rate_limit import enforce_public_rate_limit
 
 router = APIRouter(prefix="/vendors", tags=["vendors"])
 
 
 @router.post("/apply", response_model=VendorRead, status_code=status.HTTP_201_CREATED)
-async def apply_vendor(data: VendorApply, db: DB):
+async def apply_vendor(data: VendorApply, request: Request, db: DB):
+    await enforce_public_rate_limit(request, bucket="vendor-application", limit=10)
     contact = data.contact_info or {}
     contact["email"] = data.email
     if data.phone:
@@ -29,8 +31,8 @@ async def apply_vendor(data: VendorApply, db: DB):
         "verification_status": "pending",
         "contact_info": contact,
     }
-    vendor = await crud_vendor.create(db, obj_in=obj)
-    await create_integration_event(
+    vendor = await crud_vendor.create_in_transaction(db, obj_in=obj)
+    await emit_event(
         db,
         event_type="vendor.applied",
         payload={
@@ -41,7 +43,12 @@ async def apply_vendor(data: VendorApply, db: DB):
             "email": data.email,
             "company_type": data.company_type,
         },
+        aggregate_type="company",
+        aggregate_id=vendor.id,
+        target_channel="telegram_admin",
     )
+    await db.commit()
+    await db.refresh(vendor)
     return vendor
 
 

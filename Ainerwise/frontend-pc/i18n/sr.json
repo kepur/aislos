@@ -4,7 +4,7 @@
   "nav": {
     "home": "Početna",
     "solutions": "Rešenja",
-    "products": "Proizvodi",
+    "products": "Katalog proizvoda",
     "services": "Usluge",
     "about": "O nama",
     "contact": "Kontakt",
@@ -15,9 +15,10 @@
     "submitRequirement": "Pošalji zahtev",
     "supplierApplication": "Postani dobavljač",
     "aiBrain": "AI Mozak",
-    "store": "Prodavnica",
+    "store": "Katalog proizvoda",
     "marketplace": "Agent Store",
-    "developers": "Programeri"
+    "developers": "Programeri",
+    "procurementMarket": "Market"
   },
   "home": {
     "heroKicker": "AISLOS — Enterprise AI operativni sistem",

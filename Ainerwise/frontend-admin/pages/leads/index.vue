@@ -6,9 +6,22 @@
         <p class="text-sm text-slate-400 mt-1">{{ total }} total leads</p>
       </div>
     </div>
+    <div v-if="loadError" class="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+      {{ loadError }}
+      <button class="ml-2 font-semibold underline" @click="load">Retry</button>
+    </div>
 
     <!-- FI.6.3 CRM filters + sort -->
     <div class="admin-card p-3 flex flex-wrap items-end gap-3">
+      <div>
+        <label class="block text-[10px] uppercase tracking-wider text-slate-500 mb-1">Workspace</label>
+        <select v-model="workspaceId" class="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-slate-200">
+          <option value="">All accessible</option>
+          <option v-for="membership in memberships" :key="membership.id" :value="membership.workspace_id">
+            {{ membership.membership_type }} · {{ membership.workspace_id }}
+          </option>
+        </select>
+      </div>
       <div>
         <label class="block text-[10px] uppercase tracking-wider text-slate-500 mb-1">Solution Line</label>
         <select v-model="filters.solution_line" class="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-slate-200">
@@ -105,6 +118,9 @@ definePageMeta({ layout: 'default' })
 const { apiFetch } = useApi()
 const leads = ref<any[]>([])
 const total = ref(0)
+const loadError = ref('')
+const workspaceId = ref('')
+const { memberships, activeWorkspaceId, loadAccess } = usePortalManifest()
 
 const solutionLines = ['buildingbrain', 'energyguard', 'storageguard', 'aquaguard', 'kitchenguard', 'assetpulse', 'factorypulse', 'agribrain']
 
@@ -124,18 +140,26 @@ function scoreClass(score: number) {
 }
 
 async function load() {
+  loadError.value = ''
   const q = new URLSearchParams({ limit: '100', sort: filters.sort, order: 'desc' })
   if (filters.solution_line) q.set('solution_line', filters.solution_line)
   if (filters.min_recurring_score != null && filters.min_recurring_score !== ('' as any)) q.set('min_recurring_score', String(filters.min_recurring_score))
   if (filters.compliance_risk) q.set('compliance_risk', filters.compliance_risk)
   if (filters.amc_potential) q.set('amc_potential', filters.amc_potential)
   if (filters.multi_site) q.set('multi_site', 'true')
+  if (workspaceId.value) q.set('workspace_id', workspaceId.value)
   try {
     const res = await apiFetch<any>(`/leads?${q.toString()}`)
     leads.value = res.items || res || []
     total.value = res.total ?? leads.value.length
-  } catch {}
+  } catch (e: any) {
+    loadError.value = e?.data?.detail || e?.message || 'Unable to load leads.'
+  }
 }
 
-onMounted(load)
+onMounted(async () => {
+  await loadAccess()
+  workspaceId.value = activeWorkspaceId.value || ''
+  await load()
+})
 </script>

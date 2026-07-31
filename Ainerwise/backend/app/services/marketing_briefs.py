@@ -163,6 +163,7 @@ async def create_brief(
     objective: str | None,
     campaign_id: uuid.UUID | None,
     region_id: uuid.UUID | None,
+    workspace_id: uuid.UUID,
     version_data: dict[str, Any],
 ) -> tuple[MarketingCreativeBrief, MarketingCreativeBriefVersion]:
     problems = validate_deliverables(version_data.get("deliverables_json"))
@@ -170,6 +171,7 @@ async def create_brief(
         raise MarketingBriefError("; ".join(problems))
 
     brief = MarketingCreativeBrief(
+        workspace_id=workspace_id,
         title=title,
         objective=objective,
         campaign_id=campaign_id,
@@ -181,6 +183,7 @@ async def create_brief(
     await db.flush()
 
     version = MarketingCreativeBriefVersion(
+        workspace_id=brief.workspace_id,
         brief_id=brief.id,
         version=1,
         status="draft",
@@ -240,6 +243,7 @@ async def create_brief_version(
         raise MarketingBriefError("; ".join(problems))
 
     version = MarketingCreativeBriefVersion(
+        workspace_id=brief.workspace_id,
         brief_id=brief.id,
         version=await _next_version_number(db, brief.id),
         status="draft",
@@ -278,6 +282,7 @@ async def update_draft_version(
     if brief is None:
         raise MarketingBriefError("brief not found")
 
+    version.workspace_id = brief.workspace_id
     for field in version_content_fields(version_data):
         if field in version_data:
             setattr(version, field, version_data[field])
@@ -302,6 +307,7 @@ async def submit_version_review(
     if brief is None:
         raise MarketingBriefError("brief not found")
 
+    version.workspace_id = brief.workspace_id
     review = AIReview(
         target_type="marketing_creative_brief",
         target_id=version.id,
@@ -354,6 +360,7 @@ async def approve_version(
     if brief is None:
         raise MarketingBriefError("brief not found")
 
+    version.workspace_id = brief.workspace_id
     if version.review_id:
         review = (
             await db.execute(select(AIReview).where(AIReview.id == version.review_id))
@@ -413,6 +420,7 @@ async def reject_version(
     if brief is None:
         raise MarketingBriefError("brief not found")
 
+    version.workspace_id = brief.workspace_id
     if version.review_id:
         review = (
             await db.execute(select(AIReview).where(AIReview.id == version.review_id))
@@ -495,6 +503,9 @@ async def create_media_requests_for_version(
     if problems:
         raise MarketingBriefError("; ".join(problems))
 
+    brief = await get_brief(db, version.brief_id)
+    if brief is None:
+        raise MarketingBriefError("brief not found")
     created: list[MarketingMediaRequest] = []
     for item in deliverables:
         key = item["key"]
@@ -510,6 +521,7 @@ async def create_media_requests_for_version(
             raise MarketingBriefError(f"media request already exists for deliverable {key!r}")
 
         request = MarketingMediaRequest(
+            workspace_id=brief.workspace_id,
             brief_version_id=version.id,
             deliverable_key=key,
             status="available",

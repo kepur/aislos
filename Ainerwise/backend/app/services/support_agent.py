@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.ai import AgentRun, AIReview
 from app.models.ticket import Ticket
+from app.models.project import Project
 from app.services.agent_runtime import AgentAuthorizationError, require_agent
 
 
@@ -35,6 +36,9 @@ def _triage(ticket: Ticket) -> dict:
 async def create_ticket_triage(db: AsyncSession, ticket: Ticket) -> AIReview | None:
     if ticket.project_id is None:
         return None
+    project = await db.get(Project, ticket.project_id)
+    if project is None:
+        return None
     try:
         await require_agent(
             db,
@@ -43,11 +47,13 @@ async def create_ticket_triage(db: AsyncSession, ticket: Ticket) -> AIReview | N
             workflow="ticket_triage",
             object_type="project",
             object_id=ticket.project_id,
+            workspace_id=project.workspace_id,
         )
     except AgentAuthorizationError:
         return None
     draft = _triage(ticket)
     run = AgentRun(
+        workspace_id=project.workspace_id,
         agent_slug="support-agent",
         workflow="ticket_triage",
         input_json={"ticket_id": str(ticket.id), "project_id": str(ticket.project_id)},

@@ -19,11 +19,13 @@ from app.services.rfq import (
     match_partners,
     record_bid,
 )
+from app.services.project_access import resolve_linked_resource_workspace
 
 router = APIRouter(prefix="/admin/rfqs", tags=["rfqs"])
 
 
 class RFQCreate(BaseModel):
+    workspace_id: uuid.UUID | None = None
     title: str
     trade: str = "general"
     region_id: uuid.UUID | None = None
@@ -55,6 +57,7 @@ class AwardRequest(BaseModel):
 def _rfq_dict(rfq: RFQ) -> dict:
     return {
         "id": str(rfq.id), "title": rfq.title, "trade": rfq.trade,
+        "workspace_id": str(rfq.workspace_id) if rfq.workspace_id else None,
         "lead_id": str(rfq.lead_id) if rfq.lead_id else None,
         "project_id": str(rfq.project_id) if rfq.project_id else None,
         "status": rfq.status, "currency": rfq.currency,
@@ -69,6 +72,7 @@ def _rfq_dict(rfq: RFQ) -> dict:
 def _bid_dict(bid: PartnerBid) -> dict:
     return {
         "id": str(bid.id), "partner_id": str(bid.partner_id),
+        "workspace_id": str(bid.workspace_id) if bid.workspace_id else None,
         "amount": float(bid.amount), "currency": bid.currency,
         "lead_time_days": bid.lead_time_days, "notes": bid.notes,
         "ai_score": float(bid.ai_score) if bid.ai_score is not None else None,
@@ -79,7 +83,17 @@ def _bid_dict(bid: PartnerBid) -> dict:
 
 @router.post("")
 async def create_rfq(data: RFQCreate, db: DB, admin: AdminUser):
-    rfq = RFQ(**data.model_dump(), status="draft", created_by=admin.id)
+    body = data.model_dump()
+    try:
+        body["workspace_id"] = await resolve_linked_resource_workspace(
+            db,
+            requested_workspace_id=data.workspace_id,
+            lead_id=data.lead_id,
+            project_id=data.project_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+    rfq = RFQ(**body, status="draft", created_by=admin.id)
     db.add(rfq)
     await db.flush()
     await emit_event(
@@ -143,9 +157,23 @@ async def get_rfq(id: uuid.UUID, db: DB, admin: AdminUser):
     if rfq is None:
         raise HTTPException(status_code=404, detail="RFQ not found")
     invitations = (
-        (await db.execute(select(RFQInvitation).where(RFQInvitation.rfq_id == id))).scalars().all()
+        (
+            await db.execute(
+                select(RFQInvitation).where(
+                    RFQInvitation.rfq_id == id,
+                    RFQInvitation.workspace_id == rfq.workspace_id,
+                )
+            )
+        ).scalars().all()
     )
-    bids = (await db.execute(select(PartnerBid).where(PartnerBid.rfq_id == id))).scalars().all()
+    bids = (
+        await db.execute(
+            select(PartnerBid).where(
+                PartnerBid.rfq_id == id,
+                PartnerBid.workspace_id == rfq.workspace_id,
+            )
+        )
+    ).scalars().all()
     return {
         **_rfq_dict(rfq),
         "invitations": [
@@ -213,6 +241,7 @@ async def rfq_evaluate(id: uuid.UUID, db: DB, admin: AdminUser):
         raise HTTPException(status_code=400, detail=str(exc)) from None
     db.add(
         AgentRun(
+            workspace_id=rfq.workspace_id,
             agent_slug="procurement-agent",
             workflow="bid_evaluation",
             input_json={"rfq_id": str(rfq.id)},

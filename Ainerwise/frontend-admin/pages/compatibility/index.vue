@@ -12,6 +12,7 @@
         + Add Record
       </button>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <!-- Filters -->
     <div class="flex gap-3 mb-4">
@@ -175,6 +176,7 @@ const protocolFilter = ref('')
 const showModal = ref(false)
 const editingRec = ref<any>(null)
 const saving = ref(false)
+const error = ref('')
 
 const protocols = ['KNX', 'DALI', 'BACnet', 'Modbus', 'Zigbee', 'Z-Wave', 'Matter', 'EnOcean', '0-10V', 'TCP/IP', 'RS485', 'LON']
 
@@ -211,6 +213,7 @@ function testStatusClass(status: string) {
 }
 
 async function load() {
+  error.value = ''
   const params = new URLSearchParams()
   params.set('skip', String(page.value * limit))
   params.set('limit', String(limit))
@@ -220,7 +223,9 @@ async function load() {
     const res = await apiFetch<any>(`/product-compatibility?${params}`)
     items.value = res.items || []
     total.value = res.total || 0
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Compatibility records could not be loaded'
+  }
 }
 
 function openCreate() {
@@ -245,6 +250,7 @@ function openEdit(rec: any) {
 
 async function saveRecord() {
   saving.value = true
+  error.value = ''
   try {
     const body: Record<string, any> = {
       protocol: form.protocol,
@@ -264,7 +270,7 @@ async function saveRecord() {
     showModal.value = false
     await load()
   } catch (e: any) {
-    console.error('Save compat record failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Compatibility record could not be saved'
   } finally {
     saving.value = false
   }
@@ -272,10 +278,13 @@ async function saveRecord() {
 
 async function deleteRecord(id: string) {
   if (!confirm('Delete this compatibility record?')) return
+  error.value = ''
   try {
     await apiFetch(`/product-compatibility/${id}`, { method: 'DELETE' })
     await load()
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Compatibility record could not be deleted'
+  }
 }
 
 let debounceTimer: any

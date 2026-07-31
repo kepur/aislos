@@ -12,6 +12,10 @@
         </NuxtLink>
       </div>
     </div>
+    <div v-if="loadError" class="portal-card border-red-200 bg-red-50 text-sm text-red-700">
+      {{ loadError }}
+      <button class="ml-2 font-semibold underline" @click="loadDashboard">Retry</button>
+    </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <div v-for="stat in statCards" :key="stat.label" class="portal-card">
@@ -33,7 +37,8 @@
           <h2 class="text-sm font-bold text-slate-800">Recent Requirements</h2>
           <NuxtLink to="/portal/leads" class="text-xs font-semibold text-blue-500 hover:text-blue-600">View All &rarr;</NuxtLink>
         </div>
-        <div v-if="recentLeads.length" class="space-y-3">
+        <div v-if="loading" class="py-8 text-center text-sm text-slate-400">Loading requirements...</div>
+        <div v-else-if="recentLeads.length" class="space-y-3">
           <NuxtLink
             v-for="lead in recentLeads"
             :key="lead.id"
@@ -88,10 +93,7 @@
               <span class="text-slate-500">Active projects</span>
               <span class="font-semibold text-slate-700">{{ stats.projects }}</span>
             </div>
-            <div class="w-full bg-slate-100 rounded-full h-2">
-              <div class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all" style="width: 45%"></div>
-            </div>
-            <p class="text-xs text-slate-400">Overall completion estimate</p>
+            <NuxtLink to="/portal/projects" class="text-xs font-semibold text-blue-500 hover:text-blue-600">View project delivery status &rarr;</NuxtLink>
           </div>
           <div v-else class="text-center py-4">
             <p class="text-sm text-slate-400">No active projects yet</p>
@@ -103,12 +105,14 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'portal', middleware: 'auth' })
+definePageMeta({ layout: 'customer-workspace', middleware: 'auth' })
 
 const { user } = useAuth()
 const { apiFetch } = useApi()
 const stats = reactive({ leads: 0, quotes: 0, projects: 0, tickets: 0 })
 const recentLeads = ref<any[]>([])
+const loading = ref(true)
+const loadError = ref('')
 
 const userName = computed(() => {
   if (user.value?.full_name) return user.value.full_name.split(' ')[0]
@@ -133,22 +137,30 @@ function statusClass(status: string) {
   return map[status] || 'bg-slate-50 text-slate-600'
 }
 
-onMounted(async () => {
-  try {
-    const [leadsRes, quotesRes, projectsRes, ticketsRes] = await Promise.allSettled([
-      apiFetch<any>('/leads/my?limit=5'),
-      apiFetch<any>('/quotes/my?limit=5'),
-      apiFetch<any>('/projects/my?limit=5'),
-      apiFetch<any>('/tickets/my?limit=5'),
-    ])
-    if (leadsRes.status === 'fulfilled') {
-      const data = leadsRes.value
-      stats.leads = data.total || 0
-      recentLeads.value = data.items || []
-    }
-    if (quotesRes.status === 'fulfilled') stats.quotes = quotesRes.value.total || 0
-    if (projectsRes.status === 'fulfilled') stats.projects = projectsRes.value.total || 0
-    if (ticketsRes.status === 'fulfilled') stats.tickets = ticketsRes.value.total || 0
-  } catch {}
-})
+async function loadDashboard() {
+  loading.value = true
+  loadError.value = ''
+  const results = await Promise.allSettled([
+    apiFetch<any>('/leads/my?limit=5'),
+    apiFetch<any>('/quotes/my?limit=5'),
+    apiFetch<any>('/projects/my?limit=5'),
+    apiFetch<any>('/tickets/my?limit=5'),
+  ])
+  const [leadsRes, quotesRes, projectsRes, ticketsRes] = results
+  if (leadsRes.status === 'fulfilled') {
+    stats.leads = leadsRes.value.total || 0
+    recentLeads.value = leadsRes.value.items || []
+  } else {
+    stats.leads = 0
+    recentLeads.value = []
+  }
+  stats.quotes = quotesRes.status === 'fulfilled' ? quotesRes.value.total || 0 : 0
+  stats.projects = projectsRes.status === 'fulfilled' ? projectsRes.value.total || 0 : 0
+  stats.tickets = ticketsRes.status === 'fulfilled' ? ticketsRes.value.total || 0 : 0
+  const failed = results.filter(result => result.status === 'rejected').length
+  if (failed) loadError.value = `${failed} workspace section${failed === 1 ? '' : 's'} could not be loaded.`
+  loading.value = false
+}
+
+onMounted(loadDashboard)
 </script>

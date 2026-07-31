@@ -39,7 +39,7 @@
             <div class="flex items-center gap-2 shrink-0">
               <StatusBadge :status="p.status" />
               <button v-if="p.status !== 'published'" class="text-xs text-primary-600 hover:underline" :disabled="busy" @click="publishSeo(p)">Publish</button>
-              <a v-else :href="`http://localhost:4099/insights/${p.slug}`" target="_blank" class="text-xs text-gray-500 hover:underline">View</a>
+              <a v-else :href="`${pcUrl}/insights/${p.slug}`" target="_blank" class="text-xs text-gray-500 hover:underline">View</a>
             </div>
           </div>
         </div>
@@ -89,6 +89,8 @@
 definePageMeta({ layout: 'default' })
 
 const { apiFetch } = useApi()
+const config = useRuntimeConfig()
+const pcUrl = String(config.public.aislosUrl || 'http://localhost:4099').replace(/\/$/, '')
 const assets = ref<any[]>([])
 const seoPages = ref<any[]>([])
 const assetFilter = ref('')

@@ -14,6 +14,7 @@ from sqlalchemy import select
 
 from app.api.deps import AdminUser, CurrentUser, DB
 from app.core.portal_context import PortalContextDep
+from app.core.object_storage import is_user_upload_key
 from app.models.procurement import BoqVersion, ProcurementProjectFact
 from app.schemas.portal_policy import PortalPolicyPublic
 from app.schemas.procurement import (
@@ -75,6 +76,7 @@ from app.services.procurement_rfq import (
     serialize_rfq_for_supplier,
 )
 from app.services.procurement_projects import (
+    ProcurementProjectAccessDenied,
     ProcurementProjectError,
     attach_file,
     create_project,
@@ -105,6 +107,7 @@ async def create_procurement_project(
             db,
             user=user,
             ctx=ctx,
+            workspace_id=body.workspace_id,
             project_type=body.project_type,
             title=body.title,
             description=body.description,
@@ -112,6 +115,8 @@ async def create_procurement_project(
             country=body.country,
             city=body.city,
         )
+    except ProcurementProjectAccessDenied as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except ProcurementProjectError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
@@ -266,6 +271,8 @@ async def attach_procurement_project_file(
     )
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    if not is_user_upload_key(body.storage_path, user.id):
+        raise HTTPException(status_code=403, detail="File key is not owned by current user")
 
     asset = await attach_file(
         db,
@@ -321,7 +328,7 @@ async def list_procurement_project_facts(
     )
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
-    facts = await list_facts(db, project.id)
+    facts = await list_facts(db, project)
     return [ProcurementFactRead.model_validate(f) for f in facts]
 
 
@@ -340,7 +347,7 @@ async def patch_procurement_project_fact(
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    fact = await get_fact_for_project(db, project_id, fact_id)
+    fact = await get_fact_for_project(db, project, fact_id)
     if fact is None:
         raise HTTPException(status_code=404, detail="Fact not found")
 
@@ -494,7 +501,11 @@ async def _resolve_boq_version(
 ) -> BoqVersion:
     if body_version_id:
         version = await db.get(BoqVersion, body_version_id)
-        if version is None or version.project_id != project.id:
+        if (
+            version is None
+            or version.project_id != project.id
+            or version.workspace_id != project.workspace_id
+        ):
             raise HTTPException(status_code=404, detail="BOQ version not found")
         return version
     version = await get_project_boq_version(db, project)
@@ -518,9 +529,11 @@ async def get_procurement_project_boq(
     version = await get_project_boq_version(db, project)
     if version is None:
         raise HTTPException(status_code=404, detail="No BOQ version for project")
-    items = await list_items_for_version(db, version.id)
-    options = await list_options_for_items(db, [i.id for i in items])
-    plans = await list_solution_plans(db, version.id)
+    items = await list_items_for_version(db, version.id, workspace_id=project.workspace_id)
+    options = await list_options_for_items(
+        db, [i.id for i in items], workspace_id=project.workspace_id
+    )
+    plans = await list_solution_plans(db, version.id, workspace_id=project.workspace_id)
     return serialize_boq_public(version, items, options, plans)
 
 
@@ -664,9 +677,11 @@ async def freeze_procurement_boq(
     )
     await db.commit()
     await db.refresh(project)
-    items = await list_items_for_version(db, version.id)
-    options = await list_options_for_items(db, [i.id for i in items])
-    plans = await list_solution_plans(db, version.id)
+    items = await list_items_for_version(db, version.id, workspace_id=project.workspace_id)
+    options = await list_options_for_items(
+        db, [i.id for i in items], workspace_id=project.workspace_id
+    )
+    plans = await list_solution_plans(db, version.id, workspace_id=project.workspace_id)
     return {
         "project_status": project.status,
         "boq": serialize_boq_public(version, items, options, plans),
@@ -689,12 +704,16 @@ async def list_procurement_packages(
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    packages = await list_packages_for_project(db, project.id)
+    packages = await list_packages_for_project(
+        db, project.id, workspace_id=project.workspace_id
+    )
     if not packages:
         return []
 
     package_ids = [p.id for p in packages]
-    items = await list_package_items(db, package_ids)
+    items = await list_package_items(
+        db, package_ids, workspace_id=project.workspace_id
+    )
     payload = []
     for pkg in packages:
         candidates = await match_partner_candidates(
@@ -793,7 +812,9 @@ async def patch_procurement_package(
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    package = await get_package_for_project(db, project_id, package_id)
+    package = await get_package_for_project(
+        db, project_id, package_id, workspace_id=project.workspace_id
+    )
     if package is None:
         raise HTTPException(status_code=404, detail="Package not found")
 
@@ -839,7 +860,9 @@ async def patch_procurement_package(
     await db.commit()
     await db.refresh(package)
 
-    items = await list_package_items(db, [package.id])
+    items = await list_package_items(
+        db, [package.id], workspace_id=project.workspace_id
+    )
     candidates = await match_partner_candidates(
         db,
         trade=package.trade,
@@ -869,7 +892,9 @@ async def publish_procurement_package_rfq(
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    package = await get_package_for_project(db, project_id, package_id)
+    package = await get_package_for_project(
+        db, project_id, package_id, workspace_id=project.workspace_id
+    )
     if package is None:
         raise HTTPException(status_code=404, detail="Package not found")
 

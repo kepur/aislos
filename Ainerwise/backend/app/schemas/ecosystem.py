@@ -39,6 +39,7 @@ class MarketplaceReview(BaseSchema):
 
 
 class AgentInstallationCreate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     config_json: dict | None = None
 
 

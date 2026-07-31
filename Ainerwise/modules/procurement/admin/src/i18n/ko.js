@@ -2,7 +2,7 @@ export default {
   nav: { dashboard: '대시보드', users: '사용자', staff: '직원', companies: '회사', verification: 'KYC 인증', intents: '요청', orders: '주문', disputes: '분쟁', escrow: '에스크로', payments: '결제', risk: '리스크 플래그', trust: '신뢰 점수', notifications: '알림', integrations: '통합', settings: '설정', audit: '감사 로그' },
   sections: { people: '인원', marketplace: '마켓플레이스', finance: '재무', operations: '운영', system: '시스템' },
   common: { loading: '로딩 중…', noData: '데이터 없음', save: '저장', cancel: '취소', edit: '편집', delete: '삭제', confirm: '확인', search: '검색', filter: '필터', actions: '작업', status: '상태', date: '날짜', created: '생성됨', signOut: '로그아웃', allStatus: '모든 상태', reset: '재설정', test: '테스트', view: '보기', dismiss: '해제', approve: '승인', reject: '거부', submit: '제출', close: '닫기', active: '활성', suspended: '정지됨', yes: '예', no: '아니오' },
-  login: { title: '관리 콘솔', subtitle: 'AinerWise Procurement 관리 시스템', email: '이메일', password: '비밀번호', signIn: '로그인', signingIn: '로그인 중…', adminOnly: '관리자 자격 증명 필요' },
+  login: { title: '관리 콘솔', subtitle: 'AISLOS Market 관리 시스템', email: '이메일', password: '비밀번호', signIn: '로그인', signingIn: '로그인 중…', adminOnly: '관리자 자격 증명 필요' },
   dashboard: { title: '대시보드', totalUsers: '총 사용자', activeOrders: '활성 주문', openDisputes: '미해결 분쟁', escrowHeld: '에스크로 보유', recentAudit: '최근 감사 로그', quickActions: '빠른 작업' },
   users: { title: '사용자', searchPlaceholder: '이메일 또는 이름 검색…', allRoles: '모든 역할', name: '이름', email: '이메일', role: '역할', suspend: '정지', activate: '활성화' },
   staff: { title: '직원 관리', members: '명의 직원', invite: '+ 직원 초대', inviteTitle: '직원 초대', fullName: '전체 이름', tempPassword: '임시 비밀번호 (8자 이상)', sendInvite: '초대 보내기', inviting: '초대 중…', fillAll: '모든 필드 입력 (비밀번호 8자 이상)', changeRole: '역할 변경' },

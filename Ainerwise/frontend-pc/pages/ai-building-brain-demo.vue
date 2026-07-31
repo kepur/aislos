@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-slate-950 text-white">
+  <div class="surface-dark bg-slate-950 text-white">
     <section class="relative overflow-hidden">
       <ClientOnly>
         <BuildingBrain3D :level="selectedLevel" :scenario-key="activeScenario.key" />

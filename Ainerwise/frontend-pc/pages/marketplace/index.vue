@@ -38,7 +38,7 @@
           <div v-for="item in installations" :key="item.id" class="glass-panel flex items-center justify-between gap-4 p-4">
             <div>
               <p class="font-medium text-white">{{ item.name }}</p>
-              <p class="text-xs text-slate-400">{{ item.status }} · permissions remain separately governed</p>
+              <p class="text-xs text-slate-400">{{ item.status }} · Workspace {{ item.workspace_id }} · permissions remain separately governed</p>
             </div>
             <button v-if="item.status === 'installed'" class="text-xs text-red-300" @click="uninstall(item)">Uninstall</button>
           </div>
@@ -53,19 +53,32 @@
 <script setup lang="ts">
 const { apiFetch } = useApi()
 const { isLoggedIn } = useAuth()
+const { activeWorkspaceId, loadAccess } = usePortalManifest()
 const listings = ref<any[]>([])
 const installations = ref<any[]>([])
 const message = ref('')
 const error = ref('')
 async function loadInstallations() {
   if (!isLoggedIn.value) return
-  const res = await apiFetch<any>('/marketplace/installations/my')
+  if (!activeWorkspaceId.value) {
+    error.value = 'Select a Workspace before managing installed Agents.'
+    installations.value = []
+    return
+  }
+  const res = await apiFetch<any>(`/marketplace/installations/my?workspace_id=${activeWorkspaceId.value}`)
   installations.value = res.items || []
 }
 async function install(listing: any) {
   if (!isLoggedIn.value) return navigateTo('/login?redirect=/marketplace')
+  if (!activeWorkspaceId.value) {
+    error.value = 'Select a Workspace before installing an Agent.'
+    return
+  }
   try {
-    await apiFetch(`/marketplace/listings/${listing.id}/install`, { method: 'POST', body: {} })
+    await apiFetch(`/marketplace/listings/${listing.id}/install`, {
+      method: 'POST',
+      body: { workspace_id: activeWorkspaceId.value },
+    })
     message.value = `${listing.name} installed. No data permission was granted automatically.`
     await loadInstallations()
   } catch (e: any) {
@@ -79,6 +92,7 @@ async function uninstall(item: any) {
 onMounted(async () => {
   const res = await apiFetch<any>('/marketplace/listings')
   listings.value = res.items || []
+  if (isLoggedIn.value) await loadAccess()
   await loadInstallations()
 })
 </script>

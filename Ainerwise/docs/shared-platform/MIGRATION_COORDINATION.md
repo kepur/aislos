@@ -16,7 +16,7 @@
 
 | 链 | 路径 | 当前 head | 单一 head |
 |---|---|---|:---:|
-| Ainerwise Core | `Ainerwise/backend/alembic/versions/` | `033` | ✅ |
+| Ainerwise Core | `Ainerwise/backend/alembic/versions/` | `055` | ✅ |
 | Cebu Legacy | （独立仓库/链，未并入） | — | 独立 |
 
 ### 近期 revision 归属

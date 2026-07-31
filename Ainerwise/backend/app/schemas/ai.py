@@ -56,6 +56,7 @@ class AIReviewDecision(BaseModel):
 
 class ConversationRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     channel: str
     visitor_id: str | None = None
     lead_id: uuid.UUID | None = None
@@ -67,6 +68,7 @@ class ConversationRead(BaseSchema):
 
 class ConversationMessageRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     role: str
     content: str | None = None
     created_at: datetime

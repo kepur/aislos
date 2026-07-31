@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { withLocalePrefix, currentLocalePrefix } from '@/utils/localeRoutes'
 
 const BASE = import.meta.env.VITE_ADMIN_API_BASE || '/api'
 
@@ -15,7 +16,7 @@ api.interceptors.response.use(
   (err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem('admin_token')
-      window.location.href = '/login'
+      window.location.href = withLocalePrefix('/login', currentLocalePrefix(window.location.pathname))
     }
     return Promise.reject(err)
   }

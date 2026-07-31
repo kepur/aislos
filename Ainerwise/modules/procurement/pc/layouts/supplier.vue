@@ -112,9 +112,9 @@
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
       <!-- Top Header -->
-      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10">
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-3 px-6 z-10">
         <div class="flex items-center gap-3 min-w-0">
           <UButton
             to="/marketplace"
@@ -136,6 +136,7 @@
               <USelect v-model="appStore.currency" :options="appStore.currencyOptions" option-attribute="label" value-attribute="code" size="sm" class="w-36" variant="none" @update:model-value="appStore.setCurrency" />
             </div>
           </ClientOnly>
+          <a :href="$config.public.aislosSiteUrl" class="hidden text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600 lg:inline">AinerWise 官网 ↗</a>
           <div class="flex items-center text-sm font-medium text-green-600 bg-green-50 px-3 py-1.5 rounded-full border border-green-100">
             <div class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></div>
             {{ appStore.t('layout.onlinePings') }}
@@ -216,7 +217,7 @@
       </header>
 
       <!-- Page Content -->
-      <main class="flex-1 overflow-y-auto bg-slate-50 p-6">
+      <main class="flex-1 overflow-y-auto overflow-x-hidden bg-slate-50 p-6">
         <slot />
       </main>
     </div>

@@ -29,6 +29,7 @@ celery_app.conf.update(
         "app.tasks.event_consumers",
         "app.tasks.briefing_tasks",
         "app.tasks.publishing_tasks",
+        "app.tasks.backup_tasks",
     ),
     # Queue split: `default` = user-facing latency (notifications, outbox relay),
     # `ai_ingestion` = heavy/backloggable embedding work,
@@ -46,12 +47,17 @@ celery_app.conf.update(
         "send_daily_briefing": {"queue": "automation"},
         "dispatch_publish_jobs": {"queue": "automation"},
         "generate_weekly_marketing_report": {"queue": "automation"},
+        "run_due_backup_schedules": {"queue": "automation"},
     },
     # FI.8.4 / FI.8.5 — scheduled lifecycle automation (requires `celery beat`).
     beat_schedule={
         "relay-outbox-events": {
             "task": "relay_outbox_events",
             "schedule": 30.0,  # outbox -> Redis Stream latency ceiling
+        },
+        "dispatch-pending-telegram-events": {
+            "task": "dispatch_pending_telegram_events",
+            "schedule": 30.0,  # committed notification outbox -> Telegram
         },
         "consume-domain-events": {
             "task": "consume_domain_events",
@@ -88,6 +94,10 @@ celery_app.conf.update(
         "generate-weekly-marketing-report": {
             "task": "generate_weekly_marketing_report",
             "schedule": crontab(hour=7, minute=30, day_of_week=1),  # Monday
+        },
+        "run-due-backup-schedules": {
+            "task": "run_due_backup_schedules",
+            "schedule": 300.0,
         },
     },
 )

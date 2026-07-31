@@ -5,6 +5,10 @@
       <h1 class="text-2xl font-bold text-white">{{ $t('admin.dashboard') }}</h1>
       <p class="text-sm text-slate-400 mt-1">Real-time overview of your smart building platform</p>
     </div>
+    <div v-if="loadError" class="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+      {{ loadError }}
+      <button class="ml-2 font-semibold underline" @click="loadDashboard">Retry</button>
+    </div>
 
     <!-- Stats row -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -96,6 +100,7 @@ const stats = reactive({
 const { apiFetch } = useApi()
 const recentLeads = ref<any[]>([])
 const recentVendors = ref<any[]>([])
+const loadError = ref('')
 
 const statCards = computed(() => [
   { label: 'New Leads', value: stats.new_leads, emoji: '📋', bg: 'bg-blue-500/10', sub: 'Awaiting review' },
@@ -109,12 +114,17 @@ function formatDate(d: string) {
   return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-onMounted(async () => {
+async function loadDashboard() {
+  loadError.value = ''
   try {
     const data = await apiFetch<any>('dashboard')
     if (data.stats) Object.assign(stats, data.stats)
     recentLeads.value = data.recent_leads || []
     recentVendors.value = data.recent_vendors || []
-  } catch {}
-})
+  } catch (e: any) {
+    loadError.value = e?.data?.detail || e?.message || 'Unable to load the executive dashboard.'
+  }
+}
+
+onMounted(loadDashboard)
 </script>

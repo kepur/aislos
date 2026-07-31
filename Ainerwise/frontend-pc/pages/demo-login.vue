@@ -58,12 +58,11 @@
 <script setup lang="ts">
 const { login } = useAuth()
 const { getDemoMode, defaultDemoMode } = useDemoMode()
-const { urls } = usePortalMode()
 const loading = ref(false)
 const error = ref('')
 const form = reactive({
-  email: defaultDemoMode.buyer.email,
-  password: defaultDemoMode.buyer.password,
+  email: '',
+  password: '',
 })
 
 const demoProjects = [
@@ -77,7 +76,7 @@ const demoProjects = [
 
 onMounted(async () => {
   const demoMode = await getDemoMode()
-  if (!demoMode.enabled) {
+  if (!demoMode.enabled || !demoMode.buyer) {
     error.value = 'Demo mode is currently disabled.'
     return
   }
@@ -90,7 +89,7 @@ async function handleDemoLogin() {
   error.value = ''
   try {
     await login(form.email, form.password)
-    await navigateTo(`${urls.customer}/dashboard`, { external: true })
+    await navigateTo('/portal')
   } catch (e: any) {
     error.value = e?.data?.detail || 'Demo login failed. Create demo data first.'
   } finally {

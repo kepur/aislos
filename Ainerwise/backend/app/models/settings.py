@@ -1,4 +1,4 @@
-"""Admin-configurable integration settings (SMTP / Telegram / AI agent)."""
+"""Admin-configurable integration settings."""
 from sqlalchemy import Boolean, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -6,12 +6,12 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.models.base_model import Base, TimestampMixin, UUIDMixin
 
 # Categories + which config keys are secret (masked on read).
-INTEGRATION_CATEGORIES = ("smtp", "telegram", "ai", "voice")
+INTEGRATION_CATEGORIES = ("smtp", "telegram", "whatsapp", "ai", "voice")
 SECRET_KEYS = {
-    "smtp": ("password",),
+    "smtp": ("password", "inbound_webhook_secret"),
     "telegram": ("bot_token",),
+    "whatsapp": ("access_token", "app_secret", "verify_token"),
     "ai": ("api_key",),
-    "ai_media": ("api_key",),
     "social": ("api_key",),
     "stripe": ("secret_key", "webhook_secret"),
     "voice": ("api_key",),

@@ -9,10 +9,11 @@ from sqlalchemy import select, text as sql_text
 
 from app.db.session import async_session_factory, engine
 from app.main import app
+from tests.route_utils import registered_route_paths
 
 
 def test_showroom_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/showroom/kiosk/bootstrap",
         "/api/v1/showroom/kiosk/sessions",
@@ -107,6 +108,17 @@ def test_kiosk_full_walkup_loop():
                 await client.post("/api/v1/showroom/kiosk/sessions", headers=kiosk_headers,
                                   json={"lang": "en"})
             ).json()
+            lead_resp = await client.post(
+                "/api/v1/showroom/kiosk/leads",
+                headers=kiosk_headers,
+                json={
+                    "session_id": session["id"],
+                    "contact_name": "Workspace Test Customer",
+                    "contact_email": f"showroom-{uuid.uuid4().hex[:8]}@example.com",
+                },
+            )
+            assert lead_resp.status_code == 201, lead_resp.text
+            lead_id = lead_resp.json()["id"]
             chat = (
                 await client.post("/api/v1/showroom/kiosk/chat", headers=kiosk_headers,
                                   json={"session_id": session["id"],
@@ -140,6 +152,7 @@ def test_kiosk_full_walkup_loop():
 
         async with async_session_factory() as db:
             from app.models.ai import Conversation
+            from app.models.lead import Lead
             from app.models.lifecycle import StockMovement
             from app.models.payment import LedgerEntry
             from app.models.showroom import KioskDevice, ShowroomOrder, ShowroomSession, Store
@@ -157,6 +170,20 @@ def test_kiosk_full_walkup_loop():
 
             refreshed_session = await db.get(ShowroomSession, uuid.UUID(session["id"]))
             assert refreshed_session.outcome == "purchase"
+            store_row = await db.get(Store, uuid.UUID(store["id"]))
+            device_row = await db.get(KioskDevice, uuid.UUID(device["id"]))
+            order_row = await db.get(ShowroomOrder, uuid.UUID(order["id"]))
+            conversation = await db.get(Conversation, uuid.UUID(session["conversation_id"]))
+            lead = await db.get(Lead, uuid.UUID(lead_id))
+            assert store_row.workspace_id is not None
+            assert {
+                device_row.workspace_id,
+                refreshed_session.workspace_id,
+                order_row.workspace_id,
+                conversation.workspace_id,
+                lead.workspace_id,
+            } == {store_row.workspace_id}
+            assert conversation.lead_id == lead.id
 
             # persona attribution on the live run
             runs = (
@@ -187,18 +214,17 @@ def test_kiosk_full_walkup_loop():
                 sql_text("DELETE FROM ai.agent_runs WHERE conversation_id = :cid"),
                 {"cid": session["conversation_id"]},
             )
-            order_row = await db.get(ShowroomOrder, uuid.UUID(order["id"]))
             await db.delete(order_row)
             await db.flush()
             await db.delete(refreshed_session)
             await db.flush()
-            conversation = await db.get(Conversation, uuid.UUID(session["conversation_id"]))
             if conversation:
                 await db.delete(conversation)
-            device_row = await db.get(KioskDevice, uuid.UUID(device["id"]))
+            await db.flush()
+            await db.delete(lead)
+            await db.flush()
             await db.delete(device_row)
             await db.flush()
-            store_row = await db.get(Store, uuid.UUID(store["id"]))
             await db.delete(store_row)
             await db.commit()
 

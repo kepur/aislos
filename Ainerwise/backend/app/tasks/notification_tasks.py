@@ -18,6 +18,14 @@ def send_telegram_notification(event_id: str):
     return run_db_task(_run)
 
 
+@celery_app.task(name="dispatch_pending_telegram_events")
+def dispatch_pending_telegram_events_task():
+    """Deliver notification outbox rows after their business transaction commits."""
+    from app.services.integration_events import dispatch_pending_telegram_events
+
+    return run_db_task(dispatch_pending_telegram_events)
+
+
 @celery_app.task(name="analyze_lead")
 def analyze_lead_task(lead_id: str):
     """Run the MVP lead analysis workflow from a worker."""

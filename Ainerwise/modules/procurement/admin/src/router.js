@@ -1,9 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import i18n, { applyDirection } from '@/i18n'
+import {
+  ADMIN_LOCALE_PREFIXES,
+  applyRouteLocale,
+  currentLocalePrefix,
+  getLocalePrefixFromPath,
+  stripLocalePrefix,
+  withLocalePrefix,
+} from '@/utils/localeRoutes'
 
 const routes = [
   { path: '/login',         component: () => import('@/pages/Login.vue'),         meta: { public: true } },
-  { path: '/',              redirect: '/dashboard' },
+  { path: '/',              redirect: (to) => withLocalePrefix('/dashboard', getLocalePrefixFromPath(to.path) || currentLocalePrefix(to.path)) },
   { path: '/dashboard',     component: () => import('@/pages/Dashboard.vue') },
   { path: '/users',         component: () => import('@/pages/Users.vue') },
   { path: '/staff',         component: () => import('@/pages/Staff.vue') },
@@ -26,17 +35,33 @@ const routes = [
   { path: '/audit',         component: () => import('@/pages/Audit.vue') },
   { path: '/marketplace',   component: () => import('@/pages/Marketplace.vue') },
   { path: '/ad-campaigns',  component: () => import('@/pages/AdCampaigns.vue') },
-  { path: '/:pathMatch(.*)*', redirect: '/dashboard' },
+  { path: '/:pathMatch(.*)*', redirect: (to) => withLocalePrefix('/dashboard', getLocalePrefixFromPath(to.path) || currentLocalePrefix(to.path)) },
 ]
 
-const router = createRouter({ history: createWebHistory(), routes })
+function localeAliases(path) {
+  const cleanPath = path === '/' ? '' : path
+  return ADMIN_LOCALE_PREFIXES.map(prefix => `/${prefix}${cleanPath}`)
+}
+
+function withAliases(route) {
+  if (route.path.includes(':pathMatch')) return route
+  return {
+    ...route,
+    alias: Array.from(new Set([...(route.alias || []), ...localeAliases(route.path)])),
+  }
+}
+
+const router = createRouter({ history: createWebHistory(), routes: routes.map(withAliases) })
 
 router.beforeEach(async (to) => {
+  const prefix = applyRouteLocale(to.path, i18n.global.locale, applyDirection) || currentLocalePrefix(to.path)
+  const cleanPath = stripLocalePrefix(to.path)
+  if (to.query.lang) return withLocalePrefix(cleanPath, prefix)
   if (to.meta.public) return true
   const auth = useAuthStore()
-  if (!auth.token) return '/login'
+  if (!auth.token) return withLocalePrefix('/login', prefix)
   if (!auth.user) {
-    try { await auth.fetchMe() } catch { return '/login' }
+    try { await auth.fetchMe() } catch { return withLocalePrefix('/login', prefix) }
   }
   return true
 })

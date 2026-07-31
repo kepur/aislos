@@ -1,0 +1,2 @@
+<template><section class="mx-auto max-w-4xl space-y-6"><h1 class="text-3xl font-bold text-white">Transparent commercial terms</h1><div class="pc-card"><p class="text-slate-300">Each published RFQ freezes currency, taxes, fees, warranty, delivery region, quote expiry and payment terms. Supplier prices remain visible inside the buyer workspace before award.</p></div></section></template>
+<script setup lang="ts">definePageMeta({ layout: 'default' })</script>

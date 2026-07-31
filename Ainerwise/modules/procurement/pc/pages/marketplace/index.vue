@@ -4,41 +4,44 @@
     <div class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
       <div class="mx-auto max-w-7xl px-6 py-3 flex flex-wrap items-center gap-3">
         <!-- Breadcrumb / Title -->
-        <div class="flex-1 min-w-0">
+        <div class="flex-shrink-0 min-w-0 max-w-[220px]">
           <h1 class="text-lg font-bold text-slate-900 truncate">
-            {{ activeCategoryName || 'Marketplace' }}
+            {{ activeCategoryName || appStore.t('market.title') }}
           </h1>
-          <p v-if="!loading" class="text-xs text-slate-400">{{ total }} items</p>
+          <p v-if="!loading" class="text-xs text-slate-400">{{ total }} {{ appStore.t('market.items') }}</p>
         </div>
 
         <!-- Search -->
-        <div class="flex items-center gap-2 flex-wrap">
-          <input
-            v-model="keyword"
-            type="text"
-            placeholder="Search products..."
-            class="border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 w-48"
-            @keyup.enter="loadFeed(true)"
-          />
+        <div class="flex flex-1 items-center gap-2 flex-wrap justify-end">
+          <div class="relative flex-1 min-w-[280px] max-w-3xl">
+            <UIcon name="i-heroicons-magnifying-glass" class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+            <input
+              v-model="keyword"
+              type="text"
+              :placeholder="appStore.t('market.searchPlaceholder')"
+              class="w-full border-2 border-slate-200 rounded-xl pl-11 pr-4 py-3 text-base outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200"
+              @keyup.enter="loadFeed(true)"
+            />
+          </div>
 
           <!-- Market Mode -->
-          <select v-model="marketMode" @change="loadFeed(true)" class="border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300">
-            <option value="">All (B2B + B2C)</option>
-            <option value="B2B">B2B Only</option>
-            <option value="B2C">B2C Only</option>
+          <select v-model="marketMode" @change="loadFeed(true)" class="border border-slate-200 rounded-xl px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-300">
+            <option value="">{{ appStore.t('market.allModes') }}</option>
+            <option value="B2B">{{ appStore.t('market.b2bOnly') }}</option>
+            <option value="B2C">{{ appStore.t('market.b2cOnly') }}</option>
           </select>
 
           <!-- Sort -->
-          <select v-model="sort" @change="loadFeed(true)" class="border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300">
-            <option value="rank">Best Match</option>
-            <option value="newest">Newest</option>
-            <option value="orders">Most Orders</option>
-            <option value="price_asc">Price ↑</option>
-            <option value="price_desc">Price ↓</option>
+          <select v-model="sort" @change="loadFeed(true)" class="border border-slate-200 rounded-xl px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-300">
+            <option value="rank">{{ appStore.t('market.bestMatch') }}</option>
+            <option value="newest">{{ appStore.t('market.newest') }}</option>
+            <option value="orders">{{ appStore.t('market.mostOrders') }}</option>
+            <option value="price_asc">{{ appStore.t('market.priceAsc') }}</option>
+            <option value="price_desc">{{ appStore.t('market.priceDesc') }}</option>
           </select>
 
-          <button @click="loadFeed(true)" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors">
-            Search
+          <button @click="loadFeed(true)" class="bg-indigo-600 text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors">
+            {{ appStore.t('action.search') }}
           </button>
         </div>
       </div>
@@ -48,13 +51,13 @@
       <!-- Sidebar filters -->
       <aside class="w-52 flex-shrink-0 hidden lg:block">
         <div class="bg-white rounded-2xl border border-slate-200 p-4 sticky top-20">
-          <h3 class="text-sm font-semibold text-slate-700 mb-3">Categories</h3>
+          <h3 class="text-sm font-semibold text-slate-700 mb-3">{{ appStore.t('nav.categories') }}</h3>
           <div class="space-y-1">
             <button
               @click="setCategoryFilter(null)"
               :class="['w-full text-left text-sm px-3 py-2 rounded-lg transition-colors', !categoryId ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-slate-600 hover:bg-slate-50']"
             >
-              All Categories
+              {{ appStore.t('categories.title') }}
             </button>
             <button
               v-for="cat in filterCategories"
@@ -68,27 +71,27 @@
           </div>
 
           <div v-if="filterOriginCountries.length" class="mt-4 pt-4 border-t border-slate-100">
-            <h3 class="text-sm font-semibold text-slate-700 mb-3">Origin Country</h3>
+            <h3 class="text-sm font-semibold text-slate-700 mb-3">{{ appStore.t('market.originCountry') }}</h3>
             <select v-model="originCountry" @change="loadFeed(true)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm">
-              <option value="">All Countries</option>
+              <option value="">{{ appStore.t('market.allCountries') }}</option>
               <option v-for="c in filterOriginCountries" :key="c" :value="c">{{ c }}</option>
             </select>
           </div>
 
           <!-- Seller Type -->
           <div class="mt-4 pt-4 border-t border-slate-100">
-            <h3 class="text-sm font-semibold text-slate-700 mb-3">Seller Type</h3>
+            <h3 class="text-sm font-semibold text-slate-700 mb-3">{{ appStore.t('market.sellerType') }}</h3>
             <select v-model="merchantType" @change="loadFeed(true)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm">
-              <option value="">All Sellers</option>
-              <option value="INDIVIDUAL">Individual / Freelancer</option>
-              <option value="BUSINESS">Business / Company</option>
+              <option value="">{{ appStore.t('market.allSellers') }}</option>
+              <option value="INDIVIDUAL">{{ appStore.t('market.individual') }}</option>
+              <option value="BUSINESS">{{ appStore.t('market.business') }}</option>
             </select>
           </div>
 
           <!-- Verified Only -->
           <div class="mt-3 flex items-center gap-2">
             <input id="verified-only" type="checkbox" v-model="verifiedOnly" @change="loadFeed(true)" class="rounded border-slate-300" />
-            <label for="verified-only" class="text-sm text-slate-600 cursor-pointer">Verified businesses only</label>
+            <label for="verified-only" class="text-sm text-slate-600 cursor-pointer">{{ appStore.t('market.verifiedOnly') }}</label>
           </div>
         </div>
       </aside>
@@ -105,29 +108,66 @@
         </div>
 
         <div v-else-if="feedError" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-center text-red-700">
-          <p class="text-base font-semibold">Could not load marketplace products</p>
+          <p class="text-base font-semibold">{{ appStore.t('market.couldNotLoad') }}</p>
           <p class="mt-1 text-sm">{{ feedError }}</p>
-          <button class="mt-4 rounded-xl bg-red-600 px-5 py-2 text-sm font-semibold text-white" @click="loadFeed(true)">Try again</button>
+          <button class="mt-4 rounded-xl bg-red-600 px-5 py-2 text-sm font-semibold text-white" @click="loadFeed(true)">{{ appStore.t('market.retry') }}</button>
         </div>
 
         <!-- Empty state -->
         <div v-else-if="!loading && items.length === 0" class="text-center py-24 text-slate-400">
           <div class="text-5xl mb-4">🔍</div>
-          <p class="text-lg font-medium">No products found</p>
-          <p class="text-sm mt-1">Try adjusting your filters or <NuxtLink to="/post-request" class="text-indigo-600 hover:underline">post a request</NuxtLink></p>
+          <p class="text-lg font-medium">{{ appStore.t('market.noProducts') }}</p>
+          <p class="text-sm mt-1">{{ appStore.t('market.tryFilters') }} <NuxtLink :to="appStore.localizedPath('/post-request')" class="text-indigo-600 hover:underline">{{ appStore.t('market.postRequestInstead') }}</NuxtLink></p>
         </div>
 
-        <!-- Items grid -->
-        <div v-else class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        <template v-else>
+          <!-- Recommended (official) strip -->
+          <div v-if="recommendedItems.length" class="mb-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-lg">⭐</span>
+              <h2 class="text-base font-bold text-slate-900">{{ appStore.t('market.recommended') }}</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div
+                v-for="item in recommendedItems"
+                :key="`rec-${item.id}`"
+                class="relative bg-gradient-to-br from-indigo-50 to-white rounded-2xl border border-indigo-200 hover:border-indigo-400 hover:shadow-md transition-all cursor-pointer group overflow-hidden"
+                @click="router.push(appStore.localizedPath(`/marketplace/${item.id}`))"
+              >
+                <span class="absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                  ✓ {{ appStore.t('market.official') }}
+                </span>
+                <div class="aspect-[4/3] overflow-hidden">
+                  <img
+                    v-if="item.images && item.images[0]"
+                    :src="item.images[0]"
+                    :alt="item.title"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <MarketItemVisual v-else :title="item.title" :category-name="item.category_name" />
+                </div>
+                <div class="p-3">
+                  <h3 class="text-sm font-semibold text-slate-900 line-clamp-1 group-hover:text-indigo-600 transition-colors">{{ item.title }}</h3>
+                  <div class="mt-1 flex items-center justify-between">
+                    <span class="text-sm font-bold text-slate-900">{{ formatPrice(item.price_minor, item.currency) }}</span>
+                    <span class="text-[10px] text-slate-400">{{ item.market_mode }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Items grid -->
+          <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
           <div
             v-for="item in items"
             :key="item.id"
             class="bg-white rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group"
-            @click="router.push(`/marketplace/${item.id}`)"
+            @click="router.push(appStore.localizedPath(`/marketplace/${item.id}`))"
           >
             <!-- Sponsored badge -->
             <div v-if="item.is_sponsored" class="px-3 pt-2">
-              <span class="text-[10px] bg-amber-50 text-amber-600 border border-amber-200 rounded-full px-2 py-0.5 font-medium">Sponsored</span>
+              <span class="text-[10px] bg-amber-50 text-amber-600 border border-amber-200 rounded-full px-2 py-0.5 font-medium">{{ appStore.t('market.sponsored') }}</span>
             </div>
 
             <!-- Image -->
@@ -138,15 +178,14 @@
                 :alt="item.title"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              <div v-else class="w-full h-full bg-slate-100 flex items-center justify-center text-4xl">
-                {{ getCategoryEmoji(item.category_name) }}
-              </div>
+              <MarketItemVisual v-else :title="item.title" :category-name="item.category_name" />
             </div>
 
             <!-- Info -->
             <div class="p-4">
               <!-- Market mode badge -->
               <div class="flex items-center gap-1.5 mb-2">
+                <span v-if="item.is_official" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-600 text-white">✓ {{ appStore.t('market.official') }}</span>
                 <span
                   :class="['text-[10px] font-semibold px-2 py-0.5 rounded-full', item.market_mode === 'B2C' ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600']"
                 >{{ item.market_mode }}</span>
@@ -168,9 +207,9 @@
 
               <!-- Min order + trust -->
               <div class="mt-2 flex items-center gap-2">
-                <span v-if="item.min_order_qty > 1" class="text-[10px] text-slate-400">MOQ: {{ item.min_order_qty }}</span>
+                <span v-if="item.min_order_qty > 1" class="text-[10px] text-slate-400">{{ appStore.t('market.moq') }}: {{ item.min_order_qty }}</span>
                 <span v-if="item.company_trust_score" class="text-[10px] text-amber-600">★ {{ Math.round(item.company_trust_score) }}</span>
-                <span v-if="item.order_count > 0" class="text-[10px] text-slate-400 ml-auto">{{ item.order_count }} orders</span>
+                <span v-if="item.order_count > 0" class="text-[10px] text-slate-400 ml-auto">{{ item.order_count }} {{ appStore.t('market.orders') }}</span>
               </div>
 
               <!-- CTA button -->
@@ -178,11 +217,12 @@
                 @click.stop="handleCta(item)"
                 :class="['w-full mt-3 py-2 rounded-xl text-xs font-semibold transition-colors', item.market_mode === 'B2C' ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-indigo-600 text-white hover:bg-indigo-700']"
               >
-                {{ item.market_mode === 'B2C' ? 'Buy Now' : 'Request Quote' }}
+                {{ item.market_mode === 'B2C' ? appStore.t('market.buyNow') : appStore.t('market.requestQuote') }}
               </button>
             </div>
           </div>
-        </div>
+          </div>
+        </template>
 
         <!-- Load more -->
         <div v-if="hasNext" class="mt-8 text-center">
@@ -191,8 +231,8 @@
             :disabled="loading"
             class="bg-white border border-slate-200 text-slate-700 px-8 py-3 rounded-xl font-medium hover:bg-slate-50 transition-colors disabled:opacity-50"
           >
-            <span v-if="loading">Loading...</span>
-            <span v-else>Load More</span>
+            <span v-if="loading">{{ appStore.t('market.loading') }}</span>
+            <span v-else>{{ appStore.t('market.loadMore') }}</span>
           </button>
         </div>
       </main>
@@ -207,6 +247,7 @@ definePageMeta({ layout: 'default' })
 const config = useRuntimeConfig()
 const route = useRoute()
 const router = useRouter()
+const appStore = useAppStore()
 
 interface FeedItem {
   id: string
@@ -252,6 +293,11 @@ const originCountry = ref<string>('')
 
 const merchantType = ref<string>('')
 const verifiedOnly = ref<boolean>(false)
+
+// Curated strip: official listings, only on the unfiltered feed.
+const recommendedItems = computed(() =>
+  keyword.value || categoryId.value ? [] : items.value.filter((item: any) => item.is_official).slice(0, 4)
+)
 
 // Filter options from API
 const filterCategories = ref<FilterCat[]>([])
@@ -322,27 +368,8 @@ function formatPrice(minor: number, currency: string): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(amount)
 }
 
-function getCategoryEmoji(categoryName: string | null): string {
-  if (!categoryName) return '📦'
-  const lower = categoryName.toLowerCase()
-  if (lower.includes('construct')) return '🏗️'
-  if (lower.includes('it') || lower.includes('office')) return '💻'
-  if (lower.includes('auto')) return '🚗'
-  if (lower.includes('electron')) return '⚡'
-  if (lower.includes('machin')) return '⚙️'
-  if (lower.includes('chemical') || lower.includes('material')) return '🧪'
-  if (lower.includes('textile') || lower.includes('garment')) return '👕'
-  if (lower.includes('food') || lower.includes('bev')) return '🍜'
-  if (lower.includes('agri')) return '🌾'
-  if (lower.includes('medical') || lower.includes('health')) return '🏥'
-  if (lower.includes('furniture')) return '🪑'
-  if (lower.includes('energy') || lower.includes('solar')) return '☀️'
-  if (lower.includes('tool') || lower.includes('hardware')) return '🔨'
-  return '📦'
-}
-
 function handleCta(item: FeedItem) {
   const action = item.market_mode === 'B2C' ? 'buy' : 'quote'
-  router.push(`/marketplace/${item.id}?action=${action}`)
+  router.push(appStore.localizedPath(`/marketplace/${item.id}?action=${action}`))
 }
 </script>

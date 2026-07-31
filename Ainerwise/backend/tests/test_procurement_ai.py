@@ -10,6 +10,7 @@ from app.core.security import create_access_token, hash_password
 from app.db.session import async_session_factory, engine
 from app.main import app
 from app.services.portal_policy import ensure_default_policies
+from tests.route_utils import registered_route_paths
 
 BASE = "/api/v1/procurement"
 
@@ -103,7 +104,7 @@ def _orch_response(scenario: str) -> dict:
 
 
 def test_analyze_route_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     assert "/api/v1/procurement/projects/{project_id}/analyze" in paths
 
 

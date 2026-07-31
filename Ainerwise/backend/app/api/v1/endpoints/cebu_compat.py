@@ -166,6 +166,8 @@ from app.services.commerce_messaging import (
 from app.services.audit import append_audit_event
 from app.services.backup_service import create_backup_archive, next_run_at_for_schedule
 from app.services.demo_mode import is_demo_mode_enabled, set_demo_mode_enabled
+from app.services.integrations import get_config as get_integration_config
+from app.services.integrations import upsert_config as upsert_integration_config
 from app.services.portal_access import suspend_user_portal_access, sync_role_portal_access
 
 router = APIRouter(prefix="/cebu-compat", tags=["cebu-legacy-compat"])
@@ -247,11 +249,19 @@ class LegacyProjectReportChatRequest(BaseModel):
 
 @router.get("/system-mode")
 async def legacy_system_mode(db: DB):
+    from app.api.v1.endpoints.localization import _localization_payload
+
+    market_cfg = await get_integration_config(db, "market")
+    localization = await _localization_payload(db)
     return {
         "demo_mode": await is_demo_mode_enabled(db),
         "registration_enabled": True,
-        "app_name": "AinerWise Procurement",
+        "app_name": "AISLOS Market",
         "intent_max_attachments": 10,
+        "default_locale": localization.get("default_locale_prefix", "en"),
+        "locales": localization.get("supported_locales", []),
+        "regions": localization.get("supported_regions", []),
+        "direct_payments_only": not market_cfg.get("wallet_payments_enabled", False),
     }
 
 
@@ -1371,6 +1381,7 @@ def _region_as_admin_legacy(row: Region) -> dict:
         "notes": extra.get("notes"),
         "code": row.code,
         "currency_code": row.currency_code,
+        "language_codes_json": row.language_codes_json or [],
         "timezone": row.timezone,
         "created_at": row.created_at,
         "updated_at": row.updated_at,
@@ -1416,6 +1427,62 @@ def _platform_setting_as_admin_legacy(row: PlatformSetting) -> dict:
         "updated_by": row.updated_by,
         "updated_at": row.updated_at,
     }
+
+
+MARKET_LOCALE_OPTIONS = [
+    {"code": "EN", "locale": "en", "uri_prefix": "en", "label": "English"},
+    {"code": "ZH", "locale": "zh", "uri_prefix": "cn", "label": "中文"},
+    {"code": "SR", "locale": "sr", "uri_prefix": "rs", "label": "Srpski"},
+    {"code": "BS", "locale": "bs", "uri_prefix": "ba", "label": "Bosanski"},
+    {"code": "PL", "locale": "pl", "uri_prefix": "pl", "label": "Polski"},
+    {"code": "DE", "locale": "de", "uri_prefix": "de", "label": "Deutsch"},
+    {"code": "RO", "locale": "ro", "uri_prefix": "ro", "label": "Romana"},
+]
+
+MARKET_LOCALIZATION_SETTING_DEFAULTS = {
+    "market_enabled_locale_prefixes": {
+        "value": "en,cn,rs",
+        "description": "Enabled AISLOS Market URI language prefixes. Example: /cn, /rs.",
+    },
+    "market_default_locale_prefix": {
+        "value": "en",
+        "description": "Default AISLOS Market URI language prefix.",
+    },
+    "market_enabled_region_codes": {
+        "value": "RS,CN,PH",
+        "description": "Enabled AISLOS Market region codes. Keep this aligned with Admin -> Regions.",
+    },
+}
+
+
+def _setting_value_text(row: PlatformSetting | None, default: str = "") -> str:
+    if row is None:
+        return default
+    value = _platform_setting_value(row)
+    if isinstance(value, (list, tuple, set)):
+        return ",".join(str(item) for item in value)
+    if value is None:
+        return default
+    return str(value)
+
+
+def _split_csv(value: object | None) -> list[str]:
+    if isinstance(value, (list, tuple, set)):
+        raw_items = value
+    else:
+        raw_items = str(value or "").split(",")
+    seen: set[str] = set()
+    items: list[str] = []
+    for item in raw_items:
+        normalized = str(item or "").strip()
+        if not normalized:
+            continue
+        key = normalized.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        items.append(normalized)
+    return items
 
 
 def _default_ranking_profiles() -> list[dict]:
@@ -1516,7 +1583,7 @@ async def _ranking_profiles_setting(db: DB) -> PlatformSetting:
             portal_key="admin_cebu",
             key="ranking_profiles_json",
             value_json={"value": _default_ranking_profiles()},
-            description="AinerWise Procurement supplier ranking profile weights.",
+            description="AISLOS Market supplier ranking profile weights.",
         )
         db.add(row)
         await db.flush()
@@ -1548,6 +1615,7 @@ async def _ensure_legacy_admin_default_settings(db: DB) -> list[PlatformSetting]
         "ai_model": {"value": "gpt-4o-mini", "description": "Default AI model for compatibility smoke checks."},
         "ai_providers_json": {"value": "[]", "description": "Saved AI provider presets for the copied Admin UI."},
     }
+    defaults.update(MARKET_LOCALIZATION_SETTING_DEFAULTS)
     existing_rows = list(
         (
             await db.execute(
@@ -2879,12 +2947,27 @@ async def legacy_wallet_deposits(
     return {"items": data, "total": len(data)}
 
 
+async def _require_wallet_payments_enabled(db: DB) -> None:
+    """AISLOS hard rule: records-first, no custody. Wallet top-up/pay stays 409
+    unless an admin explicitly re-enables wallet_payments_enabled (legacy mode)."""
+    market_cfg = await get_integration_config(db, "market")
+    if not market_cfg.get("wallet_payments_enabled", False):
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "This platform runs in direct-payment mode and does not hold customer funds. "
+                "Pay the supplier directly and record the payment on the order."
+            ),
+        )
+
+
 @router.post("/wallets/deposits", status_code=201)
 async def legacy_create_wallet_deposit(
     data: LegacyWalletDepositCreate,
     db: DB,
     user: CurrentUser,
 ):
+    await _require_wallet_payments_enabled(db)
     if data.amount_minor <= 0:
         raise HTTPException(status_code=422, detail="amount_minor must be greater than 0")
     currency = (data.currency or "PHP").upper()
@@ -3487,10 +3570,16 @@ async def legacy_marketplace_feed(
     if keyword:
         stmt = stmt.where(SupplierListing.title.ilike(f"%{keyword.strip()}%"))
     offset = (page - 1) * page_size
-    rows = list((await db.execute(stmt.order_by(SupplierListing.created_at.desc()).offset(offset).limit(page_size))).all())
+    # Official listings first (admin-curated via attributes_json.official),
+    # then newest — ordering must happen before pagination.
+    official_first = (SupplierListing.attributes_json["official"].astext == "true").desc().nullslast()
+    rows = list((await db.execute(
+        stmt.order_by(official_first, SupplierListing.created_at.desc()).offset(offset).limit(page_size)
+    )).all())
     items = []
     for listing, company_name in rows:
-        attrs = listing.attributes_json or {}
+        # attributes_json is untrusted legacy data — some rows carry arrays.
+        attrs = listing.attributes_json if isinstance(listing.attributes_json, dict) else {}
         items.append(
             {
                 "id": listing.id,
@@ -3514,6 +3603,7 @@ async def legacy_marketplace_feed(
                 "company_name": company_name,
                 "company_trust_score": None,
                 "is_sponsored": False,
+                "is_official": bool(attrs.get("official")),
                 "created_at": listing.created_at,
             }
         )
@@ -3557,7 +3647,7 @@ async def legacy_marketplace_item(item_id: uuid.UUID, db: DB):
     if row is None:
         raise HTTPException(status_code=404, detail="Item not found")
     listing, company_name = row
-    attrs = listing.attributes_json or {}
+    attrs = listing.attributes_json if isinstance(listing.attributes_json, dict) else {}
     return {
         "id": listing.id,
         "title": listing.title,
@@ -3580,6 +3670,7 @@ async def legacy_marketplace_item(item_id: uuid.UUID, db: DB):
         "company_name": company_name,
         "company_trust_score": None,
         "is_sponsored": False,
+        "is_official": bool(attrs.get("official")),
         "created_at": listing.created_at,
     }
 
@@ -4253,6 +4344,13 @@ async def legacy_admin_update_order_status(
     return await _order_as_legacy(db, row)
 
 
+@router.get("/localization/config")
+async def market_localization_config(db: DB):
+    from app.api.v1.endpoints.localization import _localization_payload
+
+    return await _localization_payload(db)
+
+
 @router.get("/admin/settings")
 async def legacy_admin_settings(db: DB, user: CurrentUser):
     _require_legacy_admin(user)
@@ -4437,7 +4535,7 @@ async def legacy_admin_test_notification(
         portal_key="admin_cebu",
         domain="commerce",
         event_type="cebu.admin.test",
-        title=payload.get("title") or f"AinerWise Procurement {normalized_channel} test",
+        title=payload.get("title") or f"AISLOS Market {normalized_channel} test",
         body=payload.get("body") or "This is a real in-app test notification from Procurement Admin.",
         link_path="/notifications",
         status="unread",
@@ -5330,6 +5428,24 @@ async def legacy_admin_shipping_statistics(db: DB, user: CurrentUser):
     }
 
 
+@router.get("/admin/market-settings")
+async def legacy_admin_get_market_settings(db: DB, user: CurrentUser):
+    _require_legacy_admin(user)
+    return await get_integration_config(db, "market")
+
+
+@router.put("/admin/market-settings")
+async def legacy_admin_update_market_settings(data: dict, db: DB, user: CurrentUser):
+    """Payment-mode gate only; locales/regions are managed via /localization/config."""
+    _require_legacy_admin(user)
+    payload = {k: v for k, v in (data or {}).items() if k == "wallet_payments_enabled"}
+    if not payload:
+        raise HTTPException(status_code=422, detail="No valid settings provided")
+    payload["wallet_payments_enabled"] = bool(payload["wallet_payments_enabled"])
+    await upsert_integration_config(db, "market", config=payload, is_enabled=True)
+    return await get_integration_config(db, "market")
+
+
 @router.get("/admin/escrow")
 async def legacy_admin_escrow_transactions(db: DB, user: CurrentUser):
     _require_legacy_admin(user)
@@ -5554,6 +5670,8 @@ async def legacy_admin_update_region(region_id: uuid.UUID, data: dict, db: DB, u
         row.currency_code = str(data["currency_code"]).upper()
     if "timezone" in data:
         row.timezone = data["timezone"]
+    if "language_codes_json" in data:
+        row.language_codes_json = data["language_codes_json"] or []
     if "status" in data:
         row.is_active = str(data["status"]).upper() == "ACTIVE"
     extra = _region_extra(row)
@@ -6138,7 +6256,10 @@ async def legacy_publish_intent(intent_id: uuid.UUID, db: DB, user: CurrentUser)
         row = await publish_request(db, intent_id)
         await db.commit()
         await db.refresh(row)
-        return await _intent_as_legacy_with_offer_count(db, row)
+        payload = await _intent_as_legacy_with_offer_count(db, row)
+        payload["legacy_status"] = payload["status"]
+        payload["status"] = row.status
+        return payload
     except CommerceTradeError as exc:
         await db.rollback()
         raise HTTPException(status_code=409, detail=str(exc)) from None
@@ -6398,8 +6519,63 @@ async def legacy_get_order(order_id: uuid.UUID, db: DB, user: CurrentUser):
     return await _order_as_legacy(db, row)
 
 
+@router.post("/orders/{order_id}/record-payment")
+async def legacy_record_order_payment(
+    order_id: uuid.UUID,
+    db: DB,
+    user: CurrentUser,
+    data: dict | None = None,
+):
+    """Records-first direct payment: the buyer paid the supplier outside the
+    platform and logs the reference here. No funds move through AISLOS."""
+    row, _party = await _require_legacy_order_party(db, user, order_id, allowed={"buyer", "admin"})
+    if row.status in ("completed", "cancelled", "disputed"):
+        raise HTTPException(status_code=409, detail="Order cannot record payment in current status")
+    if row.total_minor <= 0:
+        raise HTTPException(status_code=409, detail="Order amount must be greater than zero")
+
+    payload = data or {}
+    reference = str(payload.get("reference") or "").strip()[:255] or None
+    note = str(payload.get("note") or "").strip()[:2000] or None
+
+    try:
+        existing = await _order_escrow(db, row)
+        if existing is not None:
+            if existing.status in ("AUTH_HELD", "CAPTURED", "RELEASED"):
+                return await _order_as_legacy(db, row)
+            raise HTTPException(status_code=409, detail=f"Payment record already in {existing.status}")
+
+        record = await create_escrow(
+            db,
+            order_id=row.id,
+            auth_amount_minor=row.total_minor,
+            currency=row.currency,
+            provider="DIRECT_RECORDED",
+        )
+        record.status = "AUTH_HELD"
+        record.provider_reference = reference
+        record.raw_event_json = {
+            "mode": "DIRECT",
+            "recorded_by": str(user.id),
+            "note": note,
+        }
+        await db.flush()
+        await capture_escrow(db, record.id, row.total_minor)
+        row.status = "confirmed"
+        await db.commit()
+        await db.refresh(row)
+        return await _order_as_legacy(db, row)
+    except HTTPException:
+        await db.rollback()
+        raise
+    except CebuTradeError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc)) from None
+
+
 @router.post("/orders/{order_id}/pay-from-wallet")
 async def legacy_pay_order_from_wallet(order_id: uuid.UUID, db: DB, user: CurrentUser):
+    await _require_wallet_payments_enabled(db)
     row, _party = await _require_legacy_order_party(db, user, order_id, allowed={"buyer"})
     if row.status in ("completed", "cancelled", "disputed"):
         raise HTTPException(status_code=409, detail="Order cannot be paid in current status")
@@ -6462,7 +6638,10 @@ async def legacy_accept_order(order_id: uuid.UUID, db: DB, user: CurrentUser):
         escrow = await _order_escrow(db, updated)
         if escrow is not None and escrow.status in ("AUTH_HELD", "CAPTURED"):
             escrow = await release_escrow(db, escrow.id)
-            await _credit_supplier_wallet_from_escrow(db, order=updated, escrow=escrow)
+            # DIRECT_RECORDED = buyer paid the supplier directly; the platform
+            # never held these funds, so there is nothing to credit internally.
+            if escrow.provider != "DIRECT_RECORDED":
+                await _credit_supplier_wallet_from_escrow(db, order=updated, escrow=escrow)
         await db.commit()
         await db.refresh(updated)
         return await _order_as_legacy(db, updated)

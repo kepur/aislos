@@ -44,6 +44,7 @@ def dispatch_publish_jobs():
         cfg = await get_config(db, "social")
         configured = bool(cfg.get("_enabled") and cfg.get("api_key") and cfg.get("base_url"))
         dispatched = 0
+        workspace_ids = set()
         for job in jobs:
             asset = await db.get(MarketingAsset, job.asset_id)
             if asset is None or asset.status not in ("approved", "scheduled", "published"):
@@ -51,6 +52,9 @@ def dispatch_publish_jobs():
                 job.error_message = "asset missing or not approved"
                 db.add(job)
                 continue
+            job.workspace_id = asset.workspace_id
+            if asset.workspace_id is not None:
+                workspace_ids.add(asset.workspace_id)
             if not configured:
                 job.status = "manual_required"
                 job.error_message = "no social aggregator configured (Admin → Integrations → social)"
@@ -80,6 +84,7 @@ def dispatch_publish_jobs():
             dispatched += 1
         db.add(
             AgentRun(
+                workspace_id=next(iter(workspace_ids)) if len(workspace_ids) == 1 else None,
                 agent_slug="marketing-agent",
                 workflow="publish",
                 input_json={"due_jobs": len(jobs)},

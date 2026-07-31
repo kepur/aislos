@@ -9,6 +9,7 @@ from pathlib import Path
 import httpx
 
 from app.main import app
+from tests.route_utils import iter_registered_routes
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = BACKEND_ROOT.parent
@@ -62,8 +63,7 @@ def _openapi_declared_paths() -> set[str]:
 
 def _fastapi_external_paths() -> set[str]:
     paths: set[str] = set()
-    for route in app.routes:
-        path = getattr(route, "path", "")
+    for path, _route in iter_registered_routes(app):
         if not path.startswith(EXTERNAL_ROUTE_PREFIX):
             continue
         suffix = path[len("/api/v1/media-integration/v1") :]
@@ -94,9 +94,8 @@ def test_openapi_mutations_require_idempotency_key():
     assert "required: true" in text
 
 
-def test_canonical_openapi_matches_fixture_when_present():
-    if not CANONICAL_OPENAPI.is_file():
-        return
+def test_canonical_openapi_matches_fixture():
+    assert CANONICAL_OPENAPI.is_file(), "canonical media integration OpenAPI contract is required"
     assert CANONICAL_OPENAPI.read_text(encoding="utf-8") == FIXTURE_OPENAPI.read_text(encoding="utf-8")
 
 

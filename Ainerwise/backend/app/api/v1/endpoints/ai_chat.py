@@ -5,7 +5,6 @@ enforces per-IP rate limits (cost control on LLM tokens) and never exposes the
 service token. Degrades gracefully when the orchestrator is down or AI is not
 configured — the frontend then points visitors to the requirement form.
 """
-import redis.asyncio as aioredis
 import httpx
 from fastapi import APIRouter, Request
 
@@ -13,6 +12,7 @@ from app.api.deps import DB
 from app.core.config import settings
 from app.schemas.ai import ChatRequest, ChatResponse
 from app.services.agent_runtime import AgentAuthorizationError, require_agent
+from app.services.rate_limit import redis_fixed_window_limited
 
 router = APIRouter(prefix="/ai", tags=["ai-chat"])
 
@@ -27,17 +27,12 @@ NOT_AVAILABLE = ChatResponse(
 
 
 async def _rate_limited(ip: str) -> bool:
-    client = aioredis.from_url(settings.REDIS_URL)
-    try:
-        key = f"rate:chat:{ip}"
-        count = await client.incr(key)
-        if count == 1:
-            await client.expire(key, 3600)
-        return count > RATE_LIMIT_PER_HOUR
-    except Exception:  # noqa: BLE001 — redis down must not take the endpoint down
-        return False
-    finally:
-        await client.aclose()
+    return await redis_fixed_window_limited(
+        bucket="ai-chat",
+        subject=ip,
+        limit=RATE_LIMIT_PER_HOUR,
+        window_seconds=3600,
+    )
 
 
 @router.post("/chat", response_model=ChatResponse)

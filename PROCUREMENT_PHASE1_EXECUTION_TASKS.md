@@ -1395,7 +1395,8 @@ Brief
 
 ## 禁止范围
 
-- 不迁移 Cebu 全部 PC/H5。
+- C08 不负责迁移 Cebu 全部 PC/H5；这只是本栏目的范围限制，不代表允许删除、覆盖或退役原 Cebu 前端。
+- Cebu PC 全量 parity 迁移由 `INTEGRATION_PHASE3_EXECUTION_TASKS.md` 的 P3-08 至 P3-13 管理。
 - 不实现供应商 Bid 页面。
 - 不把供应商、钱包、纠纷、订单页面塞入 AISLOS 官网。
 - 不依赖 CSS 隐藏敏感字段；后端必须已隔离。

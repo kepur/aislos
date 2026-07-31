@@ -2,6 +2,7 @@
 from datetime import timedelta
 
 from app.main import app
+from tests.route_utils import registered_route_paths
 from app.models.lead import Lead
 from app.schemas.inquiry import InquiryCreate
 from app.schemas.lead import LeadCreate
@@ -10,7 +11,7 @@ from app.services.marketing_automation import build_lead_follow_up_draft, follow
 
 
 def test_marketing_routes_registered():
-    paths = {route.path for route in app.routes}
+    paths = registered_route_paths(app)
     for path in (
         "/api/v1/marketing/dashboard",
         "/api/v1/marketing/campaigns",

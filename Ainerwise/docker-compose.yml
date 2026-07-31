@@ -4,6 +4,11 @@ name: ainerwise
 
 include:
   - path: docker-compose.infrastructure.yml
+  # AISLOS Market (standalone Cebu procurement frontends, wired to Core via cebu-compat).
+  # PC :4106 / H5 :4107 / Admin :4108 — promoted to first-class services.
+  - path: docker-compose.procurement-standalone.yml
+  # 2Hands second-hand storefront (portal_key=secondhand). PC :4105.
+  - path: docker-compose.secondhand.yml
 
 services:
   backend:
@@ -105,13 +110,14 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=aislos
-      - NUXT_PUBLIC_AISLOS_URL=http://localhost:4099
-      - NUXT_PUBLIC_STORE_URL=http://localhost:4096
-      - NUXT_PUBLIC_DEVELOPER_URL=http://localhost:4092
-      - NUXT_PUBLIC_CUSTOMER_URL=http://localhost:4098
-      - NUXT_PUBLIC_ADMIN_URL=http://localhost:4097
-      - NUXT_PUBLIC_STORE_ADMIN_URL=http://localhost:4095
-      - NUXT_PUBLIC_AGENT_URL=http://localhost:4093
+      - NUXT_PUBLIC_AISLOS_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4099
+      - NUXT_PUBLIC_STORE_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4096
+      - NUXT_PUBLIC_DEVELOPER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4092
+      - NUXT_PUBLIC_CUSTOMER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4098
+      - NUXT_PUBLIC_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4097
+      - NUXT_PUBLIC_STORE_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4095
+      - NUXT_PUBLIC_AGENT_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4093
+      - NUXT_PUBLIC_MARKET_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4106
     ports:
       - "4099:4099"
     volumes:
@@ -131,13 +137,14 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=store
-      - NUXT_PUBLIC_AISLOS_URL=http://localhost:4099
-      - NUXT_PUBLIC_STORE_URL=http://localhost:4096
-      - NUXT_PUBLIC_DEVELOPER_URL=http://localhost:4092
-      - NUXT_PUBLIC_CUSTOMER_URL=http://localhost:4098
-      - NUXT_PUBLIC_ADMIN_URL=http://localhost:4097
-      - NUXT_PUBLIC_STORE_ADMIN_URL=http://localhost:4095
-      - NUXT_PUBLIC_AGENT_URL=http://localhost:4093
+      - NUXT_PUBLIC_AISLOS_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4099
+      - NUXT_PUBLIC_STORE_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4096
+      - NUXT_PUBLIC_DEVELOPER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4092
+      - NUXT_PUBLIC_CUSTOMER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4098
+      - NUXT_PUBLIC_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4097
+      - NUXT_PUBLIC_STORE_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4095
+      - NUXT_PUBLIC_AGENT_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4093
+      - NUXT_PUBLIC_MARKET_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4106
     ports:
       - "4096:4096"
     volumes:
@@ -157,13 +164,14 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=developer
-      - NUXT_PUBLIC_AISLOS_URL=http://localhost:4099
-      - NUXT_PUBLIC_STORE_URL=http://localhost:4096
-      - NUXT_PUBLIC_DEVELOPER_URL=http://localhost:4092
-      - NUXT_PUBLIC_CUSTOMER_URL=http://localhost:4098
-      - NUXT_PUBLIC_ADMIN_URL=http://localhost:4097
-      - NUXT_PUBLIC_STORE_ADMIN_URL=http://localhost:4095
-      - NUXT_PUBLIC_AGENT_URL=http://localhost:4093
+      - NUXT_PUBLIC_AISLOS_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4099
+      - NUXT_PUBLIC_STORE_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4096
+      - NUXT_PUBLIC_DEVELOPER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4092
+      - NUXT_PUBLIC_CUSTOMER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4098
+      - NUXT_PUBLIC_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4097
+      - NUXT_PUBLIC_STORE_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4095
+      - NUXT_PUBLIC_AGENT_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4093
+      - NUXT_PUBLIC_MARKET_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4106
     ports:
       - "4092:4092"
     volumes:
@@ -183,9 +191,9 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=customer
-      - NUXT_PUBLIC_CUSTOMER_URL=http://localhost:4098
-      - NUXT_PUBLIC_PARTNER_URL=http://localhost:4091
-      - NUXT_PUBLIC_KIOSK_URL=http://localhost:4090
+      - NUXT_PUBLIC_CUSTOMER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4098
+      - NUXT_PUBLIC_PARTNER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4091
+      - NUXT_PUBLIC_KIOSK_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4090
     ports:
       - "4098:4098"
     volumes:
@@ -205,9 +213,9 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=partner
-      - NUXT_PUBLIC_CUSTOMER_URL=http://localhost:4098
-      - NUXT_PUBLIC_PARTNER_URL=http://localhost:4091
-      - NUXT_PUBLIC_KIOSK_URL=http://localhost:4090
+      - NUXT_PUBLIC_CUSTOMER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4098
+      - NUXT_PUBLIC_PARTNER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4091
+      - NUXT_PUBLIC_KIOSK_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4090
     ports:
       - "4091:4091"
     volumes:
@@ -227,9 +235,9 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=kiosk
-      - NUXT_PUBLIC_CUSTOMER_URL=http://localhost:4098
-      - NUXT_PUBLIC_PARTNER_URL=http://localhost:4091
-      - NUXT_PUBLIC_KIOSK_URL=http://localhost:4090
+      - NUXT_PUBLIC_CUSTOMER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4098
+      - NUXT_PUBLIC_PARTNER_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4091
+      - NUXT_PUBLIC_KIOSK_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4090
     ports:
       - "4090:4090"
     volumes:
@@ -249,10 +257,11 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=aislos
-      - NUXT_PUBLIC_AISLOS_ADMIN_URL=http://localhost:4097
-      - NUXT_PUBLIC_STORE_ADMIN_URL=http://localhost:4095
-      - NUXT_PUBLIC_MARKETING_URL=http://localhost:4094
-      - NUXT_PUBLIC_AGENT_URL=http://localhost:4093
+      - NUXT_PUBLIC_AISLOS_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4099
+      - NUXT_PUBLIC_AISLOS_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4097
+      - NUXT_PUBLIC_STORE_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4095
+      - NUXT_PUBLIC_MARKETING_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4094
+      - NUXT_PUBLIC_AGENT_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4093
     ports:
       - "4097:4097"
     volumes:
@@ -272,10 +281,11 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=store
-      - NUXT_PUBLIC_AISLOS_ADMIN_URL=http://localhost:4097
-      - NUXT_PUBLIC_STORE_ADMIN_URL=http://localhost:4095
-      - NUXT_PUBLIC_MARKETING_URL=http://localhost:4094
-      - NUXT_PUBLIC_AGENT_URL=http://localhost:4093
+      - NUXT_PUBLIC_AISLOS_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4099
+      - NUXT_PUBLIC_AISLOS_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4097
+      - NUXT_PUBLIC_STORE_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4095
+      - NUXT_PUBLIC_MARKETING_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4094
+      - NUXT_PUBLIC_AGENT_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4093
     ports:
       - "4095:4095"
     volumes:
@@ -295,10 +305,11 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=marketing
-      - NUXT_PUBLIC_AISLOS_ADMIN_URL=http://localhost:4097
-      - NUXT_PUBLIC_STORE_ADMIN_URL=http://localhost:4095
-      - NUXT_PUBLIC_MARKETING_URL=http://localhost:4094
-      - NUXT_PUBLIC_AGENT_URL=http://localhost:4093
+      - NUXT_PUBLIC_AISLOS_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4099
+      - NUXT_PUBLIC_AISLOS_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4097
+      - NUXT_PUBLIC_STORE_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4095
+      - NUXT_PUBLIC_MARKETING_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4094
+      - NUXT_PUBLIC_AGENT_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4093
     ports:
       - "4094:4094"
     volumes:
@@ -318,10 +329,11 @@ services:
     env_file: .env
     environment:
       - NUXT_PUBLIC_PORTAL_MODE=agent
-      - NUXT_PUBLIC_AISLOS_ADMIN_URL=http://localhost:4097
-      - NUXT_PUBLIC_STORE_ADMIN_URL=http://localhost:4095
-      - NUXT_PUBLIC_MARKETING_URL=http://localhost:4094
-      - NUXT_PUBLIC_AGENT_URL=http://localhost:4093
+      - NUXT_PUBLIC_AISLOS_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4099
+      - NUXT_PUBLIC_AISLOS_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4097
+      - NUXT_PUBLIC_STORE_ADMIN_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4095
+      - NUXT_PUBLIC_MARKETING_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4094
+      - NUXT_PUBLIC_AGENT_URL=http://${AINERWISE_PUBLIC_HOST:-localhost}:4093
     ports:
       - "4093:4093"
     volumes:

@@ -11,24 +11,25 @@
         <div class="flex-1">
           <div class="flex items-center gap-3 flex-wrap">
             <h1 class="text-2xl font-bold text-slate-900">Order #{{ order.id.split('-')[0].toUpperCase() }}</h1>
-            <UBadge :color="statusColor(order.status)" variant="solid">{{ order.status }}</UBadge>
+            <UBadge :color="statusColor(order.status)" variant="solid">{{ orderStatusLabel(order.status) }}</UBadge>
           </div>
           <p class="text-sm text-slate-500 mt-1">Placed {{ new Date(order.created_at).toLocaleDateString() }}</p>
         </div>
       </div>
 
-      <!-- Escrow Banner -->
+      <!-- Payment Record Banner -->
       <div class="bg-indigo-900 rounded-2xl p-6 text-white shadow-lg overflow-hidden relative">
         <div class="absolute right-0 top-0 opacity-10">
-          <UIcon name="i-heroicons-shield-check" class="w-64 h-64 -mt-10 -mr-10" />
+          <UIcon name="i-heroicons-clipboard-document-check" class="w-64 h-64 -mt-10 -mr-10" />
         </div>
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 class="text-xl font-bold flex items-center">
-              <UIcon name="i-heroicons-lock-closed" class="w-6 h-6 mr-2 text-indigo-300" />
-              {{ formatMinor(order.total_amount_minor, order.currency) }} in Secure Escrow
+              <UIcon name="i-heroicons-clipboard-document-check" class="w-6 h-6 mr-2 text-indigo-300" />
+              {{ formatMinor(order.total_amount_minor, order.currency) }}
+              {{ order.status === 'AWAITING_PAYMENT' ? 'to pay directly to the supplier' : 'payment on record' }}
             </h2>
-            <p class="text-indigo-200 mt-1">Funds are held safely and released only on delivery confirmation.</p>
+            <p class="text-indigo-200 mt-1">You pay the supplier directly — AISLOS Market keeps the record and the paper trail, never your funds.</p>
           </div>
           <div class="flex gap-3 flex-wrap">
             <UButton
@@ -49,15 +50,15 @@
             >
               Open Dispute
             </UButton>
-            <!-- Pay from wallet if awaiting payment -->
+            <!-- Record the direct payment if awaiting -->
             <UButton
               v-if="order.status === 'AWAITING_PAYMENT'"
               color="indigo"
-              icon="i-heroicons-credit-card"
+              icon="i-heroicons-clipboard-document-check"
               :loading="paying"
-              @click="payFromWallet"
+              @click="recordPayment"
             >
-              Pay from Wallet
+              Record Payment
             </UButton>
           </div>
         </div>
@@ -113,7 +114,7 @@
               <dd class="text-sm font-medium text-slate-900">{{ formatMinor(order.subtotal_minor || order.total_amount_minor, order.currency) }}</dd>
             </div>
             <div class="flex justify-between border-t border-slate-100 pt-3">
-              <dt class="text-base font-bold text-slate-900">Total (Escrow)</dt>
+              <dt class="text-base font-bold text-slate-900">Total</dt>
               <dd class="text-base font-bold text-indigo-700">{{ formatMinor(order.total_amount_minor, order.currency) }}</dd>
             </div>
           </dl>
@@ -265,7 +266,7 @@ const canReviewSeller = computed(() => {
 })
 
 const steps = [
-  { key: 'PAID_IN_ESCROW', label: 'Escrow Paid' },
+  { key: 'PAID_IN_ESCROW', label: 'Payment Recorded' },
   { key: 'IN_PROGRESS', label: 'In Progress' },
   { key: 'DELIVERED', label: 'Delivered' },
   { key: 'PAYOUT_RELEASED', label: 'Completed' },
@@ -333,7 +334,7 @@ async function confirmDelivery() {
       method: 'POST',
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     })
-    toast.add({ title: 'Delivery confirmed! Escrow will be released.', color: 'green' })
+    toast.add({ title: 'Delivery confirmed! The order is now settled on record.', color: 'green' })
     await loadOrder()
   } catch (e: any) {
     toast.add({ title: e?.data?.detail || 'Failed to confirm delivery', color: 'red' })
@@ -342,17 +343,22 @@ async function confirmDelivery() {
   }
 }
 
-async function payFromWallet() {
+async function recordPayment() {
+  const reference = window.prompt(
+    'You pay the supplier directly (bank transfer, cash, etc.).\nEnter your payment reference number to put it on record:'
+  )
+  if (reference === null) return
   paying.value = true
   try {
-    await $fetch(`${config.public.apiBase}/orders/${route.params.id}/pay-from-wallet`, {
+    await $fetch(`${config.public.apiBase}/orders/${route.params.id}/record-payment`, {
       method: 'POST',
+      body: { reference: reference.trim() },
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     })
-    toast.add({ title: 'Payment successful! Order is now funded.', color: 'green' })
+    toast.add({ title: 'Payment recorded. The supplier can now start fulfilment.', color: 'green' })
     await loadOrder()
   } catch (e: any) {
-    toast.add({ title: e?.data?.detail || 'Payment failed. Check your wallet balance.', color: 'red' })
+    toast.add({ title: e?.data?.detail || 'Failed to record the payment.', color: 'red' })
   } finally {
     paying.value = false
   }

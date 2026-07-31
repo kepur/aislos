@@ -82,7 +82,7 @@
 
 <script setup lang="ts">
 import { h } from 'vue'
-definePageMeta({ middleware: 'auth' })
+definePageMeta({ layout: 'customer-mobile', middleware: 'auth' })
 
 const { isLoggedIn } = useAuth()
 const { apiFetch } = useApi()

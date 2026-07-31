@@ -89,7 +89,7 @@ export default {
   },
   login: {
     title: '管理后台',
-    subtitle: 'AinerWise Procurement 管理系统',
+    subtitle: 'AISLOS Market 管理系统',
     email: '邮箱',
     password: '密码',
     signIn: '登录',

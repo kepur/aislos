@@ -150,6 +150,7 @@ async def handle_acceptance_signed(db: AsyncSession, document: GeneratedDocument
     if existing_asset is None and completion.get("devices"):
         lead = await db.get(Lead, project.lead_id) if project.lead_id else None
         site = Site(
+            workspace_id=project.workspace_id,
             name=project.title,
             city=lead.city if lead else None,
             country=lead.country if lead else None,
@@ -161,7 +162,7 @@ async def handle_acceptance_signed(db: AsyncSession, document: GeneratedDocument
                 continue
             db.add(
                 Asset(
-                    site_id=site.id, project_id=project.id,
+                    workspace_id=project.workspace_id, site_id=site.id, project_id=project.id,
                     product_id=uuid.UUID(device["product_id"]) if device.get("product_id") else None,
                     name=device["name"], serial_no=device.get("serial"),
                     floor=device.get("floor"), room=device.get("room"),
@@ -179,6 +180,7 @@ async def handle_acceptance_signed(db: AsyncSession, document: GeneratedDocument
     if existing_case is None:
         lead = await db.get(Lead, project.lead_id) if project.lead_id else None
         case = CaseStudy(
+            workspace_id=project.workspace_id,
             project_id=project.id,
             title=project.title,
             country=lead.country if lead else None,

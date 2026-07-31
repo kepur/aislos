@@ -3,17 +3,17 @@ import type { PortalPolicy } from './useProcurement'
 const BRAND_STYLES = {
   aislos: {
     key: 'aislos',
-    accent: 'from-emerald-500 to-cyan-500',
-    accentText: 'text-emerald-300',
-    badge: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30',
+    accent: 'from-blue-500 to-indigo-500',
+    accentText: 'text-indigo-300',
+    badge: 'bg-indigo-500/20 text-indigo-200 border-indigo-400/30',
     homePath: '/',
   },
   cebu: {
     key: 'cebu',
-    accent: 'from-orange-500 to-amber-500',
-    accentText: 'text-orange-300',
-    badge: 'bg-orange-500/20 text-orange-200 border-orange-400/30',
-    homePath: '/',
+    accent: 'from-blue-500 to-indigo-500',
+    accentText: 'text-indigo-300',
+    badge: 'bg-indigo-500/20 text-indigo-200 border-indigo-400/30',
+    homePath: '/market',
   },
 } as const
 
@@ -21,7 +21,7 @@ export type ProcurementBrandKey = keyof typeof BRAND_STYLES
 
 export function useProcurementBrand(policy: Ref<PortalPolicy | null>) {
   const hostnameBrand = computed<ProcurementBrandKey>(() => {
-    if (import.meta.client && window.location.hostname.includes('cebu')) return 'cebu'
+    if (import.meta.client && (window.location.hostname.includes('market') || window.location.hostname.includes('cebu'))) return 'cebu'
     return 'aislos'
   })
 

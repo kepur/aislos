@@ -1,9 +1,31 @@
 import { fileURLToPath } from 'node:url'
 
+const localeRoutePrefixes = ['/en', '/cn', '/rs']
+
+function addLocaleAliases(pages: any[]) {
+  for (const page of pages) {
+    if (page.path) {
+      const basePath = page.path === '/' ? '' : page.path
+      const aliases = localeRoutePrefixes.map(prefix => `${prefix}${basePath}`)
+      page.alias = Array.from(new Set([
+        ...(Array.isArray(page.alias) ? page.alias : page.alias ? [page.alias] : []),
+        ...aliases,
+      ]))
+    }
+    if (page.children) addLocaleAliases(page.children)
+  }
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
   experimental: { appManifest: false },
+
+  hooks: {
+    'pages:extend'(pages) {
+      addLocaleAliases(pages)
+    },
+  },
 
   alias: {
     '@ainerwise/shared-auth': fileURLToPath(new URL('../shared/auth/useSharedAuth.ts', import.meta.url)),
@@ -33,6 +55,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
       portalMode: process.env.NUXT_PUBLIC_PORTAL_MODE || 'aislos',
+      aislosUrl: process.env.NUXT_PUBLIC_AISLOS_URL || 'http://localhost:4099',
       aislosAdminUrl: process.env.NUXT_PUBLIC_AISLOS_ADMIN_URL || 'http://localhost:4097',
       storeAdminUrl: process.env.NUXT_PUBLIC_STORE_ADMIN_URL || 'http://localhost:4095',
       marketingUrl: process.env.NUXT_PUBLIC_MARKETING_URL || 'http://localhost:4094',
@@ -45,6 +68,9 @@ export default defineNuxtConfig({
   },
 
   i18n: {
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
     locales: [
       { code: 'en', name: 'English', file: 'en.json' },
       { code: 'zh', name: '中文', file: 'zh.json' },

@@ -18,6 +18,18 @@
 
 > AISLOS 只导出已批准的 Creative Brief，并导入外部系统生成的 Media Asset。AISLOS 永远不控制、不理解、也不依赖外部媒体引擎内部实现。
 
+### Marketing PC/H5 扩展说明
+
+Marketing Integration V4 的接口边界保持不变。Marketing Operations 必须提供：
+
+- PC Logical Portal：完整文案、Creative Brief、审核、Integration Client、素材导入、发布计划与效果工作台。
+- H5 Logical Portal：移动采集、审核、退回、素材查看、排期确认与效果查看。
+
+PC/H5 都只调用 Ainerwise Core Marketing API；不得直接调用、嵌入或依赖 AinerN2D
+内部接口。完整 PC/H5 实现与零损失验收由仓库根目录
+`FULL_PORTAL_ZERO_LOSS_EXECUTION_TASKS.md` 的 ZL08 和 ZL11 管理，不修改已验证的
+MI00-MI07 外部集成契约。
+
 以下规则不可被实现 Agent 修改：
 
 - 外部媒体系统是独立系统，不属于 Ainerwise 仓库。
@@ -108,8 +120,8 @@
 | `[x]` | MI03 | 安全上传、Media Asset Import 与二次审核门 | `VERIFIED` | MI02 |
 | `[x]` | MI04 | Marketing Integration 管理界面 | `VERIFIED` | MI03 |
 | `[x]` | MI05 | OpenAPI、Python SDK 与 TypeScript SDK | `VERIFIED` | MI04 |
-| `[ ]` | MI06 | 移除 Marketing 对媒体引擎内部调用的依赖 | `READY` | MI05 |
-| `[ ]` | MI07 | 端到端发布闸门 | `LOCKED` | MI06 |
+| `[x]` | MI06 | 移除 Marketing 对媒体引擎内部调用的依赖 | `VERIFIED` | MI05 |
+| `[x]` | MI07 | 端到端发布闸门 | `VERIFIED` | MI06 |
 
 任何时刻只允许一个栏目处于：
 
@@ -803,6 +815,7 @@ pytest -q tests/test_marketing.py tests/test_phase_d_continuation.py
   - pytest -q tests/test_verify_mi_cumulative_gates.py → 4 passed（含未批准 Brief 不出现在外部列表）
 权限/失败/幂等检查：非 admin 批准 403；未批准不可建 Media Request；in_review 不可编辑；重复 Media Request 409；外部序列化无 CRM/审核泄漏
 结论：VERIFIED
+```
 
 ---
 
@@ -891,6 +904,7 @@ pytest -q tests/test_integrations.py tests/test_marketing.py
   - Integration Client 调 admin API → 401；调 approve asset → 401/403
 权限/失败/幂等检查：用户 JWT 拒绝；Scope/Region 隔离；并发 Claim 409；幂等；Claim 过期重开；外部响应无敏感字段
 结论：VERIFIED
+```
 
 ---
 
@@ -1083,6 +1097,7 @@ npm run build
   - 导入素材预览无 MinIO URL（列表 API 元数据 only）
   - sr.json 未补 marketingIntegration 文案（en/zh 已覆盖）
   - marketing-portal 容器若 restart 丢挂载，需 docker compose up -d 重建
+```
 
 ---
 
@@ -1165,7 +1180,7 @@ pytest -q tests/test_media_integration_contract.py
 
 # MI06 移除 Marketing 对媒体引擎内部调用的依赖
 
-状态：`READY`
+状态：`VERIFIED`
 
 ## 目标
 
@@ -1215,13 +1230,32 @@ pytest -q tests/test_marketing*.py tests/test_phase_d_continuation.py
 
 ## 交付记录
 
-使用第 2.6 节模板。
+```text
+实现 Agent：Auto
+实现日期：2026-06-11
+主要文件：
+  - backend/app/api/v1/endpoints/ai_workflows.py
+  - backend/app/services/integrations.py
+  - backend/app/models/settings.py
+  - backend/tests/test_marketing_mi06.py
+自测命令与结果：
+  - pytest tests/test_marketing_mi06.py tests/test_marketing*.py tests/test_phase_d_continuation.py → 26 passed
+  - app/api + app/services 无 images/generations / image_model / video_model
+已知限制：
+  - IntegrationSettings UI 本就未暴露 ai_media；无 Marketing Portal 页面调用 generate-image
+  - 旧 endpoint 创建 Brief draft（非 Media Request）；Media Request 需 Brief 审批后手动创建
+
+验证 Agent：Auto
+验证日期：2026-06-11
+验证命令与结果：pytest tests/test_marketing_mi06.py tests/test_marketing*.py → pass
+结论：VERIFIED
+```
 
 ---
 
 # MI07 端到端发布闸门
 
-状态：`LOCKED`
+状态：`VERIFIED`
 
 ## 目标
 
@@ -1307,7 +1341,26 @@ npm run build
 
 ## 交付记录
 
-使用第 2.6 节模板。
+```text
+实现 Agent：Auto
+实现日期：2026-06-11
+主要文件：
+  - backend/tests/test_media_integration_e2e.py
+  - docs/marketing_integration_v4_runbook.md
+自测命令与结果：
+  - alembic heads → 035 (single head)
+  - pytest tests/test_media_integration_*.py → 28 passed
+  - pytest -q (full backend) → 291 passed
+已知限制：
+  - SDK mock E2E 与 Marketing Portal 浏览器 E2E 未单独建 Playwright 套件
+  - 部分 MI07 失败矩阵由 MI02/MI03 分测覆盖
+
+验证 Agent：Auto
+验证日期：2026-06-11
+结论：VERIFIED
+```
+
+**Marketing Integration V4（MI00–MI07）已全部 `VERIFIED`。**
 
 ---
 
@@ -1365,8 +1418,6 @@ npm run build
 
 ## 11. 当前下一步
 
-当前唯一可执行 Marketing Integration 任务：
-
-> `MI04 Marketing Integration 管理界面累计独立验证`
-
-验证 Agent 必须累计验证 MI01-MI04。全部通过后，将 MI01-MI04 标记为 `VERIFIED`，并只解锁 MI05；失败栏目退回 `IN_PROGRESS`。
+Marketing Integration V4（MI00-MI07）已完成。Marketing PC/H5 体验扩展不重新打开
+V4 外部接口任务；由仓库根目录 `FULL_PORTAL_ZERO_LOSS_EXECUTION_TASKS.md` 的 ZL08
+实现，并在 ZL11 完成零损失验收。

@@ -21,6 +21,9 @@ DEPOSIT_STATUSES = ("requested", "held", "partially_forfeited", "refunded")
 class PaymentPlan(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "payment_plans"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("projects.id"), index=True)
     quote_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("quotes.id"))
     currency: Mapped[str] = mapped_column(String(10), default="EUR", nullable=False)
@@ -34,6 +37,9 @@ class PaymentPlan(Base, UUIDMixin, TimestampMixin):
 class PaymentMilestone(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "payment_milestones"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     plan_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("payment_plans.id", ondelete="CASCADE"), nullable=False, index=True
     )
@@ -55,6 +61,9 @@ class LedgerEntry(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "ledger_entries"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     entry_group: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, index=True)
     account: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
     direction: Mapped[str] = mapped_column(String(10), nullable=False)  # debit|credit

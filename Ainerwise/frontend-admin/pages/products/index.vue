@@ -4,6 +4,10 @@
       <h1 class="admin-page-title">{{ $t('admin.products') }}</h1>
       <NuxtLink to="products/create" class="btn-primary text-sm">{{ $t('common.create') }}</NuxtLink>
     </div>
+    <div v-if="loadError" class="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {{ loadError }}
+      <button class="ml-2 font-semibold underline" @click="loadProducts">Retry</button>
+    </div>
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
         <thead>
@@ -41,11 +45,17 @@ definePageMeta({ layout: 'default' })
 
 const { apiFetch } = useApi()
 const products = ref<any[]>([])
+const loadError = ref('')
 
-onMounted(async () => {
+async function loadProducts() {
+  loadError.value = ''
   try {
-    const res = await apiFetch<any>('/products?include_all=true')
+    const res = await apiFetch<any>('/products/admin/all')
     products.value = res.items || res || []
-  } catch {}
-})
+  } catch (e: any) {
+    loadError.value = e?.data?.detail || e?.message || 'Unable to load products.'
+  }
+}
+
+onMounted(loadProducts)
 </script>

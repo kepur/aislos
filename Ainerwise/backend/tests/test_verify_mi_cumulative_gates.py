@@ -15,7 +15,7 @@ def test_integration_client_cannot_call_admin_marketing_api():
         ih = _integration_headers(ic["client_secret"])
         async with _client() as client:
             resp = await client.get("/api/v1/admin/marketing/creative-briefs", headers=ih)
-        assert resp.status_code in (401, 403), resp.text
+        assert resp.status_code == 401, resp.text
 
     asyncio.run(_run())
 
@@ -32,7 +32,7 @@ def test_integration_client_cannot_approve_marketing_asset():
                 headers=ih,
                 json={},
             )
-        assert resp.status_code in (401, 403, 404), resp.text
+        assert resp.status_code == 401, resp.text
 
     asyncio.run(_run())
 

@@ -16,6 +16,7 @@
         </select>
       </div>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-300">{{ error }}</p>
 
     <div class="rounded-xl border border-white/10 overflow-hidden">
       <table class="admin-table w-full text-sm">
@@ -173,8 +174,10 @@ const page = ref(0)
 const limit = 20
 const selectedInquiry = ref<any>(null)
 const adminNotes = ref('')
+const error = ref('')
 
 async function loadInquiries() {
+  error.value = ''
   const params = new URLSearchParams()
   if (statusFilter.value) params.set('status', statusFilter.value)
   params.set('skip', String(page.value * limit))
@@ -184,17 +187,19 @@ async function loadInquiries() {
     const res = await apiFetch<any>(`/inquiries${query ? '?' + query : ''}`)
     inquiries.value = res.items || []
     total.value = res.total || 0
-  } catch {
+  } catch (e: any) {
     inquiries.value = []
+    error.value = e?.data?.detail || e?.message || 'Inquiries could not be loaded'
   }
 }
 
 async function changeStatus(id: string, newStatus: string) {
+  error.value = ''
   try {
     await apiFetch(`/inquiries/${id}/status`, { method: 'PATCH', body: { status: newStatus } })
     await loadInquiries()
   } catch (e: any) {
-    console.error('Status update failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Inquiry status could not be updated'
   }
 }
 
@@ -205,6 +210,7 @@ function openDetail(inq: any) {
 
 async function saveNotes() {
   if (!selectedInquiry.value) return
+  error.value = ''
   try {
     await apiFetch(`/inquiries/${selectedInquiry.value.id}`, {
       method: 'PUT',
@@ -213,7 +219,7 @@ async function saveNotes() {
     selectedInquiry.value.admin_notes = adminNotes.value
     await loadInquiries()
   } catch (e: any) {
-    console.error('Save notes failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Inquiry notes could not be saved'
   }
 }
 

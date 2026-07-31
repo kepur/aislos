@@ -144,12 +144,17 @@ async def create_commercial_snapshot(
     created_by: uuid.UUID,
 ) -> CommercialSnapshot:
     validate_commercial_terms(terms)
+    if project.workspace_id is None:
+        raise ProcurementRfqError("procurement project requires a Workspace")
+    if package.workspace_id != project.workspace_id or boq_version.workspace_id != project.workspace_id:
+        raise ProcurementRfqError("commercial resources belong to different Workspaces")
     existing = await get_snapshot_for_package_revision(db, package.id, package.revision)
     if existing is not None:
         return existing
 
     terms_hash = compute_terms_hash(terms)
     snapshot = CommercialSnapshot(
+        workspace_id=project.workspace_id,
         portal_key=project.portal_key,
         portal_policy_id=project.portal_policy_id,
         procurement_project_id=project.id,
@@ -204,11 +209,16 @@ async def create_procurement_rfq(
     bid_deadline: datetime | None = None,
     item_count: int = 0,
 ) -> RFQ:
+    if project.workspace_id is None:
+        raise ProcurementRfqError("procurement project requires a Workspace")
+    if package.workspace_id != project.workspace_id or snapshot.workspace_id != project.workspace_id:
+        raise ProcurementRfqError("RFQ resources belong to different Workspaces")
     existing = await get_existing_procurement_rfq(db, package.id, package.revision)
     if existing is not None:
         return existing
 
     rfq = RFQ(
+        workspace_id=project.workspace_id,
         trade=map_package_trade_to_rfq_trade(package.trade),
         title=package.title,
         scope_json=build_rfq_scope(project=project, package=package, item_count=item_count),
@@ -226,11 +236,16 @@ async def create_procurement_rfq(
     return rfq
 
 
-async def count_package_items(db: AsyncSession, package_id: uuid.UUID) -> int:
+async def count_package_items(
+    db: AsyncSession, package: ProcurementPackage
+) -> int:
     result = await db.execute(
         select(func.count())
         .select_from(ProcurementPackageItem)
-        .where(ProcurementPackageItem.package_id == package_id)
+        .where(
+            ProcurementPackageItem.package_id == package.id,
+            ProcurementPackageItem.workspace_id == package.workspace_id,
+        )
     )
     return int(result.scalar_one())
 
@@ -259,6 +274,8 @@ async def publish_package_rfq(
     Idempotent: if already published for this package revision, returns existing
     records with created=False.
     """
+    if project.workspace_id is None or package.workspace_id != project.workspace_id:
+        raise ProcurementRfqError("package and project belong to different Workspaces")
     if project.status not in ("packaged", "rfq_published"):
         raise ProcurementRfqError(
             f"project must be packaged before RFQ publish (status={project.status!r})"
@@ -275,6 +292,8 @@ async def publish_package_rfq(
     boq_version = await db.get(BoqVersion, package.boq_version_id)
     if boq_version is None or boq_version.status != "frozen":
         raise ProcurementRfqError("package BOQ version must be frozen")
+    if boq_version.workspace_id != project.workspace_id:
+        raise ProcurementRfqError("BOQ version and project belong to different Workspaces")
 
     current = await get_project_boq_version(db, project)
     if current is None or current.id != boq_version.id:
@@ -299,7 +318,7 @@ async def publish_package_rfq(
         terms=terms,
         created_by=user_id,
     )
-    item_count = await count_package_items(db, package.id)
+    item_count = await count_package_items(db, package)
     rfq = await create_procurement_rfq(
         db,
         project=project,

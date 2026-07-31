@@ -10,6 +10,7 @@
         <option v-for="s in ['draft','bidding','evaluating','awarded','cancelled']" :key="s" :value="s">{{ s }}</option>
       </select>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="admin-panel p-4 mb-6">
       <h2 class="font-medium text-gray-900 mb-3">New RFQ</h2>
@@ -64,19 +65,23 @@ const rfqs = ref<any[]>([])
 const statusFilter = ref('')
 const busy = ref(false)
 const form = ref<any>({ title: '', trade: 'general', lead_id: '', country: '', city: '', summary: '' })
+const error = ref('')
 
 async function load() {
+  error.value = ''
   const params = statusFilter.value ? `?status=${statusFilter.value}` : ''
   try {
     const res = await apiFetch<any>(`/admin/rfqs${params}`)
     rfqs.value = res.items || []
-  } catch {
+  } catch (e: any) {
     rfqs.value = []
+    error.value = e?.data?.detail || e?.message || 'RFQs could not be loaded'
   }
 }
 
 async function createRfq() {
   busy.value = true
+  error.value = ''
   try {
     await apiFetch('/admin/rfqs', {
       method: 'POST',
@@ -93,6 +98,8 @@ async function createRfq() {
     })
     form.value = { title: '', trade: 'general', lead_id: '', country: '', city: '', summary: '' }
     await load()
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'RFQ could not be created'
   } finally {
     busy.value = false
   }

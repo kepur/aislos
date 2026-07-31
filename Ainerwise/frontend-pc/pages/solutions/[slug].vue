@@ -127,21 +127,39 @@
       </div>
     </div>
   </div>
+  <div v-else class="section-padding">
+    <div class="container-main">
+      <div v-if="loading" class="glass-panel p-8 text-center text-sm text-slate-400">Loading solution details...</div>
+      <div v-else-if="error" class="glass-panel border-red-500/30 p-6 text-center text-sm text-red-300">
+        <p>{{ error }}</p>
+        <button class="btn-primary mt-4" @click="loadSolution">Retry</button>
+      </div>
+      <div v-else class="glass-panel p-8 text-center text-sm text-slate-400">This solution is not available.</div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 const route = useRoute()
 const { apiFetch } = useApi()
-const { demoSolutions } = useDemoCatalog()
-const solution = ref<any>(demoSolutions.find((item) => item.slug === route.params.slug) || null)
+const solution = ref<any>(null)
+const loading = ref(true)
+const error = ref('')
 
-onMounted(async () => {
+async function loadSolution() {
+  loading.value = true
+  error.value = ''
   try {
     solution.value = await apiFetch<any>(`/solutions/${route.params.slug}`)
-  } catch {}
-
-  if (!solution.value) {
-    solution.value = demoSolutions.find((item) => item.slug === route.params.slug)
+  } catch (e: any) {
+    solution.value = null
+    if (e?.response?.status !== 404) {
+      error.value = e?.data?.detail || e?.message || 'Unable to load this solution.'
+    }
+  } finally {
+    loading.value = false
   }
-})
+}
+
+onMounted(loadSolution)
 </script>

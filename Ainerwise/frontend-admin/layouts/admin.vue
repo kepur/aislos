@@ -28,6 +28,7 @@
 
         <!-- Right side -->
         <div class="flex items-center gap-3">
+          <PortalSwitcher />
           <ThemeToggle />
           <LanguageSwitcher />
 

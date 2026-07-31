@@ -2,7 +2,7 @@ export default {
   nav: { dashboard: 'ダッシュボード', users: 'ユーザー', staff: 'スタッフ', companies: '企業', verification: 'KYC認証', intents: 'リクエスト', orders: '注文', disputes: '紛争', escrow: 'エスクロー', payments: '支払い', risk: 'リスクフラグ', trust: '信頼スコア', notifications: '通知', integrations: '統合', settings: '設定', audit: '監査ログ' },
   sections: { people: '人員', marketplace: 'マーケット', finance: '財務', operations: '運用', system: 'システム' },
   common: { loading: '読み込み中…', noData: 'データなし', save: '保存', cancel: 'キャンセル', edit: '編集', delete: '削除', confirm: '確認', search: '検索', filter: 'フィルター', actions: '操作', status: 'ステータス', date: '日付', created: '作成日', signOut: 'サインアウト', allStatus: '全ステータス', reset: 'リセット', test: 'テスト', view: '表示', dismiss: '閉じる', approve: '承認', reject: '拒否', submit: '送信', close: '閉じる', active: 'アクティブ', suspended: '停止中', yes: 'はい', no: 'いいえ' },
-  login: { title: '管理コンソール', subtitle: 'AinerWise Procurement 管理システム', email: 'メール', password: 'パスワード', signIn: 'サインイン', signingIn: 'サインイン中…', adminOnly: '管理者認証情報が必要です' },
+  login: { title: '管理コンソール', subtitle: 'AISLOS Market 管理システム', email: 'メール', password: 'パスワード', signIn: 'サインイン', signingIn: 'サインイン中…', adminOnly: '管理者認証情報が必要です' },
   dashboard: { title: 'ダッシュボード', totalUsers: '総ユーザー数', activeOrders: 'アクティブな注文', openDisputes: '未解決の紛争', escrowHeld: 'エスクロー保管中', recentAudit: '最近の監査ログ', quickActions: 'クイックアクション' },
   users: { title: 'ユーザー', searchPlaceholder: 'メールまたは名前を検索…', allRoles: '全ロール', name: '名前', email: 'メール', role: 'ロール', suspend: '停止', activate: '有効化' },
   staff: { title: 'スタッフ管理', members: '名のスタッフ', invite: '+ スタッフを招待', inviteTitle: 'スタッフを招待', fullName: 'フルネーム', tempPassword: '仮パスワード（8文字以上）', sendInvite: '招待を送信', inviting: '招待中…', fillAll: 'すべての項目を入力（パスワード8文字以上）', changeRole: 'ロール変更' },

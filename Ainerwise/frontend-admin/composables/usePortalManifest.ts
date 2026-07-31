@@ -30,8 +30,8 @@ export type PortalMembership = {
 
 const LEGACY_MODE_MAP: Record<string, string> = {
   aislos: 'admin_executive',
-  store: 'admin_supplier_ops',
-  marketing: 'admin_marketing',
+  store: 'admin_commerce',
+  marketing: 'marketing_pc',
   agent: 'admin_ai_supervisor',
 }
 
@@ -58,6 +58,7 @@ export function usePortalManifest() {
   const memberships = useState<PortalMembership[]>('portal-access-memberships', () => [])
   const accessLoaded = useState('portal-access-loaded', () => false)
   const accessError = useState('portal-access-error', () => '')
+  const accessStatus = useState<number | null>('portal-access-status', () => null)
   const activeWorkspaceId = useState<string | null>('portal-active-workspace', () => null)
   const activePortalCookie = useCookie<string | null>('ainerwise_active_portal', { sameSite: 'lax' })
   const activeWorkspaceCookie = useCookie<string | null>('ainerwise_active_workspace', { sameSite: 'lax' })
@@ -88,6 +89,7 @@ export function usePortalManifest() {
   async function loadAccess(force = false) {
     if (accessLoaded.value && !force) return true
     accessError.value = ''
+    accessStatus.value = null
     if (!token.value) {
       availablePortals.value = []
       memberships.value = []
@@ -101,6 +103,7 @@ export function usePortalManifest() {
       )
       availablePortals.value = data.items
       memberships.value = data.memberships
+      accessStatus.value = 200
       const savedWorkspace = activeWorkspaceCookie.value
       activeWorkspaceId.value = data.memberships.some(item => item.workspace_id === savedWorkspace)
         ? savedWorkspace
@@ -113,6 +116,7 @@ export function usePortalManifest() {
       memberships.value = []
       activeWorkspaceId.value = null
       accessLoaded.value = false
+      accessStatus.value = e?.statusCode || e?.response?.status || e?.status || null
       accessError.value = e?.data?.detail || e?.message || 'Unable to load portal access'
       return false
     }
@@ -170,6 +174,7 @@ export function usePortalManifest() {
     memberships,
     accessLoaded,
     accessError,
+    accessStatus,
     activeWorkspaceId,
     activePortalCookie,
     availableForFrontend,

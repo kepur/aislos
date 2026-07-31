@@ -9,11 +9,15 @@
 <script setup lang="ts">
 const route = useRoute()
 const { initAuth } = useAuth()
+const { loadAccess } = usePortalManifest()
 const { isLight } = useAdminTheme()
 
 const isLoginPage = computed(() => route.path === '/login')
 
-onMounted(() => initAuth())
+onMounted(async () => {
+  await initAuth()
+  await loadAccess()
+})
 </script>
 
 <style>

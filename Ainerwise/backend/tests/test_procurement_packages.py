@@ -19,6 +19,7 @@ from app.services.portal_policy import (
     retire_active_policy,
 )
 from app.services.procurement_packages import classify_commercial_type, resolve_trade
+from tests.route_utils import registered_route_paths
 
 BASE = "/api/v1/procurement"
 
@@ -258,7 +259,7 @@ async def _seed_partner(
 
 
 def test_package_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     assert "/api/v1/procurement/projects/{project_id}/packages/generate" in paths
     assert "/api/v1/procurement/projects/{project_id}/packages/{package_id}" in paths
 

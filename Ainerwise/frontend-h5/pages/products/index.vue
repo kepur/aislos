@@ -19,7 +19,19 @@
         class="w-full pl-9 pr-4 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-300" />
     </div>
 
-    <div class="grid grid-cols-2 gap-3">
+    <div v-if="loading" class="py-12 text-center text-sm text-slate-400">
+      Loading products...
+    </div>
+
+    <div v-else-if="error" class="rounded-2xl border border-red-100 bg-red-50 p-4 text-center">
+      <p class="text-sm font-semibold text-red-700">Products could not be loaded.</p>
+      <p class="mt-1 text-xs text-red-500">{{ error }}</p>
+      <button type="button" class="mt-3 rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white" @click="loadProducts">
+        Retry
+      </button>
+    </div>
+
+    <div v-else-if="filteredProducts.length" class="grid grid-cols-2 gap-3">
       <NuxtLink
         v-for="product in filteredProducts"
         :key="product.id || product.slug"
@@ -52,18 +64,18 @@
       </NuxtLink>
     </div>
 
-    <div v-if="!products.length" class="text-center py-12 text-slate-400">
-      <div class="text-3xl mb-2">📦</div>
-      <p class="text-sm">Products coming soon</p>
+    <div v-else class="text-center py-12 text-slate-400">
+      <p class="text-sm">{{ search ? 'No products match your search.' : 'No products are currently available.' }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 const { apiFetch } = useApi()
-const { demoProducts } = useDemoCatalog()
-const products = ref<any[]>(demoProducts)
+const products = ref<any[]>([])
 const search = ref('')
+const loading = ref(true)
+const error = ref('')
 
 const filteredProducts = computed(() => {
   if (!search.value) return products.value
@@ -79,13 +91,19 @@ function protocolsFor(product: any) {
   return []
 }
 
-onMounted(async () => {
+async function loadProducts() {
+  loading.value = true
+  error.value = ''
   try {
     const res = await apiFetch<any>('/products?limit=50')
     products.value = res.items || res || []
-  } catch {}
-  if (!products.value.length) {
-    products.value = demoProducts
+  } catch (cause: any) {
+    products.value = []
+    error.value = cause?.data?.detail || cause?.message || 'Please try again.'
+  } finally {
+    loading.value = false
   }
-})
+}
+
+onMounted(loadProducts)
 </script>

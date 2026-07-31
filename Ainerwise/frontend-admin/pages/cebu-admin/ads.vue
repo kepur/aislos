@@ -1,0 +1,1 @@
+<template><CebuAdminTradeSection title="Cebu Ad Campaigns" section="ad_campaigns" :summary-fields="['company_id','placement','budget_minor','status']" /></template><script setup lang="ts">definePageMeta({layout:'default',middleware:['auth']})</script>

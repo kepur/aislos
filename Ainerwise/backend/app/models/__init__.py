@@ -1,5 +1,5 @@
 from app.models.base_model import Base
-from app.models.user import User, Company
+from app.models.user import User, Company, PasswordResetToken
 from app.models.product import Product, ProductCategory, ProductCompatibility
 from app.models.solution import Solution, SolutionPackage
 from app.models.lead import Lead, SiteSurvey
@@ -13,7 +13,11 @@ from app.models.file import FileAsset
 from app.models.certification import CertificationRecord, WarrantyPolicy
 from app.models.region import Region
 from app.models.audit import AuditLog
+from app.models.backup import BackupJob, BackupSchedule
+from app.models.admin_config import AdminNote, NotificationTemplate, PlatformSetting
+from app.models.commerce_geo import CompanyBranch, ServiceArea
 from app.models.legacy_bridge import LegacyBridgeIdempotency, LegacyIdentityMapping
+from app.models.legacy_migration import LegacyMigrationRecord, LegacyMigrationRun
 from app.models.portal_policy import PortalPolicy
 from app.models.procurement import (
     BoqItem,
@@ -40,7 +44,7 @@ from app.models.lifecycle import (
 )
 from app.models.finance import ProjectFinance, PlatformFeeRule
 from app.models.crm import SupplierScorecard
-from app.models.notification import NotificationPreference, ReportJob
+from app.models.notification import NotificationPreference, PortalNotification, ReportJob
 from app.models.settings import IntegrationSetting
 from app.models.marketing import (
     MarketingActivity,
@@ -81,10 +85,71 @@ from app.models.content import (
 from app.models.agent import Agent, AgentGrant
 from app.models.ecosystem import AgentInstallation, MarketplaceListing, StoreOrder, StoreOrderItem
 from app.models.showroom import Store, KioskDevice, ShowroomSession, ShowroomOrder
+from app.models.portal_access import Workspace, WorkspaceMembership, PortalGrant
+from app.models.privacy import PrivacyRequest
+from app.models.commerce import (
+    BuyerWatchlistItem,
+    CommerceOrder,
+    CommercePaymentIntent,
+    CommerceReconciliationRun,
+    CommerceSettlement,
+    CommerceThread,
+    CommerceMessage,
+    OrderDelivery,
+    OrderDispute,
+    ProcurementRequest,
+    RiskFlag,
+    SupplierListing,
+    SupplierOffer,
+    TradeCategorySchema,
+    TransactionReview,
+    TrustProfile,
+    TrustScoreEvent,
+)
+from app.models.secondhand import (
+    SecondhandAddressDisclosure,
+    SecondhandDeal,
+    SecondhandListing,
+)
+from app.models.field_service import (
+    PartnerCrew,
+    CrewMembership,
+    WorkPackage,
+    FieldTask,
+    TaskAssignment,
+    TaskEvidence,
+)
+from app.modules.buyer_project.models import (
+    ProjectMetricTemplate,
+    ProjectMetricValue,
+    ProjectPriceSnapshot,
+    ProjectReport,
+    ProjectReportVersion,
+    ProjectReportColumn,
+    ProjectReportRow,
+    ProjectReportChangeLog,
+)
+from app.modules.cebu_trade.models import (
+    CurrencyConfig,
+    FeeLineItem,
+    FeeRule,
+    FxQuote,
+    PaymentEvent,
+    PaymentMethodConfig,
+    PaymentQuote,
+    ProviderPaymentIntent,
+    RegionPaymentConfig,
+    SettlementAdjustment,
+    SettlementEvent,
+)
+
+# Cebu trade models live under app.modules.cebu_trade.models and are registered
+# in app.db.base to avoid circular imports (they depend on base_model which
+# lives inside app.models).  Import them from their own module directly.
 
 __all__ = [
     "Base",
-    "User", "Company",
+    "User", "Company", "PasswordResetToken",
     "Product", "ProductCategory", "ProductCompatibility",
     "Solution", "SolutionPackage",
     "Lead", "SiteSurvey",
@@ -98,7 +163,11 @@ __all__ = [
     "CertificationRecord", "WarrantyPolicy",
     "Region",
     "AuditLog",
+    "BackupJob", "BackupSchedule",
+    "AdminNote", "NotificationTemplate", "PlatformSetting",
+    "CompanyBranch", "ServiceArea",
     "LegacyBridgeIdempotency", "LegacyIdentityMapping",
+    "LegacyMigrationRecord", "LegacyMigrationRun",
     "PortalPolicy",
     "ProcurementProject", "ProcurementProjectFact", "ProcurementTemplate",
     "BoqVersion", "BoqItem", "BoqItemOption", "SolutionPlan",
@@ -109,7 +178,7 @@ __all__ = [
     "MaintenanceSchedule", "CalibrationRecord",
     "ProjectFinance", "PlatformFeeRule",
     "SupplierScorecard",
-    "NotificationPreference", "ReportJob",
+    "NotificationPreference", "PortalNotification", "ReportJob",
     "IntegrationSetting",
     "MarketingActivity", "MarketingAsset", "MarketingCampaign", "MarketingContact",
     "MarketingCreativeBrief", "MarketingCreativeBriefVersion",
@@ -128,4 +197,18 @@ __all__ = [
     "Agent", "AgentGrant",
     "AgentInstallation", "MarketplaceListing", "StoreOrder", "StoreOrderItem",
     "Store", "KioskDevice", "ShowroomSession", "ShowroomOrder",
+    "Workspace", "WorkspaceMembership", "PortalGrant", "PrivacyRequest",
+    "PartnerCrew", "CrewMembership", "WorkPackage", "FieldTask", "TaskAssignment", "TaskEvidence",
+    "ProjectMetricTemplate", "ProjectMetricValue", "ProjectPriceSnapshot",
+    "ProjectReport", "ProjectReportVersion", "ProjectReportColumn",
+    "ProjectReportRow", "ProjectReportChangeLog",
+    "RegionPaymentConfig", "CurrencyConfig", "PaymentMethodConfig", "FeeRule",
+    "FxQuote", "PaymentQuote", "ProviderPaymentIntent", "FeeLineItem",
+    "SettlementEvent", "SettlementAdjustment", "PaymentEvent",
+    "TradeCategorySchema", "SupplierListing", "BuyerWatchlistItem", "ProcurementRequest", "SupplierOffer", "CommerceOrder",
+    "OrderDelivery", "OrderDispute",
+    "TrustProfile", "TrustScoreEvent", "TransactionReview", "RiskFlag", "CommercePaymentIntent",
+    "CommerceThread", "CommerceMessage",
+    "CommerceSettlement", "CommerceReconciliationRun",
+    "SecondhandListing", "SecondhandAddressDisclosure", "SecondhandDeal",
 ]

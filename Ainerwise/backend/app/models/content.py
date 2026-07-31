@@ -64,6 +64,9 @@ class GeneratedDocument(Base, UUIDMixin, TimestampMixin):
 class PublishJob(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "publish_jobs"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     asset_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("marketing_assets.id", ondelete="CASCADE"), nullable=False, index=True
     )
@@ -81,6 +84,7 @@ class DesignRevision(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "design_revisions"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True)
     site_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("sites.id"), index=True)
     project_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("projects.id"), index=True)
     title: Mapped[str] = mapped_column(String(500), nullable=False)

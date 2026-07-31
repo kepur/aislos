@@ -53,6 +53,7 @@
           </button>
         </form>
         <p v-if="error" class="text-xs text-red-500">{{ error }}</p>
+        <p v-if="guidedIntakeNotice" class="text-xs text-blue-700 bg-blue-50 rounded-xl p-2.5">{{ guidedIntakeNotice }}</p>
         <p class="text-[11px] text-amber-600 bg-amber-50 rounded-xl p-2.5">{{ estimateNotice }}</p>
       </div>
     </template>
@@ -101,6 +102,7 @@ const loading = ref(false)
 const submitted = ref(false)
 const aiComplete = ref(false)
 const error = ref('')
+const guidedIntakeNotice = ref('')
 const chatScroll = ref<HTMLElement | null>(null)
 
 const scriptQuestions = computed(() => questionBank[selectedKey.value || ''] || questionBank._default)
@@ -125,14 +127,17 @@ async function startCategory(key: CKey) {
   selectedKey.value = key
   messages.value = []
   Object.keys(answers).forEach((k) => delete answers[k])
-  idx.value = 0; submitted.value = false; aiComplete.value = false; error.value = ''
+  idx.value = 0; submitted.value = false; aiComplete.value = false; error.value = ''; guidedIntakeNotice.value = ''
   const label = categories.find((c) => c.key === key)?.label
   if (assistant.enabled.value) {
     loading.value = true
     try {
       const res = await assistant.ask(key, [{ role: 'user', content: `AI facility assessment for: ${label}.` }], {})
       if (res?.configured && res.reply) { pushAi(res.reply); if (res.complete) aiComplete.value = true; return }
-    } catch {} finally { loading.value = false }
+      guidedIntakeNotice.value = 'AI assessment is unavailable. Guided intake is active and your answers will still be reviewed by our team.'
+    } catch {
+      guidedIntakeNotice.value = 'AI assessment is unavailable. Guided intake is active and your answers will still be reviewed by our team.'
+    } finally { loading.value = false }
   }
   pushAi(`Let's assess your ${label} project.\n\n${currentQ.value?.prompt || ''}`)
 }
@@ -153,7 +158,10 @@ async function sendMessage() {
         if (res.complete) aiComplete.value = true
         return
       }
-    } catch {} finally { loading.value = false }
+      guidedIntakeNotice.value = 'AI assessment is unavailable. Guided intake is active and your answers will still be reviewed by our team.'
+    } catch {
+      guidedIntakeNotice.value = 'AI assessment is unavailable. Guided intake is active and your answers will still be reviewed by our team.'
+    } finally { loading.value = false }
   }
 
   if (currentQ.value) {
@@ -192,5 +200,5 @@ async function submitLead() {
   } finally { loading.value = false }
 }
 
-function reset() { selectedKey.value = null; messages.value = []; Object.keys(answers).forEach((k) => delete answers[k]); idx.value = 0; submitted.value = false; aiComplete.value = false; error.value = '' }
+function reset() { selectedKey.value = null; messages.value = []; Object.keys(answers).forEach((k) => delete answers[k]); idx.value = 0; submitted.value = false; aiComplete.value = false; error.value = ''; guidedIntakeNotice.value = '' }
 </script>

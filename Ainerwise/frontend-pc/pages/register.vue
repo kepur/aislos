@@ -49,6 +49,7 @@
 definePageMeta({ middleware: 'guest' })
 
 const { register, isAdmin } = useAuth()
+const route = useRoute()
 const form = reactive({
   email: '',
   password: '',
@@ -59,12 +60,17 @@ const form = reactive({
 const error = ref('')
 const loading = ref(false)
 
+const requestedRole = String(route.query.role || '').toLowerCase()
+if (['buyer', 'developer', 'vendor', 'service_partner'].includes(requestedRole)) {
+  form.role = requestedRole
+}
+
 async function handleRegister() {
   error.value = ''
   loading.value = true
   try {
     await register(form)
-    navigateTo(form.role === 'developer' ? '/developers/listings' : '/portal')
+    navigateTo(form.role === 'developer' ? '/developers/listings' : form.role === 'vendor' ? '/supplier-onboarding' : '/portal')
   } catch (e: any) {
     error.value = e?.data?.detail || 'Registration failed'
   } finally {

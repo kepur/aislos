@@ -10,7 +10,17 @@
       <p class="mt-2 text-xs font-medium text-amber-700">{{ $t('services.onSiteNotice') }}</p>
     </div>
 
-    <div class="space-y-3">
+    <div v-if="loading" class="rounded-xl border border-slate-100 bg-white p-6 text-center text-xs text-slate-400">
+      Loading service plans...
+    </div>
+    <div v-else-if="error" class="rounded-xl border border-red-100 bg-red-50 p-4 text-xs text-red-700">
+      <p>{{ error }}</p>
+      <button class="mt-3 rounded-full bg-red-600 px-4 py-2 font-semibold text-white" @click="loadPackages">Retry</button>
+    </div>
+    <div v-else-if="!packages.length" class="rounded-xl border border-slate-100 bg-white p-6 text-center text-xs text-slate-400">
+      No service plans are currently published.
+    </div>
+    <div v-else class="space-y-3">
       <div v-for="pkg in packages" :key="pkg.name"
         class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
         <div class="flex items-center justify-between mb-2">
@@ -50,8 +60,10 @@
 
 <script setup lang="ts">
 const { t, te, tm, rt } = useI18n()
-const { demoServicePackages } = useDemoCatalog()
-const packages = demoServicePackages
+const { apiFetch } = useApi()
+const packages = ref<any[]>([])
+const loading = ref(true)
+const error = ref('')
 
 function packageTerm(pkg: any) {
   const key = `services.packages.${pkg.slug}.term`
@@ -70,6 +82,22 @@ function packageDescription(pkg: any) {
 
 function packageServices(pkg: any) {
   const key = `services.packages.${pkg.slug}.included`
-  return te(`services.packages.${pkg.slug}.name`) ? (tm(key) as any[]).map(service => rt(service)) : pkg.included_services_json
+  return te(`services.packages.${pkg.slug}.name`) ? (tm(key) as any[]).map(service => rt(service)) : pkg.included_services_json || []
 }
+
+async function loadPackages() {
+  loading.value = true
+  error.value = ''
+  try {
+    const res = await apiFetch<any>('/service-packages')
+    packages.value = res.items || res || []
+  } catch (e: any) {
+    packages.value = []
+    error.value = e?.data?.detail || e?.message || 'Unable to load service plans.'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(loadPackages)
 </script>

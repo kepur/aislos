@@ -6,6 +6,7 @@ from app.schemas.base import BaseSchema
 
 class ProposalPlanRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     lead_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     tier: str
@@ -38,6 +39,7 @@ class ProposalPlanRead(BaseSchema):
 
 
 class ProposalPlanCreate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     lead_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     tier: str
@@ -96,6 +98,7 @@ class ProposalPlanUpdate(BaseSchema):
 
 class BOMItemRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     proposal_plan_id: uuid.UUID
     product_id: uuid.UUID | None = None
     category: str | None = None

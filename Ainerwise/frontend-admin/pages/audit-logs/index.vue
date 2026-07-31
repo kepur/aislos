@@ -26,6 +26,7 @@
         </select>
       </div>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -106,6 +107,7 @@ const skip = ref(0)
 const limit = 30
 const entityTypeFilter = ref('')
 const actionFilter = ref('')
+const error = ref('')
 
 function actionBadgeClass(action: string) {
   if (action === 'status_change') return 'bg-blue-100 text-blue-700'
@@ -121,6 +123,7 @@ function summarize(obj: any) {
 }
 
 async function loadLogs() {
+  error.value = ''
   const params = new URLSearchParams()
   params.set('skip', String(skip.value))
   params.set('limit', String(limit))
@@ -130,9 +133,10 @@ async function loadLogs() {
     const res = await apiFetch<any>(`/audit-logs?${params.toString()}`)
     logs.value = res.items || []
     total.value = res.total || 0
-  } catch {
+  } catch (e: any) {
     logs.value = []
     total.value = 0
+    error.value = e?.data?.detail || e?.message || 'Audit logs could not be loaded'
   }
 }
 

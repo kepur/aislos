@@ -25,7 +25,9 @@ class MilestoneAction(BaseModel):
 
 def _milestone_dict(m: PaymentMilestone) -> dict:
     return {
-        "id": str(m.id), "seq": m.seq, "label": m.label, "pct": float(m.pct),
+        "id": str(m.id),
+        "workspace_id": str(m.workspace_id) if m.workspace_id else None,
+        "seq": m.seq, "label": m.label, "pct": float(m.pct),
         "amount": float(m.amount), "trigger": m.trigger, "status": m.status,
         "funded_at": m.funded_at.isoformat() if m.funded_at else None,
         "released_at": m.released_at.isoformat() if m.released_at else None,
@@ -36,6 +38,7 @@ def _milestone_dict(m: PaymentMilestone) -> dict:
 def _plan_dict(p: PaymentPlan) -> dict:
     return {
         "id": str(p.id),
+        "workspace_id": str(p.workspace_id) if p.workspace_id else None,
         "project_id": str(p.project_id) if p.project_id else None,
         "quote_id": str(p.quote_id) if p.quote_id else None,
         "currency": p.currency, "total": float(p.total),
@@ -92,13 +95,21 @@ async def get_plan(id: uuid.UUID, db: DB, admin: AdminUser):
         raise HTTPException(status_code=404, detail="Plan not found")
     milestones = (
         await db.execute(
-            select(PaymentMilestone).where(PaymentMilestone.plan_id == id).order_by(PaymentMilestone.seq)
+            select(PaymentMilestone)
+            .where(
+                PaymentMilestone.plan_id == id,
+                PaymentMilestone.workspace_id == plan.workspace_id,
+            )
+            .order_by(PaymentMilestone.seq)
         )
     ).scalars().all()
     ledger = (
         await db.execute(
             select(LedgerEntry)
-            .where(LedgerEntry.milestone_id.in_([m.id for m in milestones] or [id]))
+            .where(
+                LedgerEntry.milestone_id.in_([m.id for m in milestones] or [id]),
+                LedgerEntry.workspace_id == plan.workspace_id,
+            )
             .order_by(LedgerEntry.created_at)
         )
     ).scalars().all()
@@ -106,7 +117,8 @@ async def get_plan(id: uuid.UUID, db: DB, admin: AdminUser):
         **_plan_dict(plan),
         "milestones": [_milestone_dict(m) for m in milestones],
         "ledger": [
-            {"account": e.account, "direction": e.direction, "amount": float(e.amount),
+            {"workspace_id": str(e.workspace_id) if e.workspace_id else None,
+             "account": e.account, "direction": e.direction, "amount": float(e.amount),
              "currency": e.currency, "memo": e.memo, "at": e.created_at.isoformat()}
             for e in ledger
         ],

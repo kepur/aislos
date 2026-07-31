@@ -4,6 +4,7 @@
       <h1 class="admin-page-title">{{ $t('admin.servicePackages') }}</h1>
       <button @click="showCreateModal = true" class="btn-primary text-sm">{{ $t('common.create') }}</button>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -102,6 +103,7 @@ const showCreateModal = ref(false)
 const editingPkg = ref<any>(null)
 const saving = ref(false)
 const includedStr = ref('')
+const error = ref('')
 
 const form = reactive({
   name: '',
@@ -117,10 +119,13 @@ const form = reactive({
 onMounted(loadData)
 
 async function loadData() {
+  error.value = ''
   try {
-    const res = await apiFetch<any>('/service-packages')
+    const res = await apiFetch<any>('/service-packages/admin/all')
     packages.value = res.items || res || []
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Service packages could not be loaded'
+  }
 }
 
 function resetForm() {
@@ -151,31 +156,34 @@ function startEdit(pkg: any) {
 
 async function handleCreate() {
   saving.value = true
+  error.value = ''
   try {
     const payload: Record<string, any> = { ...form, included_services_json: includedStr.value.split('\n').map(s => s.trim()).filter(Boolean) }
     await apiFetch('/service-packages', { method: 'POST', body: payload })
     closeModal()
     await loadData()
-  } catch (e: any) { console.error(e) }
+  } catch (e: any) { error.value = e?.data?.detail || e?.message || 'Service package could not be created' }
   finally { saving.value = false }
 }
 
 async function handleUpdate() {
   saving.value = true
+  error.value = ''
   try {
     const payload: Record<string, any> = { ...form, included_services_json: includedStr.value.split('\n').map(s => s.trim()).filter(Boolean) }
     await apiFetch(`/service-packages/${editingPkg.value.id}`, { method: 'PUT', body: payload })
     closeModal()
     await loadData()
-  } catch (e: any) { console.error(e) }
+  } catch (e: any) { error.value = e?.data?.detail || e?.message || 'Service package could not be updated' }
   finally { saving.value = false }
 }
 
 async function handleDelete(id: string) {
   if (!confirm('Delete this service package?')) return
+  error.value = ''
   try {
     await apiFetch(`/service-packages/${id}`, { method: 'DELETE' })
     await loadData()
-  } catch (e: any) { console.error(e) }
+  } catch (e: any) { error.value = e?.data?.detail || e?.message || 'Service package could not be deleted' }
 }
 </script>

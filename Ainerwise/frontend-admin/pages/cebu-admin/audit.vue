@@ -1,0 +1,2 @@
+<template><CebuAdminResourceTable title="Cebu Audit Events" endpoint="/admin/cebu/audit-logs" :columns="columns" /></template>
+<script setup lang="ts">definePageMeta({layout:'default',middleware:['auth']});const columns=[{key:'action',label:'Action'},{key:'entity_type',label:'Entity'},{key:'actor_type',label:'Actor'},{key:'reason',label:'Reason'},{key:'source',label:'Source'},{key:'created_at',label:'Created'}]</script>

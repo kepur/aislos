@@ -13,6 +13,7 @@
         <option value="closed">Closed</option>
       </select>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -81,6 +82,7 @@ definePageMeta({ layout: 'default' })
 const { apiFetch } = useApi()
 const tickets = ref<any[]>([])
 const statusFilter = ref('')
+const error = ref('')
 
 function priorityClass(priority: string) {
   if (priority === 'urgent') return 'bg-red-100 text-red-700'
@@ -90,21 +92,24 @@ function priorityClass(priority: string) {
 }
 
 async function loadTickets() {
+  error.value = ''
   const params = statusFilter.value ? `?status=${statusFilter.value}` : ''
   try {
     const res = await apiFetch<any>(`/tickets${params}`)
     tickets.value = res.items || []
-  } catch {
+  } catch (e: any) {
     tickets.value = []
+    error.value = e?.data?.detail || e?.message || 'Support tickets could not be loaded'
   }
 }
 
 async function changeStatus(id: string, newStatus: string) {
+  error.value = ''
   try {
     await apiFetch(`/tickets/${id}/status`, { method: 'PATCH', body: { status: newStatus } })
     await loadTickets()
   } catch (e: any) {
-    console.error('Status update failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Ticket status could not be updated'
   }
 }
 

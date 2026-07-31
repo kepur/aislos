@@ -10,6 +10,7 @@ from app.db.session import async_session_factory, engine
 from app.main import app
 from app.models.marketing import MarketingMediaRequest
 from tests.test_marketing_creative_briefs import BRIEF_BODY, SAMPLE_DELIVERABLE, _admin_headers, _approve_brief, _create_brief, _client
+from tests.route_utils import registered_route_paths
 
 INTEGRATION_SCOPES = ["briefs:read", "briefs:claim", "briefs:progress"]
 
@@ -50,7 +51,7 @@ def _integration_headers(secret: str) -> dict:
 
 
 def test_media_integration_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/media-integration/v1/requests",
         "/api/v1/media-integration/v1/requests/{request_id}",

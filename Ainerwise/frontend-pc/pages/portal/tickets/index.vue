@@ -11,6 +11,9 @@
       </button>
     </div>
 
+    <div v-if="error" class="portal-card border-red-200 bg-red-50 text-sm text-red-700">
+      {{ error }} <button class="ml-2 font-semibold underline" @click="loadData">Retry</button>
+    </div>
     <div class="portal-card p-0 overflow-hidden">
       <table class="w-full text-sm">
         <thead>
@@ -34,7 +37,10 @@
             </td>
             <td class="px-4 py-3 text-slate-400 text-xs">{{ new Date(ticket.created_at).toLocaleDateString() }}</td>
           </tr>
-          <tr v-if="!tickets.length">
+          <tr v-if="loading && !tickets.length">
+            <td colspan="5" class="px-4 py-12 text-center text-sm text-slate-400">Loading tickets...</td>
+          </tr>
+          <tr v-else-if="!tickets.length">
             <td colspan="5" class="px-4 py-12 text-center">
               <div class="text-3xl mb-2">🎫</div>
               <p class="text-sm text-slate-400">{{ $t('common.noData') }}</p>
@@ -104,12 +110,14 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'portal', middleware: 'auth' })
+definePageMeta({ layout: 'customer-workspace', middleware: 'auth' })
 
 const { apiFetch } = useApi()
 const tickets = ref<any[]>([])
 const showCreateModal = ref(false)
 const creating = ref(false)
+const loading = ref(true)
+const error = ref('')
 
 const form = reactive({
   title: '',
@@ -141,14 +149,22 @@ function priorityClass(priority: string) {
 onMounted(loadData)
 
 async function loadData() {
+  loading.value = true
+  error.value = ''
   try {
     const res = await apiFetch<any>('/tickets/my')
     tickets.value = res.items || []
-  } catch {}
+  } catch (e: any) {
+    tickets.value = []
+    error.value = e?.data?.detail || e?.message || 'Unable to load tickets.'
+  } finally {
+    loading.value = false
+  }
 }
 
 async function handleCreate() {
   creating.value = true
+  error.value = ''
   try {
     const payload: Record<string, any> = { ...form }
     if (!payload.issue_type) delete payload.issue_type
@@ -156,7 +172,9 @@ async function handleCreate() {
     showCreateModal.value = false
     Object.assign(form, { title: '', issue_type: '', priority: 'medium', description: '' })
     await loadData()
-  } catch (e: any) { console.error(e) }
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Unable to create ticket.'
+  }
   finally { creating.value = false }
 }
 </script>

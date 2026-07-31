@@ -20,13 +20,13 @@
 
       <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         <NuxtLink
-          v-for="cat in categories"
+          v-for="cat in sortedCategories"
           :key="cat.id"
           :to="`/marketplace?category_id=${cat.id}&category_name=${encodeURIComponent(categoryDisplayName(cat))}`"
           class="group bg-white rounded-2xl border border-slate-200 p-6 hover:border-indigo-400 hover:shadow-md transition-all cursor-pointer"
         >
           <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-100 transition-colors">
-            <span class="text-2xl">{{ getCategoryEmoji(cat.slug) }}</span>
+            <span class="text-2xl">{{ getCategoryEmoji(cat) }}</span>
           </div>
           <h3 class="text-sm font-semibold text-slate-900 leading-tight">{{ categoryDisplayName(cat) }}</h3>
           <p v-if="categorySecondaryName(cat)" class="text-xs text-slate-400 mt-0.5">{{ categorySecondaryName(cat) }}</p>
@@ -111,9 +111,28 @@ const EMOJI_MAP: Record<string, string> = {
   'tools-hardware': '🔨',
 }
 
-function getCategoryEmoji(slug: string): string {
-  return EMOJI_MAP[slug] ?? '📦'
+// Name-keyword fallback so EU Smart Living categories get sensible icons
+// regardless of slug.
+const NAME_EMOJI: [string, string][] = [
+  ['knx', '🏠'], ['smart home', '🏠'], ['automation', '🏠'],
+  ['solar', '☀️'], ['pv', '☀️'], ['storage', '🔋'], ['batter', '🔋'],
+  ['ev charg', '🔌'], ['energy', '⚡'], ['security', '🛡️'], ['cctv', '🛡️'],
+  ['access control', '🔑'], ['lock', '🔒'], ['light', '💡'],
+  ['hvac', '❄️'], ['climate', '❄️'], ['blind', '🪟'], ['shading', '🪟'],
+  ['audio', '🔊'], ['video', '🔊'], ['multiroom', '🔊'],
+  ['network', '📡'], ['sensor', '📶'], ['iot', '📶'], ['fire', '🧯'],
+]
+
+function getCategoryEmoji(cat: { slug?: string; name?: string }): string {
+  if (cat.slug && EMOJI_MAP[cat.slug]) return EMOJI_MAP[cat.slug]
+  const n = String(cat.name || '').toLowerCase()
+  for (const [kw, e] of NAME_EMOJI) if (n.includes(kw)) return e
+  return cat.slug ? (EMOJI_MAP[cat.slug] ?? '📦') : '📦'
 }
+
+const sortedCategories = computed(() =>
+  [...categories.value].sort((a, b) => categoryDisplayName(a).localeCompare(categoryDisplayName(b))),
+)
 
 function categoryDisplayName(cat: Category): string {
   if (appStore.language === 'ZH') return cat.name_zh || cat.name

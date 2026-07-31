@@ -11,6 +11,7 @@ from app.models.audit import AuditLog
 from app.models.integration import IntegrationEvent
 from app.models.marketing import MarketingCreativeBrief, MarketingMediaRequest
 from app.services.marketing_briefs import build_export_payload, compute_content_hash
+from tests.route_utils import registered_route_paths
 
 SAMPLE_DELIVERABLE = {
     "key": "instagram-square-en-v1",
@@ -88,7 +89,7 @@ async def _approve_brief(headers: dict, version_id: str) -> dict:
 
 
 def test_creative_brief_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/admin/marketing/creative-briefs",
         "/api/v1/admin/marketing/creative-briefs/{brief_id}",

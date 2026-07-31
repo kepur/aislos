@@ -1,30 +1,35 @@
 type DemoAccount = {
+  id?: string
+  key?: string
   label: string
-  email: string
-  password: string
+  email?: string | null
+  password?: string | null
+  role?: string
+  actual_role?: string
+  auth_type?: string
+  portals?: string[]
+  portal_keys?: string[]
+  exists?: boolean
+  is_active?: boolean | null
+  demo_only?: boolean
+  device_count?: number
+  grant_count?: number
+  membership_count?: number
+  login_blocked_when_demo_off?: boolean
+  notes?: string
   description?: string
 }
 
 type DemoMode = {
   enabled: boolean
-  buyer: DemoAccount
+  buyer?: DemoAccount
   admin?: DemoAccount
+  service_accounts?: DemoAccount[]
+  account_matrix?: DemoAccount[]
 }
 
 const defaultDemoMode: DemoMode = {
-  enabled: true,
-  buyer: {
-    label: 'Demo Customer',
-    email: 'demo@ainerwise.com',
-    password: 'demo123',
-    description: 'Explore customer portal, AI assessment, leads, quotes, tickets, and project previews.',
-  },
-  admin: {
-    label: 'Demo Admin',
-    email: 'admin@ainerwise.com',
-    password: 'admin123456',
-    description: 'Explore admin CRM, leads, products, solutions, proposals, and operations views.',
-  },
+  enabled: false,
 }
 
 export function useDemoMode() {

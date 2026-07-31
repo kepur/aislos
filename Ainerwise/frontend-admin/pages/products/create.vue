@@ -2,6 +2,7 @@
   <div>
     <NuxtLink to="products" class="text-sm text-primary-600 hover:underline">&larr; Back to Products</NuxtLink>
     <h1 class="admin-page-title mt-4 mb-6">Create Product</h1>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <form class="max-w-3xl space-y-6" @submit.prevent="handleSubmit">
       <div class="admin-card space-y-4">
@@ -90,6 +91,7 @@ definePageMeta({ layout: 'default' })
 const { apiFetch } = useApi()
 const loading = ref(false)
 const categories = ref<any[]>([])
+const error = ref('')
 
 const form = reactive({
   name: '',
@@ -109,18 +111,21 @@ onMounted(async () => {
   try {
     const res = await apiFetch<any>('/product-categories')
     categories.value = res.items || res || []
-  } catch {}
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Product categories could not be loaded'
+  }
 })
 
 async function handleSubmit() {
   loading.value = true
+  error.value = ''
   try {
     const payload: Record<string, any> = { ...form }
     if (!payload.category_id) delete payload.category_id
     await apiFetch('/products', { method: 'POST', body: payload })
     navigateTo('products')
   } catch (e: any) {
-    console.error('Create failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Product could not be created'
   } finally {
     loading.value = false
   }

@@ -7,11 +7,11 @@ preliminary — humans approve, then publish manually in Phase C.
 import uuid
 
 import httpx
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Response
 from pydantic import BaseModel
 from sqlalchemy import func, select
 
-from app.api.deps import DB, AdminUser
+from app.api.deps import DB, AdminUser, MarketingUser
 from app.core.config import settings
 from app.models.ai import AIMemory, AgentRun, AIReview
 from app.models.case_library import CaseStudy
@@ -55,8 +55,9 @@ class MarketingGenerateRequest(BaseModel):
 
 
 @router.post("/marketing/generate")
-async def generate_marketing_content(data: MarketingGenerateRequest, db: DB, admin: AdminUser):
+async def generate_marketing_content(data: MarketingGenerateRequest, db: DB, admin: MarketingUser):
     context: dict = {}
+    requested_workspace_id = None
     if data.product_id:
         await _require_agent(db, "marketing-agent", "content_gen", "product_data")
         product = await db.get(Product, data.product_id)
@@ -72,6 +73,11 @@ async def generate_marketing_content(data: MarketingGenerateRequest, db: DB, adm
         context = {"title": case.title, "summary": case.summary,
                    "property_type": case.property_type, "area_sqm": case.area_sqm,
                    "country": case.country, "customer_feedback": case.customer_feedback}
+        if case.project_id:
+            from app.models.project import Project
+
+            project = await db.get(Project, case.project_id)
+            requested_workspace_id = project.workspace_id if project else None
     else:
         raise HTTPException(status_code=400, detail="product_id or case_id required")
 
@@ -86,6 +92,15 @@ async def generate_marketing_content(data: MarketingGenerateRequest, db: DB, adm
             region_profile = {"tone": profile.tone_json, "emphasis": profile.emphasis_json,
                               "compliance": profile.compliance_notes}
 
+    from app.services.marketing_access import (
+        require_marketing_workspace_access,
+        resolve_marketing_workspace,
+    )
+
+    workspace_id = await resolve_marketing_workspace(
+        db, requested_workspace_id=requested_workspace_id
+    )
+    await require_marketing_workspace_access(db, admin, workspace_id)
     result = await _call_orchestrator_generate(
         {"agent_slug": "marketing-agent", "workflow": "content_gen",
          "context": context, "region_profile": region_profile,
@@ -98,6 +113,7 @@ async def generate_marketing_content(data: MarketingGenerateRequest, db: DB, adm
         db.add(review)
         await db.flush()
         asset = MarketingAsset(
+            workspace_id=workspace_id,
             region_id=data.region_id, product_id=data.product_id, case_id=data.case_id,
             kind="post" if item.get("channel") != "blog" else "article",
             channel=item.get("channel"), lang=item.get("lang") or "en",
@@ -115,12 +131,18 @@ async def generate_marketing_content(data: MarketingGenerateRequest, db: DB, adm
 
 @router.get("/marketing/assets")
 async def list_marketing_assets(
-    db: DB, admin: AdminUser,
+    db: DB, admin: MarketingUser,
     status: str | None = None, channel: str | None = None,
     skip: int = Query(0, ge=0), limit: int = Query(20, ge=1, le=100),
 ):
+    from app.services.marketing_access import marketing_workspace_ids
+
     query = select(MarketingAsset).order_by(MarketingAsset.created_at.desc())
     count_query = select(func.count()).select_from(MarketingAsset)
+    workspace_ids = await marketing_workspace_ids(db, admin)
+    if workspace_ids is not None:
+        query = query.where(MarketingAsset.workspace_id.in_(workspace_ids))
+        count_query = count_query.where(MarketingAsset.workspace_id.in_(workspace_ids))
     if status:
         query = query.where(MarketingAsset.status == status)
         count_query = count_query.where(MarketingAsset.status == status)
@@ -145,7 +167,7 @@ class AssetDecision(BaseModel):
 
 
 @router.post("/marketing/assets/{id}/approve")
-async def approve_marketing_asset(id: uuid.UUID, data: AssetDecision, db: DB, admin: AdminUser):
+async def approve_marketing_asset(id: uuid.UUID, data: AssetDecision, db: DB, admin: MarketingUser):
     from datetime import datetime, timezone
 
     from app.services.event_bus import emit_event
@@ -153,6 +175,9 @@ async def approve_marketing_asset(id: uuid.UUID, data: AssetDecision, db: DB, ad
     asset = await db.get(MarketingAsset, id)
     if asset is None:
         raise HTTPException(status_code=404, detail="Asset not found")
+    from app.services.marketing_access import require_marketing_workspace_access
+
+    await require_marketing_workspace_access(db, admin, asset.workspace_id)
     if asset.status != "in_review":
         raise HTTPException(status_code=409, detail="Only in_review assets can be approved")
     asset.status = "approved"
@@ -177,7 +202,7 @@ async def approve_marketing_asset(id: uuid.UUID, data: AssetDecision, db: DB, ad
 
 
 @router.post("/marketing/assets/{id}/reject")
-async def reject_marketing_asset(id: uuid.UUID, data: AssetDecision, db: DB, admin: AdminUser):
+async def reject_marketing_asset(id: uuid.UUID, data: AssetDecision, db: DB, admin: MarketingUser):
     from datetime import datetime, timezone
 
     from app.services.event_bus import emit_event
@@ -187,6 +212,9 @@ async def reject_marketing_asset(id: uuid.UUID, data: AssetDecision, db: DB, adm
     asset = await db.get(MarketingAsset, id)
     if asset is None:
         raise HTTPException(status_code=404, detail="Asset not found")
+    from app.services.marketing_access import require_marketing_workspace_access
+
+    await require_marketing_workspace_access(db, admin, asset.workspace_id)
     if asset.status != "in_review":
         raise HTTPException(status_code=409, detail="Only in_review assets can be rejected")
     asset.status = "rejected"
@@ -216,7 +244,7 @@ class PublishScheduleRequest(BaseModel):
 
 
 @router.post("/marketing/assets/{id}/schedule")
-async def schedule_marketing_asset(id: uuid.UUID, data: PublishScheduleRequest, db: DB, admin: AdminUser):
+async def schedule_marketing_asset(id: uuid.UUID, data: PublishScheduleRequest, db: DB, admin: MarketingUser):
     from datetime import datetime
 
     from app.models.content import PublishJob
@@ -224,9 +252,13 @@ async def schedule_marketing_asset(id: uuid.UUID, data: PublishScheduleRequest, 
     asset = await db.get(MarketingAsset, id)
     if asset is None:
         raise HTTPException(status_code=404, detail="Asset not found")
+    from app.services.marketing_access import require_marketing_workspace_access
+
+    await require_marketing_workspace_access(db, admin, asset.workspace_id)
     if asset.status not in ("approved", "scheduled", "published"):
         raise HTTPException(status_code=409, detail="Only approved assets can be scheduled")
     job = PublishJob(
+        workspace_id=asset.workspace_id,
         asset_id=asset.id, platform=data.platform,
         scheduled_at=datetime.fromisoformat(data.scheduled_at), status="scheduled",
     )
@@ -239,7 +271,7 @@ async def schedule_marketing_asset(id: uuid.UUID, data: PublishScheduleRequest, 
 
 @router.get("/marketing/publish-jobs")
 async def list_publish_jobs(
-    db: DB, admin: AdminUser,
+    db: DB, admin: MarketingUser,
     status: str | None = None,
     skip: int = Query(0, ge=0), limit: int = Query(20, ge=1, le=100),
 ):
@@ -247,6 +279,15 @@ async def list_publish_jobs(
 
     query = select(PublishJob).order_by(PublishJob.scheduled_at.desc())
     count_query = select(func.count()).select_from(PublishJob)
+    from app.services.marketing_access import marketing_workspace_ids
+
+    workspace_ids = await marketing_workspace_ids(db, admin)
+    if workspace_ids is not None:
+        asset_ids = select(MarketingAsset.id).where(MarketingAsset.workspace_id.in_(workspace_ids))
+        query = query.where(PublishJob.workspace_id.in_(workspace_ids), PublishJob.asset_id.in_(asset_ids))
+        count_query = count_query.where(
+            PublishJob.workspace_id.in_(workspace_ids), PublishJob.asset_id.in_(asset_ids)
+        )
     if status:
         query = query.where(PublishJob.status == status)
         count_query = count_query.where(PublishJob.status == status)
@@ -255,6 +296,7 @@ async def list_publish_jobs(
     return {
         "items": [
             {"id": str(j.id), "asset_id": str(j.asset_id), "platform": j.platform,
+             "workspace_id": str(j.workspace_id) if j.workspace_id else None,
              "scheduled_at": j.scheduled_at.isoformat(), "status": j.status,
              "published_at": j.published_at.isoformat() if j.published_at else None,
              "error_message": j.error_message}
@@ -271,64 +313,83 @@ class ImageGenerateRequest(BaseModel):
     case_id: uuid.UUID | None = None
 
 
-@router.post("/marketing/generate-image")
-async def generate_marketing_image(data: ImageGenerateRequest, db: DB, admin: AdminUser):
-    """Image Studio: OpenAI-compatible /images/generations -> MinIO -> asset."""
-    import base64
-    import io
+@router.post(
+    "/marketing/generate-image",
+    deprecated=True,
+    status_code=202,
+    responses={
+        202: {
+            "description": "Creative Brief draft created — inline image generation removed (V4).",
+        }
+    },
+)
+async def generate_marketing_image(
+    data: ImageGenerateRequest, response: Response, db: DB, admin: MarketingUser
+):
+    """Deprecated MI06: creates a Creative Brief draft instead of calling media providers."""
+    from app.services.marketing_briefs import MarketingBriefError, create_brief
 
-    from app.services.integrations import get_config
-    from app.services.knowledge import get_minio_client
+    title = (data.prompt or "Image brief").strip()[:200] or "Image brief"
+    source_refs: dict[str, str | None] = {"migration_source": "generate-image"}
+    if data.product_id:
+        source_refs["product_id"] = str(data.product_id)
+    if data.case_id:
+        source_refs["case_id"] = str(data.case_id)
 
-    cfg = await get_config(db, "ai_media")
-    if not (cfg.get("_enabled") and cfg.get("api_key") and cfg.get("base_url")):
-        raise HTTPException(
-            status_code=503,
-            detail="Image generation not configured (Admin → Integrations → ai_media)",
-        )
+    version_data = {
+        "copy_json": {"prompt": data.prompt, "notes": "Migrated from deprecated generate-image"},
+        "source_refs_json": source_refs,
+        "deliverables_json": [
+            {
+                "key": "hero_image",
+                "media_type": "image",
+                "channel": "web",
+                "language": "en",
+                "format": "png",
+                "notes": data.prompt,
+            }
+        ],
+    }
     try:
-        async with httpx.AsyncClient(timeout=180) as client:
-            response = await client.post(
-                cfg["base_url"].rstrip("/") + "/images/generations",
-                headers={"Authorization": f"Bearer {cfg['api_key']}"},
-                json={"model": cfg.get("image_model", "gpt-image-1"), "prompt": data.prompt,
-                      "size": cfg.get("image_size", "1024x1024"), "n": 1},
-            )
-            response.raise_for_status()
-            payload = response.json()["data"][0]
-    except httpx.HTTPError as exc:
-        raise HTTPException(status_code=502, detail=f"Image API error: {exc}") from None
+        from app.services.marketing_access import (
+            require_marketing_workspace_access,
+            resolve_marketing_workspace,
+        )
 
-    if payload.get("b64_json"):
-        image_bytes = base64.b64decode(payload["b64_json"])
-    elif payload.get("url"):
-        async with httpx.AsyncClient(timeout=60) as client:
-            image_bytes = (await client.get(payload["url"])).content
-    else:
-        raise HTTPException(status_code=502, detail="Image API returned no image")
+        workspace_id = await resolve_marketing_workspace(db)
+        await require_marketing_workspace_access(db, admin, workspace_id)
+        brief, version = await create_brief(
+            db,
+            actor=admin,
+            title=title,
+            objective="External media production via approved Creative Brief",
+            campaign_id=None,
+            region_id=data.region_id,
+            workspace_id=workspace_id,
+            version_data=version_data,
+        )
+        await db.commit()
+    except MarketingBriefError as exc:
+        await db.rollback()
+        raise HTTPException(status_code=400, detail=str(exc)) from None
 
-    bucket = "marketing-assets"
-    minio = get_minio_client()
-    if not minio.bucket_exists(bucket):
-        minio.make_bucket(bucket)
-    object_name = f"images/{uuid.uuid4()}.png"
-    minio.put_object(bucket, object_name, io.BytesIO(image_bytes), len(image_bytes), content_type="image/png")
-
-    review = AIReview(target_type="marketing_image", draft_json={"prompt": data.prompt}, status="preliminary")
-    db.add(review)
-    await db.flush()
-    asset = MarketingAsset(
-        region_id=data.region_id, product_id=data.product_id, case_id=data.case_id,
-        kind="image", lang="en", title=data.prompt[:200],
-        media_minio_key=f"{bucket}/{object_name}",
-        ai_generated=True, review_id=review.id, status="in_review",
-    )
-    db.add(asset)
-    await db.flush()
-    review.target_id = asset.id
-    db.add(review)
-    await db.commit()
-    return {"asset_id": str(asset.id), "media_key": asset.media_minio_key}
+    response.headers["Deprecation"] = "true"
+    response.headers["Link"] = '</api/v1/admin/marketing/creative-briefs>; rel="successor-version"'
+    return {
+        "deprecated": True,
+        "message": (
+            "Inline image generation removed. A Creative Brief draft was created — "
+            "approve the brief, create Media Requests, and use an external Integration Client."
+        ),
+        "brief_id": str(brief.id),
+        "version_id": str(version.id),
+        "next_steps": [
+            "Submit brief for human review",
+            "Approve brief version",
+            "Create media requests for deliverables",
+            "External client claims request via Media Integration API",
+        ],
+    }
 
 
 @router.post("/leads/{lead_id}/quote-draft")
@@ -395,7 +456,7 @@ async def list_memories(
 
 
 @router.get("/marketing/weekly-report/latest")
-async def latest_marketing_weekly_report(db: DB, admin: AdminUser):
+async def latest_marketing_weekly_report(db: DB, admin: MarketingUser):
     run = (
         await db.execute(
             select(AgentRun)
@@ -420,7 +481,7 @@ async def latest_marketing_weekly_report(db: DB, admin: AdminUser):
 
 
 @router.post("/marketing/weekly-report/run")
-async def run_marketing_weekly_report(db: DB, admin: AdminUser):
+async def run_marketing_weekly_report(db: DB, admin: MarketingUser):
     try:
         run = await generate_weekly_marketing_report(db)
     except AgentAuthorizationError as exc:

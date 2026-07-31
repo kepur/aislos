@@ -6,6 +6,7 @@ from app.schemas.base import BaseSchema
 
 class QuoteRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     lead_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     quote_items_json: list | None = None
@@ -31,6 +32,7 @@ class QuoteRead(BaseSchema):
 
 
 class QuoteCreate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     lead_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     quote_items_json: list | None = None

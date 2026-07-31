@@ -1,0 +1,2 @@
+<template><CebuAdminResourceTable title="Cebu Procurement Intents" endpoint="/admin/cebu/procurement-requests" :columns="columns" status-path="/admin/cebu/procurement-requests/{id}/status" :status-options="statuses" /></template>
+<script setup lang="ts">definePageMeta({layout:'default',middleware:['auth']});const columns=[{key:'title',label:'Title'},{key:'portal_key',label:'Portal'},{key:'status',label:'Status',badge:true},{key:'created_at',label:'Created'}];const statuses=['draft','published','matching','offer_received','awarded','closed','cancelled']</script>

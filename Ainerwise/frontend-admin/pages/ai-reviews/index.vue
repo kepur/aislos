@@ -25,6 +25,7 @@
         </select>
       </div>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -78,6 +79,7 @@ const reviews = ref<any[]>([])
 const statusFilter = ref('preliminary')
 const targetFilter = ref(String(route.query.target_type || ''))
 const busy = ref(false)
+const error = ref('')
 
 function pretty(value: any) {
   if (!value) return '-'
@@ -85,14 +87,16 @@ function pretty(value: any) {
 }
 
 async function load() {
+  error.value = ''
   const params = new URLSearchParams()
   if (statusFilter.value) params.set('status', statusFilter.value)
   if (targetFilter.value) params.set('target_type', targetFilter.value)
   try {
     const res = await apiFetch<any>(`/admin/ai-reviews?${params.toString()}`)
     reviews.value = res.items || []
-  } catch {
+  } catch (e: any) {
     reviews.value = []
+    error.value = e?.data?.detail || e?.message || 'AI reviews could not be loaded'
   }
 }
 
@@ -102,9 +106,12 @@ async function decide(review: any, action: 'approve' | 'reject') {
     notes = window.prompt('Rejection notes (optional):') || null
   }
   busy.value = true
+  error.value = ''
   try {
     await apiFetch(`/admin/ai-reviews/${review.id}/${action}`, { method: 'POST', body: { notes } })
     await load()
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || `AI review could not be ${action}d`
   } finally {
     busy.value = false
   }

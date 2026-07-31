@@ -2,6 +2,7 @@
 from app.main import app
 from app.models.lead import Lead
 from app.services import amc, recurring_revenue, spare_parts, warranty
+from tests.route_utils import registered_route_paths
 
 
 # --- FI.3.2 AMC pricing -----------------------------------------------------
@@ -115,7 +116,7 @@ def test_scoring_multi_site_enterprise():
 # --- route registration -----------------------------------------------------
 
 def test_lifecycle_ops_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/amc-catalog",
         "/api/v1/amc-catalog/quote",

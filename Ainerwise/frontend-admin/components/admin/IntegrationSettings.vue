@@ -2,6 +2,7 @@
   <div class="admin-card xl:col-span-2">
     <h2 class="admin-section-title">Integrations</h2>
     <p class="mt-1 text-sm text-gray-500">Configure notifications, text AI, and the low-latency realtime voice provider. Text AI and voice are separate integrations so each can use the best provider.</p>
+    <p v-if="loadError" class="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ loadError }}</p>
 
     <div class="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
       <div v-for="cat in cats" :key="cat.key" class="rounded-xl border p-4">
@@ -56,11 +57,19 @@ const cats = [
     { key: 'from_name', label: 'From Name', placeholder: 'AinerWise' },
     { key: 'use_tls', label: 'Use STARTTLS', type: 'checkbox' },
     { key: 'use_ssl', label: 'Use SSL', type: 'checkbox' },
+    { key: 'inbound_webhook_secret', label: 'Inbound Webhook Secret', secret: true },
   ]},
   { key: 'telegram', title: 'Telegram Bot', desc: 'Admin alerts + /leads bot commands.', fields: [
     { key: 'bot_token', label: 'Bot Token', secret: true },
     { key: 'admin_chat_id', label: 'Admin Chat ID', placeholder: '-100123...' },
     { key: 'webhook_url', label: 'Webhook URL (optional)', placeholder: 'https://.../api/v1/telegram/webhook' },
+  ]},
+  { key: 'whatsapp', title: 'WhatsApp Business', desc: 'WhatsApp Cloud API outbound delivery and signed inbound webhooks.', fields: [
+    { key: 'access_token', label: 'Access Token', secret: true },
+    { key: 'phone_number_id', label: 'Phone Number ID', placeholder: 'Meta phone number ID' },
+    { key: 'graph_api_version', label: 'Graph API Version', placeholder: 'v23.0' },
+    { key: 'app_secret', label: 'App Secret', secret: true },
+    { key: 'verify_token', label: 'Webhook Verify Token', secret: true },
   ]},
   { key: 'ai', title: 'AI Agent (OpenAI-compatible)', desc: 'Powers the conversational facility assessment.', fields: [
     { key: 'base_url', label: 'API Base URL', placeholder: 'https://api.openai.com/v1' },
@@ -83,9 +92,11 @@ const cats = [
 const state = reactive<Record<string, any>>({})
 const busy = reactive<Record<string, string | false>>({})
 const result = reactive<Record<string, any>>({})
+const loadError = ref('')
 cats.forEach((c) => { state[c.key] = { is_enabled: false, config: {}, form: {} }; busy[c.key] = false })
 
 async function load() {
+  loadError.value = ''
   try {
     const res = await apiFetch<any>('/admin/integrations')
     for (const item of res.items || []) {
@@ -99,7 +110,9 @@ async function load() {
         if (!k.endsWith('_set')) s.form[k] = v
       }
     }
-  } catch {}
+  } catch (e: any) {
+    loadError.value = e?.data?.detail || e?.message || 'Integration settings could not be loaded'
+  }
 }
 
 function buildConfig(key: string) {
@@ -135,6 +148,10 @@ async function test(key: string) {
     let body: any = undefined
     if (key === 'smtp') {
       const to = prompt('Send test email to:')
+      if (!to) { busy[key] = false; return }
+      body = { to }
+    } else if (key === 'whatsapp') {
+      const to = prompt('Send test WhatsApp message to (international digits only):')
       if (!to) { busy[key] = false; return }
       body = { to }
     }

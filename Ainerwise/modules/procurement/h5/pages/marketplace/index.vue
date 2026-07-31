@@ -7,7 +7,7 @@
           <input
             v-model="keyword"
             type="text"
-            :placeholder="activeCategoryName || 'Search products...'"
+            :placeholder="activeCategoryName || t('market.search_placeholder')"
             class="w-full bg-slate-100 rounded-full px-4 py-2 text-sm outline-none"
             @keyup.enter="loadFeed(true)"
           />
@@ -23,7 +23,7 @@
       <div class="mt-2">
         <CommonLocationPicker
           v-model="userLocation"
-          placeholder="Near me (all locations)"
+          :placeholder="t('market.near_me')"
           @update:modelValue="loadFeed(true)"
         />
       </div>
@@ -50,12 +50,12 @@
       <div v-if="showFilter" class="bg-white border-b border-slate-200 px-4 py-3 space-y-3">
         <!-- Categories -->
         <div>
-          <p class="text-xs font-semibold text-slate-500 mb-2">Categories</p>
+          <p class="text-xs font-semibold text-slate-500 mb-2">{{ t('market.categories') }}</p>
           <div class="flex flex-wrap gap-2">
             <button
               @click="setCategoryFilter(null); showFilter = false"
               :class="['text-xs px-3 py-1.5 rounded-full border transition-colors', !categoryId ? 'border-indigo-400 text-indigo-600 bg-indigo-50' : 'border-slate-200 text-slate-600']"
-            >All</button>
+            >{{ t('market.all') }}</button>
             <button
               v-for="cat in filterCategories.slice(0, 12)"
               :key="cat.id"
@@ -66,32 +66,32 @@
         </div>
         <!-- Seller Type -->
         <div>
-          <p class="text-xs font-semibold text-slate-500 mb-2">Seller Type</p>
+          <p class="text-xs font-semibold text-slate-500 mb-2">{{ t('market.seller_type') }}</p>
           <div class="flex gap-2">
             <button
-              v-for="t in [{label:'All', val:''},{label:'Individual', val:'INDIVIDUAL'},{label:'Business', val:'BUSINESS'}]"
-              :key="t.val"
-              @click="merchantType = t.val; loadFeed(true)"
-              :class="['text-xs px-3 py-1.5 rounded-full border transition-colors', merchantType === t.val ? 'border-indigo-400 text-indigo-600 bg-indigo-50' : 'border-slate-200 text-slate-600']"
-            >{{ t.label }}</button>
+              v-for="type in sellerTypeOptions"
+              :key="type.val"
+              @click="merchantType = type.val; loadFeed(true)"
+              :class="['text-xs px-3 py-1.5 rounded-full border transition-colors', merchantType === type.val ? 'border-indigo-400 text-indigo-600 bg-indigo-50' : 'border-slate-200 text-slate-600']"
+            >{{ type.label }}</button>
           </div>
         </div>
         <!-- Verified Only -->
         <label class="flex items-center gap-2 text-xs text-slate-600">
           <input type="checkbox" v-model="verifiedOnly" @change="loadFeed(true)" class="rounded" />
-          Verified businesses only
+          {{ t('market.verified_only') }}
         </label>
       </div>
     </Transition>
 
     <!-- Stats bar -->
     <div class="px-4 py-2 text-xs text-slate-400 flex items-center gap-2">
-      <span v-if="!loading">{{ total }} products</span>
-      <span v-else>Loading...</span>
+      <span v-if="!loading">{{ total }} {{ t('market.products') }}</span>
+      <span v-else>{{ t('market.loading') }}</span>
       <span v-if="activeCategoryName"> in {{ activeCategoryName }}</span>
       <span v-if="userLocation" class="ml-auto flex items-center gap-1 text-indigo-500 font-medium">
         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
-        Near {{ userLocation.label.split(',')[0] }}
+        {{ t('market.near') }} {{ userLocation.label.split(',')[0] }}
       </span>
     </div>
 
@@ -109,17 +109,17 @@
       </div>
 
       <div v-else-if="feedError" class="rounded-2xl border border-red-100 bg-red-50 p-4 text-center text-red-700">
-        <p class="text-sm font-semibold">Could not load marketplace products</p>
+        <p class="text-sm font-semibold">{{ t('market.could_not_load') }}</p>
         <p class="mt-1 text-xs">{{ feedError }}</p>
-        <button class="mt-3 rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white" @click="loadFeed(true)">Try again</button>
+        <button class="mt-3 rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white" @click="loadFeed(true)">{{ t('common.retry') }}</button>
       </div>
 
       <!-- Empty -->
       <div v-else-if="!loading && items.length === 0" class="text-center py-20">
         <div class="text-5xl mb-3">🔍</div>
-        <p class="text-slate-500 text-sm">No products found</p>
+        <p class="text-slate-500 text-sm">{{ t('market.no_products') }}</p>
         <NuxtLink to="/buyer/post-request" class="mt-3 inline-block text-indigo-600 text-sm font-medium">
-          Post a request instead →
+          {{ t('market.post_request_instead') }} →
         </NuxtLink>
       </div>
 
@@ -136,7 +136,7 @@
         >
           <!-- Sponsored -->
           <div v-if="item.is_sponsored" class="px-2 pt-1.5">
-            <span class="text-[9px] bg-amber-50 text-amber-500 border border-amber-100 rounded-full px-1.5 py-0.5 font-medium">Ad</span>
+            <span class="text-[9px] bg-amber-50 text-amber-500 border border-amber-100 rounded-full px-1.5 py-0.5 font-medium">{{ t('market.ad') }}</span>
           </div>
 
           <!-- Image -->
@@ -147,9 +147,7 @@
               :alt="item.title"
               class="w-full h-full object-cover"
             />
-            <div v-else class="w-full h-full bg-slate-50 flex items-center justify-center text-3xl">
-              📦
-            </div>
+            <MarketItemVisual v-else :title="item.title" :category-name="item.category_name" />
           </div>
 
           <!-- Info -->
@@ -169,7 +167,7 @@
               @click.stop="handleCta(item)"
               :class="['w-full mt-2 py-1.5 rounded-xl text-[11px] font-semibold transition-colors', item.market_mode === 'B2C' ? 'bg-green-600 text-white' : 'bg-indigo-600 text-white']"
             >
-              {{ item.market_mode === 'B2C' ? 'Buy Now' : 'Quote' }}
+              {{ item.market_mode === 'B2C' ? t('market.buy_now') : t('market.quote') }}
             </button>
           </div>
         </div>
@@ -178,7 +176,7 @@
       <!-- Load more -->
       <div v-if="hasNext" class="py-6 text-center">
         <button @click="loadMore" :disabled="loading" class="text-indigo-600 text-sm font-medium disabled:opacity-50">
-          {{ loading ? 'Loading...' : 'Load more' }}
+          {{ loading ? t('market.loading') : t('market.load_more') }}
         </button>
       </div>
     </div>
@@ -189,12 +187,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 definePageMeta({ layout: 'default' })
 
 const config = useRuntimeConfig()
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 interface FeedItem {
   id: string
@@ -233,13 +234,19 @@ const verifiedOnly = ref(false)
 const filterCategories = ref<FilterCat[]>([])
 const userLocation = ref<{ lat: number; lng: number; label: string; regionId?: string } | null>(null)
 
-const sortOptions = [
-  { value: 'rank', label: 'Best' },
-  { value: 'newest', label: 'New' },
-  { value: 'orders', label: 'Popular' },
-  { value: 'price_asc', label: 'Price ↑' },
-  { value: 'price_desc', label: 'Price ↓' },
-]
+const sortOptions = computed(() => [
+  { value: 'rank', label: t('market.sort_best') },
+  { value: 'newest', label: t('market.sort_new') },
+  { value: 'orders', label: t('market.sort_popular') },
+  { value: 'price_asc', label: t('market.sort_price_asc') },
+  { value: 'price_desc', label: t('market.sort_price_desc') },
+])
+
+const sellerTypeOptions = computed(() => [
+  { label: t('market.all'), val: '' },
+  { label: t('market.individual'), val: 'INDIVIDUAL' },
+  { label: t('market.business'), val: 'BUSINESS' },
+])
 
 onMounted(async () => {
   try {

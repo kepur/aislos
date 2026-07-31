@@ -62,12 +62,17 @@ TASK_TEMPLATES = {
 async def plan_mission(db: AsyncSession, mission: AgentMission) -> AgentMission:
     if mission.status not in ("requested", "plan_rejected"):
         raise ValueError(f"Mission cannot be planned from status {mission.status}")
+    project = await db.get(Project, mission.project_id)
+    if project is None:
+        raise ValueError("Project not found")
+    mission.workspace_id = project.workspace_id
     selected = _selected_agents(mission.goal)
     await db.execute(delete(AgentMissionTask).where(AgentMissionTask.mission_id == mission.id))
     tasks = []
     for sequence, slug in enumerate(selected, start=1):
         title, instructions = TASK_TEMPLATES[slug]
         task = AgentMissionTask(
+            workspace_id=mission.workspace_id,
             mission_id=mission.id,
             project_id=mission.project_id,
             agent_slug=slug,
@@ -115,6 +120,9 @@ async def approve_mission_plan(
     review.reviewed_at = datetime.now(timezone.utc)
     db.add(review)
 
+    project = await db.get(Project, mission.project_id)
+    if project is None:
+        raise ValueError("Project not found")
     for slug in mission.agent_slugs_json or []:
         agent = (await db.execute(select(Agent).where(Agent.slug == slug))).scalar_one()
         grant = (
@@ -124,6 +132,11 @@ async def approve_mission_plan(
                     AgentObjectGrant.object_type == "project",
                     AgentObjectGrant.object_id == mission.project_id,
                     AgentObjectGrant.scope == "project_data",
+                    (
+                        AgentObjectGrant.workspace_id == project.workspace_id
+                        if project.workspace_id is not None
+                        else AgentObjectGrant.workspace_id.is_(None)
+                    ),
                 )
             )
         ).scalar_one_or_none()
@@ -133,6 +146,7 @@ async def approve_mission_plan(
                 object_type="project",
                 object_id=mission.project_id,
                 scope="project_data",
+                workspace_id=project.workspace_id,
             )
         before = grant.granted
         grant.granted = True
@@ -153,6 +167,7 @@ async def approve_mission_plan(
                     "agent_slug": slug,
                     "object_type": "project",
                     "object_id": str(mission.project_id),
+                    "workspace_id": str(project.workspace_id) if project.workspace_id else None,
                 },
             )
         )
@@ -243,11 +258,19 @@ async def run_mission(db: AsyncSession, mission: AgentMission) -> AgentMission:
     project = await db.get(Project, mission.project_id)
     if project is None:
         raise ValueError("Project not found")
+    mission.workspace_id = project.workspace_id
     snapshot = await _project_snapshot(db, project)
     tasks = (
         await db.execute(
             select(AgentMissionTask)
-            .where(AgentMissionTask.mission_id == mission.id)
+            .where(
+                AgentMissionTask.mission_id == mission.id,
+                (
+                    AgentMissionTask.workspace_id == project.workspace_id
+                    if project.workspace_id is not None
+                    else AgentMissionTask.workspace_id.is_(None)
+                ),
+            )
             .order_by(AgentMissionTask.sequence)
         )
     ).scalars().all()
@@ -260,9 +283,11 @@ async def run_mission(db: AsyncSession, mission: AgentMission) -> AgentMission:
             workflow="mission_task",
             object_type="project",
             object_id=mission.project_id,
+            workspace_id=project.workspace_id,
         )
         output = _worker_output(task.agent_slug, mission.goal, snapshot)
         run = AgentRun(
+            workspace_id=project.workspace_id,
             agent_slug=task.agent_slug,
             workflow="mission_task",
             input_json={"mission_id": str(mission.id), "project_id": str(mission.project_id), "goal": mission.goal},
@@ -271,6 +296,7 @@ async def run_mission(db: AsyncSession, mission: AgentMission) -> AgentMission:
         )
         db.add(run)
         await db.flush()
+        task.workspace_id = project.workspace_id
         task.run_id = run.id
         task.output_json = output
         task.status = "completed"

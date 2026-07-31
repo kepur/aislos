@@ -9,7 +9,7 @@
         </div>
         <h1 class="mt-5 text-3xl font-extrabold tracking-tight text-slate-900">Reset your password</h1>
         <p class="mt-2 text-sm text-slate-600">
-          Enter the email tied to your AinerWise Procurement account. If the account exists, we will send a one-time reset link.
+          Enter the email tied to your AISLOS Market account. If the account exists, we will send a one-time reset link.
         </p>
       </div>
 

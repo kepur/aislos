@@ -140,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'portal', middleware: 'auth' })
+definePageMeta({ layout: 'customer-workspace', middleware: 'auth' })
 
 const route = useRoute()
 const { apiFetch } = useApi()

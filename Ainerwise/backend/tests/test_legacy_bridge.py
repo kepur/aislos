@@ -77,6 +77,7 @@ def test_legacy_bridge_creates_lead_and_is_idempotent():
             assert first.status_code == 200, first.text
             data = first.json()
             assert data["lead_id"]
+            assert data.get("procurement_request_id")
             assert data["idempotency_key"] == idem
 
             second = await ac.post(BASE, content=body, headers=headers)

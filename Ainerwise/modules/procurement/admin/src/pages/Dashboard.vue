@@ -13,7 +13,7 @@
       <div class="card overflow-hidden">
         <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
           <h3 class="font-semibold text-slate-900">{{ t('dashboard.recentAudit') }}</h3>
-          <router-link to="/audit" class="text-xs text-primary-600 font-medium hover:underline">{{ t('common.view') }} →</router-link>
+          <router-link :to="pathTo('/audit')" class="text-xs text-primary-600 font-medium hover:underline">{{ t('common.view') }} →</router-link>
         </div>
         <div class="divide-y divide-slate-50">
           <div v-for="log in recentLogs" :key="log.id" class="px-5 py-3 flex items-start gap-3">
@@ -49,8 +49,9 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api, fmtRelative, fmtPrice } from '@/utils/api'
+import { prefixForLocale, withLocalePrefix } from '@/utils/localeRoutes'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const dash = ref({})
 const recentLogs = ref([])
 
@@ -66,11 +67,15 @@ const stats = computed(() => [
 ])
 
 const quickActions = computed(() => [
-  { to: '/users',     icon: '👥', label: t('nav.users') },
-  { to: '/disputes',  icon: '⚠️',  label: t('nav.disputes') },
-  { to: '/companies', icon: '🏢', label: t('nav.companies') },
-  { to: '/settings',  icon: '⚙️',  label: t('nav.settings') },
+  { to: pathTo('/users'),     icon: '👥', label: t('nav.users') },
+  { to: pathTo('/disputes'),  icon: '⚠️',  label: t('nav.disputes') },
+  { to: pathTo('/companies'), icon: '🏢', label: t('nav.companies') },
+  { to: pathTo('/settings'),  icon: '⚙️',  label: t('nav.settings') },
 ])
+
+function pathTo(path) {
+  return withLocalePrefix(path, prefixForLocale(locale.value))
+}
 
 function riskIcon(level) {
   return { CRITICAL: '🔴', HIGH: '🟠', MEDIUM: '🟡', LOW: '⚪' }[level] || '⚪'

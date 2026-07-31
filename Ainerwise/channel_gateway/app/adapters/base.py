@@ -25,7 +25,12 @@ class ChannelAdapter(ABC):
         """Receive and normalize a provider webhook."""
 
     @abstractmethod
-    async def send(self, external_thread_id: str, content: str) -> SendResult:
+    async def send(
+        self,
+        external_thread_id: str,
+        content: str,
+        metadata: dict | None = None,
+    ) -> SendResult:
         """Send a message through the provider."""
 
     @abstractmethod

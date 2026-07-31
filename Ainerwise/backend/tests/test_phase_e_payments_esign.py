@@ -10,6 +10,7 @@ from httpx import ASGITransport, AsyncClient
 from app.core.config import settings
 from app.db.session import async_session_factory, engine
 from app.main import app
+from tests.route_utils import registered_route_paths
 
 # 1x1 transparent PNG
 TINY_PNG = base64.b64decode(
@@ -19,7 +20,7 @@ TINY_PNG_DATA_URL = "data:image/png;base64," + base64.b64encode(TINY_PNG).decode
 
 
 def test_phase_e_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/admin/documents/{id}/send-for-signature",
         "/api/v1/admin/documents/{id}/signatures",
@@ -135,12 +136,20 @@ def test_stripe_unconfigured_degrades_cleanly():
             from decimal import Decimal
 
             from app.models.payment import PaymentMilestone, PaymentPlan
+            from app.services.portal_access import get_default_workspace
             from app.services.stripe_payments import create_milestone_checkout
 
-            plan = PaymentPlan(currency="EUR", total=Decimal("1000"), status="active")
+            workspace = await get_default_workspace(db)
+            assert workspace is not None
+            plan = PaymentPlan(
+                workspace_id=workspace.id,
+                currency="EUR",
+                total=Decimal("1000"),
+                status="active",
+            )
             db.add(plan)
             await db.flush()
-            milestone = PaymentMilestone(plan_id=plan.id, seq=1, label="deposit",
+            milestone = PaymentMilestone(workspace_id=plan.workspace_id, plan_id=plan.id, seq=1, label="deposit",
                                          pct=Decimal("30"), amount=Decimal("300"), status="pending")
             db.add(milestone)
             await db.flush()

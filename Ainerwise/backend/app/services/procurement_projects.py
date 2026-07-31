@@ -9,14 +9,53 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.portal_context import PortalContext
 from app.models.file import FileAsset
+from app.models.portal_access import Workspace
 from app.models.portal_policy import PortalPolicy
 from app.models.procurement import ProcurementProject, ProcurementProjectFact, ProcurementTemplate
 from app.models.user import User
+from app.services.portal_access import get_default_workspace, resolve_workspace_scope
 from app.services.portal_policy import get_active_policy
 
 
 class ProcurementProjectError(ValueError):
     pass
+
+
+class ProcurementProjectAccessDenied(ProcurementProjectError):
+    pass
+
+
+async def resolve_procurement_workspace(
+    db: AsyncSession,
+    *,
+    user: User,
+    requested_workspace_id: uuid.UUID | None,
+) -> uuid.UUID:
+    if user.role in ("admin", "super_admin"):
+        workspace = (
+            await db.get(Workspace, requested_workspace_id)
+            if requested_workspace_id is not None
+            else await get_default_workspace(db)
+        )
+        if workspace is None or workspace.status != "active":
+            raise ProcurementProjectError("An active workspace_id is required")
+        return workspace.id
+    try:
+        workspace_id = await resolve_workspace_scope(
+            db,
+            user_id=user.id,
+            requested_workspace_id=requested_workspace_id,
+        )
+    except PermissionError as exc:
+        raise ProcurementProjectAccessDenied(str(exc)) from None
+    except ValueError as exc:
+        raise ProcurementProjectError(str(exc)) from None
+    if workspace_id is not None:
+        return workspace_id
+    workspace = await get_default_workspace(db)
+    if workspace is None or workspace.status != "active":
+        raise ProcurementProjectError("No active default Workspace is available")
+    return workspace.id
 
 
 def policy_snapshot_from_policy(policy: PortalPolicy) -> dict[str, Any]:
@@ -50,6 +89,7 @@ async def create_project(
     *,
     user: User,
     ctx: PortalContext,
+    workspace_id: uuid.UUID | None = None,
     project_type: str,
     title: str,
     description: str | None = None,
@@ -67,7 +107,13 @@ async def create_project(
     if template is None:
         raise ProcurementProjectError(f"no active template for project_type {project_type!r}")
 
+    resolved_workspace_id = await resolve_procurement_workspace(
+        db,
+        user=user,
+        requested_workspace_id=workspace_id,
+    )
     project = ProcurementProject(
+        workspace_id=resolved_workspace_id,
         owner_user_id=user.id,
         company_id=user.company_id,
         portal_key=ctx.portal_key,
@@ -90,6 +136,7 @@ async def create_project(
         if not defn.get("required"):
             continue
         fact = ProcurementProjectFact(
+            workspace_id=project.workspace_id,
             project_id=project.id,
             template_key=defn["key"],
             label=defn.get("label", defn["key"]),

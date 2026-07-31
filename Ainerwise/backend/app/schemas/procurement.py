@@ -9,6 +9,7 @@ from app.schemas.base import BaseSchema
 
 
 class ProcurementProjectCreate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_type: str
     title: str = Field(..., min_length=1, max_length=500)
     description: str | None = None
@@ -19,6 +20,7 @@ class ProcurementProjectCreate(BaseSchema):
 
 class ProcurementProjectRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None
     owner_user_id: uuid.UUID
     company_id: uuid.UUID | None
     portal_key: str
@@ -74,6 +76,7 @@ class ProcurementFileRead(BaseSchema):
 
 class ProcurementFactRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None
     project_id: uuid.UUID
     template_key: str
     label: str
@@ -172,6 +175,7 @@ class PartnerCandidateSummary(BaseSchema):
 
 class ProcurementPackageItemRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None
     boq_item_id: uuid.UUID
     boq_item_option_id: uuid.UUID | None
     quantity: str
@@ -179,6 +183,7 @@ class ProcurementPackageItemRead(BaseSchema):
 
 class ProcurementPackageRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None
     project_id: uuid.UUID
     boq_version_id: uuid.UUID
     title: str

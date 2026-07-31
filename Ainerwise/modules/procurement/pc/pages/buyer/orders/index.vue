@@ -36,7 +36,7 @@
           <span class="font-semibold text-slate-900">{{ formatMinor(row.total_amount_minor, row.currency) }}</span>
         </template>
         <template #status-data="{ row }">
-          <UBadge :color="statusColor(row.status)" variant="subtle">{{ row.status }}</UBadge>
+          <UBadge :color="statusColor(row.status)" variant="subtle">{{ orderStatusLabel(row.status) }}</UBadge>
         </template>
         <template #created_at-data="{ row }">
           <span class="text-xs text-slate-400">{{ new Date(row.created_at).toLocaleDateString() }}</span>
@@ -76,10 +76,10 @@ const hasNext = ref(false)
 const statusOptions = [
   { label: 'All Statuses', value: '' },
   { label: 'Awaiting Payment', value: 'AWAITING_PAYMENT' },
-  { label: 'Paid in Escrow', value: 'PAID_IN_ESCROW' },
+  { label: 'Payment Recorded', value: 'PAID_IN_ESCROW' },
   { label: 'In Progress', value: 'IN_PROGRESS' },
   { label: 'Delivered', value: 'DELIVERED' },
-  { label: 'Payout Released', value: 'PAYOUT_RELEASED' },
+  { label: 'Settled', value: 'PAYOUT_RELEASED' },
   { label: 'Disputed', value: 'DISPUTED' },
   { label: 'Canceled', value: 'CANCELED' },
 ]
@@ -87,7 +87,7 @@ const statusOptions = [
 const columns = [
   { key: 'id', label: 'Order ID' },
   { key: 'supplier', label: 'Supplier' },
-  { key: 'total', label: 'Total (Escrow)' },
+  { key: 'total', label: 'Total' },
   { key: 'status', label: 'Status' },
   { key: 'created_at', label: 'Date' },
   { key: 'actions', label: 'Actions' },

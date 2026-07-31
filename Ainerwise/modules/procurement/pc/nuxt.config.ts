@@ -3,6 +3,18 @@ import { fileURLToPath } from "node:url";
 
 const tailwindColorsAlias = fileURLToPath(new URL("./tailwind-colors.mjs", import.meta.url));
 const coreApiInternal = process.env.NUXT_CORE_API_INTERNAL || "http://localhost:8000";
+const localeRoutePrefixes = ["/en", "/cn", "/rs", "/ba", "/pl", "/de", "/ro"];
+
+function addLocaleAliases(pages: any[]) {
+  for (const page of pages) {
+    if (page.path) {
+      const basePath = page.path === "/" ? "" : page.path;
+      const aliases = localeRoutePrefixes.map((prefix) => `${prefix}${basePath}`);
+      page.alias = Array.from(new Set([...(Array.isArray(page.alias) ? page.alias : page.alias ? [page.alias] : []), ...aliases]));
+    }
+    if (page.children) addLocaleAliases(page.children);
+  }
+}
 
 const tailwindTheme = {
   extend: {
@@ -52,6 +64,12 @@ export default defineNuxtConfig({
     layoutTransition: false
   },
 
+  hooks: {
+    "pages:extend"(pages) {
+      addLocaleAliases(pages);
+    },
+  },
+
   appConfig: {
     ui: {
       primary: "indigo",
@@ -71,6 +89,7 @@ export default defineNuxtConfig({
   routeRules: {
     "/api/auth/system-mode": { proxy: `${coreApiInternal}/api/v1/cebu-compat/system-mode` },
     "/api/auth/**": { proxy: `${coreApiInternal}/api/v1/auth/**` },
+    "/api/localization/**": { proxy: `${coreApiInternal}/api/v1/localization/**` },
     "/api/users/**": { proxy: `${coreApiInternal}/api/v1/cebu-compat/users/**` },
     "/api/addresses": { proxy: `${coreApiInternal}/api/v1/cebu-compat/addresses` },
     "/api/addresses/**": { proxy: `${coreApiInternal}/api/v1/cebu-compat/addresses/**` },
@@ -151,6 +170,17 @@ export default defineNuxtConfig({
     disableGlobalStyles: true,
   },
 
+  // Icons must resolve offline: the default local endpoint (/api/_nuxt_icon)
+  // is shadowed by the catch-all /api/** proxy to Core, and the public
+  // iconify fallback hangs the whole UI when the network is slow/blocked.
+  icon: {
+    localApiEndpoint: "/_nuxt_icon",
+    fallbackToApi: false,
+    clientBundle: {
+      scan: true,
+    },
+  },
+
   css: ["~/assets/css/compiled.css", "~/assets/css/nuxt-ui-fallback.css"],
 
   tailwindcss: {
@@ -211,8 +241,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "/api",
-      appName: process.env.NUXT_PUBLIC_APP_NAME || "AinerWise Procurement",
+      appName: process.env.NUXT_PUBLIC_APP_NAME || "AISLOS Market",
       appDomain: process.env.NUXT_PUBLIC_APP_DOMAIN || "procurement.localhost",
+      // Link back to the AinerWise official site (lead-gen / solutions).
+      aislosSiteUrl: process.env.NUXT_PUBLIC_AISLOS_SITE_URL || "http://localhost:4099",
     },
   },
 

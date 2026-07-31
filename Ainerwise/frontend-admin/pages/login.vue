@@ -10,22 +10,6 @@
       </div>
 
       <form @submit.prevent="handleLogin" class="login-card space-y-5">
-        <div v-if="demoMode.enabled && demoMode.admin" class="login-demo-box">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <p class="text-xs font-bold uppercase tracking-wider text-cyan-300">Demo Mode On</p>
-              <p class="mt-1 text-sm text-slate-300">Use Demo Admin to explore {{ portal.name }}.</p>
-            </div>
-            <span class="login-demo-badge">Admin</span>
-          </div>
-          <div class="mt-3 space-y-1 text-xs text-slate-300">
-            <p>Email: <span class="font-semibold text-white">{{ demoMode.admin.email }}</span></p>
-            <p>Password: <span class="font-semibold text-white">{{ demoMode.admin.password }}</span></p>
-          </div>
-          <button type="button" class="login-btn-secondary mt-3" @click="useDemoAdmin">
-            Use Demo Admin
-          </button>
-        </div>
         <div>
           <label class="login-label">Email</label>
           <input v-model="form.email" type="email" required class="login-input" placeholder="admin@ainerwise.com" />
@@ -38,15 +22,6 @@
         <button type="submit" :disabled="loading" class="login-btn-primary">
           {{ loading ? 'Authenticating...' : 'Sign In' }}
         </button>
-        <button
-          v-if="demoMode.enabled && demoMode.admin"
-          type="button"
-          :disabled="loading"
-          class="login-btn-secondary"
-          @click="loginDemoAdmin"
-        >
-          {{ loading ? 'Authenticating...' : 'Login as Demo Admin' }}
-        </button>
       </form>
     </div>
   </div>
@@ -55,21 +30,22 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
-const { login, isAdmin, setDemoSession } = useAuth()
-const { getDemoMode, defaultDemoMode } = useDemoMode()
-const { portal } = usePortalMode()
+const { login, isAdmin, clearAuth } = useAuth()
+const { mode, portal } = usePortalMode()
+const { availableForFrontend, loadAccess, switchAndNavigate } = usePortalManifest()
 const form = reactive({ email: '', password: '' })
-const demoMode = ref(defaultDemoMode)
 const error = ref('')
 const loading = ref(false)
+const preferredPortalByMode: Record<string, string> = {
+  aislos: 'admin_executive',
+  store: 'admin_commerce',
+  marketing: 'marketing_pc',
+  agent: 'admin_ai_supervisor',
+}
 
 onMounted(async () => {
   if (import.meta.client) {
     document.documentElement.classList.remove('theme-light')
-  }
-  demoMode.value = await getDemoMode(false)
-  if (demoMode.value.enabled && demoMode.value.admin && !form.email && !form.password) {
-    useDemoAdmin()
   }
 })
 
@@ -80,41 +56,27 @@ onBeforeUnmount(() => {
   }
 })
 
-function useDemoAdmin() {
-  if (!demoMode.value.admin) return
-  form.email = demoMode.value.admin.email
-  form.password = demoMode.value.admin.password
-}
-
-async function loginDemoAdmin() {
-  useDemoAdmin()
-  if (!demoMode.value.admin) return
-  error.value = ''
-  loading.value = true
-  try {
-    await login(form.email, form.password)
-    if (!isAdmin.value) {
-      error.value = 'Access denied: Admin account required'
-      return
-    }
-  } catch {
-    setDemoSession('super_admin', demoMode.value.admin.email)
-  } finally {
-    loading.value = false
-  }
-  navigateTo(portal.home)
-}
-
 async function handleLogin() {
   error.value = ''
   loading.value = true
   try {
     await login(form.email, form.password)
     if (!isAdmin.value) {
-      error.value = 'Access denied: Admin account required'
+      clearAuth()
+      error.value = 'Access denied: Operations workbench account required'
       return
     }
-    navigateTo(portal.home)
+    const accessLoaded = await loadAccess(true)
+    const preferredKey = preferredPortalByMode[mode] || 'admin_executive'
+    const preferred = availableForFrontend.value.find(item => item.portal_key === preferredKey)
+      || availableForFrontend.value.find(item => item.portal_key === 'admin_executive')
+      || availableForFrontend.value[0]
+    if (!accessLoaded || !preferred) {
+      clearAuth()
+      error.value = 'Access denied: no operations workbench has been assigned'
+      return
+    }
+    await switchAndNavigate(preferred.portal_key)
   } catch (e: any) {
     error.value = e?.data?.detail || 'Login failed'
   } finally {

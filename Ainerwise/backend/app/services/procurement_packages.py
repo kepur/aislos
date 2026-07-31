@@ -134,9 +134,15 @@ async def match_partner_candidates(
 
 
 async def list_packages_for_project(
-    db: AsyncSession, project_id: uuid.UUID, *, boq_version_id: uuid.UUID | None = None
+    db: AsyncSession,
+    project_id: uuid.UUID,
+    *,
+    workspace_id: uuid.UUID | None = None,
+    boq_version_id: uuid.UUID | None = None,
 ) -> list[ProcurementPackage]:
     stmt = select(ProcurementPackage).where(ProcurementPackage.project_id == project_id)
+    if workspace_id is not None:
+        stmt = stmt.where(ProcurementPackage.workspace_id == workspace_id)
     if boq_version_id is not None:
         stmt = stmt.where(ProcurementPackage.boq_version_id == boq_version_id)
     stmt = stmt.order_by(
@@ -149,21 +155,33 @@ async def list_packages_for_project(
 
 
 async def list_package_items(
-    db: AsyncSession, package_ids: list[uuid.UUID]
+    db: AsyncSession,
+    package_ids: list[uuid.UUID],
+    *,
+    workspace_id: uuid.UUID | None = None,
 ) -> list[ProcurementPackageItem]:
     if not package_ids:
         return []
-    result = await db.execute(
-        select(ProcurementPackageItem).where(ProcurementPackageItem.package_id.in_(package_ids))
+    stmt = select(ProcurementPackageItem).where(
+        ProcurementPackageItem.package_id.in_(package_ids)
     )
+    if workspace_id is not None:
+        stmt = stmt.where(ProcurementPackageItem.workspace_id == workspace_id)
+    result = await db.execute(stmt)
     return list(result.scalars().all())
 
 
 async def get_package_for_project(
-    db: AsyncSession, project_id: uuid.UUID, package_id: uuid.UUID
+    db: AsyncSession,
+    project_id: uuid.UUID,
+    package_id: uuid.UUID,
+    *,
+    workspace_id: uuid.UUID | None = None,
 ) -> ProcurementPackage | None:
     package = await db.get(ProcurementPackage, package_id)
     if package is None or package.project_id != project_id:
+        return None
+    if workspace_id is not None and package.workspace_id != workspace_id:
         return None
     return package
 
@@ -191,14 +209,24 @@ async def generate_packages_from_frozen_boq(
         version = await db.get(BoqVersion, project.current_boq_version_id)
     if version is None or version.project_id != project.id:
         raise ProcurementPackageError("BOQ version not found")
+    if project.workspace_id is None or version.workspace_id != project.workspace_id:
+        raise ProcurementPackageError("BOQ version and project belong to different Workspaces")
     if version.status != "frozen":
         raise ProcurementPackageError("BOQ must be frozen before generating packages")
 
-    items = [i for i in await list_items_for_version(db, version.id) if i.included]
+    items = [
+        i
+        for i in await list_items_for_version(
+            db, version.id, workspace_id=project.workspace_id
+        )
+        if i.included
+    ]
     if not items:
         raise ProcurementPackageError("No included BOQ items to package")
 
-    options = await list_options_for_items(db, [i.id for i in items])
+    options = await list_options_for_items(
+        db, [i.id for i in items], workspace_id=project.workspace_id
+    )
     standard_by_item: dict[uuid.UUID, BoqItemOption] = {}
     for opt in options:
         if opt.tier == "standard":
@@ -208,7 +236,12 @@ async def generate_packages_from_frozen_boq(
     if missing_standard:
         raise ProcurementPackageError("Each included BOQ item requires a standard tier option")
 
-    existing = await list_packages_for_project(db, project.id, boq_version_id=version.id)
+    existing = await list_packages_for_project(
+        db,
+        project.id,
+        workspace_id=project.workspace_id,
+        boq_version_id=version.id,
+    )
     published = [p for p in existing if p.status == "published"]
     if published:
         revision = max(p.revision for p in existing) + 1
@@ -245,6 +278,7 @@ async def generate_packages_from_frozen_boq(
         grouped = groups[(commercial_type, trade)]
         mode = default_procurement_mode(project, commercial_type)
         package = ProcurementPackage(
+            workspace_id=project.workspace_id,
             project_id=project.id,
             boq_version_id=version.id,
             title=_package_title(trade, commercial_type),
@@ -263,6 +297,7 @@ async def generate_packages_from_frozen_boq(
         for item, standard in grouped:
             package_items.append(
                 ProcurementPackageItem(
+                    workspace_id=project.workspace_id,
                     package_id=package.id,
                     boq_item_id=item.id,
                     boq_item_option_id=standard.id,
@@ -329,6 +364,7 @@ def serialize_package(
 ) -> dict[str, Any]:
     return {
         "id": package.id,
+        "workspace_id": package.workspace_id,
         "project_id": package.project_id,
         "boq_version_id": package.boq_version_id,
         "title": package.title,
@@ -343,6 +379,7 @@ def serialize_package(
         "items": [
             {
                 "id": row.id,
+                "workspace_id": row.workspace_id,
                 "boq_item_id": row.boq_item_id,
                 "boq_item_option_id": row.boq_item_option_id,
                 "quantity": str(row.quantity),

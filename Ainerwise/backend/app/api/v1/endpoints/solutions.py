@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter, HTTPException, Query, status
 from slugify import slugify
 
-from app.api.deps import AdminUser, CurrentUser, DB
+from app.api.deps import AdminUser, DB
 from app.crud.solution import crud_solution
 from app.schemas.solution import SolutionCreate, SolutionRead, SolutionUpdate
 
@@ -16,6 +16,14 @@ async def list_solutions(db: DB):
     return items
 
 
+@router.get("/admin/{id}", response_model=SolutionRead)
+async def get_admin_solution(id: uuid.UUID, db: DB, admin: AdminUser):
+    solution = await crud_solution.get(db, id)
+    if not solution:
+        raise HTTPException(status_code=404, detail="Solution not found")
+    return solution
+
+
 @router.get("/{slug_or_id}", response_model=SolutionRead)
 async def get_solution(slug_or_id: str, db: DB):
     # Try UUID first, then slug
@@ -24,7 +32,7 @@ async def get_solution(slug_or_id: str, db: DB):
         sol = await crud_solution.get(db, uid)
     except ValueError:
         sol = await crud_solution.get_by_slug(db, slug_or_id)
-    if not sol:
+    if not sol or not sol.public_visible:
         raise HTTPException(status_code=404, detail="Solution not found")
     return sol
 

@@ -12,12 +12,16 @@ from app.api.v1.endpoints import (
     business_brain,
     cases,
     certifications,
+    cebu_compat,
+    commerce,
     costing,
     crm,
+    customer_workspace,
     demo_mode,
     documents,
     esign,
     ecosystem,
+    field_service,
     files,
     finance,
     inquiries,
@@ -26,6 +30,7 @@ from app.api.v1.endpoints import (
     knowledge,
     leads,
     legacy_bridge,
+    localization,
     payments,
     partner_portal,
     rfqs,
@@ -35,6 +40,9 @@ from app.api.v1.endpoints import (
     media_integration,
     notifications,
     portal,
+    portal_access,
+    portal_manifest,
+    privacy,
     procurement,
     product_categories,
     product_compatibility,
@@ -43,6 +51,7 @@ from app.api.v1.endpoints import (
     proposals,
     quotes,
     regions,
+    secondhand,
     seo,
     service_packages,
     service_partners,
@@ -54,9 +63,16 @@ from app.api.v1.endpoints import (
     vendors,
     warranty_policies,
 )
+from app.modules.cebu_trade.api import router as cebu_trade_router
+from app.modules.cebu_trade.api import admin_router as cebu_trade_admin_router
+from app.modules.kyc.api import router as kyc_router
+from app.modules.kyc.api import admin_router as kyc_admin_router
+from app.modules.buyer_project.api import router as buyer_project_router
+from app.modules.cebu_admin.api import router as cebu_admin_router
 
 api_router = APIRouter()
 api_router.include_router(auth.router)
+api_router.include_router(portal_access.router)
 api_router.include_router(demo_mode.router)
 api_router.include_router(solutions.router)
 api_router.include_router(products.router)
@@ -74,6 +90,9 @@ api_router.include_router(files.router)
 api_router.include_router(users.router)
 api_router.include_router(admin.router)
 api_router.include_router(certifications.router)
+api_router.include_router(commerce.router)
+api_router.include_router(customer_workspace.router)
+api_router.include_router(cebu_compat.router)
 api_router.include_router(warranty_policies.router)
 api_router.include_router(product_compatibility.router)
 api_router.include_router(proposals.router)
@@ -87,11 +106,20 @@ api_router.include_router(marketing.admin_brief_router)
 api_router.include_router(media_integration.router)
 api_router.include_router(media_integration.admin_router)
 api_router.include_router(portal.router)
+api_router.include_router(portal_manifest.router)
+api_router.include_router(privacy.router)
+api_router.include_router(field_service.router)
+api_router.include_router(field_service.admin_router)
+api_router.include_router(field_service.supplier_router)
+api_router.include_router(field_service.partner_router)
+api_router.include_router(field_service.crew_router)
 api_router.include_router(procurement.router)
 api_router.include_router(legacy_bridge.router)
 api_router.include_router(notifications.router)
 api_router.include_router(telegram.router)
 api_router.include_router(integrations.router)
+api_router.include_router(localization.router)
+api_router.include_router(secondhand.router)
 api_router.include_router(knowledge.router)
 api_router.include_router(ai_reviews.router)
 api_router.include_router(ai_chat.router)
@@ -111,3 +139,9 @@ api_router.include_router(agent_missions.router)
 api_router.include_router(ecosystem.router)
 api_router.include_router(showroom.router)
 api_router.include_router(showroom.admin_router)
+api_router.include_router(cebu_trade_router)
+api_router.include_router(cebu_trade_admin_router)
+api_router.include_router(kyc_router)
+api_router.include_router(kyc_admin_router)
+api_router.include_router(buyer_project_router)
+api_router.include_router(cebu_admin_router)

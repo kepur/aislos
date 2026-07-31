@@ -48,7 +48,11 @@ Mobile (H5) is responsive design via TailwindCSS breakpoints, not a separate app
 - JWT with access + refresh tokens
 - Access token: 60min, Refresh token: 7 days
 - bcrypt password hashing (bcrypt==4.0.1 pinned for passlib compatibility)
-- 5 roles: super_admin, admin, buyer, vendor, service_partner
+- Core roles: super_admin, admin, sales_manager, project_manager, finance,
+  marketing_operator, buyer, customer_user, vendor, developer, service_partner,
+  partner_worker, maintenance_worker
+- Public registration is restricted to buyer, vendor, developer and service_partner;
+  internal staff and worker roles require an administrator-issued invitation.
 - RBAC enforced via FastAPI dependencies (`require_role()`)
 - Middleware: `auth.ts` (any logged-in user), `admin.ts` (admin/super_admin), `guest.ts` (redirect if logged in)
 - Pydantic schemas use `model_config = ConfigDict(from_attributes=True)` for ORM mode

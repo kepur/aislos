@@ -1,15 +1,36 @@
 from __future__ import annotations
 
 import httpx
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.models.integration import IntegrationEvent
+from app.services.event_bus import emit_event
 from app.services.notification_templates import render_telegram
 
 
 def _telegram_message(event_type: str, payload: dict) -> str:
     return render_telegram(event_type, payload)
+
+
+async def queue_admin_telegram(
+    db: AsyncSession,
+    *,
+    event_type: str,
+    payload: dict,
+    aggregate_type: str | None = None,
+    aggregate_id=None,
+) -> IntegrationEvent:
+    """Enqueue admin Telegram delivery in the caller's transaction (no auto-dispatch)."""
+    return await emit_event(
+        db,
+        event_type=event_type,
+        payload=payload,
+        target_channel="telegram_admin",
+        aggregate_type=aggregate_type,
+        aggregate_id=aggregate_id,
+    )
 
 
 async def create_integration_event(
@@ -20,6 +41,11 @@ async def create_integration_event(
     target_channel: str = "telegram_admin",
     dispatch: bool = True,
 ) -> IntegrationEvent:
+    """Legacy immediate-dispatch helper.
+
+    New business flows must use ``emit_event`` or ``queue_admin_telegram`` so
+    business state and the outbox row commit atomically.
+    """
     event = IntegrationEvent(
         event_type=event_type,
         payload_json=payload,
@@ -37,6 +63,15 @@ async def create_integration_event(
 
 
 async def dispatch_telegram_event(db: AsyncSession, event: IntegrationEvent) -> IntegrationEvent:
+    """Legacy/admin retry entry point that owns the delivery transaction."""
+    await deliver_telegram_event(db, event)
+    await db.commit()
+    await db.refresh(event)
+    return event
+
+
+async def deliver_telegram_event(db: AsyncSession, event: IntegrationEvent) -> IntegrationEvent:
+    """Attempt one Telegram delivery without committing the caller's transaction."""
     # Admin-configured credentials (DB) take precedence over env.
     from app.services.integrations import telegram_credentials
 
@@ -45,8 +80,7 @@ async def dispatch_telegram_event(db: AsyncSession, event: IntegrationEvent) -> 
         event.status = "skipped"
         event.error_message = "Telegram is not configured. Configure it in Admin → Integrations (or set TELEGRAM_BOT_TOKEN / TELEGRAM_ADMIN_CHAT_ID)."
         db.add(event)
-        await db.commit()
-        await db.refresh(event)
+        await db.flush()
         return event
 
     message = _telegram_message(event.event_type, event.payload_json or {})
@@ -72,6 +106,30 @@ async def dispatch_telegram_event(db: AsyncSession, event: IntegrationEvent) -> 
         event.error_message = None
 
     db.add(event)
-    await db.commit()
-    await db.refresh(event)
+    await db.flush()
     return event
+
+
+async def dispatch_pending_telegram_events(
+    db: AsyncSession,
+    *,
+    batch_size: int = 50,
+    max_retries: int = 5,
+) -> int:
+    """Deliver queued Telegram outbox rows with concurrent-worker locking."""
+    result = await db.execute(
+        select(IntegrationEvent)
+        .where(
+            IntegrationEvent.target_channel == "telegram_admin",
+            IntegrationEvent.status.in_(("pending", "failed")),
+            IntegrationEvent.retry_count < max_retries,
+        )
+        .order_by(IntegrationEvent.created_at)
+        .limit(batch_size)
+        .with_for_update(skip_locked=True)
+    )
+    events = list(result.scalars().all())
+    for event in events:
+        await deliver_telegram_event(db, event)
+    await db.commit()
+    return len(events)

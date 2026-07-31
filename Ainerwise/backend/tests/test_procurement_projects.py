@@ -16,6 +16,7 @@ from app.models.audit import AuditLog
 from app.models.integration import IntegrationEvent
 from app.models.procurement import ProcurementProject
 from app.models.user import User
+from tests.route_utils import registered_route_paths
 from app.services.portal_policy import (
     activate_policy,
     create_policy_version,
@@ -111,7 +112,7 @@ def _project_payload(project_type: str = "villa_smart_home") -> dict:
 # ---------------------------------------------------------------------------
 
 def test_procurement_project_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for sub in (
         f"{BASE}/projects",
         f"{BASE}/projects/{{project_id}}",
@@ -420,7 +421,7 @@ def test_file_attach_creates_asset_and_audit():
                 f"{BASE}/projects/{project_id}/files",
                 json={
                     "original_name": "floorplan.pdf",
-                    "storage_path": "uploads/test/floorplan.pdf",
+                    "storage_path": f"uploads/{user.id}/{uuid.uuid4()}/floorplan.pdf",
                     "mime_type": "application/pdf",
                     "size_bytes": 1024,
                 },
@@ -438,6 +439,17 @@ def test_file_attach_creates_asset_and_audit():
         assert attached.json()["entity_type"] == "procurement_project"
         assert attached.json()["entity_id"] == project_id
         assert cross.status_code == 404
+
+        async with _client() as ac:
+            foreign_key = await ac.post(
+                f"{BASE}/projects/{project_id}/files",
+                json={
+                    "original_name": "foreign.pdf",
+                    "storage_path": f"uploads/{uuid.uuid4()}/{uuid.uuid4()}/foreign.pdf",
+                },
+                headers=_auth(token, "aislos"),
+            )
+        assert foreign_key.status_code == 403, foreign_key.text
 
     asyncio.run(_t())
 

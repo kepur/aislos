@@ -7,7 +7,7 @@
           <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
             <span class="text-white font-bold text-sm">AW</span>
           </div>
-          <span class="font-bold text-primary-900 text-lg">AinerWise Procurement</span>
+          <span class="font-bold text-primary-900 text-lg">AISLOS Market</span>
         </div>
         <div class="flex items-center gap-3">
           <button type="button" class="text-slate-500 text-sm flex items-center gap-1">
@@ -70,7 +70,7 @@
 
     <!-- How it Works -->
     <section class="px-6 py-10">
-      <h2 class="text-xl font-bold text-slate-900 mb-1">How AinerWise Procurement works</h2>
+      <h2 class="text-xl font-bold text-slate-900 mb-1">How AISLOS Market works</h2>
       <p class="text-sm text-slate-500 mb-6">Reverse marketplace — suppliers come to you</p>
 
       <div class="space-y-4">

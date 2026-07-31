@@ -8,7 +8,7 @@
       <!-- Sidebar -->
       <aside class="w-56 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
         <div class="px-5 py-4 border-b border-slate-100">
-          <p class="font-bold text-slate-900 text-base">AinerWise Procurement</p>
+          <p class="font-bold text-slate-900 text-base">AISLOS Market</p>
           <p class="text-xs text-primary-600 font-semibold -mt-0.5">{{ t('login.title') }}</p>
         </div>
         <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
@@ -17,7 +17,7 @@
             <router-link
               :to="item.to"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors"
-              :class="$route.path === item.to ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-50'"
+              :class="isActive(item.path) ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-50'"
             >
               <span class="w-5 text-center text-sm">{{ item.icon }}</span>
               {{ item.label }}
@@ -54,47 +54,60 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { SUPPORTED_LOCALES, applyDirection } from '@/i18n'
+import { api } from '@/utils/api'
+import { prefixForLocale, stripLocalePrefix, withLocalePrefix } from '@/utils/localeRoutes'
 
 const { t, locale } = useI18n()
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
-const supportedLocales = SUPPORTED_LOCALES
+const enabledLocaleCodes = ref(SUPPORTED_LOCALES.map(item => item.code))
+const supportedLocales = computed(() => SUPPORTED_LOCALES.filter(item => enabledLocaleCodes.value.includes(item.code)))
 
 function switchLocale(lang) {
   locale.value = lang
   localStorage.setItem('admin_locale', lang)
+  localStorage.setItem('admin_locale_prefix', prefixForLocale(lang))
   applyDirection(lang)
+  router.push(withLocalePrefix(route.fullPath, prefixForLocale(lang)))
+}
+
+function pathTo(path) {
+  return withLocalePrefix(path, prefixForLocale(locale.value))
+}
+
+function isActive(path) {
+  return stripLocalePrefix(route.path) === path
 }
 
 const nav = computed(() => [
-  { to: '/dashboard',     icon: '📊', label: t('nav.dashboard'),      section: '' },
-  { to: '/users',         icon: '👥', label: t('nav.users'),          section: t('sections.people') },
-  { to: '/staff',         icon: '🛡️', label: t('nav.staff'),          section: '' },
-  { to: '/companies',     icon: '🏢', label: t('nav.companies'),      section: '' },
-  { to: '/verification',  icon: '✅', label: t('nav.verification'),   section: '' },
-  { to: '/kyc-media',     icon: '🔍', label: 'KYC Media',              section: '' },
-  { to: '/marketplace',   icon: '🏪', label: 'Marketplace',            section: t('sections.marketplace') },
-  { to: '/ad-campaigns',  icon: '📣', label: 'Ad Campaigns',          section: '' },
-  { to: '/intents',       icon: '📋', label: t('nav.intents'),        section: '' },
-  { to: '/orders',        icon: '📦', label: t('nav.orders'),         section: '' },
-  { to: '/disputes',      icon: '⚠️',  label: t('nav.disputes'),      section: '' },
-  { to: '/escrow',        icon: '🔒', label: t('nav.escrow'),         section: t('sections.finance') },
-  { to: '/payments',      icon: '💳', label: t('nav.payments'),       section: '' },
-  { to: '/shipping',      icon: '🚚', label: t('nav.shipping'),       section: '' },
-  { to: '/regions',       icon: '🗺️', label: t('nav.regions'),         section: '' },
-  { to: '/risk',          icon: '🚨', label: t('nav.risk'),           section: t('sections.operations') },
-  { to: '/trust',         icon: '⭐', label: t('nav.trust'),           section: '' },
-  { to: '/notifications', icon: '🔔', label: t('nav.notifications'),  section: '' },
-  { to: '/integrations',  icon: '🔌', label: t('nav.integrations'),   section: '' },
-  { to: '/backups',        icon: '💾', label: 'Backups',               section: '' },
-  { to: '/settings',      icon: '⚙️',  label: t('nav.settings'),      section: t('sections.system') },
-  { to: '/audit',         icon: '📋', label: t('nav.audit'),          section: '' },
+  { to: pathTo('/dashboard'), path: '/dashboard',     icon: '📊', label: t('nav.dashboard'),      section: '' },
+  { to: pathTo('/users'), path: '/users',             icon: '👥', label: t('nav.users'),          section: t('sections.people') },
+  { to: pathTo('/staff'), path: '/staff',             icon: '🛡️', label: t('nav.staff'),          section: '' },
+  { to: pathTo('/companies'), path: '/companies',     icon: '🏢', label: t('nav.companies'),      section: '' },
+  { to: pathTo('/verification'), path: '/verification', icon: '✅', label: t('nav.verification'), section: '' },
+  { to: pathTo('/kyc-media'), path: '/kyc-media',     icon: '🔍', label: 'KYC Media',              section: '' },
+  { to: pathTo('/marketplace'), path: '/marketplace', icon: '🏪', label: t('nav.marketplace'),     section: t('sections.marketplace') },
+  { to: pathTo('/ad-campaigns'), path: '/ad-campaigns', icon: '📣', label: t('nav.adCampaigns'),  section: '' },
+  { to: pathTo('/intents'), path: '/intents',         icon: '📋', label: t('nav.intents'),        section: '' },
+  { to: pathTo('/orders'), path: '/orders',           icon: '📦', label: t('nav.orders'),         section: '' },
+  { to: pathTo('/disputes'), path: '/disputes',       icon: '⚠️',  label: t('nav.disputes'),      section: '' },
+  { to: pathTo('/escrow'), path: '/escrow',           icon: '🔒', label: t('nav.escrow'),         section: t('sections.finance') },
+  { to: pathTo('/payments'), path: '/payments',       icon: '💳', label: t('nav.payments'),       section: '' },
+  { to: pathTo('/shipping'), path: '/shipping',       icon: '🚚', label: t('nav.shipping'),       section: '' },
+  { to: pathTo('/regions'), path: '/regions',         icon: '🗺️', label: t('nav.regions'),        section: '' },
+  { to: pathTo('/risk'), path: '/risk',               icon: '🚨', label: t('nav.risk'),           section: t('sections.operations') },
+  { to: pathTo('/trust'), path: '/trust',             icon: '⭐', label: t('nav.trust'),           section: '' },
+  { to: pathTo('/notifications'), path: '/notifications', icon: '🔔', label: t('nav.notifications'), section: '' },
+  { to: pathTo('/integrations'), path: '/integrations', icon: '🔌', label: t('nav.integrations'), section: '' },
+  { to: pathTo('/backups'), path: '/backups',         icon: '💾', label: 'Backups',               section: '' },
+  { to: pathTo('/settings'), path: '/settings',       icon: '⚙️',  label: t('nav.settings'),      section: t('sections.system') },
+  { to: pathTo('/audit'), path: '/audit',             icon: '📋', label: t('nav.audit'),          section: '' },
 ])
 
 const titleMap = {
@@ -122,7 +135,7 @@ const titleMap = {
   '/ad-campaigns': 'nav.adCampaigns',
 }
 const currentTitle = computed(() => {
-  const key = titleMap[route.path]
+  const key = titleMap[stripLocalePrefix(route.path)]
   if (!key) return t('nav.dashboard')
   // If the key doesn't contain a dot it's a raw label, not an i18n key
   return key.includes('.') ? t(key) : key
@@ -130,6 +143,18 @@ const currentTitle = computed(() => {
 
 function logout() {
   auth.logout()
-  router.push('/login')
+  router.push(pathTo('/login'))
 }
+
+onMounted(async () => {
+  try {
+    const { data } = await api.get('/localization/config')
+    const nextCodes = (data.supported_locales || [])
+      .map(item => item.locale)
+      .filter(code => SUPPORTED_LOCALES.some(localeOption => localeOption.code === code))
+    if (nextCodes.length) enabledLocaleCodes.value = nextCodes
+  } catch {
+    enabledLocaleCodes.value = SUPPORTED_LOCALES.map(item => item.code)
+  }
+})
 </script>

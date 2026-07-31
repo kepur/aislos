@@ -7,6 +7,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_factory, engine
 from app.main import app
+from tests.route_utils import registered_route_paths
 from app.models.agent import Agent, AgentObjectGrant
 from app.models.ai import AgentRun, AIReview
 from app.models.audit import AuditLog
@@ -18,7 +19,7 @@ from app.tasks.celery_app import celery_app
 
 
 def test_phase_h_routes_and_schedule_registered():
-    paths = {route.path for route in app.routes}
+    paths = registered_route_paths(app)
     for path in (
         "/api/v1/portal/projects/{project_id}/missions",
         "/api/v1/portal/projects/{project_id}/space",

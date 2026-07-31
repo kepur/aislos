@@ -3,7 +3,7 @@ import uuid
 
 from fastapi import APIRouter, Header, HTTPException, Query, Request, status
 
-from app.api.deps import AdminUser, DB
+from app.api.deps import MarketingUser, DB
 from app.core.media_integration_auth import (
     ClaimClientDep,
     ProgressClientDep,
@@ -310,7 +310,7 @@ async def complete_media_request(
 
 
 @admin_router.post("", response_model=IntegrationClientCreated, status_code=status.HTTP_201_CREATED)
-async def admin_create_client(data: IntegrationClientCreate, db: DB, admin: AdminUser):
+async def admin_create_client(data: IntegrationClientCreate, db: DB, admin: MarketingUser):
     try:
         client, secret = await create_integration_client(
             db,
@@ -340,7 +340,7 @@ async def admin_create_client(data: IntegrationClientCreate, db: DB, admin: Admi
 
 
 @admin_router.get("")
-async def admin_list_clients(db: DB, admin: AdminUser):
+async def admin_list_clients(db: DB, admin: MarketingUser):
     from sqlalchemy import select
 
     from app.models.marketing import MarketingIntegrationClient
@@ -353,7 +353,7 @@ async def admin_list_clients(db: DB, admin: AdminUser):
 
 
 @admin_router.post("/{client_id}/suspend", response_model=IntegrationClientRead)
-async def admin_suspend_client(client_id: uuid.UUID, db: DB, admin: AdminUser):
+async def admin_suspend_client(client_id: uuid.UUID, db: DB, admin: MarketingUser):
     try:
         client = await suspend_client(db, client_id)
         await db.commit()
@@ -365,7 +365,7 @@ async def admin_suspend_client(client_id: uuid.UUID, db: DB, admin: AdminUser):
 
 
 @admin_router.post("/{client_id}/revoke", response_model=IntegrationClientRead)
-async def admin_revoke_client(client_id: uuid.UUID, db: DB, admin: AdminUser):
+async def admin_revoke_client(client_id: uuid.UUID, db: DB, admin: MarketingUser):
     try:
         client = await revoke_client(db, client_id)
         await db.commit()
@@ -377,7 +377,7 @@ async def admin_revoke_client(client_id: uuid.UUID, db: DB, admin: AdminUser):
 
 
 @admin_router.post("/{client_id}/rotate-secret", response_model=IntegrationClientCreated)
-async def admin_rotate_secret(client_id: uuid.UUID, db: DB, admin: AdminUser):
+async def admin_rotate_secret(client_id: uuid.UUID, db: DB, admin: MarketingUser):
     try:
         client, secret = await rotate_client_secret(db, client_id)
         await db.commit()

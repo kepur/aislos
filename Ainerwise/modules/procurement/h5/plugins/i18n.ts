@@ -9,10 +9,18 @@ import th from "~/locales/th.json";
 import vi from "~/locales/vi.json";
 import id from "~/locales/id.json";
 import ar from "~/locales/ar.json";
+import sr from "~/locales/sr.json";
+import {
+  H5_LOCALE_TO_URI_PREFIX,
+  getLocalePrefixFromPath,
+  localeFromPrefix,
+  normalizeH5Locale,
+} from "~/utils/localeRoutes";
 
 export const SUPPORTED_LOCALES = [
   { code: "en", name: "English" },
   { code: "zh", name: "中文" },
+  { code: "sr", name: "Srpski" },
   { code: "tl", name: "Tagalog" },
   { code: "ja", name: "日本語" },
   { code: "ko", name: "한국어" },
@@ -28,6 +36,7 @@ const LOCALE_CODES = new Set(SUPPORTED_LOCALES.map((locale) => locale.code));
 const PC_TO_H5_LOCALE: Record<string, string> = {
   EN: "en",
   ZH: "zh",
+  SR: "sr",
   TL: "tl",
   JA: "ja",
   KO: "ko",
@@ -45,7 +54,7 @@ let globalLocaleRef: { value: string } | null = null;
 function normalizeLocale(value?: string | null) {
   if (!value) return "en";
   const fromPc = PC_TO_H5_LOCALE[value.toUpperCase()];
-  const normalized = fromPc || value.toLowerCase();
+  const normalized = normalizeH5Locale(fromPc || value);
   return LOCALE_CODES.has(normalized) ? normalized : "en";
 }
 
@@ -57,6 +66,7 @@ function applyLocale(lang: string) {
   if (import.meta.client) {
     localStorage.setItem("h5_locale", normalized);
     localStorage.setItem("pp_language", H5_TO_PC_LOCALE[normalized] || "EN");
+    localStorage.setItem("h5_locale_prefix", H5_LOCALE_TO_URI_PREFIX[normalized] || "en");
     document.cookie = `pp_language=${H5_TO_PC_LOCALE[normalized] || "EN"}; path=/; max-age=31536000`;
     document.documentElement.dir = RTL_LOCALES.includes(normalized) ? "rtl" : "ltr";
     document.documentElement.lang = normalized;
@@ -66,7 +76,12 @@ function applyLocale(lang: string) {
 export default defineNuxtPlugin((nuxtApp) => {
   let savedLocale = "en";
   if (import.meta.client) {
-    savedLocale = normalizeLocale(localStorage.getItem("h5_locale") || localStorage.getItem("pp_language"));
+    const routePrefix = getLocalePrefixFromPath(window.location.pathname);
+    savedLocale = normalizeLocale(
+      localeFromPrefix(routePrefix) ||
+      localStorage.getItem("h5_locale") ||
+      localStorage.getItem("pp_language")
+    );
   }
 
   const i18n = createI18n({
@@ -74,7 +89,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     globalInjection: true,
     locale: savedLocale,
     fallbackLocale: "en",
-    messages: { en, zh, tl, ja, ko, es, th, vi, id, ar },
+    messages: { en, zh, sr, tl, ja, ko, es, th, vi, id, ar },
   });
   globalLocaleRef = i18n.global.locale as unknown as { value: string };
 

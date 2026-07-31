@@ -12,6 +12,7 @@
         <option value="failed">Failed</option>
       </select>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <!-- Upload forms -->
     <div class="grid gap-4 md:grid-cols-2 mb-6">
@@ -101,6 +102,7 @@ const documents = ref<any[]>([])
 const statusFilter = ref('')
 const uploading = ref(false)
 const busy = ref(false)
+const error = ref('')
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const fileTitle = ref('')
@@ -110,12 +112,14 @@ const textTitle = ref('')
 const textContent = ref('')
 
 async function load() {
+  error.value = ''
   const params = statusFilter.value ? `?status=${statusFilter.value}` : ''
   try {
     const res = await apiFetch<any>(`/admin/knowledge/documents${params}`)
     documents.value = res.items || []
-  } catch {
+  } catch (e: any) {
     documents.value = []
+    error.value = e?.data?.detail || e?.message || 'Knowledge documents could not be loaded'
   }
 }
 
@@ -123,6 +127,7 @@ async function uploadFile() {
   const file = fileInput.value?.files?.[0]
   if (!file) return
   uploading.value = true
+  error.value = ''
   try {
     const form = new FormData()
     form.append('file', file)
@@ -133,6 +138,8 @@ async function uploadFile() {
     fileTitle.value = ''
     if (fileInput.value) fileInput.value.value = ''
     await load()
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Knowledge file could not be uploaded'
   } finally {
     uploading.value = false
   }
@@ -140,6 +147,7 @@ async function uploadFile() {
 
 async function createText() {
   uploading.value = true
+  error.value = ''
   try {
     await apiFetch('/admin/knowledge/documents/text', {
       method: 'POST',
@@ -148,6 +156,8 @@ async function createText() {
     textTitle.value = ''
     textContent.value = ''
     await load()
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Knowledge text could not be created'
   } finally {
     uploading.value = false
   }
@@ -155,9 +165,12 @@ async function createText() {
 
 async function reingest(doc: any) {
   busy.value = true
+  error.value = ''
   try {
     await apiFetch(`/admin/knowledge/documents/${doc.id}/reingest`, { method: 'POST' })
     await load()
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Knowledge document could not be reingested'
   } finally {
     busy.value = false
   }
@@ -166,9 +179,12 @@ async function reingest(doc: any) {
 async function remove(doc: any) {
   if (!window.confirm(`Delete "${doc.title}" and all its chunks?`)) return
   busy.value = true
+  error.value = ''
   try {
     await apiFetch(`/admin/knowledge/documents/${doc.id}`, { method: 'DELETE' })
     await load()
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Knowledge document could not be deleted'
   } finally {
     busy.value = false
   }

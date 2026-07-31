@@ -56,6 +56,7 @@ class SupplierWarrantyRead(SupplierWarrantyBase):
 # --- FI.2.6 Customer Warranty ----------------------------------------------
 
 class CustomerWarrantyBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     customer_id: uuid.UUID | None = None
     warranty_model: str | None = None
@@ -76,6 +77,7 @@ class CustomerWarrantyCreate(CustomerWarrantyBase):
 
 
 class CustomerWarrantyUpdate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     customer_id: uuid.UUID | None = None
     warranty_model: str | None = None
@@ -96,9 +98,26 @@ class CustomerWarrantyRead(CustomerWarrantyBase):
     created_at: datetime
 
 
+class CustomerWarrantyCustomerRead(BaseSchema):
+    id: uuid.UUID
+    project_id: uuid.UUID | None = None
+    warranty_model: str | None = None
+    start_date: date | None = None
+    end_date: date | None = None
+    included_devices_json: list | None = None
+    excluded_devices_json: list | None = None
+    included_labor: bool = False
+    included_remote_support: bool = True
+    included_on_site_visits_per_year: int | None = None
+    spare_parts_included: bool = False
+    max_claims_per_year: int | None = None
+    created_at: datetime
+
+
 # --- FI.2.7 AMC Contract ----------------------------------------------------
 
 class AMCContractBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     customer_id: uuid.UUID | None = None
     package: str | None = None
@@ -120,6 +139,7 @@ class AMCContractCreate(AMCContractBase):
 
 
 class AMCContractUpdate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     customer_id: uuid.UUID | None = None
     package: str | None = None
@@ -141,9 +161,26 @@ class AMCContractRead(AMCContractBase):
     created_at: datetime
 
 
+class AMCContractCustomerRead(BaseSchema):
+    id: uuid.UUID
+    project_id: uuid.UUID | None = None
+    package: str | None = None
+    start_date: date | None = None
+    end_date: date | None = None
+    renewal_status: str = "active"
+    coverage_json: dict | None = None
+    exclusions_json: list | None = None
+    included_visits_per_year: int | None = None
+    response_target_hours: int | None = None
+    recurring_fee: float | None = None
+    currency: str = "EUR"
+    created_at: datetime
+
+
 # --- FI.2.8 Monitoring Point -----------------------------------------------
 
 class MonitoringPointBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     product_id: uuid.UUID | None = None
     solution_line: str | None = None
@@ -165,6 +202,7 @@ class MonitoringPointCreate(MonitoringPointBase):
 
 
 class MonitoringPointUpdate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     product_id: uuid.UUID | None = None
     solution_line: str | None = None
@@ -186,9 +224,28 @@ class MonitoringPointRead(MonitoringPointBase):
     created_at: datetime
 
 
+class MonitoringPointCustomerRead(BaseSchema):
+    id: uuid.UUID
+    project_id: uuid.UUID | None = None
+    product_id: uuid.UUID | None = None
+    solution_line: str | None = None
+    site: str | None = None
+    device_name: str | None = None
+    point_type: str | None = None
+    unit: str | None = None
+    threshold_min: float | None = None
+    threshold_max: float | None = None
+    calibration_cycle_months: int | None = None
+    last_calibrated_at: date | None = None
+    next_calibration_at: date | None = None
+    status: str = "active"
+    created_at: datetime
+
+
 # --- FI.2.9 Inventory Item + Stock Movement --------------------------------
 
 class InventoryItemBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     product_id: uuid.UUID | None = None
     supplier_id: uuid.UUID | None = None
     reserved_for_project_id: uuid.UUID | None = None
@@ -210,6 +267,7 @@ class InventoryItemCreate(InventoryItemBase):
 
 
 class InventoryItemUpdate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     product_id: uuid.UUID | None = None
     supplier_id: uuid.UUID | None = None
     reserved_for_project_id: uuid.UUID | None = None
@@ -232,6 +290,7 @@ class InventoryItemRead(InventoryItemBase):
 
 
 class StockMovementBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     inventory_item_id: uuid.UUID
     movement_type: str
     quantity: int = 0
@@ -254,8 +313,10 @@ class StockMovementRead(StockMovementBase):
 # --- FI.2.10 Maintenance Schedule + Calibration Record ---------------------
 
 class MaintenanceScheduleBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     monitoring_point_id: uuid.UUID | None = None
+    asset_id: uuid.UUID | None = None
     device_name: str | None = None
     task_type: str | None = None
     due_date: date | None = None
@@ -272,8 +333,10 @@ class MaintenanceScheduleCreate(MaintenanceScheduleBase):
 
 
 class MaintenanceScheduleUpdate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     monitoring_point_id: uuid.UUID | None = None
+    asset_id: uuid.UUID | None = None
     device_name: str | None = None
     task_type: str | None = None
     due_date: date | None = None
@@ -290,7 +353,21 @@ class MaintenanceScheduleRead(MaintenanceScheduleBase):
     created_at: datetime
 
 
+class MaintenanceScheduleCustomerRead(BaseSchema):
+    id: uuid.UUID
+    project_id: uuid.UUID | None = None
+    monitoring_point_id: uuid.UUID | None = None
+    device_name: str | None = None
+    task_type: str | None = None
+    due_date: date | None = None
+    frequency_months: int | None = None
+    status: str = "scheduled"
+    covered_by_amc: bool = False
+    created_at: datetime
+
+
 class CalibrationRecordBase(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     monitoring_point_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     calibration_date: date | None = None
@@ -307,6 +384,7 @@ class CalibrationRecordCreate(CalibrationRecordBase):
 
 
 class CalibrationRecordUpdate(BaseSchema):
+    workspace_id: uuid.UUID | None = None
     monitoring_point_id: uuid.UUID | None = None
     project_id: uuid.UUID | None = None
     calibration_date: date | None = None
@@ -320,4 +398,17 @@ class CalibrationRecordUpdate(BaseSchema):
 
 class CalibrationRecordRead(CalibrationRecordBase):
     id: uuid.UUID
+    created_at: datetime
+
+
+class CalibrationRecordCustomerRead(BaseSchema):
+    id: uuid.UUID
+    monitoring_point_id: uuid.UUID | None = None
+    project_id: uuid.UUID | None = None
+    calibration_date: date | None = None
+    next_due_date: date | None = None
+    calibration_method: str | None = None
+    certificate_file_id: uuid.UUID | None = None
+    technician: str | None = None
+    result: str | None = None
     created_at: datetime

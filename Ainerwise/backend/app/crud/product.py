@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
+from app.core.product_catalog import PUBLIC_PRODUCT_STATUSES
 from app.models.product import Product, ProductCategory
 
 
@@ -21,7 +22,7 @@ class CRUDProduct(CRUDBase[Product]):
         category_id: uuid.UUID | None = None,
         search: str | None = None,
     ) -> tuple[list[Product], int]:
-        filters = [self.model.status == "approved"]
+        filters = [self.model.status.in_(PUBLIC_PRODUCT_STATUSES)]
         if category_id:
             filters.append(self.model.category_id == category_id)
         if search:

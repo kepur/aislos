@@ -17,6 +17,15 @@ class RegionRead(BaseSchema):
     updated_at: datetime
 
 
+class RegionPublicRead(BaseSchema):
+    id: uuid.UUID
+    code: str
+    name: str
+    currency_code: str
+    language_codes_json: list | None = None
+    timezone: str | None = None
+
+
 class RegionCreate(BaseSchema):
     code: str
     name: str

@@ -4,6 +4,7 @@
       <h1 class="admin-page-title">{{ t('lc.ctTitle') }}</h1>
       <p class="admin-page-desc">{{ t('lc.ctDesc') }}</p>
     </div>
+    <p v-if="error" class="rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <!-- ARR + headline stats -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -76,13 +77,15 @@ definePageMeta({ layout: 'default' })
 const { apiFetch } = useApi()
 const { t } = useI18n({ useScope: 'global' })
 const data = ref<any>({})
+const error = ref('')
 const money = (v: any) => (v == null ? '€0' : `€${Number(v).toLocaleString()}`)
 
 onMounted(async () => {
   try {
     data.value = await apiFetch<any>('/admin/lifecycle-dashboard')
-  } catch {
+  } catch (e: any) {
     data.value = {}
+    error.value = e?.data?.detail || e?.message || 'Lifecycle dashboard could not be loaded'
   }
 })
 </script>

@@ -5,6 +5,9 @@
       <p class="text-sm text-slate-400 mt-1">Review and respond to your quotes</p>
     </div>
 
+    <div v-if="error" class="portal-card border-red-200 bg-red-50 text-sm text-red-700">
+      {{ error }} <button class="ml-2 font-semibold underline" @click="loadData">Retry</button>
+    </div>
     <div class="portal-card p-0 overflow-hidden">
       <table class="w-full text-sm">
         <thead>
@@ -33,7 +36,10 @@
               </div>
             </td>
           </tr>
-          <tr v-if="!quotes.length">
+          <tr v-if="loading && !quotes.length">
+            <td colspan="5" class="px-4 py-12 text-center text-sm text-slate-400">Loading quotes...</td>
+          </tr>
+          <tr v-else-if="!quotes.length">
             <td colspan="5" class="px-4 py-12 text-center">
               <div class="text-3xl mb-2">💰</div>
               <p class="text-sm text-slate-400">{{ $t('common.noData') }}</p>
@@ -46,10 +52,12 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'portal', middleware: 'auth' })
+definePageMeta({ layout: 'customer-workspace', middleware: 'auth' })
 
 const { apiFetch } = useApi()
 const quotes = ref<any[]>([])
+const loading = ref(true)
+const error = ref('')
 
 function statusClass(status: string) {
   const map: Record<string, string> = {
@@ -64,16 +72,26 @@ function statusClass(status: string) {
 onMounted(loadData)
 
 async function loadData() {
+  loading.value = true
+  error.value = ''
   try {
     const res = await apiFetch<any>('/quotes/my')
     quotes.value = res.items || []
-  } catch {}
+  } catch (e: any) {
+    quotes.value = []
+    error.value = e?.data?.detail || e?.message || 'Unable to load quotes.'
+  } finally {
+    loading.value = false
+  }
 }
 
 async function respondToQuote(id: string, status: string) {
+  error.value = ''
   try {
     await apiFetch(`/quotes/${id}/status`, { method: 'PATCH', body: { status } })
     await loadData()
-  } catch (e: any) { console.error(e) }
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Unable to update quote.'
+  }
 }
 </script>

@@ -28,13 +28,17 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { SUPPORTED_LOCALES, setLocale } from "~/plugins/i18n";
+import { H5_LOCALE_TO_URI_PREFIX, withLocalePrefix } from "~/utils/localeRoutes";
 
 definePageMeta({ layout: "default" });
 
 const { locale } = useI18n({ useScope: "global" });
+const route = useRoute();
 const supportedLocales = SUPPORTED_LOCALES;
 
 function select(lang: string) {
   setLocale(lang);
+  const prefix = H5_LOCALE_TO_URI_PREFIX[lang];
+  if (prefix) navigateTo(withLocalePrefix(route.fullPath, prefix));
 }
 </script>

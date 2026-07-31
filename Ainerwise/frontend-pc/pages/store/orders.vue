@@ -3,11 +3,11 @@
     <div class="container-main max-w-5xl">
       <div class="flex items-end justify-between gap-4 mb-8">
         <div>
-          <p class="text-xs font-bold tracking-[0.25em] text-primary-400 uppercase">Ainerwise Store</p>
+          <p class="text-xs font-bold tracking-[0.25em] text-primary-400 uppercase">AISLOS Product Catalog</p>
           <h1 class="mt-2 text-3xl font-bold text-white">My reviewed requests</h1>
           <p class="mt-2 text-slate-400">Reference baskets become formal quotes only after an Ainerwise review.</p>
         </div>
-        <NuxtLink to="/store" class="btn-secondary">Back to Store</NuxtLink>
+        <NuxtLink to="/store" class="btn-secondary">Back to Product Catalog</NuxtLink>
       </div>
       <div class="space-y-5">
         <article v-for="order in orders" :key="order.id" class="glass-panel p-5">
@@ -29,7 +29,7 @@
             <b class="text-white">{{ money(order.subtotal, order.currency) }}</b>
           </div>
         </article>
-        <p v-if="!orders.length" class="glass-panel p-8 text-center text-slate-400">You have no Store requests yet.</p>
+        <p v-if="!orders.length" class="glass-panel p-8 text-center text-slate-400">You have no product catalog requests yet.</p>
       </div>
     </div>
   </div>

@@ -18,6 +18,7 @@
         </button>
       </div>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -222,6 +223,7 @@ const tierFilter = ref('')
 const showModal = ref(false)
 const saving = ref(false)
 const editId = ref<string | null>(null)
+const error = ref('')
 
 const defaultForm = () => ({
   tier: 'standard',
@@ -266,13 +268,15 @@ function formatCurrency(v: number) {
 }
 
 async function loadProposals() {
+  error.value = ''
   const params = tierFilter.value ? `?tier=${tierFilter.value}` : ''
   try {
     const res = await apiFetch<any>(`/proposals${params}`)
     proposals.value = res.items || []
     total.value = res.total || 0
-  } catch {
+  } catch (e: any) {
     proposals.value = []
+    error.value = e?.data?.detail || e?.message || 'Proposals could not be loaded'
   }
 }
 
@@ -310,6 +314,7 @@ function openEdit(p: any) {
 
 async function saveProposal() {
   saving.value = true
+  error.value = ''
   try {
     const body: any = { ...form }
     if (!body.lead_id) delete body.lead_id
@@ -327,7 +332,7 @@ async function saveProposal() {
     showModal.value = false
     await loadProposals()
   } catch (e: any) {
-    console.error('Save proposal failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Proposal could not be saved'
   } finally {
     saving.value = false
   }
@@ -335,11 +340,12 @@ async function saveProposal() {
 
 async function deleteProposal(id: string) {
   if (!confirm('Delete this proposal plan and all its BOM items?')) return
+  error.value = ''
   try {
     await apiFetch(`/proposals/${id}`, { method: 'DELETE' })
     await loadProposals()
   } catch (e: any) {
-    console.error('Delete failed:', e)
+    error.value = e?.data?.detail || e?.message || 'Proposal could not be deleted'
   }
 }
 

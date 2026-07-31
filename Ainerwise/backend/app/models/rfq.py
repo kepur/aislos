@@ -19,6 +19,9 @@ class RFQ(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "rfqs"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     region_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("regions.id"))
     lead_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("leads.id"), index=True)
     project_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("projects.id"), index=True)
@@ -62,6 +65,9 @@ class RFQInvitation(Base, UUIDMixin, TimestampMixin):
         UniqueConstraint("rfq_id", "partner_id", name="uq_rfq_invitations_rfq_partner"),
     )
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     rfq_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("rfqs.id", ondelete="CASCADE"), nullable=False, index=True
     )
@@ -76,6 +82,9 @@ class RFQInvitation(Base, UUIDMixin, TimestampMixin):
 class PartnerBid(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "partner_bids"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     rfq_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("rfqs.id", ondelete="CASCADE"), nullable=False, index=True
     )

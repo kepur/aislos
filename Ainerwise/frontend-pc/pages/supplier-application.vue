@@ -12,6 +12,7 @@
       </div>
 
       <form v-else @submit.prevent="handleSubmit" class="glass-panel p-8 space-y-5 border-primary-500/30 shadow-[0_0_30px_rgba(14,165,233,0.1)]">
+        <p v-if="error" class="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">{{ error }}</p>
         <div>
           <label class="block text-sm font-medium text-slate-300 mb-1">{{ $t('supplier.companyName') }}</label>
           <input v-model="form.company_name" type="text" required class="input-field" />
@@ -58,6 +59,7 @@
 const { apiFetch } = useApi()
 const submitted = ref(false)
 const loading = ref(false)
+const error = ref('')
 
 const form = reactive({
   company_name: '',
@@ -71,6 +73,7 @@ const form = reactive({
 
 async function handleSubmit() {
   loading.value = true
+  error.value = ''
   try {
     await apiFetch('/vendors/apply', {
       method: 'POST',
@@ -84,7 +87,10 @@ async function handleSubmit() {
       },
     })
     submitted.value = true
-  } catch {}
-  loading.value = false
+  } catch (e: any) {
+    error.value = e?.data?.detail || e?.message || 'Unable to submit supplier application.'
+  } finally {
+    loading.value = false
+  }
 }
 </script>

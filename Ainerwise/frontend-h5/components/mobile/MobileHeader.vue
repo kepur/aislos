@@ -1,13 +1,14 @@
 <template>
   <header class="mobile-header">
-    <NuxtLink :to="homePath" class="flex items-center gap-2">
+    <NuxtLink :key="`${activePortalKey}:${homePath}`" :to="homePath" class="flex items-center gap-2">
       <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
         <span class="text-white font-black text-xs">A</span>
       </div>
-      <span class="text-base font-bold text-slate-800">{{ portal.shortName }}</span>
+      <span class="text-base font-bold text-slate-800">{{ portalName }}</span>
     </NuxtLink>
 
     <div class="flex items-center gap-2">
+      <PortalSwitcher />
       <LanguageSwitcher class="h5-lang" />
       <NuxtLink
         v-if="!isLoggedIn"
@@ -30,7 +31,10 @@
 <script setup lang="ts">
 const { user, isLoggedIn } = useAuth()
 const { portal } = usePortalMode()
-const homePath = portal.home
+const { manifest } = usePortalManifest()
+const activePortalKey = computed(() => manifest.value?.portal_key || portal.shortName)
+const portalName = computed(() => manifest.value?.display_name || portal.shortName)
+const homePath = computed(() => manifest.value?.home_route || portal.home)
 
 const userInitial = computed(() => {
   const name = user.value?.full_name || user.value?.email || 'U'

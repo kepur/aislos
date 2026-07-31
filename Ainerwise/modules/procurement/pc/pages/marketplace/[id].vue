@@ -6,16 +6,16 @@
   <div v-else-if="!item" class="min-h-screen flex items-center justify-center text-slate-400">
     <div class="text-center">
       <p class="text-lg font-medium">Product not found</p>
-      <NuxtLink to="/marketplace" class="text-indigo-600 hover:underline text-sm mt-2 block">Back to Marketplace</NuxtLink>
+      <NuxtLink :to="appStore.localizedPath('/marketplace')" class="text-indigo-600 hover:underline text-sm mt-2 block">Back to Marketplace</NuxtLink>
     </div>
   </div>
 
   <div v-else class="bg-slate-50 min-h-screen">
     <div class="bg-white border-b border-slate-200 px-6 py-3">
       <div class="mx-auto max-w-7xl flex items-center gap-2 text-sm text-slate-500">
-        <NuxtLink to="/marketplace" class="hover:text-indigo-600">Marketplace</NuxtLink>
+        <NuxtLink :to="appStore.localizedPath('/marketplace')" class="hover:text-indigo-600">Marketplace</NuxtLink>
         <span>/</span>
-        <NuxtLink :to="`/marketplace?category_id=${item.category_id}`" class="hover:text-indigo-600">{{ item.category_name }}</NuxtLink>
+        <NuxtLink :to="appStore.localizedPath(`/marketplace?category_id=${item.category_id}`)" class="hover:text-indigo-600">{{ item.category_name }}</NuxtLink>
         <span>/</span>
         <span class="text-slate-800 font-medium truncate max-w-xs">{{ item.title }}</span>
       </div>
@@ -26,7 +26,7 @@
         <div>
           <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden aspect-square relative">
             <img v-if="item.images && item.images[activeImg]" :src="item.images[activeImg]" :alt="item.title" class="w-full h-full object-cover" />
-            <div v-else class="w-full h-full bg-slate-100 flex items-center justify-center text-6xl">📦</div>
+            <MarketItemVisual v-else :title="item.title" :category-name="item.category_name" />
             <span v-if="item.is_sponsored" class="absolute left-4 top-4 rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-amber-950">Ad</span>
           </div>
           <div v-if="item.images && item.images.length > 1" class="flex gap-2 mt-3">
@@ -251,7 +251,7 @@
 
               <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                 <p class="text-sm font-semibold text-slate-700 mb-1">Payment</p>
-                <p class="text-xs text-slate-500">Order starts as AWAITING_PAYMENT. Buyer can pay from wallet escrow on the order page.</p>
+                <p class="text-xs text-slate-500">The order starts as awaiting payment. You pay the supplier directly and record the payment reference on the order page.</p>
               </div>
 
               <div class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">
@@ -272,7 +272,7 @@
 
           <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-xs text-indigo-900">
             <p class="font-semibold">Buyer flow parity with mobile</p>
-            <p class="mt-1 text-indigo-800">B2B creates a bound request linked to this catalog item and supplier. B2C creates a direct order and can be paid through escrow from the buyer wallet.</p>
+            <p class="mt-1 text-indigo-800">B2B creates a bound request linked to this catalog item and supplier. B2C creates a direct order — you pay the supplier directly and the payment is kept on record.</p>
           </div>
         </div>
       </div>
@@ -288,12 +288,12 @@
           <NuxtLink
             v-for="rel in relatedItems"
             :key="rel.id"
-            :to="`/marketplace/${rel.id}`"
+            :to="appStore.localizedPath(`/marketplace/${rel.id}`)"
             class="bg-white rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all overflow-hidden group"
           >
             <div class="aspect-square overflow-hidden">
               <img v-if="rel.images?.[0]" :src="rel.images[0]" :alt="rel.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-              <div v-else class="w-full h-full bg-slate-100 flex items-center justify-center text-3xl">📦</div>
+              <MarketItemVisual v-else :title="rel.title" :category-name="rel.category_name" />
             </div>
             <div class="p-3">
               <p class="text-xs font-semibold text-slate-800 line-clamp-2">{{ rel.title }}</p>
@@ -316,6 +316,7 @@ const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const intentStore = useIntentStore()
+const appStore = useAppStore()
 
 interface Product {
   id: string
@@ -368,7 +369,7 @@ const buyError = ref('')
 const buy = reactive({ qty: 1, address_id: '', city: '' })
 
 const dealModes = [
-  { key: 'ONLINE', icon: '🔒', label: 'Online (Escrow)', desc: 'Secure escrow, delivery tracking' },
+  { key: 'ONLINE', icon: '🔒', label: 'Online (Tracked)', desc: 'Milestone records, delivery tracking' },
   { key: 'OFFLINE', icon: '🤝', label: 'Offline (Direct)', desc: 'Direct deal, contact supplier' },
 ]
 

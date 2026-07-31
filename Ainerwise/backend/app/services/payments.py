@@ -37,7 +37,10 @@ async def create_plan_from_quote(
     total = Decimal(str(quote.total)).quantize(TWO)
     if total <= 0:
         raise ValueError("Quote total must be positive")
+    if quote.workspace_id is None:
+        raise ValueError("Quote requires a Workspace")
     plan = PaymentPlan(
+        workspace_id=quote.workspace_id,
         project_id=quote.project_id,
         quote_id=quote.id,
         currency=quote.currency,
@@ -61,11 +64,22 @@ async def create_plan_from_quote(
             allocated += amount
         else:
             amount = payable - allocated  # last milestone absorbs rounding remainder
-        db.add(PaymentMilestone(plan_id=plan.id, seq=index + 1, label=label, pct=pct, amount=amount, trigger=trigger))
+        db.add(
+            PaymentMilestone(
+                workspace_id=plan.workspace_id,
+                plan_id=plan.id,
+                seq=index + 1,
+                label=label,
+                pct=pct,
+                amount=amount,
+                trigger=trigger,
+            )
+        )
 
     if retention_amount > 0:
         db.add(
             PaymentMilestone(
+                workspace_id=plan.workspace_id,
                 plan_id=plan.id, seq=len(splits) + 1, label="retention",
                 pct=retention_pct, amount=retention_amount, trigger="days_after_acceptance",
             )
@@ -74,12 +88,20 @@ async def create_plan_from_quote(
     return plan
 
 
-def _ledger_pair(group: uuid.UUID, debit_account: str, credit_account: str, amount: Decimal, currency: str,
-                 milestone_id: uuid.UUID, memo: str) -> list[LedgerEntry]:
+def _ledger_pair(
+    group: uuid.UUID,
+    debit_account: str,
+    credit_account: str,
+    amount: Decimal,
+    currency: str,
+    milestone_id: uuid.UUID,
+    memo: str,
+    workspace_id: uuid.UUID,
+) -> list[LedgerEntry]:
     return [
-        LedgerEntry(entry_group=group, account=debit_account, direction="debit",
+        LedgerEntry(workspace_id=workspace_id, entry_group=group, account=debit_account, direction="debit",
                     amount=amount, currency=currency, milestone_id=milestone_id, memo=memo),
-        LedgerEntry(entry_group=group, account=credit_account, direction="credit",
+        LedgerEntry(workspace_id=workspace_id, entry_group=group, account=credit_account, direction="credit",
                     amount=amount, currency=currency, milestone_id=milestone_id, memo=memo),
     ]
 
@@ -95,6 +117,8 @@ async def mark_milestone_funded(
     if milestone.status not in ("pending", "invoiced"):
         raise ValueError(f"Milestone is {milestone.status}, cannot fund")
     plan = await db.get(PaymentPlan, milestone.plan_id)
+    if plan is None or plan.workspace_id is None or milestone.workspace_id != plan.workspace_id:
+        raise ValueError("Milestone and payment plan belong to different Workspaces")
     now = datetime.now(timezone.utc)
     milestone.status = "funded"
     milestone.funded_at = now
@@ -107,6 +131,7 @@ async def mark_milestone_funded(
         uuid.uuid4(), source_account, f"plan:{plan.id}:escrow",
         Decimal(milestone.amount), plan.currency, milestone.id,
         memo or f"{milestone.label} funded (offline transfer confirmed by admin)",
+        plan.workspace_id,
     ):
         db.add(entry)
     await db.flush()
@@ -123,6 +148,8 @@ async def release_milestone(db: AsyncSession, milestone: PaymentMilestone, *, me
     if milestone.status != "funded":
         raise ValueError(f"Milestone is {milestone.status}, cannot release")
     plan = await db.get(PaymentPlan, milestone.plan_id)
+    if plan is None or plan.workspace_id is None or milestone.workspace_id != plan.workspace_id:
+        raise ValueError("Milestone and payment plan belong to different Workspaces")
     milestone.status = "released"
     milestone.released_at = datetime.now(timezone.utc)
     db.add(milestone)
@@ -130,6 +157,7 @@ async def release_milestone(db: AsyncSession, milestone: PaymentMilestone, *, me
         uuid.uuid4(), f"plan:{plan.id}:escrow", "platform:revenue",
         Decimal(milestone.amount), plan.currency, milestone.id,
         memo or f"{milestone.label} released",
+        plan.workspace_id,
     ):
         db.add(entry)
     await db.flush()

@@ -3,6 +3,7 @@ import asyncio
 import uuid
 
 from app.main import app
+from tests.route_utils import registered_route_paths
 from app.db.session import async_session_factory, engine
 from app.models.integration import IntegrationEvent
 from app.models.rfq import RFQ
@@ -18,7 +19,7 @@ from app.services.rfq import _invitation_text
 
 
 def test_phase_d_partner_routes_registered():
-    paths = {route.path for route in app.routes}
+    paths = registered_route_paths(app)
     for path in (
         "/api/v1/partner/dashboard",
         "/api/v1/partner/rfqs",

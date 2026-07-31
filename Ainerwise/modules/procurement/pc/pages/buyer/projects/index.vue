@@ -1,17 +1,17 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between gap-4 flex-wrap">
-      <div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-5 flex items-center justify-between gap-4 flex-wrap">
+      <div class="min-w-0">
         <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <UIcon name="i-heroicons-cpu-chip" class="h-7 w-7 text-indigo-600" />
+          <UIcon name="i-heroicons-cpu-chip" class="h-7 w-7 text-indigo-600 flex-shrink-0" />
           AI Project Forge
         </h1>
         <p class="text-sm text-slate-500 mt-1">
           Describe your project, upload documents — AI generates a structured procurement list.
         </p>
       </div>
-      <UButton color="indigo" icon="i-heroicons-plus" size="lg" @click="showCreate = true">
+      <UButton color="indigo" icon="i-heroicons-plus" class="flex-shrink-0" @click="showCreate = true">
         New Project
       </UButton>
     </div>

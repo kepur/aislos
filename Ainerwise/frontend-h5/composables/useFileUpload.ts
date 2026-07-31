@@ -6,7 +6,7 @@ export function useFileUpload() {
 
   async function uploadFile(
     file: File,
-    options: { folder?: string } = {}
+    _options: { folder?: string } = {}
   ): Promise<{ file_key: string; download_url: string } | null> {
     uploading.value = true
     progress.value = 0
@@ -14,16 +14,11 @@ export function useFileUpload() {
 
     try {
       // 1. Get presigned upload URL from backend
-      const { upload_url, file_key } = await apiFetch<{
+      const { upload_url, object_name } = await apiFetch<{
         upload_url: string
-        file_key: string
-      }>('/files/upload-url', {
+        object_name: string
+      }>(`/files/upload-url?filename=${encodeURIComponent(file.name)}&content_type=${encodeURIComponent(file.type || 'application/octet-stream')}`, {
         method: 'POST',
-        body: {
-          filename: file.name,
-          content_type: file.type,
-          folder: options.folder || 'uploads',
-        },
       })
 
       // 2. Upload directly to MinIO using presigned URL
@@ -52,11 +47,11 @@ export function useFileUpload() {
 
       // 3. Get download URL
       const { download_url } = await apiFetch<{ download_url: string }>(
-        `/files/download-url?file_key=${encodeURIComponent(file_key)}`
+        `/files/download-url?object_name=${encodeURIComponent(object_name)}`
       )
 
       progress.value = 100
-      return { file_key, download_url }
+      return { file_key: object_name, download_url }
     } catch (e: any) {
       error.value = e?.message || 'Upload failed'
       return null

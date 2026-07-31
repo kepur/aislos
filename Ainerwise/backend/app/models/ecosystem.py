@@ -70,7 +70,12 @@ class MarketplaceListing(Base, UUIDMixin, TimestampMixin):
 class AgentInstallation(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "agent_installations"
     __table_args__ = (
-        UniqueConstraint("listing_id", "installed_by", name="uq_agent_installations_listing_user"),
+        UniqueConstraint(
+            "listing_id",
+            "workspace_id",
+            "installed_by",
+            name="uq_agent_installations_listing_workspace_user",
+        ),
     )
 
     listing_id: Mapped[uuid.UUID] = mapped_column(
@@ -78,6 +83,9 @@ class AgentInstallation(Base, UUIDMixin, TimestampMixin):
     )
     agent_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("agents.id"), nullable=False, index=True)
     installed_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id", ondelete="CASCADE"), nullable=False, index=True
+    )
     company_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("companies.id"), index=True)
     status: Mapped[str] = mapped_column(String(50), default="installed", nullable=False, index=True)
     config_json: Mapped[dict | None] = mapped_column(JSONB)

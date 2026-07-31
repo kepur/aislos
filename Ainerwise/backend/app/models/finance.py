@@ -17,6 +17,9 @@ from app.models.base_model import Base, TimestampMixin, UUIDMixin
 class ProjectFinance(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "project_finances"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("projects.id"), nullable=True
     )

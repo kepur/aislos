@@ -1,6 +1,7 @@
 <template>
   <div v-if="lead">
     <NuxtLink to="leads" class="text-sm text-primary-600 hover:underline">&larr; Back to Leads</NuxtLink>
+    <div v-if="actionError" class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ actionError }}</div>
 
     <div class="mt-4 flex items-center justify-between">
       <h1 class="admin-page-title">Lead Detail</h1>
@@ -165,7 +166,8 @@
               </p>
             </div>
           </div>
-          <p v-else class="text-sm text-gray-500">No site surveys yet. Create one to capture site details.</p>
+          <p v-if="surveyError" class="text-sm text-red-600">{{ surveyError }}</p>
+          <p v-if="!surveyError && !surveys.length" class="text-sm text-gray-500">No site surveys yet. Create one to capture site details.</p>
         </div>
 
         <!-- AI Analysis -->
@@ -377,6 +379,7 @@
       </div>
     </div>
   </div>
+  <div v-else-if="loadError" class="text-center py-12 text-red-600">{{ loadError }}</div>
   <div v-else class="text-center py-12 text-gray-500">{{ $t('common.loading') }}</div>
 </template>
 
@@ -386,6 +389,8 @@ definePageMeta({ layout: 'default' })
 const route = useRoute()
 const { apiFetch } = useApi()
 const lead = ref<any>(null)
+const loadError = ref('')
+const actionError = ref('')
 const notes = ref('')
 const statusLoading = ref(false)
 const notesLoading = ref(false)
@@ -393,6 +398,7 @@ const aiLoading = ref(false)
 
 // Site Survey state
 const surveys = ref<any[]>([])
+const surveyError = ref('')
 const showSurveyForm = ref(false)
 const surveyLoading = ref(false)
 const surveyForm = reactive({
@@ -441,20 +447,27 @@ onMounted(async () => {
   try {
     lead.value = await apiFetch<any>(`/leads/${route.params.id}`)
     notes.value = lead.value?.notes || ''
-  } catch {}
+  } catch (e: any) {
+    loadError.value = e?.data?.detail || e?.message || 'Lead could not be loaded'
+    return
+  }
   // Load surveys
   loadSurveys()
 })
 
 async function loadSurveys() {
+  surveyError.value = ''
   try {
     const res = await apiFetch<any>(`/leads/${route.params.id}/surveys`)
     surveys.value = res.items || []
-  } catch {}
+  } catch (e: any) {
+    surveyError.value = e?.data?.detail || e?.message || 'Site surveys could not be loaded'
+  }
 }
 
 async function createSurvey() {
   surveyLoading.value = true
+  surveyError.value = ''
   try {
     const surveyJson: Record<string, any> = {}
     if (surveyForm.area) surveyJson.area = surveyForm.area
@@ -477,7 +490,7 @@ async function createSurvey() {
     Object.assign(surveyForm, { survey_type: 'quick', area: '', floors: '', rooms: '', building_type: '', infrastructure_notes: '', notes: '' })
     await loadSurveys()
   } catch (e: any) {
-    console.error('Create survey failed:', e)
+    surveyError.value = e?.data?.detail || e?.message || 'Site survey could not be created'
   } finally {
     surveyLoading.value = false
   }
@@ -495,7 +508,6 @@ async function createProjectFromLead() {
     projectCreated.value = res.id
   } catch (e: any) {
     opError.value = e?.data?.detail || e?.message || 'Failed to create project'
-    console.error('Create project failed:', e)
   } finally {
     projectLoading.value = false
   }
@@ -514,7 +526,6 @@ async function draftQuoteFromLead() {
     lead.value = await apiFetch<any>(`/leads/${route.params.id}`)
   } catch (e: any) {
     opError.value = e?.data?.detail || e?.message || 'Failed to draft quote'
-    console.error('Draft quote failed:', e)
   } finally {
     draftQuoteLoading.value = false
   }
@@ -522,13 +533,14 @@ async function draftQuoteFromLead() {
 
 async function handleStatusChange(newStatus: string) {
   statusLoading.value = true
+  actionError.value = ''
   try {
     lead.value = await apiFetch<any>(`/leads/${route.params.id}/status`, {
       method: 'PATCH',
       body: { status: newStatus },
     })
   } catch (e: any) {
-    console.error('Status update failed:', e)
+    actionError.value = e?.data?.detail || e?.message || 'Status update failed'
   } finally {
     statusLoading.value = false
   }
@@ -536,13 +548,14 @@ async function handleStatusChange(newStatus: string) {
 
 async function saveNotes() {
   notesLoading.value = true
+  actionError.value = ''
   try {
     lead.value = await apiFetch<any>(`/leads/${route.params.id}/notes`, {
       method: 'PATCH',
       body: { notes: notes.value },
     })
   } catch (e: any) {
-    console.error('Notes update failed:', e)
+    actionError.value = e?.data?.detail || e?.message || 'Notes update failed'
   } finally {
     notesLoading.value = false
   }
@@ -550,11 +563,12 @@ async function saveNotes() {
 
 async function runAnalysis() {
   aiLoading.value = true
+  actionError.value = ''
   try {
     await apiFetch<any>(`/leads/${route.params.id}/analyze`, { method: 'POST' })
     lead.value = await apiFetch<any>(`/leads/${route.params.id}`)
   } catch (e: any) {
-    console.error('AI analysis failed:', e)
+    actionError.value = e?.data?.detail || e?.message || 'AI analysis failed'
   } finally {
     aiLoading.value = false
   }

@@ -29,7 +29,7 @@
     <div class="bg-white">
       <div class="relative aspect-square overflow-hidden">
         <img v-if="item.images?.[activeImg]" :src="item.images[activeImg]" :alt="item.title" class="w-full h-full object-cover" />
-        <div v-else class="w-full h-full bg-slate-100 flex items-center justify-center text-7xl">📦</div>
+        <MarketItemVisual v-else :title="item.title" :category-name="item.category_name" />
         <div v-if="item.is_sponsored" class="absolute top-3 left-3">
           <span class="bg-amber-400 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full">Ad</span>
         </div>
@@ -91,7 +91,7 @@
           class="bg-white rounded-2xl overflow-hidden border border-slate-100 active:scale-95 transition-transform">
           <div class="aspect-square overflow-hidden">
             <img v-if="rel.images?.[0]" :src="rel.images[0]" :alt="rel.title" class="w-full h-full object-cover" />
-            <div v-else class="w-full h-full bg-slate-50 flex items-center justify-center text-3xl">📦</div>
+            <MarketItemVisual v-else :title="rel.title" :category-name="rel.category_name" />
           </div>
           <div class="p-3">
             <p class="text-xs font-semibold text-slate-800 line-clamp-2">{{ rel.title }}</p>

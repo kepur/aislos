@@ -54,6 +54,14 @@ class CRUDBase(Generic[ModelType]):
         await db.refresh(db_obj)
         return db_obj
 
+    async def create_in_transaction(self, db: AsyncSession, *, obj_in: dict) -> ModelType:
+        """Create and flush without committing so callers can add audit/outbox rows."""
+        db_obj = self.model(**obj_in)
+        db.add(db_obj)
+        await db.flush()
+        await db.refresh(db_obj)
+        return db_obj
+
     async def update(self, db: AsyncSession, *, db_obj: ModelType, obj_in: dict) -> ModelType:
         for field, value in obj_in.items():
             if value is not None:

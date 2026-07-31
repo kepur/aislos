@@ -6,6 +6,12 @@
         <p class="admin-page-desc">Manage active projects and their lifecycle.</p>
       </div>
       <div class="flex gap-2">
+        <select v-model="workspaceId" class="input-field max-w-64" @change="loadProjects">
+          <option value="">All accessible workspaces</option>
+          <option v-for="membership in memberships" :key="membership.id" :value="membership.workspace_id">
+            {{ membership.membership_type }} · {{ membership.workspace_id }}
+          </option>
+        </select>
         <select v-model="statusFilter" class="input-field max-w-48" @change="loadProjects">
           <option value="">All statuses</option>
           <option v-for="s in statuses" :key="s" :value="s">{{ formatStatus(s) }}</option>
@@ -15,6 +21,7 @@
         </NuxtLink>
       </div>
     </div>
+    <p v-if="error" class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error }}</p>
 
     <div class="admin-panel">
       <table class="admin-table w-full text-sm">
@@ -86,6 +93,9 @@ const total = ref(0)
 const skip = ref(0)
 const limit = 20
 const statusFilter = ref('')
+const workspaceId = ref('')
+const error = ref('')
+const { memberships, activeWorkspaceId, loadAccess } = usePortalManifest()
 
 const statuses = [
   'planning', 'site_survey', 'quotation_confirmed', 'procurement',
@@ -98,19 +108,26 @@ function formatStatus(s: string) {
 }
 
 async function loadProjects() {
+  error.value = ''
   const params = new URLSearchParams()
   params.set('skip', String(skip.value))
   params.set('limit', String(limit))
   if (statusFilter.value) params.set('status', statusFilter.value)
+  if (workspaceId.value) params.set('workspace_id', workspaceId.value)
   try {
     const res = await apiFetch<any>(`/projects?${params.toString()}`)
     projects.value = res.items || []
     total.value = res.total || 0
-  } catch {
+  } catch (e: any) {
     projects.value = []
     total.value = 0
+    error.value = e?.data?.detail || e?.message || 'Projects could not be loaded'
   }
 }
 
-onMounted(loadProjects)
+onMounted(async () => {
+  await loadAccess()
+  workspaceId.value = activeWorkspaceId.value || ''
+  await loadProjects()
+})
 </script>

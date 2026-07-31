@@ -9,10 +9,12 @@ import th from './th'
 import vi from './vi'
 import id from './id'
 import ar from './ar'
+import sr from './sr'
 
 export const SUPPORTED_LOCALES = [
-  { code: 'zh', name: '中文' },
   { code: 'en', name: 'English' },
+  { code: 'zh', name: '中文' },
+  { code: 'sr', name: 'Srpski' },
   { code: 'tl', name: 'Tagalog' },
   { code: 'ja', name: '日本語' },
   { code: 'ko', name: '한국어' },
@@ -25,13 +27,15 @@ export const SUPPORTED_LOCALES = [
 
 const RTL_LOCALES = ['ar']
 
-const savedLocale = localStorage.getItem('admin_locale') || 'zh'
+const prefix = window.location.pathname.split('/').filter(Boolean)[0]
+const prefixLocale = { en: 'en', cn: 'zh', rs: 'sr' }[prefix]
+const savedLocale = prefixLocale || localStorage.getItem('admin_locale') || 'en'
 
 const i18n = createI18n({
   legacy: false,
   locale: savedLocale,
   fallbackLocale: 'en',
-  messages: { en, zh, tl, ja, ko, es, th, vi, id, ar },
+  messages: { en, zh, sr, tl, ja, ko, es, th, vi, id, ar },
 })
 
 export function applyDirection(lang) {
@@ -40,5 +44,7 @@ export function applyDirection(lang) {
 }
 
 applyDirection(savedLocale)
+localStorage.setItem('admin_locale', savedLocale)
+if (prefixLocale) localStorage.setItem('admin_locale_prefix', prefix)
 
 export default i18n

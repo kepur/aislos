@@ -17,6 +17,7 @@ from app.models.mission import AgentMission, AgentMissionTask
 from app.models.project import Project
 from app.models.ticket import Ticket
 from app.services.agent_team import approve_mission_plan, plan_mission, run_mission
+from app.services.project_access import require_customer_project_access
 
 router = APIRouter(tags=["agent-missions"])
 
@@ -35,8 +36,7 @@ async def _owned_project(db, project_id: uuid.UUID, user) -> Project:
     project = await db.get(Project, project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
-    if not user.company_id or project.buyer_company_id != user.company_id:
-        raise HTTPException(status_code=403, detail="Not your project")
+    await require_customer_project_access(db, user, project)
     return project
 
 
@@ -88,8 +88,9 @@ async def request_project_mission(
     db: DB,
     user: CurrentUser,
 ):
-    await _owned_project(db, project_id, user)
+    project = await _owned_project(db, project_id, user)
     mission = AgentMission(
+        workspace_id=project.workspace_id,
         project_id=project_id,
         requested_by=user.id,
         goal=data.goal.strip(),
@@ -107,7 +108,16 @@ async def project_space(project_id: uuid.UUID, db: DB, user: CurrentUser):
     project = await _owned_project(db, project_id, user)
     missions = (
         await db.execute(
-            select(AgentMission).where(AgentMission.project_id == project_id).order_by(AgentMission.created_at.desc())
+            select(AgentMission)
+            .where(
+                AgentMission.project_id == project_id,
+                (
+                    AgentMission.workspace_id == project.workspace_id
+                    if project.workspace_id is not None
+                    else AgentMission.workspace_id.is_(None)
+                ),
+            )
+            .order_by(AgentMission.created_at.desc())
         )
     ).scalars().all()
     mission_ids = [m.id for m in missions]
@@ -116,7 +126,14 @@ async def project_space(project_id: uuid.UUID, db: DB, user: CurrentUser):
         tasks = (
             await db.execute(
                 select(AgentMissionTask)
-                .where(AgentMissionTask.mission_id.in_(mission_ids))
+                .where(
+                    AgentMissionTask.mission_id.in_(mission_ids),
+                    (
+                        AgentMissionTask.workspace_id == project.workspace_id
+                        if project.workspace_id is not None
+                        else AgentMissionTask.workspace_id.is_(None)
+                    ),
+                )
                 .order_by(AgentMissionTask.created_at.desc())
             )
         ).scalars().all()
@@ -130,6 +147,11 @@ async def project_space(project_id: uuid.UUID, db: DB, user: CurrentUser):
                 AgentObjectGrant.object_id == project_id,
                 AgentObjectGrant.scope == "project_data",
                 AgentObjectGrant.granted.is_(True),
+                (
+                    AgentObjectGrant.workspace_id == project.workspace_id
+                    if project.workspace_id is not None
+                    else AgentObjectGrant.workspace_id.is_(None)
+                ),
             )
             .order_by(Agent.name)
         )
@@ -232,7 +254,14 @@ async def get_agent_mission(mission_id: uuid.UUID, db: DB, admin: AdminUser):
     tasks = (
         await db.execute(
             select(AgentMissionTask)
-            .where(AgentMissionTask.mission_id == mission_id)
+            .where(
+                AgentMissionTask.mission_id == mission_id,
+                (
+                    AgentMissionTask.workspace_id == mission.workspace_id
+                    if mission.workspace_id is not None
+                    else AgentMissionTask.workspace_id.is_(None)
+                ),
+            )
             .order_by(AgentMissionTask.sequence)
         )
     ).scalars().all()
@@ -283,7 +312,8 @@ async def execute_mission(mission_id: uuid.UUID, db: DB, admin: AdminUser):
 
 @router.get("/admin/projects/{project_id}/agent-grants")
 async def list_project_agent_grants(project_id: uuid.UUID, db: DB, admin: AdminUser):
-    if await db.get(Project, project_id) is None:
+    project = await db.get(Project, project_id)
+    if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     agents = (await db.execute(select(Agent).order_by(Agent.name))).scalars().all()
     grants = (
@@ -292,6 +322,11 @@ async def list_project_agent_grants(project_id: uuid.UUID, db: DB, admin: AdminU
                 AgentObjectGrant.object_type == "project",
                 AgentObjectGrant.object_id == project_id,
                 AgentObjectGrant.scope == "project_data",
+                (
+                    AgentObjectGrant.workspace_id == project.workspace_id
+                    if project.workspace_id is not None
+                    else AgentObjectGrant.workspace_id.is_(None)
+                ),
             )
         )
     ).scalars().all()
@@ -316,11 +351,20 @@ async def update_project_agent_grant(
     db: DB,
     admin: AdminUser,
 ):
-    if await db.get(Project, project_id) is None:
+    project = await db.get(Project, project_id)
+    if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     agent = (await db.execute(select(Agent).where(Agent.slug == data.agent_slug))).scalar_one_or_none()
     if agent is None:
         raise HTTPException(status_code=404, detail="Agent not found")
+    if agent.vendor == "third_party":
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "Third-party project grants remain blocked until the execution sandbox "
+                "release gate is complete"
+            ),
+        )
     grant = (
         await db.execute(
             select(AgentObjectGrant).where(
@@ -328,6 +372,11 @@ async def update_project_agent_grant(
                 AgentObjectGrant.object_type == "project",
                 AgentObjectGrant.object_id == project_id,
                 AgentObjectGrant.scope == "project_data",
+                (
+                    AgentObjectGrant.workspace_id == project.workspace_id
+                    if project.workspace_id is not None
+                    else AgentObjectGrant.workspace_id.is_(None)
+                ),
             )
         )
     ).scalar_one_or_none()
@@ -337,6 +386,7 @@ async def update_project_agent_grant(
             object_type="project",
             object_id=project_id,
             scope="project_data",
+            workspace_id=project.workspace_id,
         )
     before = grant.granted
     grant.granted = data.granted
@@ -357,6 +407,7 @@ async def update_project_agent_grant(
                 "agent_slug": agent.slug,
                 "object_type": "project",
                 "object_id": str(project_id),
+                "workspace_id": str(project.workspace_id) if project.workspace_id else None,
             },
         )
     )

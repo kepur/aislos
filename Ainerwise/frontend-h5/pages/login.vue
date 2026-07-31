@@ -20,7 +20,7 @@
 
       <!-- Form -->
       <form @submit.prevent="handleLogin" class="space-y-4">
-        <div v-if="demoMode.enabled" class="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+        <div v-if="demoMode.enabled && demoMode.buyer" class="rounded-2xl border border-blue-100 bg-blue-50 p-4">
           <div class="flex items-start justify-between gap-3">
             <div>
               <p class="text-[10px] font-bold uppercase tracking-wider text-blue-500">Demo Mode On</p>
@@ -46,13 +46,14 @@
           <label class="block text-xs font-semibold text-slate-500 mb-1.5">{{ $t('auth.password') }}</label>
           <input v-model="form.password" type="password" required
             class="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-300 bg-white" />
+          <NuxtLink to="/auth/reset-password" class="mt-2 block text-right text-xs font-semibold text-blue-500">Forgot password?</NuxtLink>
         </div>
         <p v-if="error" class="text-sm text-red-500 font-medium">{{ error }}</p>
         <button type="submit" :disabled="loading"
           class="w-full text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-500 py-3 rounded-xl shadow-md shadow-blue-500/20 disabled:opacity-50">
           {{ loading ? 'Logging in...' : $t('auth.login') }}
         </button>
-        <button v-if="demoMode.enabled" type="button" :disabled="loading"
+        <button v-if="demoMode.enabled && demoMode.buyer" type="button" :disabled="loading"
           class="w-full text-sm font-semibold text-blue-600 bg-white border border-blue-100 py-3 rounded-xl disabled:opacity-50"
           @click="loginDemoBuyer">
           {{ loading ? 'Logging in...' : 'Login as Demo Customer' }}
@@ -70,10 +71,10 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'auth', middleware: 'guest' })
+definePageMeta({ layout: 'auth', middleware: 'guest', alias: ['/auth/login'] })
 
 const route = useRoute()
-const { login, setDemoSession, user } = useAuth()
+const { login } = useAuth()
 const { getDemoMode, defaultDemoMode } = useDemoMode()
 const { mode, portal } = usePortalMode()
 const form = reactive({ email: '', password: '' })
@@ -83,12 +84,13 @@ const loading = ref(false)
 
 onMounted(async () => {
   demoMode.value = await getDemoMode()
-  if (demoMode.value.enabled && !form.email && !form.password) {
+  if (demoMode.value.enabled && demoMode.value.buyer && !form.email && !form.password) {
     useDemoBuyer()
   }
 })
 
 function useDemoBuyer() {
+  if (!demoMode.value.buyer) return
   form.email = demoMode.value.buyer.email
   form.password = demoMode.value.buyer.password
 }
@@ -99,13 +101,13 @@ async function loginDemoBuyer() {
   loading.value = true
   try {
     await login(form.email, form.password)
-  } catch {
-    setDemoSession('buyer', demoMode.value.buyer.email)
+    const redirect = route.query.redirect as string
+    await navigateTo(redirect || portal.home)
+  } catch (e: any) {
+    error.value = e?.data?.detail || 'Demo login failed. Ask an administrator to bootstrap demo data.'
   } finally {
     loading.value = false
   }
-  const redirect = route.query.redirect as string
-  navigateTo(redirect || portal.home)
 }
 
 async function handleLogin() {

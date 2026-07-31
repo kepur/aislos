@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'portal', middleware: 'auth' })
+definePageMeta({ layout: 'customer-workspace', middleware: 'auth' })
 
 const { apiFetch } = useApi()
 const projects = ref<any[]>([])

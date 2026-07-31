@@ -31,10 +31,10 @@
           <p class="text-xl font-bold text-emerald-600">{{ dashboard.counts.bid_submitted }}</p>
           <p class="text-[10px] font-medium text-slate-400">{{ $t('partner.submitted') }}</p>
         </NuxtLink>
-        <div class="m-card p-3 text-center">
-          <p class="text-xl font-bold text-slate-700">{{ dashboard.metric.composite_score ?? '—' }}</p>
-          <p class="text-[10px] font-medium text-slate-400">{{ $t('partner.score') }}</p>
-        </div>
+        <NuxtLink to="/partner/work-packages" class="m-card p-3 text-center">
+          <p class="text-xl font-bold text-slate-700">{{ packages.length }}</p>
+          <p class="text-[10px] font-medium text-slate-400">Packages</p>
+        </NuxtLink>
         <NuxtLink to="/partner/tasks" class="m-card p-3 text-center">
           <p class="text-xl font-bold text-amber-600">{{ dashboard.tasks.open }}</p>
           <p class="text-[10px] font-medium text-slate-400">{{ $t('partner.openTasks') }}</p>
@@ -47,6 +47,12 @@
         </NuxtLink>
         <NuxtLink to="/partner/calendar" class="block rounded-2xl border border-blue-100 bg-blue-50 px-3 py-3.5 text-center text-xs font-semibold text-blue-600">
           {{ $t('partner.openCalendar') }}
+        </NuxtLink>
+        <NuxtLink to="/partner/crews" class="block rounded-2xl border border-blue-100 bg-blue-50 px-3 py-3.5 text-center text-xs font-semibold text-blue-600">
+          Manage crews
+        </NuxtLink>
+        <NuxtLink to="/partner/tasks" class="block rounded-2xl border border-slate-200 bg-white px-3 py-3.5 text-center text-xs font-semibold text-slate-600">
+          Service / AMC tasks
         </NuxtLink>
       </div>
 
@@ -82,6 +88,7 @@ definePageMeta({ middleware: 'auth' })
 const { apiFetch } = useApi()
 const dashboard = ref<any>(null)
 const recent = ref<any[]>([])
+const packages = ref<any[]>([])
 const loading = ref(true)
 const error = ref('')
 
@@ -93,12 +100,14 @@ function statusClass(status: string) {
 
 onMounted(async () => {
   try {
-    const [summary, requests] = await Promise.all([
+    const [summary, requests, work] = await Promise.all([
       apiFetch<any>('/partner/dashboard'),
       apiFetch<any>('/partner/rfqs?limit=3'),
+      apiFetch<any>('/partner/field-ops/work-packages'),
     ])
     dashboard.value = summary
     recent.value = requests.items || []
+    packages.value = work.items || []
   } catch (e: any) {
     error.value = e?.data?.detail || 'Partner workspace is unavailable.'
   } finally {

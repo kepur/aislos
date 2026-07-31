@@ -18,4 +18,7 @@ class LegacyBridgeEventOut(BaseModel):
     correlation_id: str | None = None
     lead_id: UUID | None = None
     mapping_id: UUID | None = None
+    procurement_request_id: UUID | None = None
+    commerce_order_id: UUID | None = None
+    dispute_id: UUID | None = None
     core_event_id: UUID | None = None

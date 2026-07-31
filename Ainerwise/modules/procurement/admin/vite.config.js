@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 
-const coreApiTarget = process.env.VITE_CORE_API_PROXY || 'http://localhost:8000'
+const coreApiTarget = process.env.VITE_CORE_API_PROXY || 'http://backend:8000'
 
 const coreProxy = (rewrite) => ({
   target: coreApiTarget,
@@ -19,6 +19,7 @@ export default defineConfig({
     port: 4108,
     proxy: {
       '/api/auth': coreProxy((p) => p.replace(/^\/api\/auth/, '/api/v1/auth')),
+      '/api/localization': coreProxy((p) => p.replace(/^\/api\/localization/, '/api/v1/localization')),
       '/api/users': coreProxy((p) => p.replace(/^\/api\/users/, '/api/v1/cebu-compat/users')),
       '/api/admin/shipping': coreProxy((p) =>
         p.replace(/^\/api\/admin\/shipping/, '/api/v1/cebu-compat/admin/shipping')

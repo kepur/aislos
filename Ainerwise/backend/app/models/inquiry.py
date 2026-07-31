@@ -10,6 +10,9 @@ from app.models.base_model import Base, TimestampMixin, UUIDMixin
 class Inquiry(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "inquiries"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     buyer_company_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("companies.id"), nullable=True
     )

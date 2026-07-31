@@ -61,6 +61,9 @@ class Conversation(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "conversations"
     __table_args__ = {"schema": "ai"}
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), index=True
+    )
     region_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("regions.id"))
     channel: Mapped[str] = mapped_column(String(50), default="web", nullable=False)
     visitor_id: Mapped[str | None] = mapped_column(String(100), index=True)
@@ -75,6 +78,9 @@ class ConversationMessage(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "messages"
     __table_args__ = {"schema": "ai"}
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     conversation_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("ai.conversations.id", ondelete="CASCADE"),
@@ -91,6 +97,9 @@ class AgentRun(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "agent_runs"
     __table_args__ = {"schema": "ai"}
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     conversation_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("ai.conversations.id")
     )
@@ -120,6 +129,9 @@ class AIMemory(Base, UUIDMixin, TimestampMixin):
         {"schema": "ai"},
     )
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     region_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("regions.id"))
     subject_type: Mapped[str] = mapped_column(String(50), nullable=False)
     subject_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)

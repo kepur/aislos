@@ -5,14 +5,26 @@ from slugify import slugify
 
 from app.api.deps import AdminUser, DB
 from app.crud.service_package import crud_service_package
-from app.schemas.service_package import ServicePackageCreate, ServicePackageRead, ServicePackageUpdate
+from app.schemas.service_package import (
+    ServicePackageCreate,
+    ServicePackagePublicRead,
+    ServicePackageRead,
+    ServicePackageUpdate,
+)
 
 router = APIRouter(prefix="/service-packages", tags=["service-packages"])
 
 
-@router.get("", response_model=list[ServicePackageRead])
+@router.get("", response_model=list[ServicePackagePublicRead])
 async def list_service_packages(db: DB):
-    return await crud_service_package.get_public(db)
+    packages = await crud_service_package.get_public(db)
+    return [ServicePackagePublicRead.from_package(package) for package in packages]
+
+
+@router.get("/admin/all", response_model=list[ServicePackageRead])
+async def list_all_service_packages(db: DB, admin: AdminUser):
+    packages, _ = await crud_service_package.get_multi(db, limit=500)
+    return packages
 
 
 @router.post("", response_model=ServicePackageRead, status_code=status.HTTP_201_CREATED)

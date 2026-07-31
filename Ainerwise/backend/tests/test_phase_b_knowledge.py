@@ -17,10 +17,11 @@ from app.models.ai import DocumentChunk, KnowledgeDocument
 from app.models.lead import Lead
 from app.services.embeddings import EMBEDDING_DIM, hash_embed
 from app.services.knowledge import chunk_text, ingest_document
+from tests.route_utils import registered_route_paths
 
 
 def test_phase_b_routes_registered():
-    paths = {r.path for r in app.routes}
+    paths = registered_route_paths(app)
     for p in (
         "/api/v1/admin/knowledge/documents",
         "/api/v1/admin/knowledge/documents/text",
@@ -148,7 +149,7 @@ def test_internal_leads_requires_service_token():
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             r = await client.post("/internal/v1/leads", json={"contact_email": "a@b.c"})
-            assert r.status_code in (401, 403)
+            assert r.status_code == 401
             r = await client.post(
                 "/internal/v1/leads",
                 json={"contact_email": "a@b.c"},

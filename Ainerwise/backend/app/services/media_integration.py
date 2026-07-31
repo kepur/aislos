@@ -536,6 +536,7 @@ async def create_upload_slot(
     object_key = f"incoming/{request_id}/{uuid.uuid4()}{PurePosixPath(file_name).suffix.lower()}"
     expires_at = datetime.now(timezone.utc) + timedelta(minutes=UPLOAD_EXPIRE_MINUTES)
     upload = MarketingMediaUpload(
+        workspace_id=request.workspace_id,
         media_request_id=request.id,
         integration_client_id=client.id,
         file_name=file_name,
@@ -608,6 +609,7 @@ async def submit_imported_asset(
         await db.execute(
             select(MarketingMediaUpload).where(
                 MarketingMediaUpload.id == upload_id,
+                MarketingMediaUpload.workspace_id == request.workspace_id,
                 MarketingMediaUpload.media_request_id == request.id,
                 MarketingMediaUpload.integration_client_id == client.id,
             )
@@ -672,6 +674,7 @@ async def submit_imported_asset(
 
     asset = MarketingAsset(
         id=asset_id,
+        workspace_id=request.workspace_id,
         region_id=brief.region_id,
         campaign_id=brief.campaign_id,
         brief_version_id=version.id,

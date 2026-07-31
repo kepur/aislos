@@ -65,6 +65,7 @@ class LeadUpdate(BaseSchema):
 
 class LeadRead(BaseSchema):
     id: uuid.UUID
+    workspace_id: uuid.UUID | None = None
     buyer_company_id: uuid.UUID | None = None
     buyer_user_id: uuid.UUID | None = None
     contact_name: str | None = None
@@ -107,6 +108,27 @@ class LeadRead(BaseSchema):
     estimated_ltv: float | None = None
     is_multi_site: bool | None = None
     monitoring_points_count: int | None = None
+    created_at: datetime
+
+
+class LeadCustomerRead(BaseSchema):
+    id: uuid.UUID
+    contact_name: str | None = None
+    contact_email: str | None = None
+    contact_phone: str | None = None
+    project_type: str | None = None
+    country: str | None = None
+    city: str | None = None
+    budget_range: str | None = None
+    systems_needed_json: list | None = None
+    description: str | None = None
+    uploaded_files_json: list | None = None
+    ai_analysis_json: dict | None = None
+    status: str
+    solution_id: uuid.UUID | None = None
+    language: str
+    desired_intelligence_level: int | None = None
+    proposal_tiers_json: dict | None = None
     created_at: datetime
 
 

@@ -73,6 +73,9 @@ class ProcurementTemplate(Base, UUIDMixin, TimestampMixin):
 class ProcurementProject(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "procurement_projects"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     owner_user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True
     )
@@ -113,6 +116,9 @@ class ProcurementProject(Base, UUIDMixin, TimestampMixin):
 class ProcurementProjectFact(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "procurement_project_facts"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("procurement_projects.id", ondelete="CASCADE"),
@@ -143,6 +149,9 @@ class ProcurementProjectFact(Base, UUIDMixin, TimestampMixin):
 class BoqVersion(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "boq_versions"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("procurement_projects.id", ondelete="CASCADE"),
@@ -176,6 +185,9 @@ class BoqVersion(Base, UUIDMixin, TimestampMixin):
 class BoqItem(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "boq_items"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     boq_version_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("boq_versions.id", ondelete="CASCADE"),
@@ -203,6 +215,9 @@ class BoqItem(Base, UUIDMixin, TimestampMixin):
 class BoqItemOption(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "boq_item_options"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     boq_item_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("boq_items.id", ondelete="CASCADE"),
@@ -230,6 +245,9 @@ class BoqItemOption(Base, UUIDMixin, TimestampMixin):
 class SolutionPlan(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "solution_plans"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     boq_version_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("boq_versions.id", ondelete="CASCADE"),
@@ -259,6 +277,9 @@ PROCUREMENT_MODES = ("managed", "self_service")
 class ProcurementPackage(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "procurement_packages"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     project_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("procurement_projects.id", ondelete="CASCADE"),
@@ -289,6 +310,9 @@ class ProcurementPackage(Base, UUIDMixin, TimestampMixin):
 class ProcurementPackageItem(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "procurement_package_items"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     package_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("procurement_packages.id", ondelete="CASCADE"),
@@ -317,6 +341,9 @@ class CommercialSnapshot(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "commercial_snapshots"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     portal_key: Mapped[str] = mapped_column(String(50), nullable=False)
     portal_policy_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("portal_policies.id", ondelete="RESTRICT"), nullable=False

@@ -19,6 +19,9 @@ SURVEY_TYPES = ("quick", "detailed", "professional")
 class Lead(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "leads"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     buyer_company_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("companies.id"), nullable=True
     )
@@ -85,6 +88,9 @@ class Lead(Base, UUIDMixin, TimestampMixin):
 class SiteSurvey(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "site_surveys"
 
+    workspace_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=True, index=True
+    )
     lead_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("leads.id"), nullable=False
     )

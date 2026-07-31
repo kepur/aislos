@@ -8,8 +8,10 @@ from sqlalchemy import func, select
 
 from app.api.deps import DB, AdminUser
 from app.models.agent import AGENT_GRANT_SCOPES, Agent, AgentGrant
+from app.models.ecosystem import AgentInstallation
 from app.models.ai import AgentRun
 from app.services.audit import log_action
+from app.services.portal_access import resolve_workspace_scope
 
 router = APIRouter(prefix="/admin/agents", tags=["agents"])
 
@@ -22,6 +24,36 @@ class AgentConfigUpdate(BaseModel):
 class GrantUpdate(BaseModel):
     scope: str
     granted: bool
+    workspace_id: uuid.UUID | None = None
+
+
+async def _agent_grant_workspace(db: DB, admin: AdminUser, agent: Agent, workspace_id: uuid.UUID | None):
+    if agent.vendor != "third_party":
+        return None
+    try:
+        resolved = await resolve_workspace_scope(
+            db,
+            user_id=admin.id,
+            requested_workspace_id=workspace_id,
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from None
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from None
+    if resolved is None:
+        raise HTTPException(status_code=400, detail="workspace_id is required for third-party Agents")
+    installed = (
+        await db.execute(
+            select(AgentInstallation.id).where(
+                AgentInstallation.agent_id == agent.id,
+                AgentInstallation.workspace_id == resolved,
+                AgentInstallation.status == "installed",
+            )
+        )
+    ).scalar_one_or_none()
+    if installed is None:
+        raise HTTPException(status_code=409, detail="Agent is not installed in the selected Workspace")
+    return resolved
 
 
 async def _agent_stats(db, agent_slug: str) -> dict:
@@ -68,13 +100,26 @@ async def list_agents(db: DB, admin: AdminUser):
 
 
 @router.get("/{slug}")
-async def get_agent(slug: str, db: DB, admin: AdminUser):
+async def get_agent(slug: str, db: DB, admin: AdminUser, workspace_id: uuid.UUID | None = None):
     agent = (await db.execute(select(Agent).where(Agent.slug == slug))).scalar_one_or_none()
     if agent is None:
         raise HTTPException(status_code=404, detail="Agent not found")
+    grant_workspace_id = await _agent_grant_workspace(db, admin, agent, workspace_id)
     grants = (
-        await db.execute(select(AgentGrant).where(AgentGrant.agent_id == agent.id).order_by(AgentGrant.scope))
+        await db.execute(
+            select(AgentGrant)
+            .where(
+                AgentGrant.agent_id == agent.id,
+                (
+                    AgentGrant.workspace_id == grant_workspace_id
+                    if grant_workspace_id is not None
+                    else AgentGrant.workspace_id.is_(None)
+                ),
+            )
+            .order_by(AgentGrant.scope)
+        )
     ).scalars().all()
+    grants_by_scope = {grant.scope: grant for grant in grants}
     runs = (
         await db.execute(
             select(AgentRun)
@@ -87,9 +132,17 @@ async def get_agent(slug: str, db: DB, admin: AdminUser):
         **_agent_dict(agent),
         "stats": await _agent_stats(db, agent.slug),
         "grants": [
-            {"scope": g.scope, "granted": g.granted,
-             "granted_at": g.granted_at.isoformat() if g.granted_at else None}
-            for g in grants
+            {
+                "scope": scope,
+                "workspace_id": str(grant_workspace_id) if grant_workspace_id else None,
+                "granted": bool(grants_by_scope.get(scope) and grants_by_scope[scope].granted),
+                "granted_at": (
+                    grants_by_scope[scope].granted_at.isoformat()
+                    if grants_by_scope.get(scope) and grants_by_scope[scope].granted_at
+                    else None
+                ),
+            }
+            for scope in AGENT_GRANT_SCOPES
         ],
         "recent_runs": [
             {"workflow": r.workflow, "status": r.status, "latency_ms": r.latency_ms,
@@ -111,6 +164,11 @@ async def update_agent(slug: str, data: AgentConfigUpdate, db: DB, admin: AdminU
     if data.status is not None:
         if data.status not in ("active", "paused"):
             raise HTTPException(status_code=400, detail="status must be active|paused")
+        if agent.vendor == "third_party" and data.status == "active":
+            raise HTTPException(
+                status_code=409,
+                detail="Third-party Agent execution remains blocked until the sandbox release gate is complete",
+            )
         agent.status = data.status
     db.add(agent)
     await log_action(
@@ -133,14 +191,27 @@ async def update_grant(slug: str, data: GrantUpdate, db: DB, admin: AdminUser):
     agent = (await db.execute(select(Agent).where(Agent.slug == slug))).scalar_one_or_none()
     if agent is None:
         raise HTTPException(status_code=404, detail="Agent not found")
+    grant_workspace_id = await _agent_grant_workspace(db, admin, agent, data.workspace_id)
     grant = (
         await db.execute(
-            select(AgentGrant).where(AgentGrant.agent_id == agent.id, AgentGrant.scope == data.scope)
+            select(AgentGrant).where(
+                AgentGrant.agent_id == agent.id,
+                AgentGrant.scope == data.scope,
+                (
+                    AgentGrant.workspace_id == grant_workspace_id
+                    if grant_workspace_id is not None
+                    else AgentGrant.workspace_id.is_(None)
+                ),
+            )
         )
     ).scalar_one_or_none()
     if grant is None:
-        grant = AgentGrant(agent_id=agent.id, scope=data.scope)
-    before = {"scope": data.scope, "granted": grant.granted}
+        grant = AgentGrant(agent_id=agent.id, workspace_id=grant_workspace_id, scope=data.scope)
+    before = {
+        "scope": data.scope,
+        "workspace_id": str(grant_workspace_id) if grant_workspace_id else None,
+        "granted": grant.granted,
+    }
     grant.granted = data.granted
     grant.granted_by = admin.id
     grant.granted_at = datetime.now(timezone.utc) if data.granted else None
@@ -153,6 +224,14 @@ async def update_grant(slug: str, data: GrantUpdate, db: DB, admin: AdminUser):
         entity_type="agent_grant",
         entity_id=grant.id,
         before=before,
-        after={"scope": grant.scope, "granted": grant.granted},
+        after={
+            "scope": grant.scope,
+            "workspace_id": str(grant_workspace_id) if grant_workspace_id else None,
+            "granted": grant.granted,
+        },
     )
-    return {"scope": grant.scope, "granted": grant.granted}
+    return {
+        "scope": grant.scope,
+        "workspace_id": str(grant_workspace_id) if grant_workspace_id else None,
+        "granted": grant.granted,
+    }

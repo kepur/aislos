@@ -43,7 +43,7 @@
           </dl>
 
           <div class="mt-6 pt-4 border-t border-slate-200">
-            <UBadge color="green" variant="subtle" class="w-full justify-center">Pre-funded Escrow Status</UBadge>
+            <UBadge color="green" variant="subtle" class="w-full justify-center">Verified Buyer Request</UBadge>
           </div>
         </UCard>
       </div>

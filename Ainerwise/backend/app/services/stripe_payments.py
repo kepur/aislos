@@ -21,6 +21,7 @@ from app.services.integrations import get_config
 from app.services.payments import mark_milestone_funded
 
 EVENT_CHECKOUT_COMPLETED = "checkout.session.completed"
+EVENT_PAYMENT_INTENT_SUCCEEDED = "payment_intent.succeeded"
 
 
 async def stripe_config(db: AsyncSession) -> dict[str, Any]:
@@ -64,6 +65,74 @@ async def create_milestone_checkout(db: AsyncSession, milestone: PaymentMileston
     milestone.external_ref = session.id
     db.add(milestone)
     await db.commit()
+    return session.url
+
+
+async def create_commerce_order_checkout(db: AsyncSession, *, order_id: "uuid.UUID") -> str:
+    """Stripe Checkout for a commerce order payment intent."""
+    import uuid as _uuid
+
+    from sqlalchemy import select
+
+    from app.models.commerce import CommerceOrder, CommercePaymentIntent
+    from app.models.payment import PaymentMilestone
+
+    intent = (
+        await db.execute(
+            select(CommercePaymentIntent).where(CommercePaymentIntent.commerce_order_id == order_id)
+        )
+    ).scalar_one_or_none()
+    if intent is None or not intent.payment_plan_id:
+        raise ValueError("Create a payment intent before checkout")
+    order = await db.get(CommerceOrder, order_id)
+    if order is None:
+        raise ValueError("Order not found")
+    milestone = (
+        await db.execute(
+            select(PaymentMilestone)
+            .where(PaymentMilestone.plan_id == intent.payment_plan_id)
+            .order_by(PaymentMilestone.seq.asc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if milestone is None:
+        raise ValueError("Payment milestone not found")
+    if milestone.status not in ("pending", "invoiced"):
+        raise ValueError(f"Milestone is {milestone.status}, cannot checkout")
+
+    cfg = await stripe_config(db)
+    if not is_configured(cfg):
+        raise ValueError("Stripe is not configured (Admin → Integrations → stripe)")
+    client = _client(cfg)
+    session = await asyncio.to_thread(
+        client.checkout.sessions.create,
+        params={
+            "mode": "payment",
+            "line_items": [{
+                "price_data": {
+                    "currency": intent.currency.lower(),
+                    "unit_amount": intent.amount_minor,
+                    "product_data": {"name": f"Commerce order {str(order_id)[:8]}"},
+                },
+                "quantity": 1,
+            }],
+            "metadata": {
+                "kind": "commerce_order",
+                "order_id": str(order_id),
+                "payment_intent_id": str(intent.id),
+                "milestone_id": str(milestone.id),
+            },
+            "success_url": cfg.get("success_url") or "http://localhost:4099/cebu?payment=success",
+            "cancel_url": cfg.get("cancel_url") or "http://localhost:4099/cebu?payment=cancelled",
+        },
+    )
+    milestone.status = "invoiced"
+    milestone.external_ref = session.id
+    intent.status = "pending"
+    intent.external_ref = session.id
+    db.add(milestone)
+    db.add(intent)
+    await db.flush()
     return session.url
 
 
@@ -161,39 +230,81 @@ def verify_webhook(payload: bytes, signature_header: str, webhook_secret: str) -
     return stripe.Webhook.construct_event(payload, signature_header, webhook_secret)
 
 
-async def handle_stripe_event(db: AsyncSession, event: stripe.Event) -> dict:
-    if event["type"] != EVENT_CHECKOUT_COMPLETED:
-        return {"handled": False, "type": event["type"]}
-    session = event["data"]["object"]
-    metadata = session.get("metadata") or {}
-    kind = metadata.get("kind")
-    if kind == "milestone" and metadata.get("milestone_id"):
-        import uuid as _uuid
+async def _handle_commerce_order_checkout(db: AsyncSession, session: dict) -> dict:
+    import uuid as _uuid
 
-        milestone = await db.get(PaymentMilestone, _uuid.UUID(metadata["milestone_id"]))
-        if milestone is None:
-            return {"handled": False, "reason": "milestone not found"}
-        if milestone.status == "funded":
-            return {"handled": True, "idempotent": True}
-        await mark_milestone_funded(
-            db, milestone,
-            memo=f"stripe checkout {session.get('id')}",
+    from app.services.commerce_settlement import CommerceSettlementError, confirm_order_funding
+
+    metadata = session.get("metadata") or {}
+    order_id = metadata.get("order_id")
+    if not order_id:
+        return {"handled": False, "reason": "missing order_id"}
+    external_ref = str(session.get("payment_intent") or session.get("id"))
+    try:
+        row = await confirm_order_funding(
+            db,
+            order_id=_uuid.UUID(str(order_id)),
+            external_ref=external_ref,
             source_account="escrow:psp",
-            external_ref=str(session.get("payment_intent") or session.get("id")),
         )
         await db.commit()
-        return {"handled": True, "milestone_id": metadata["milestone_id"]}
-    if kind == "partner_deposit" and metadata.get("deposit_id"):
-        import uuid as _uuid
+        return {"handled": True, "order_id": order_id, "settlement_id": str(row.id)}
+    except CommerceSettlementError as exc:
+        if "already" in str(exc).lower() or "funded" in str(exc).lower():
+            await db.rollback()
+            return {"handled": True, "idempotent": True, "order_id": order_id}
+        await db.rollback()
+        return {"handled": False, "reason": str(exc)}
 
-        deposit = await db.get(PartnerDeposit, _uuid.UUID(metadata["deposit_id"]))
-        if deposit is None:
-            return {"handled": False, "reason": "deposit not found"}
-        if deposit.status == "held":
-            return {"handled": True, "idempotent": True}
-        deposit.status = "held"
-        deposit.external_ref = str(session.get("payment_intent") or session.get("id"))
-        db.add(deposit)
-        await db.commit()
-        return {"handled": True, "deposit_id": metadata["deposit_id"]}
-    return {"handled": False, "reason": "unknown metadata kind"}
+
+async def handle_stripe_event(db: AsyncSession, event: stripe.Event) -> dict:
+    event_type = event["type"]
+    if event_type == EVENT_CHECKOUT_COMPLETED:
+        session = event["data"]["object"]
+        metadata = session.get("metadata") or {}
+        kind = metadata.get("kind")
+        if kind == "commerce_order":
+            return await _handle_commerce_order_checkout(db, session)
+        if kind == "milestone" and metadata.get("milestone_id"):
+            import uuid as _uuid
+
+            milestone = await db.get(PaymentMilestone, _uuid.UUID(metadata["milestone_id"]))
+            if milestone is None:
+                return {"handled": False, "reason": "milestone not found"}
+            if milestone.status == "funded":
+                return {"handled": True, "idempotent": True}
+            await mark_milestone_funded(
+                db,
+                milestone,
+                memo=f"stripe checkout {session.get('id')}",
+                source_account="escrow:psp",
+                external_ref=str(session.get("payment_intent") or session.get("id")),
+            )
+            await db.commit()
+            return {"handled": True, "milestone_id": metadata["milestone_id"]}
+        if kind == "partner_deposit" and metadata.get("deposit_id"):
+            import uuid as _uuid
+
+            deposit = await db.get(PartnerDeposit, _uuid.UUID(metadata["deposit_id"]))
+            if deposit is None:
+                return {"handled": False, "reason": "deposit not found"}
+            if deposit.status == "held":
+                return {"handled": True, "idempotent": True}
+            deposit.status = "held"
+            deposit.external_ref = str(session.get("payment_intent") or session.get("id"))
+            db.add(deposit)
+            await db.commit()
+            return {"handled": True, "deposit_id": metadata["deposit_id"]}
+        return {"handled": False, "reason": "unknown metadata kind"}
+
+    if event_type == EVENT_PAYMENT_INTENT_SUCCEEDED:
+        pi = event["data"]["object"]
+        metadata = pi.get("metadata") or {}
+        if metadata.get("kind") == "commerce_order":
+            return await _handle_commerce_order_checkout(
+                db,
+                {"id": pi.get("id"), "payment_intent": pi.get("id"), "metadata": metadata},
+            )
+        return {"handled": False, "type": event_type}
+
+    return {"handled": False, "type": event_type}
