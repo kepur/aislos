@@ -53,3 +53,6 @@ logs/
 htmlcov/
 .coverage
 coverage.xml
+
+# Runtime artifacts from the backup service
+backend/backups/
