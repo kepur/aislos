@@ -12,6 +12,7 @@ export default {
     payments: '支付管理',
     shipping: '物流管理',
     regions: '区域管理',
+    syndication: '渠道推流',
     risk: '风险标记',
     trust: '信用评分',
     notifications: '通知模板',

@@ -20,6 +20,8 @@ export default defineConfig({
     proxy: {
       '/api/auth': coreProxy((p) => p.replace(/^\/api\/auth/, '/api/v1/auth')),
       '/api/localization': coreProxy((p) => p.replace(/^\/api\/localization/, '/api/v1/localization')),
+      // Syndication lives on Core directly, not behind the cebu-compat layer.
+      '/api/syndication': coreProxy((p) => p.replace(/^\/api\/syndication/, '/api/v1/syndication')),
       '/api/users': coreProxy((p) => p.replace(/^\/api\/users/, '/api/v1/cebu-compat/users')),
       '/api/admin/shipping': coreProxy((p) =>
         p.replace(/^\/api\/admin\/shipping/, '/api/v1/cebu-compat/admin/shipping')

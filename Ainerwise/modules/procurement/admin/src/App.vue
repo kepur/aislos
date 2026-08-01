@@ -94,6 +94,7 @@ const nav = computed(() => [
   { to: pathTo('/kyc-media'), path: '/kyc-media',     icon: '🔍', label: 'KYC Media',              section: '' },
   { to: pathTo('/marketplace'), path: '/marketplace', icon: '🏪', label: t('nav.marketplace'),     section: t('sections.marketplace') },
   { to: pathTo('/ad-campaigns'), path: '/ad-campaigns', icon: '📣', label: t('nav.adCampaigns'),  section: '' },
+  { to: pathTo('/syndication'), path: '/syndication',  icon: '📡', label: t('nav.syndication'),  section: '' },
   { to: pathTo('/intents'), path: '/intents',         icon: '📋', label: t('nav.intents'),        section: '' },
   { to: pathTo('/orders'), path: '/orders',           icon: '📦', label: t('nav.orders'),         section: '' },
   { to: pathTo('/disputes'), path: '/disputes',       icon: '⚠️',  label: t('nav.disputes'),      section: '' },
@@ -133,6 +134,7 @@ const titleMap = {
   '/audit': 'audit.title',
   '/marketplace': 'nav.marketplace',
   '/ad-campaigns': 'nav.adCampaigns',
+  '/syndication': 'nav.syndication',
 }
 const currentTitle = computed(() => {
   const key = titleMap[stripLocalePrefix(route.path)]

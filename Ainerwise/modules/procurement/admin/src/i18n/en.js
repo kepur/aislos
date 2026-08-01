@@ -20,6 +20,7 @@ export default {
     audit: 'Audit Log',
     marketplace: 'Marketplace',
     adCampaigns: 'Ad Campaigns',
+    syndication: 'Syndication',
   },
   sections: {
     people: 'People',
