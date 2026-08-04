@@ -301,7 +301,8 @@
     "status": "Status",
     "actions": "Akcije",
     "confirm": "Potvrdi",
-    "viewDetails": "Pogledaj detalje"
+    "viewDetails": "Pogledaj detalje",
+    "retry": "Retry"
   },
   "footer": {
     "tagline": "AI rešenja za pametne zgrade, nabavku i održavanje.",
@@ -451,5 +452,10 @@
     "signing": "Potpisivanje...",
     "submit": "Potpiši dokument",
     "legal": "Jednostavan elektronski potpis po eIDAS. Heš dokumenta, IP i vreme čine revizijski trag."
+  },
+  "theme": {
+    "knx": "Industry",
+    "light": "Light",
+    "dark": "Dark 3D"
   }
 }

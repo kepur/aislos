@@ -14,12 +14,22 @@
       </nav>
 
       <div class="flex items-center gap-3">
-        <button
-          type="button"
-          :aria-label="isDark ? 'Switch to light theme' : 'Switch to dark theme'"
-          class="rounded-lg px-2 py-1.5 text-base leading-none text-slate-300 transition hover:bg-white/10"
-          @click="toggleTheme"
-        >{{ isDark ? '☀️' : '🌙' }}</button>
+        <!-- Three themes now, so a colour swatch reads better than a
+             sun/moon toggle: it shows which of the three is active. -->
+        <div class="flex items-center gap-1 rounded-full border border-white/10 p-0.5">
+          <button
+            v-for="option in THEME_OPTIONS"
+            :key="option.key"
+            type="button"
+            :aria-label="`Theme: ${option.key}`"
+            :aria-pressed="theme === option.key"
+            :title="option.key"
+            class="h-6 w-6 rounded-full border-2 transition"
+            :class="theme === option.key ? 'border-current scale-110' : 'border-transparent opacity-50 hover:opacity-100'"
+            :style="{ backgroundColor: option.swatch }"
+            @click="setTheme(option.key)"
+          />
+        </div>
         <LanguageSwitcher />
         <template v-if="isLoggedIn">
           <PortalSwitcher />
@@ -56,7 +66,7 @@
 <script setup lang="ts">
 import { prefixForLocale, withLocalePrefix } from '~/utils/localeRoutes'
 
-const { isDark, toggle: toggleTheme } = useTheme()
+const { theme, set: setTheme } = useTheme()
 const { isLoggedIn, isAdmin, logout } = useAuth()
 const { t, locale } = useI18n({ useScope: 'global' })
 const { mode, portal: legacyPortal, urls } = usePortalMode()
@@ -87,7 +97,7 @@ function externalPath(baseUrl: string, path = '/') {
 const navItems = computed(() => {
   if (mode === 'store') {
     return [
-      { to: externalPath(urls.aislos, '/ai-building-brain-demo'), label: t('nav.aiBrain'), external: true },
+      { to: externalPath(urls.aislos, '/ai-building-brain'), label: t('nav.aiBrain'), external: true },
       { to: externalPath(urls.aislos, '/solutions'), label: t('nav.solutions'), external: true },
       { to: localPath('/products'), label: t('nav.products'), external: false },
       { to: externalPath(urls.developer, '/developers'), label: t('nav.developers'), external: true },
@@ -97,7 +107,7 @@ const navItems = computed(() => {
   }
   if (mode === 'developer') {
     return [
-      { to: externalPath(urls.aislos, '/ai-building-brain-demo'), label: t('nav.aiBrain'), external: true },
+      { to: externalPath(urls.aislos, '/ai-building-brain'), label: t('nav.aiBrain'), external: true },
       { to: externalPath(urls.aislos, '/solutions'), label: t('nav.solutions'), external: true },
       { to: externalPath(urls.store, '/products'), label: t('nav.products'), external: true },
       { to: localPath('/developers'), label: t('nav.developers'), external: false },
@@ -106,7 +116,7 @@ const navItems = computed(() => {
     ]
   }
   return [
-    { to: localPath('/ai-building-brain-demo'), label: t('nav.aiBrain'), external: false },
+    { to: localPath('/ai-building-brain'), label: t('nav.aiBrain'), external: false },
     { to: localPath('/solutions'), label: t('nav.solutions'), external: false },
     { to: externalPath(urls.store, '/products'), label: t('nav.products'), external: true },
     { to: externalPath(urls.developer, '/developers'), label: t('nav.developers'), external: true },

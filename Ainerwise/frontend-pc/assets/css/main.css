@@ -20,6 +20,29 @@
     --input-border: rgba(255, 255, 255, 0.10);
     --input-text: #ffffff;
   }
+
+  /* ── KNX-style theme (default) ────────────────────────────────────
+     Industry look for building-automation buyers: white surfaces, one
+     confident accent, hairline borders and a lot of whitespace. Layered
+     on top of the light baseline so the other two themes are untouched. */
+  .theme-knx {
+    --brand: #00b451;
+    --brand-strong: #009444;
+    --brand-soft: #e8f7ee;
+    --brand-contrast: #ffffff;
+    --ink: #0d1b16;
+    --ink-muted: #5b6b64;
+    --surface: #ffffff;
+    --surface-alt: #f4f7f5;
+    --hairline: #e2e8e5;
+
+    --page-text: var(--ink);
+    --card-bg: var(--surface);
+    --card-border: var(--hairline);
+    --input-bg: #ffffff;
+    --input-border: #d7e0db;
+    --input-text: var(--ink);
+  }
   body {
     @apply antialiased bg-transparent;
     color: var(--page-text);
@@ -283,3 +306,124 @@ html.light pre[class*="bg-slate-950"] {
 }
 html.light pre[class*="bg-black"] .text-slate-300,
 html.light pre[class*="bg-black"] .text-primary-200 { color: #cbd5e1; }
+
+/* ===========================================================================
+   KNX-style theme surface layer.
+
+   Scoped entirely to `html.theme-knx`, so the dark 3D theme and the earlier
+   neutral light theme keep their exact previous appearance. Unlayered plain
+   CSS so it wins over Tailwind utilities by specificity, the same technique
+   the light-theme retrofit already uses below.
+   =========================================================================== */
+html.theme-knx body { background-color: var(--surface-alt); color: var(--ink); }
+
+/* Page shell ------------------------------------------------------------- */
+html.theme-knx .section-padding { @apply px-4 sm:px-6 lg:px-8 py-16 lg:py-24; }
+
+/* Typography — KNX leans on weight and size, not colour, for hierarchy. */
+html.theme-knx h1, html.theme-knx h2, html.theme-knx h3 { color: var(--ink); letter-spacing: -0.015em; }
+html.theme-knx .text-white { color: var(--ink); }
+html.theme-knx .text-slate-100,
+html.theme-knx .text-slate-200,
+html.theme-knx .text-slate-300 { color: var(--ink-muted); }
+html.theme-knx .text-slate-400,
+html.theme-knx .text-slate-500 { color: #7c8a84; }
+
+/* Accent — one green, used sparingly so it still means something. */
+html.theme-knx .text-primary-200,
+html.theme-knx .text-primary-300,
+html.theme-knx .text-primary-400,
+html.theme-knx .text-primary-500 { color: var(--brand-strong); }
+
+/* Surfaces --------------------------------------------------------------- */
+html.theme-knx .bg-slate-950,
+html.theme-knx .bg-slate-900 { background-color: var(--surface-alt); }
+html.theme-knx .bg-slate-900\/60,
+html.theme-knx .bg-slate-900\/80,
+html.theme-knx .bg-slate-950\/80 { background-color: var(--surface); }
+html.theme-knx .bg-white\/5 { background-color: var(--surface-alt); }
+html.theme-knx .bg-white\/10 { background-color: #eef2f0; }
+html.theme-knx .border-white\/5,
+html.theme-knx .border-white\/10,
+html.theme-knx .border-white\/15,
+html.theme-knx .border-white\/20 { border-color: var(--hairline); }
+
+/* Cards — flat, hairline border, lift on hover. No glass, no glow. */
+html.theme-knx .glass-panel,
+html.theme-knx .portal-card,
+html.theme-knx .pc-card {
+  background-color: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  backdrop-filter: none;
+  box-shadow: none;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+html.theme-knx .glass-panel:hover,
+html.theme-knx .portal-card:hover,
+html.theme-knx .pc-card:hover {
+  border-color: #c9d6d0;
+  box-shadow: 0 6px 22px rgba(13, 27, 22, .07);
+}
+
+/* Buttons — solid green primary, hairline secondary, both pill-shaped. */
+html.theme-knx .btn-primary {
+  background-color: var(--brand);
+  color: var(--brand-contrast);
+  border-radius: 999px;
+  box-shadow: none;
+}
+html.theme-knx .btn-primary:hover { background-color: var(--brand-strong); }
+html.theme-knx .btn-secondary {
+  border-radius: 999px;
+  border-color: var(--hairline);
+  color: var(--ink);
+  background-color: var(--surface);
+}
+html.theme-knx .btn-secondary:hover { background-color: var(--surface-alt); border-color: #c9d6d0; }
+
+/* Inputs ----------------------------------------------------------------- */
+html.theme-knx .input-field,
+html.theme-knx .portal-input {
+  background: #fff;
+  border: 1px solid var(--input-border);
+  color: var(--ink);
+  border-radius: 10px;
+}
+html.theme-knx .input-field:focus,
+html.theme-knx .portal-input:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(0, 180, 81, .15);
+}
+
+/* Kickers / eyebrow labels ------------------------------------------------ */
+html.theme-knx .pc-kicker { color: var(--brand-strong); }
+html.theme-knx .pc-kicker-muted { color: var(--ink-muted); }
+
+/* Reusable KNX-language pieces used by the new pages -------------------- */
+.knx-eyebrow {
+  @apply inline-block text-xs font-bold uppercase tracking-[0.18em];
+  color: var(--brand-strong, #009444);
+}
+.knx-tile {
+  @apply flex flex-col items-center justify-center gap-3 rounded-xl p-6 text-center transition-all;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--card-border, #e2e8e5);
+}
+.knx-tile:hover { border-color: var(--brand, #00b451); transform: translateY(-2px); }
+.knx-pill {
+  @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  background: var(--brand-soft, #e8f7ee);
+  color: var(--brand-strong, #009444);
+}
+/* The AI differentiator badge — deliberately distinct from the green so an
+   AI-only capability never reads as a standard KNX one. */
+.knx-pill-ai {
+  @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  background: #eef0ff;
+  color: #4338ca;
+}
+html.dark .knx-pill { background: rgba(0, 180, 81, .16); color: #4ade80; }
+html.dark .knx-pill-ai { background: rgba(99, 102, 241, .18); color: #a5b4fc; }
+html.dark .knx-tile { background: rgba(15, 23, 42, .6); border-color: rgba(255, 255, 255, .08); }
+html.dark .knx-eyebrow { color: #4ade80; }

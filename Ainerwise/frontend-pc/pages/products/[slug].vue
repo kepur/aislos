@@ -17,7 +17,7 @@
         <!-- Image -->
         <div class="aspect-square glass-panel p-2 flex items-center justify-center overflow-hidden border-white/20">
           <img v-if="product.images_json?.[0]" :src="product.images_json[0]" :alt="product.name" class="w-full h-full object-cover rounded-lg" />
-          <span v-else class="text-slate-600 text-6xl">&#128247;</span>
+          <FeatureIcon v-else name="camera" size="lg" class="h-14 w-14 text-slate-500" />
         </div>
 
         <!-- Info -->

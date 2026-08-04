@@ -301,7 +301,8 @@
     "status": "Status",
     "actions": "Actions",
     "confirm": "Confirm",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "retry": "Retry"
   },
   "footer": {
     "tagline": "AI-powered smart building solutions, sourcing, and lifecycle service.",
@@ -531,5 +532,10 @@
     "signing": "Signing...",
     "submit": "Sign document",
     "legal": "Simple electronic signature under eIDAS. The document hash, your IP and timestamp form the audit trail."
+  },
+  "theme": {
+    "knx": "Industry",
+    "light": "Light",
+    "dark": "Dark 3D"
   }
 }

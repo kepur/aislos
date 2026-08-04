@@ -65,7 +65,7 @@
                   :alt="product.name"
                   class="w-full h-full object-cover"
                 />
-                <span v-else class="text-slate-600 text-4xl">&#128247;</span>
+                <FeatureIcon v-else name="camera" size="lg" class="text-slate-500" />
               </div>
               <div class="p-4">
                 <div class="flex items-center gap-2 mb-2">

@@ -151,7 +151,8 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ alias: ['/ai-building-brain'] })
+// The /ai-building-brain alias moved to pages/ai-building-brain/index.vue,
+// which is now the overview. This page stays as the immersive 3D demo.
 
 const activeKey = ref('villa')
 const selectedLevel = ref<'L3' | 'L4' | 'L5'>('L5')

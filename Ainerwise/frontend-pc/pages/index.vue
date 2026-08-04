@@ -1,5 +1,18 @@
 <template>
   <div>
+    <!-- Full-bleed stage. The original hero section is kept below it so no
+         existing copy or CTA was dropped when the new visual went in. -->
+    <KnxHeroStage
+      :eyebrow="$t('home.heroKicker')"
+      :title="$t('home.stageTitle')"
+      :subtitle="$t('home.stageSubtitle')"
+      primary-to="/submit-requirement"
+      :primary-label="$t('home.heroCta1')"
+      secondary-to="/ai-building-brain"
+      :secondary-label="$t('home.intelligenceExplore')"
+      :credit="$t('home.stageCredit')"
+    />
+
     <section class="text-white">
       <div class="container-main px-4 sm:px-6 lg:px-8 pt-14 lg:pt-20">
         <div class="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 items-center">
@@ -185,6 +198,19 @@
       </div>
     </section>
 
+    <KnxEcosystemHub
+      :eyebrow="$t('home.hubEyebrow')"
+      :title="$t('home.hubTitle')"
+      :subtitle="$t('home.hubSubtitle')"
+      :core-label="$t('home.hubCore')"
+      :suppliers="hubSuppliers"
+      :systems="hubSystems"
+      cta-to="/ai-building-brain"
+      :cta-label="$t('home.intelligenceExplore')"
+      footnote-to="/solutions"
+      :footnote-label="$t('home.hubFootnote')"
+    />
+
     <!-- Why AinerWise Section -->
     <section class="section-padding">
       <div class="container-main">
@@ -195,7 +221,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div v-for="reason in whyReasons" :key="reason.title" class="text-center glass-panel p-6">
             <div class="w-14 h-14 bg-primary-900/50 border border-primary-500/30 rounded-full flex items-center justify-center mx-auto mb-4 shadow-[0_0_15px_rgba(14,165,233,0.3)]">
-              <span class="text-2xl">{{ reason.emoji }}</span>
+              <FeatureIcon :name="reason.icon" class="text-primary-300" />
             </div>
             <h3 class="font-semibold text-white">{{ reason.title }}</h3>
             <p class="mt-2 text-sm text-slate-300">{{ reason.desc }}</p>
@@ -227,6 +253,28 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const { apiFetch } = useApi()
+
+// Left of the hub: the supply chain we actually source from. Right: the
+// building systems we integrate. Both are ours — no third-party marks.
+const hubSuppliers = computed<string[]>(() => [
+  t('home.hubSupplier1'),
+  t('home.hubSupplier2'),
+  t('home.hubSupplier3'),
+  t('home.hubSupplier4'),
+  t('home.hubSupplier5'),
+  t('home.hubSupplier6'),
+  t('home.hubSupplier7'),
+])
+
+const hubSystems = computed(() => [
+  { icon: 'lighting', label: t('home.sysLighting') },
+  { icon: 'hvac', label: t('home.sysHvac') },
+  { icon: 'shading', label: t('home.sysShading') },
+  { icon: 'energy', label: t('home.sysEnergy') },
+  { icon: 'security', label: t('home.sysSecurity') },
+  { icon: 'automation', label: t('home.sysScenes') },
+  { icon: 'network', label: t('home.sysNetwork') },
+])
 const marketUrl = useRuntimeConfig().public.marketUrl as string
 
 const solutions = ref<any[]>([])
@@ -289,10 +337,10 @@ const intelligenceLevels = computed(() => [
 ])
 
 const whyReasons = computed(() => [
-  { emoji: '&#129302;', title: t('home.whyAI'), desc: t('home.whyAIDesc') },
-  { emoji: '&#128230;', title: t('home.whySupply'), desc: t('home.whySupplyDesc') },
-  { emoji: '&#128736;', title: t('home.whyLocal'), desc: t('home.whyLocalDesc') },
-  { emoji: '&#128337;', title: t('home.whyLifecycle'), desc: t('home.whyLifecycleDesc') },
+  { icon: 'ai-brain', title: t('home.whyAI'), desc: t('home.whyAIDesc') },
+  { icon: 'supply-chain', title: t('home.whySupply'), desc: t('home.whySupplyDesc') },
+  { icon: 'installer', title: t('home.whyLocal'), desc: t('home.whyLocalDesc') },
+  { icon: 'lifecycle', title: t('home.whyLifecycle'), desc: t('home.whyLifecycleDesc') },
 ])
 
 async function loadPublicContent() {
