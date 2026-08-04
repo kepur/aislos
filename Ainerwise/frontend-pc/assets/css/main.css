@@ -329,6 +329,36 @@ html.theme-knx .text-slate-300 { color: var(--ink-muted); }
 html.theme-knx .text-slate-400,
 html.theme-knx .text-slate-500 { color: #7c8a84; }
 
+/* Opt-out for full-bleed dark sections (hero stage, ecosystem hub, CTA band).
+   A light theme repaints headings and .text-white for a white page, which is
+   exactly wrong once a section supplies its own dark canvas.
+
+   This is the text-only sibling of .surface-dark above, deliberately not that
+   class: .surface-dark also forces background-color: #020617, which would wipe
+   out the hub's teal gradient and the stage's own backdrop. Sections that
+   bring their own background want the type rules and nothing else. */
+.knx-on-dark h1,
+.knx-on-dark h2,
+.knx-on-dark h3,
+html.light .knx-on-dark h1,
+html.light .knx-on-dark h2,
+html.light .knx-on-dark h3,
+html.light .knx-on-dark .text-white,
+html.theme-knx .knx-on-dark h1,
+html.theme-knx .knx-on-dark h2,
+html.theme-knx .knx-on-dark h3,
+html.theme-knx .knx-on-dark .text-white { color: #fff; }
+html.light .knx-on-dark .text-slate-100,
+html.light .knx-on-dark .text-slate-200,
+html.light .knx-on-dark .text-slate-300,
+html.theme-knx .knx-on-dark .text-slate-100,
+html.theme-knx .knx-on-dark .text-slate-200,
+html.theme-knx .knx-on-dark .text-slate-300 { color: rgba(226, 245, 237, .85); }
+html.light .knx-on-dark .text-slate-400,
+html.light .knx-on-dark .text-slate-500,
+html.theme-knx .knx-on-dark .text-slate-400,
+html.theme-knx .knx-on-dark .text-slate-500 { color: rgba(190, 225, 212, .7); }
+
 /* Accent — one green, used sparingly so it still means something. */
 html.theme-knx .text-primary-200,
 html.theme-knx .text-primary-300,

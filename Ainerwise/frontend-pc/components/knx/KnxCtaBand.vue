@@ -1,7 +1,7 @@
 <template>
   <section class="py-14 lg:py-20">
     <div class="container-main px-4 sm:px-6 lg:px-8">
-      <div class="knx-cta rounded-2xl px-8 py-12 text-center lg:px-16">
+      <div class="knx-cta knx-on-dark rounded-2xl px-8 py-12 text-center lg:px-16">
         <h2 class="text-2xl font-bold tracking-tight lg:text-3xl">{{ title }}</h2>
         <p v-if="subtitle" class="mx-auto mt-3 max-w-2xl leading-relaxed opacity-90">{{ subtitle }}</p>
         <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

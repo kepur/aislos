@@ -1,5 +1,5 @@
 <template>
-  <section class="knx-hub relative overflow-hidden py-16 lg:py-24">
+  <section class="knx-hub knx-on-dark relative overflow-hidden py-16 lg:py-24">
     <!-- Star field: pure CSS, no asset to load -->
     <div class="knx-hub-stars pointer-events-none absolute inset-0" aria-hidden="true" />
 

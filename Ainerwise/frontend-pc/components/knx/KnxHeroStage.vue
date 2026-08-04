@@ -1,9 +1,11 @@
 <template>
-  <section class="knx-stage relative overflow-hidden">
-    <!-- Building visual, drawn rather than photographed: no third-party
-         project imagery, and it scales cleanly at any viewport. -->
+  <section class="knx-stage knx-on-dark relative overflow-hidden">
+    <!-- Poster layer: server-rendered, so the section has a real image on the
+         first paint and on any device that never gets WebGL. It fades out once
+         the 3D scene reports itself live, so the two never stack. -->
     <svg
       class="knx-stage-art absolute inset-0 h-full w-full"
+      :class="{ 'is-replaced': sceneLive }"
       viewBox="0 0 1600 900"
       preserveAspectRatio="xMidYMax slice"
       aria-hidden="true"
@@ -79,13 +81,35 @@
       <rect width="1600" height="900" fill="url(#knxSky)" opacity=".42" />
     </svg>
 
+    <!-- Motion layer. A licensed film wins if one is supplied; otherwise we
+         render the block live, which stays ours, weighs no megabytes and
+         re-colours with the brand. Client-only: WebGL has no server render. -->
+    <video
+      v-if="videoSrc"
+      class="knx-stage-art absolute inset-0 h-full w-full object-cover"
+      :src="videoSrc"
+      autoplay
+      muted
+      loop
+      playsinline
+      aria-hidden="true"
+      @playing="sceneLive = true"
+    />
+    <ClientOnly v-else>
+      <KnxHeroScene3D @ready="sceneLive = true" />
+    </ClientOnly>
+
+    <!-- Haze again, above the motion layer: the headline must stay readable no
+         matter which frame the animation happens to be on. -->
+    <div class="knx-stage-veil absolute inset-0" aria-hidden="true" />
+
     <!-- Copy -->
     <div class="relative flex min-h-[560px] flex-col items-center justify-center px-4 py-24 text-center sm:px-6 lg:min-h-[660px] lg:py-32">
       <span v-if="eyebrow" class="knx-stage-eyebrow">{{ eyebrow }}</span>
-      <h1 class="mt-4 max-w-5xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-7xl">
+      <h1 class="knx-stage-title mt-4 max-w-5xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-7xl">
         {{ title }}
       </h1>
-      <p v-if="subtitle" class="mt-6 max-w-2xl text-lg text-emerald-50/85 lg:text-2xl">{{ subtitle }}</p>
+      <p v-if="subtitle" class="knx-stage-title mt-6 max-w-2xl text-lg text-emerald-50/90 lg:text-2xl">{{ subtitle }}</p>
 
       <div class="mt-10 flex flex-col gap-3 sm:flex-row">
         <NuxtLink :to="primaryTo" class="knx-stage-cta">
@@ -114,9 +138,18 @@ withDefaults(
     secondaryTo?: string
     secondaryLabel?: string
     credit?: string
+    /**
+     * Path to a hero film we hold the rights to (e.g. '/media/hero.mp4').
+     * Left unset the section renders the 3D block instead — so footage can be
+     * dropped in later without touching this component.
+     */
+    videoSrc?: string
   }>(),
   { secondaryLabel: '' }
 )
+
+/** True once a moving layer is actually on screen; retires the poster. */
+const sceneLive = ref(false)
 
 /** Diamond lattice across the tower face. */
 const diagrid = (() => {
@@ -149,7 +182,22 @@ const litWindows = windows.filter((_, i) => [3, 9, 14, 22, 27, 35, 41, 48, 55, 6
 
 <style scoped>
 .knx-stage { background: #0a2a25; }
-.knx-stage-art { object-fit: cover; }
+.knx-stage-art {
+  object-fit: cover;
+  transition: opacity .9s ease;
+}
+/* Poster steps aside for the motion layer rather than disappearing instantly,
+   so the handover reads as one shot settling in. */
+.knx-stage-art.is-replaced { opacity: 0; }
+
+/* Two scrims: a radial pool that follows the centred headline, and a vertical
+   ramp that hands off to the header above and the page below. Without the
+   radial the lit windows drift behind the type and eat it. */
+.knx-stage-veil {
+  background:
+    radial-gradient(ellipse 62% 46% at 50% 48%, rgba(4, 26, 23, .78) 0%, rgba(4, 26, 23, .34) 60%, rgba(4, 26, 23, 0) 100%),
+    linear-gradient(to bottom, rgba(5, 32, 28, .62) 0%, rgba(5, 32, 28, .12) 42%, rgba(5, 32, 28, .78) 100%);
+}
 
 .knx-stage-outline {
   animation: knx-trace 6s ease-in-out infinite;
@@ -158,6 +206,10 @@ const litWindows = windows.filter((_, i) => [3, 9, 14, 22, 27, 35, 41, 48, 55, 6
   0%, 100% { opacity: .55; }
   50% { opacity: 1; }
 }
+
+/* The scene keeps moving underneath, so type carries its own contrast rather
+   than relying on whatever frame it lands on. */
+.knx-stage-title { text-shadow: 0 2px 24px rgba(2, 20, 17, .75); }
 
 .knx-stage-eyebrow {
   @apply inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em];
