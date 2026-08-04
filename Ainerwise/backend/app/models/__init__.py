@@ -116,6 +116,7 @@ from app.models.syndication import (
     ChannelListing,
 )
 from app.models.analytics import (
+    AnalyticsClient,
     AnalyticsEvent,
     AnalyticsProjectionCursor,
     Creative,
@@ -221,5 +222,5 @@ __all__ = [
     "CommerceSettlement", "CommerceReconciliationRun",
     "SecondhandListing", "SecondhandAddressDisclosure", "SecondhandDeal",
     "ChannelListing", "ChannelCategoryMap",
-    "AnalyticsEvent", "Creative", "AnalyticsProjectionCursor",
+    "AnalyticsEvent", "Creative", "AnalyticsProjectionCursor", "AnalyticsClient",
 ]

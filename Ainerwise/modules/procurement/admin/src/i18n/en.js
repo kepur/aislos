@@ -21,6 +21,7 @@ export default {
     marketplace: 'Marketplace',
     adCampaigns: 'Ad Campaigns',
     syndication: 'Syndication',
+    analytics: 'Analytics',
   },
   sections: {
     people: 'People',

@@ -121,6 +121,34 @@ class Creative(Base, UUIDMixin, TimestampMixin):
     status: Mapped[str] = mapped_column(String(16), default="active", nullable=False, index=True)
 
 
+class AnalyticsClient(Base, UUIDMixin, TimestampMixin):
+    """An external project allowed to push events.
+
+    `source_app` is bound to the key, not taken from the request body: a client
+    must not be able to attribute its traffic to somebody else's app, which is
+    the whole basis of cross-project reporting.
+    """
+
+    __tablename__ = "clients"
+    __table_args__ = {"schema": "analytics"}
+
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    # Server-assigned attribution. Immutable once issued.
+    source_app: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    key_prefix: Mapped[str] = mapped_column(String(24), nullable=False, index=True)
+    secret_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    status: Mapped[str] = mapped_column(String(20), default="active", nullable=False, index=True)
+    scopes_json: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
+    # Empty/NULL means every region; otherwise the key is fenced to these.
+    allowed_region_ids_json: Mapped[list | None] = mapped_column(JSONB)
+    allowed_portal_keys_json: Mapped[list | None] = mapped_column(JSONB)
+    last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
+
+
+ANALYTICS_SCOPES = ("events:write", "reports:read")
+
+
 class AnalyticsProjectionCursor(Base, UUIDMixin, TimestampMixin):
     """Watermark for projecting the existing integration_events outbox.
 

@@ -13,6 +13,7 @@ export default {
     shipping: '物流管理',
     regions: '区域管理',
     syndication: '渠道推流',
+    analytics: '数据分析',
     risk: '风险标记',
     trust: '信用评分',
     notifications: '通知模板',

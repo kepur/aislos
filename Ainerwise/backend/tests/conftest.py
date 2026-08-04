@@ -39,7 +39,8 @@ _CLEANUP_STATEMENTS = [
     # 2Hands tests list against the real "2hands" category, so they are matched
     # by listing title instead. Children first, then the parent listing.
     # Analytics is append-only, so tests clean up by their own markers.
-    "DELETE FROM analytics.events WHERE source_app = 'test-suite' OR portal_key LIKE 'test-portal-%'",
+    "DELETE FROM analytics.events WHERE source_app = 'test-suite' OR source_app LIKE 'test-app-%' OR source_app LIKE 'test-ro-%' OR portal_key LIKE 'test-portal-%'",
+    "DELETE FROM analytics.clients WHERE source_app LIKE 'test-%'",
     f"DELETE FROM analytics.events WHERE listing_id IN (SELECT id FROM supplier_listings WHERE {_TEST_LISTING_FILTER})",
     "DELETE FROM analytics.creatives WHERE variant_label LIKE 'good-%' OR variant_label LIKE 'poor-%'",
     f"DELETE FROM analytics.creatives WHERE listing_id IN (SELECT id FROM supplier_listings WHERE {_TEST_LISTING_FILTER})",

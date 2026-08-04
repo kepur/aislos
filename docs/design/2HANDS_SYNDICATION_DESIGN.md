@@ -364,3 +364,30 @@ P0 先跑起来收钱,P1/P2 才是护城河。**不要在 P0 就做 AI 和自动
 - **开放 API 的 API Key**(外部项目接入现在复用登录态;`MarketingIntegrationClient` 的 key_prefix/secret_hash/scopes 模式可直接照搬)
 - 后台分析看板 UI(现有只有 API)
 - 渠道回拉浏览/联系数(`fetch_stats`),让外部渠道的曝光也进漏斗
+
+---
+
+## P2 补完(2026-07-06):看板 / 开放 API Key / 渠道回拉
+
+430 测试全过。原版系统本轮零改动。
+
+### 1. 后台分析看板(admin `/analytics`)
+漏斗条形图(含 >100% 的 ⓘ 说明)、渠道对比、创意 CTR(带缩略图、AI/human 标签、best 标记)、SKU 排行、数据来源分布。
+UI 里两处刻意的判断:曝光多但 `view→lead=0` 的 SKU 标红(说明看得到但没人要,问题在价格或图片);CTR 最高的创意标 best。
+
+### 2. 开放 API Key(`analytics.clients`,迁移 083)
+照搬 `MarketingIntegrationClient` 的成熟模式(key_prefix + secret_hash + scopes + region/portal 围栏)。
+
+**关键决策:`source_app` 绑定在密钥上,不取请求体。** 否则任何客户端都能把流量归因到别的项目,跨项目报表就失去意义。已测:请求体里塞 `"source_app":"我想冒充别人"` 被忽略,实际记为密钥own的 `ads-rs`。
+
+安全边界全部测过:无密钥 401、用户 JWT 冒充 401(两套认证不混用)、scope 不足 403、吊销后立即 403。密钥明文只在签发时返回一次。
+
+### 3. 渠道 fetch_stats 回拉
+驱动契约新增 `fetch_stats() -> StatsResult`。**`available` 是这个契约里最重要的字段** —— 拿不到数据的渠道必须明说,而不是返回 0;0 会变成分母,让所有转化率算错。feed 是单向拉取、assisted 帖子在别人账号里,两者都诚实返回 `available=False` 并提示人工录入。
+
+**累计值只计增量**:渠道给的是累计数,重复读取必须只记增长部分,否则每刷新一次就重复计一遍曝光。已测:120→150 只新增 30,不是再记 150。
+
+现在渠道报表终于有曝光分母:`KupujemProdajem 曝光1260 浏览210` vs `自有店面 浏览85 成交2` —— 可以看出外部渠道流量大但意向弱。
+
+### 回溯标签
+`p0-2hands` → `p1-syndication` → `p1-console` → `p2-analytics` → `p2-complete`

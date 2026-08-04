@@ -31,8 +31,10 @@ from app.models.syndication import (
 from app.models.user import Company
 from app.services.analytics import record_event_safe
 from app.services.syndication import (
+    StatsResult,
     get_driver,
     map_listing_to_payload,
+    record_channel_stats,
     render_feed_document,
     render_feed_item,
 )
@@ -408,6 +410,86 @@ async def publish_listing(
             }
         )
 
+    await db.commit()
+    return {"items": results}
+
+
+class ChannelStatsIn(BaseModel):
+    """Numbers an operator read off the channel's own post."""
+
+    impressions: int | None = Field(default=None, ge=0)
+    views: int | None = Field(default=None, ge=0)
+    contacts: int | None = Field(default=None, ge=0)
+
+
+@router.post("/channel-listings/{channel_listing_id}/stats")
+async def record_stats(
+    channel_listing_id: uuid.UUID, data: ChannelStatsIn, db: DB, user: CurrentUser
+):
+    """Record channel view counts — pulled automatically where possible,
+    typed in by an operator where the channel has no API.
+
+    Without this the channel report has sales but no impressions, so
+    "which channel converts" has no denominator.
+    """
+    row = await db.get(ChannelListing, channel_listing_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Channel listing not found")
+    account = await db.get(ChannelAccount, row.account_id)
+
+    stats = StatsResult(
+        available=True,
+        impressions=data.impressions,
+        views=data.views,
+        contacts=data.contacts,
+        fetched_at=_now(),
+        message="Entered manually",
+    )
+    emitted = await record_channel_stats(db, row, stats, account=account)
+    row.last_synced_at = _now()
+    await db.commit()
+    await db.refresh(row)
+    return {**_channel_listing_as_dict(row), "stats": row.stats_json, "events_emitted": emitted}
+
+
+@router.post("/listings/{listing_id}/pull-stats")
+async def pull_stats(listing_id: uuid.UUID, db: DB, user: CurrentUser):
+    """Ask every channel this listing is on for its numbers.
+
+    Channels that cannot report say so explicitly instead of returning zeros,
+    which would otherwise become a false denominator.
+    """
+    rows = list(
+        (
+            await db.execute(
+                select(ChannelListing, ChannelAccount)
+                .join(ChannelAccount, ChannelAccount.id == ChannelListing.account_id)
+                .where(
+                    ChannelListing.supplier_listing_id == listing_id,
+                    ChannelListing.status == "published",
+                )
+            )
+        ).all()
+    )
+    results = []
+    for row, account in rows:
+        driver = get_driver(_account_kind(account), account.channel)
+        try:
+            stats = driver.fetch_stats(account=account, external_id=row.external_id)
+        except Exception as exc:  # noqa: BLE001
+            stats = StatsResult(available=False, message=str(exc)[:500])
+        emitted = await record_channel_stats(db, row, stats, account=account)
+        row.last_synced_at = _now()
+        results.append(
+            {
+                "channel_listing_id": row.id,
+                "channel": account.channel,
+                "available": stats.available,
+                "events_emitted": emitted,
+                "message": stats.message,
+                "needs_manual_entry": not stats.available,
+            }
+        )
     await db.commit()
     return {"items": results}
 

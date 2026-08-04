@@ -36,6 +36,7 @@ const routes = [
   { path: '/marketplace',   component: () => import('@/pages/Marketplace.vue') },
   { path: '/ad-campaigns',  component: () => import('@/pages/AdCampaigns.vue') },
   { path: '/syndication',   component: () => import('@/pages/Syndication.vue') },
+  { path: '/analytics',     component: () => import('@/pages/Analytics.vue') },
   { path: '/:pathMatch(.*)*', redirect: (to) => withLocalePrefix('/dashboard', getLocalePrefixFromPath(to.path) || currentLocalePrefix(to.path)) },
 ]
 

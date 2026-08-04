@@ -82,6 +82,33 @@ class PublishResult:
     message: str | None = None
 
 
+@dataclass
+class StatsResult:
+    """Numbers pulled back from a channel.
+
+    `available` is the honest part of this contract. A channel we cannot query
+    must say so rather than return zeros — zeros would silently become a
+    denominator and make every conversion rate wrong.
+    """
+
+    available: bool
+    impressions: int | None = None
+    views: int | None = None
+    contacts: int | None = None
+    fetched_at: datetime | None = None
+    message: str | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "available": self.available,
+            "impressions": self.impressions,
+            "views": self.views,
+            "contacts": self.contacts,
+            "fetched_at": (self.fetched_at or _now()).isoformat(),
+            "message": self.message,
+        }
+
+
 # ───────────────────────────── contract ─────────────────────────────
 
 
@@ -96,6 +123,7 @@ class ChannelDriver(Protocol):
     def publish(self, payload: ChannelPayload, *, account: Any) -> PublishResult: ...
     def update(self, payload: ChannelPayload, *, account: Any, external_id: str | None) -> PublishResult: ...
     def delist(self, *, account: Any, external_id: str | None) -> PublishResult: ...
+    def fetch_stats(self, *, account: Any, external_id: str | None) -> StatsResult: ...
 
 
 # ───────────────────────────── mapping ──────────────────────────────
@@ -229,6 +257,15 @@ class FeedDriver:
             message="Removed from the merchant feed; the channel drops it on its next fetch.",
         )
 
+    def fetch_stats(self, *, account: Any, external_id: str | None) -> StatsResult:
+        # A pull feed is one-way: the channel fetches our XML and never reports
+        # back. Saying so beats inventing zeros that would poison conversion
+        # rates. Real numbers need either the channel's API or a tracked link.
+        return StatsResult(
+            available=False,
+            message="Merchant feeds are one-way; this channel reports no view data back.",
+        )
+
 
 class AssistedDriver:
     """Prepares everything a person needs to post manually.
@@ -270,6 +307,15 @@ class AssistedDriver:
             ),
             artifact_kind="text",
             message="Manual takedown required on this channel.",
+        )
+
+    def fetch_stats(self, *, account: Any, external_id: str | None) -> StatsResult:
+        # Nothing to query — the post lives in someone else's account. The
+        # operator reads the view count off the channel and types it in via
+        # record_channel_stats, which is why that endpoint exists.
+        return StatsResult(
+            available=False,
+            message="No API for this channel — enter the view count from the post manually.",
         )
 
 
@@ -368,6 +414,60 @@ async def delist_listing_everywhere(db: Any, listing_id: Any) -> int:
     if rows:
         await db.commit()
     return len(rows)
+
+
+async def record_channel_stats(
+    db: Any,
+    channel_listing: Any,
+    stats: StatsResult,
+    *,
+    account: Any,
+) -> int:
+    """Store pulled/entered channel numbers and feed the delta into the funnel.
+
+    Channel stats are cumulative totals, so only the **increase** since the last
+    reading becomes new events — otherwise every refresh would re-count the
+    same impressions and destroy the conversion rates this exists to produce.
+    """
+    from app.services.analytics import record_event_safe
+
+    if not stats.available:
+        # Keep the reason visible to operators, but write no numbers.
+        merged = dict(channel_listing.stats_json or {})
+        merged["last_attempt"] = stats.as_dict()
+        channel_listing.stats_json = merged
+        return 0
+
+    previous = channel_listing.stats_json or {}
+    emitted = 0
+    for field, event_type in (("impressions", "listing.impression"), ("views", "listing.view")):
+        total = getattr(stats, field) or 0
+        seen = int(previous.get(field) or 0)
+        delta = total - seen
+        if delta <= 0:
+            continue
+        # One event per unit would bloat the spine for large counts; a single
+        # event carrying the delta keeps the arithmetic identical for the
+        # aggregations, which all use count/sum over the window.
+        for _ in range(min(delta, 1000)):
+            await record_event_safe(
+                db,
+                event_type,
+                listing_id=channel_listing.supplier_listing_id,
+                channel_account_id=account.id,
+                region_id=getattr(account, "region_id", None),
+                source_app="syndication",
+            )
+        emitted += delta
+
+    channel_listing.stats_json = {
+        "impressions": stats.impressions,
+        "views": stats.views,
+        "contacts": stats.contacts,
+        "fetched_at": (stats.fetched_at or _now()).isoformat(),
+        "source": "channel",
+    }
+    return emitted
 
 
 def render_assisted_pack(payload: ChannelPayload, *, channel: str) -> str:

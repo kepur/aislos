@@ -10,6 +10,7 @@ plus the funnel that shows where buyers drop off.
 """
 from __future__ import annotations
 
+import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
 
@@ -18,7 +19,14 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 
 from app.api.deps import DB, AdminUser, CurrentUser
-from app.models.analytics import EVENT_TYPES, AnalyticsEvent, Creative
+from app.core.analytics_auth import EventWriteClient, hash_client_secret
+from app.models.analytics import (
+    ANALYTICS_SCOPES,
+    EVENT_TYPES,
+    AnalyticsClient,
+    AnalyticsEvent,
+    Creative,
+)
 from app.models.commerce import SupplierListing
 from app.services.analytics import (
     channel_performance,
@@ -103,6 +111,143 @@ async def ingest_events(data: EventBatchIn, db: DB, user: CurrentUser):
             accepted += 1
     await db.commit()
     return {"received": len(data.events), "accepted": accepted, "duplicates": len(data.events) - accepted}
+
+
+@router.post("/ingest", status_code=202)
+async def ingest_events_with_key(data: EventBatchIn, db: DB, ctx: EventWriteClient):
+    """Open ingestion for external projects, authenticated with an API key.
+
+    `source_app` is taken from the key, not the body — a project cannot write
+    events attributed to somebody else. A key may also be fenced to specific
+    regions or portals, and events outside that fence are rejected.
+    """
+    unknown = {e.event_type for e in data.events} - set(EVENT_TYPES)
+    if unknown:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unknown event_type(s): {sorted(unknown)}. Allowed: {sorted(EVENT_TYPES)}",
+        )
+    for item in data.events:
+        if not ctx.allows_region(item.region_id):
+            raise HTTPException(status_code=403, detail="Key is not allowed to write events for that region")
+        if not ctx.allows_portal(item.portal_key):
+            raise HTTPException(status_code=403, detail="Key is not allowed to write events for that portal")
+
+    accepted = 0
+    for item in data.events:
+        created = await record_event(
+            db,
+            item.event_type,
+            listing_id=item.listing_id,
+            channel_account_id=item.channel_account_id,
+            creative_id=item.creative_id,
+            campaign_id=item.campaign_id,
+            region_id=item.region_id,
+            portal_key=item.portal_key,
+            session_id=item.session_id,
+            value_minor=item.value_minor,
+            currency=item.currency,
+            # Bound to the key. Anything the client sent is ignored.
+            source_app=ctx.source_app,
+            idempotency_key=item.idempotency_key,
+            occurred_at=item.occurred_at,
+            meta=item.meta,
+        )
+        if created is not None:
+            accepted += 1
+    await db.commit()
+    return {
+        "received": len(data.events),
+        "accepted": accepted,
+        "duplicates": len(data.events) - accepted,
+        "source_app": ctx.source_app,
+    }
+
+
+# ───────────────────────── client key management ────────────────────
+
+
+class ClientCreate(BaseModel):
+    name: str = Field(min_length=2, max_length=255)
+    source_app: str = Field(min_length=2, max_length=64)
+    scopes: list[str] = Field(default_factory=lambda: ["events:write"])
+    allowed_region_ids: list[uuid.UUID] | None = None
+    allowed_portal_keys: list[str] | None = None
+
+
+def _client_as_dict(row: AnalyticsClient) -> dict:
+    return {
+        "id": row.id,
+        "name": row.name,
+        "source_app": row.source_app,
+        "key_prefix": row.key_prefix,
+        "status": row.status,
+        "scopes": row.scopes_json or [],
+        "allowed_region_ids": row.allowed_region_ids_json,
+        "allowed_portal_keys": row.allowed_portal_keys_json,
+        "last_used_at": row.last_used_at,
+        "created_at": row.created_at,
+    }
+
+
+@router.get("/clients")
+async def list_clients(db: DB, admin: AdminUser):
+    rows = list((await db.execute(select(AnalyticsClient).order_by(AnalyticsClient.created_at.desc()))).scalars())
+    return {"items": [_client_as_dict(r) for r in rows]}
+
+
+@router.post("/clients", status_code=201)
+async def create_client(data: ClientCreate, db: DB, admin: AdminUser):
+    """Issue a key. The secret is shown once and never stored in the clear."""
+    invalid = set(data.scopes) - set(ANALYTICS_SCOPES)
+    if invalid:
+        raise HTTPException(status_code=422, detail=f"Unknown scopes: {sorted(invalid)}")
+
+    raw_secret = secrets.token_urlsafe(32)
+    row = AnalyticsClient(
+        name=data.name.strip(),
+        source_app=data.source_app.strip().lower(),
+        key_prefix=f"an_{secrets.token_hex(4)}",
+        secret_hash=hash_client_secret(raw_secret),
+        status="active",
+        scopes_json=data.scopes,
+        allowed_region_ids_json=[str(r) for r in data.allowed_region_ids] if data.allowed_region_ids else None,
+        allowed_portal_keys_json=data.allowed_portal_keys or None,
+        created_by=admin.id,
+    )
+    db.add(row)
+    await db.commit()
+    await db.refresh(row)
+    return {
+        **_client_as_dict(row),
+        # Only time this is ever returned.
+        "secret": raw_secret,
+        "warning": "Store this secret now — it cannot be retrieved again.",
+    }
+
+
+@router.post("/clients/{client_id}/rotate")
+async def rotate_client(client_id: uuid.UUID, db: DB, admin: AdminUser):
+    row = await db.get(AnalyticsClient, client_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Client not found")
+    raw_secret = secrets.token_urlsafe(32)
+    row.secret_hash = hash_client_secret(raw_secret)
+    row.key_prefix = f"an_{secrets.token_hex(4)}"
+    await db.commit()
+    await db.refresh(row)
+    return {**_client_as_dict(row), "secret": raw_secret, "warning": "The previous key stopped working."}
+
+
+@router.post("/clients/{client_id}/revoke")
+async def revoke_client(client_id: uuid.UUID, db: DB, admin: AdminUser):
+    row = await db.get(AnalyticsClient, client_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Client not found")
+    row.status = "revoked"
+    await db.commit()
+    await db.refresh(row)
+    return _client_as_dict(row)
 
 
 # ───────────────────────────── creatives ────────────────────────────
