@@ -3,8 +3,8 @@
     <AinerwiseImmersiveHero
       background-image="/images/brand/ainerwise-grand-building.svg"
       :eyebrow="$t('home.heroKicker')"
-      :title="$t('home.heroTitle')"
-      :subtitle="$t('home.heroSubtitle')"
+      :title="$t('home.stageTitle')"
+      :subtitle="$t('home.stageSubtitle')"
       :badges="stageBadges"
       :stats="stageSignals"
       :nodes="heroSignals"
@@ -17,7 +17,7 @@
       <template #aside>
         <div class="aw-home-command">
           <div class="aw-home-command__header">
-            <p>{{ $t('home.stageTitle') }}</p>
+            <p>{{ $t('home.hubCore') }}</p>
             <span>{{ $t('home.stageCredit') }}</span>
           </div>
           <BuildingBrainMap compact />

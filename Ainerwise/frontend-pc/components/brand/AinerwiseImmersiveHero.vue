@@ -27,10 +27,10 @@
           </div>
 
           <p v-if="eyebrow" class="aw-hero-eyebrow">{{ eyebrow }}</p>
-          <h1 class="mt-4 max-w-5xl text-4xl font-black leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
+          <h1 class="aw-hero-title mt-4 max-w-4xl font-black text-white">
             {{ title }}
           </h1>
-          <p v-if="subtitle" class="mt-6 max-w-3xl text-lg leading-relaxed text-emerald-50/88 lg:text-2xl">
+          <p v-if="subtitle" class="aw-hero-subtitle mt-6 max-w-3xl">
             {{ subtitle }}
           </p>
 
@@ -116,22 +116,23 @@ withDefaults(
 .aw-immersive-hero {
   min-height: 690px;
   background:
-    radial-gradient(circle at 74% 28%, rgba(16, 185, 129, .22), transparent 34%),
-    linear-gradient(135deg, #020617, #05231d 52%, #020617);
+    radial-gradient(circle at 78% 24%, rgba(34, 197, 94, .18), transparent 32%),
+    radial-gradient(circle at 16% 68%, rgba(14, 165, 233, .1), transparent 32%),
+    linear-gradient(135deg, #020617, #04130f 52%, #020617);
 }
 .aw-immersive-hero__bg {
   background-size: cover;
   background-position: center;
-  opacity: .92;
-  transform: scale(1.015);
+  opacity: .88;
+  transform: scale(1.01);
 }
 .aw-immersive-hero__bg::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 58% 50% at 30% 48%, rgba(2, 6, 23, .2), rgba(2, 6, 23, .72) 68%, rgba(2, 6, 23, .86)),
-    linear-gradient(90deg, rgba(2, 6, 23, .82), rgba(2, 6, 23, .3) 47%, rgba(2, 6, 23, .74));
+    radial-gradient(ellipse 58% 54% at 26% 50%, rgba(2, 6, 23, .08), rgba(2, 6, 23, .58) 66%, rgba(2, 6, 23, .88)),
+    linear-gradient(90deg, rgba(2, 6, 23, .88), rgba(2, 6, 23, .42) 48%, rgba(2, 6, 23, .76));
 }
 .aw-immersive-hero__grid {
   background-image:
@@ -139,6 +140,7 @@ withDefaults(
     linear-gradient(90deg, rgba(209, 250, 229, .08) 1px, transparent 1px);
   background-size: 84px 84px;
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .8), transparent 92%);
+  opacity: .55;
 }
 .aw-immersive-hero__beam {
   position: absolute;
@@ -174,6 +176,19 @@ withDefaults(
   height: 2px;
   background: #6ee7b7;
   box-shadow: 0 0 18px rgba(110, 231, 183, .9);
+}
+.aw-hero-title {
+  font-size: clamp(3rem, 5.7vw, 5.7rem);
+  line-height: .98;
+  letter-spacing: -.055em;
+  text-wrap: balance;
+  text-shadow: 0 28px 80px rgba(0, 0, 0, .42);
+}
+.aw-hero-subtitle {
+  color: rgba(236, 253, 245, .84);
+  font-size: clamp(1.05rem, 1.45vw, 1.42rem);
+  line-height: 1.72;
+  text-shadow: 0 18px 60px rgba(0, 0, 0, .38);
 }
 .aw-hero-pill {
   display: inline-flex;
@@ -321,5 +336,9 @@ withDefaults(
 @media (max-width: 1023px) {
   .aw-orbit { display: none; }
   .aw-hero-panel { margin-top: 0; }
+}
+@media (max-width: 640px) {
+  .aw-immersive-hero { min-height: 620px; }
+  .aw-hero-title { font-size: clamp(2.45rem, 12vw, 3.5rem); }
 }
 </style>

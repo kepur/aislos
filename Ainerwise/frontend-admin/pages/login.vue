@@ -46,6 +46,9 @@ const preferredPortalByMode: Record<string, string> = {
 onMounted(async () => {
   if (import.meta.client) {
     document.documentElement.classList.remove('theme-light')
+    document.documentElement.classList.add('theme-dark')
+    document.documentElement.dataset.adminTheme = 'dark'
+    document.documentElement.style.colorScheme = 'dark'
   }
 })
 

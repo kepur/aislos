@@ -8,6 +8,9 @@ export function useAdminTheme() {
   function applyTheme(value: AdminTheme) {
     if (!import.meta.client) return
     document.documentElement.classList.toggle('theme-light', value === 'light')
+    document.documentElement.classList.toggle('theme-dark', value === 'dark')
+    document.documentElement.dataset.adminTheme = value
+    document.documentElement.style.colorScheme = value
     localStorage.setItem(STORAGE_KEY, value)
   }
 

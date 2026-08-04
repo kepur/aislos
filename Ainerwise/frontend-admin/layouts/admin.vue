@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-layout min-h-screen flex" :class="{ 'theme-light': isLight }">
+  <div class="admin-layout min-h-screen flex" :class="themeClass">
     <!-- Sidebar -->
     <AdminSidebar />
 
@@ -68,6 +68,7 @@ definePageMeta({ middleware: 'admin' })
 const { user, logout } = useAuth()
 const { isLight } = useAdminTheme()
 const mobileOpen = ref(false)
+const themeClass = computed(() => (isLight.value ? 'theme-light' : 'theme-dark'))
 
 const userInitial = computed(() => {
   const name = user.value?.full_name || user.value?.email || 'A'
@@ -79,6 +80,12 @@ const currentPage = usePageTitle()
 
 <style scoped>
 .admin-layout {
+  background: linear-gradient(135deg, #0a0f1e 0%, #0d1325 50%, #0f172a 100%);
+}
+.admin-layout.theme-light {
+  background: #f8fafc;
+}
+.admin-layout.theme-dark {
   background: linear-gradient(135deg, #0a0f1e 0%, #0d1325 50%, #0f172a 100%);
 }
 .admin-topbar {

@@ -36,7 +36,7 @@ export default defineNuxtConfig({
       script: [
         {
           key: 'admin-theme-init',
-          innerHTML: `(function(){try{if(location.pathname==='/login')return;var t=localStorage.getItem('admin-theme');if(t==='light')document.documentElement.classList.add('theme-light')}catch(e){}})();`,
+          innerHTML: `(function(){try{var t=location.pathname==='/login'?'dark':localStorage.getItem('admin-theme');t=t==='light'?'light':'dark';document.documentElement.classList.toggle('theme-light',t==='light');document.documentElement.classList.toggle('theme-dark',t==='dark');document.documentElement.dataset.adminTheme=t;document.documentElement.style.colorScheme=t}catch(e){}})();`,
           type: 'text/javascript',
         },
       ],

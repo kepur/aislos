@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-layout min-h-screen flex" :class="{ 'theme-light': isLight }">
+  <div class="admin-layout min-h-screen flex" :class="themeClass">
     <!-- Sidebar -->
     <AdminSidebar />
 
@@ -49,6 +49,7 @@ const { user, logout, isLoggedIn, isAdmin } = useAuth()
 const { isLight } = useAdminTheme()
 const { portal: legacyPortal } = usePortalMode()
 const { manifest } = usePortalManifest()
+const themeClass = computed(() => (isLight.value ? 'theme-light' : 'theme-dark'))
 const portal = computed(() => ({
   shortName: manifest.value?.display_name || legacyPortal.shortName,
 }))
@@ -68,6 +69,12 @@ watch(user, (val) => {
 
 <style scoped>
 .admin-layout {
+  background: linear-gradient(135deg, #0a0f1e 0%, #0d1325 50%, #0f172a 100%);
+}
+.admin-layout.theme-light {
+  background: #f8fafc;
+}
+.admin-layout.theme-dark {
   background: linear-gradient(135deg, #0a0f1e 0%, #0d1325 50%, #0f172a 100%);
 }
 .admin-topbar {

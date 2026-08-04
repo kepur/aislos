@@ -301,20 +301,59 @@
   }
 
   /* === Light Theme Overrides === */
+  html.theme-light,
+  html.theme-light body {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    color-scheme: light;
+  }
+  html.theme-dark,
+  html.theme-dark body {
+    background: #020617 !important;
+    color: #e2e8f0 !important;
+    color-scheme: dark;
+  }
+  html.theme-light .admin-app,
+  .admin-app.theme-light,
+  html.theme-light .admin-layout,
+  .theme-light .admin-layout,
+  .admin-layout.theme-light {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+  }
+  html.theme-dark .admin-app,
+  .admin-app.theme-dark,
+  html.theme-dark .admin-layout,
+  .admin-layout.theme-dark {
+    background: linear-gradient(135deg, #0a0f1e 0%, #0d1325 50%, #0f172a 100%) !important;
+    color: #e2e8f0 !important;
+  }
+  html.theme-light .admin-layout main,
+  .admin-layout.theme-light main {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+  }
   .theme-light.admin-layout {
     background: #f8fafc !important;
   }
+  html.theme-light .admin-topbar,
+  .admin-layout.theme-light .admin-topbar,
   .theme-light .admin-topbar {
     background: rgba(255,255,255,0.92) !important;
     backdrop-filter: blur(12px) !important;
     border-bottom: 1px solid #e2e8f0 !important;
   }
+  html.theme-light .admin-sidebar,
+  .admin-layout.theme-light .admin-sidebar,
   .theme-light .admin-sidebar {
     background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
     border-right: 1px solid #e2e8f0 !important;
     box-shadow: 2px 0 10px rgba(0,0,0,0.03) !important;
   }
 
+  .theme-light .text-slate-100 {
+    color: #0f172a !important;
+  }
   .theme-light .text-white {
     color: #0f172a !important;
   }
@@ -349,6 +388,50 @@
   .theme-light .bg-white\/\[0\.02\] {
     background-color: #f8fafc !important;
   }
+  html.theme-light .admin-layout .bg-slate-950,
+  html.theme-light .admin-layout .bg-slate-900,
+  html.theme-light .admin-layout .bg-slate-800,
+  html.theme-light .admin-layout .bg-slate-950\/80,
+  html.theme-light .admin-layout .bg-slate-950\/70,
+  html.theme-light .admin-layout .bg-slate-900\/95,
+  html.theme-light .admin-layout .bg-slate-900\/90,
+  html.theme-light .admin-layout .bg-slate-900\/80,
+  html.theme-light .admin-layout .bg-slate-900\/70,
+  html.theme-light .admin-layout .bg-slate-900\/60,
+  html.theme-light .admin-layout .bg-slate-900\/50,
+  html.theme-light .admin-layout .bg-slate-800\/80,
+  html.theme-light .admin-layout .bg-slate-800\/60,
+  html.theme-light .admin-layout .bg-slate-800\/50,
+  .admin-layout.theme-light .bg-slate-950,
+  .admin-layout.theme-light .bg-slate-900,
+  .admin-layout.theme-light .bg-slate-800,
+  .admin-layout.theme-light .bg-slate-950\/80,
+  .admin-layout.theme-light .bg-slate-950\/70,
+  .admin-layout.theme-light .bg-slate-900\/95,
+  .admin-layout.theme-light .bg-slate-900\/90,
+  .admin-layout.theme-light .bg-slate-900\/80,
+  .admin-layout.theme-light .bg-slate-900\/70,
+  .admin-layout.theme-light .bg-slate-900\/60,
+  .admin-layout.theme-light .bg-slate-900\/50,
+  .admin-layout.theme-light .bg-slate-800\/80,
+  .admin-layout.theme-light .bg-slate-800\/60,
+  .admin-layout.theme-light .bg-slate-800\/50 {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    backdrop-filter: none !important;
+  }
+  html.theme-light .admin-layout .from-slate-950,
+  .admin-layout.theme-light .from-slate-950 {
+    --tw-gradient-from: #f8fafc !important;
+    --tw-gradient-to: rgba(248, 250, 252, 0) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+  }
+  html.theme-light .admin-layout .to-slate-900,
+  html.theme-light .admin-layout .to-slate-950,
+  .admin-layout.theme-light .to-slate-900,
+  .admin-layout.theme-light .to-slate-950 {
+    --tw-gradient-to: #f8fafc !important;
+  }
   .theme-light .hover\:bg-white\/5:hover {
     background-color: #e2e8f0 !important;
   }
@@ -369,6 +452,24 @@
     border-color: #e2e8f0 !important;
   }
   .theme-light .border-white\/\[0\.06\] {
+    border-color: #e2e8f0 !important;
+  }
+  html.theme-light .admin-layout .border-slate-950,
+  html.theme-light .admin-layout .border-slate-900,
+  html.theme-light .admin-layout .border-slate-800,
+  html.theme-light .admin-layout .border-slate-700,
+  html.theme-light .admin-layout .border-slate-700\/70,
+  html.theme-light .admin-layout .border-slate-700\/60,
+  html.theme-light .admin-layout .border-slate-700\/50,
+  html.theme-light .admin-layout .border-slate-600,
+  .admin-layout.theme-light .border-slate-950,
+  .admin-layout.theme-light .border-slate-900,
+  .admin-layout.theme-light .border-slate-800,
+  .admin-layout.theme-light .border-slate-700,
+  .admin-layout.theme-light .border-slate-700\/70,
+  .admin-layout.theme-light .border-slate-700\/60,
+  .admin-layout.theme-light .border-slate-700\/50,
+  .admin-layout.theme-light .border-slate-600 {
     border-color: #e2e8f0 !important;
   }
   .theme-light .hover\:border-white\/10:hover {
