@@ -56,7 +56,22 @@
     "opMatchText": "Match protocols, regions, certifications, intelligence levels, compatibility, spare parts, and service readiness.",
     "opDeliver": "Deliver",
     "opDeliverTitle": "Local implementation and lifecycle support",
-    "opDeliverText": "Turn the concept into design, sourcing, installation, commissioning, maintenance, and long-term upgrade paths."
+    "opDeliverText": "Turn the concept into design, sourcing, installation, commissioning, maintenance, and long-term upgrade paths.",
+    "stageTitle": "AI for the physical world.",
+    "stageSubtitle": "Smart hardware, sensors, energy, security, procurement and an AI brain working as one.",
+    "stageCredit": "AinerWise motion layer · AI + hardware operating system",
+    "stageBadge1": "Smart buildings",
+    "stageBadge2": "AI procurement",
+    "stageBadge3": "Hardware + brain",
+    "stageSignal1Value": "1",
+    "stageSignal1Label": "customer brand",
+    "stageSignal2Value": "AI",
+    "stageSignal2Label": "analysis to BOQ",
+    "stageSignal3Value": "OS",
+    "stageSignal3Label": "procure, deliver, maintain",
+    "layersEyebrow": "Beyond a smart-home website",
+    "layersTitle": "AinerWise is the customer experience. AISLOS is the operating system behind it.",
+    "layersSubtitle": "Smart standards connect devices. AinerWise connects AI conversation, hardware selection, procurement, installation, evidence, warranty and recurring service."
   },
   "intelligence": {
     "l1": "Connected Building",

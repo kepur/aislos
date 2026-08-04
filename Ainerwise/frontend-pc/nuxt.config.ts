@@ -54,6 +54,10 @@ export default defineNuxtConfig({
       agentUrl: process.env.NUXT_PUBLIC_AGENT_URL || 'http://localhost:4093',
       // AISLOS Market (standalone procurement product). Official site links out here.
       marketUrl: process.env.NUXT_PUBLIC_MARKET_URL || 'http://market.localhost',
+      // Use self-owned footage only. Defaults point at generated/local assets
+      // and safely fall back to the in-house 3D scene if absent.
+      homeHeroVideoWebm: process.env.NUXT_PUBLIC_HOME_HERO_VIDEO_WEBM || '/videos/ainerwise-smart-building-hero.webm',
+      homeHeroVideoMp4: process.env.NUXT_PUBLIC_HOME_HERO_VIDEO_MP4 || '',
     },
   },
 

@@ -6,6 +6,9 @@
       :eyebrow="$t('home.heroKicker')"
       :title="$t('home.stageTitle')"
       :subtitle="$t('home.stageSubtitle')"
+      :video-sources="heroVideoSources"
+      :badges="stageBadges"
+      :signals="stageSignals"
       primary-to="/submit-requirement"
       :primary-label="$t('home.heroCta1')"
       secondary-to="/ai-building-brain"
@@ -13,7 +16,7 @@
       :credit="$t('home.stageCredit')"
     />
 
-    <section class="text-white">
+    <section class="text-white knx-on-dark">
       <div class="container-main px-4 sm:px-6 lg:px-8 pt-14 lg:pt-20">
         <div class="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 items-center">
           <div class="pb-8 lg:pb-16 glass-panel p-8">
@@ -55,6 +58,11 @@
 
     <section class="section-padding">
       <div class="container-main">
+        <div class="mb-10 max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-wider text-primary-400">{{ $t('home.layersEyebrow') }}</p>
+          <h2 class="mt-3 text-2xl sm:text-3xl font-bold text-white">{{ $t('home.layersTitle') }}</h2>
+          <p class="mt-3 text-slate-300">{{ $t('home.layersSubtitle') }}</p>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div v-for="item in operatingModel" :key="item.kicker" class="glass-panel p-6 hover:border-primary-500/50 transition">
             <p class="text-xs font-semibold uppercase tracking-wider text-primary-400">{{ item.kicker }}</p>
@@ -253,6 +261,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const { apiFetch } = useApi()
+const publicConfig = useRuntimeConfig().public
 
 // Left of the hub: the supply chain we actually source from. Right: the
 // building systems we integrate. Both are ours — no third-party marks.
@@ -275,7 +284,11 @@ const hubSystems = computed(() => [
   { icon: 'automation', label: t('home.sysScenes') },
   { icon: 'network', label: t('home.sysNetwork') },
 ])
-const marketUrl = useRuntimeConfig().public.marketUrl as string
+const marketUrl = publicConfig.marketUrl as string
+const heroVideoSources = computed(() => [
+  { src: publicConfig.homeHeroVideoWebm as string, type: 'video/webm' },
+  { src: publicConfig.homeHeroVideoMp4 as string, type: 'video/mp4' },
+].filter((source) => source.src))
 
 const solutions = ref<any[]>([])
 const servicePackages = ref<any[]>([])
@@ -284,12 +297,24 @@ const solutionsError = ref('')
 const servicesError = ref('')
 
 const heroSignals = [
-  'Buildings + Energy',
-  'Cold Chain + Storage',
-  'Kitchen + Water Safety',
-  'Assets + Industrial',
-  'Compliance + AMC',
+  'AI Need Analysis',
+  'Smart Hardware',
+  'Procurement OS',
+  'Partner Delivery',
+  'AMC + Support',
 ]
+
+const stageBadges = computed(() => [
+  t('home.stageBadge1'),
+  t('home.stageBadge2'),
+  t('home.stageBadge3'),
+])
+
+const stageSignals = computed(() => [
+  { value: t('home.stageSignal1Value'), label: t('home.stageSignal1Label') },
+  { value: t('home.stageSignal2Value'), label: t('home.stageSignal2Label') },
+  { value: t('home.stageSignal3Value'), label: t('home.stageSignal3Label') },
+])
 
 const TAG_FLAGSHIP = 'bg-cyan-500/15 text-cyan-300'
 const TAG_NOW = 'bg-emerald-500/15 text-emerald-300'

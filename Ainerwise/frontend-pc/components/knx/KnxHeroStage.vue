@@ -85,16 +85,24 @@
          render the block live, which stays ours, weighs no megabytes and
          re-colours with the brand. Client-only: WebGL has no server render. -->
     <video
-      v-if="videoSrc"
+      v-if="shouldRenderVideo"
       class="knx-stage-art absolute inset-0 h-full w-full object-cover"
-      :src="videoSrc"
       autoplay
       muted
       loop
       playsinline
+      preload="metadata"
       aria-hidden="true"
       @playing="sceneLive = true"
-    />
+      @error="handleVideoError"
+    >
+      <source
+        v-for="source in normalizedVideoSources"
+        :key="source.src"
+        :src="source.src"
+        :type="source.type"
+      >
+    </video>
     <ClientOnly v-else>
       <KnxHeroScene3D @ready="sceneLive = true" />
     </ClientOnly>
@@ -105,6 +113,9 @@
 
     <!-- Copy -->
     <div class="relative flex min-h-[560px] flex-col items-center justify-center px-4 py-24 text-center sm:px-6 lg:min-h-[660px] lg:py-32">
+      <div v-if="badges.length" class="mb-4 flex flex-wrap items-center justify-center gap-2">
+        <span v-for="badge in badges" :key="badge" class="knx-stage-badge">{{ badge }}</span>
+      </div>
       <span v-if="eyebrow" class="knx-stage-eyebrow">{{ eyebrow }}</span>
       <h1 class="knx-stage-title mt-4 max-w-5xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-7xl">
         {{ title }}
@@ -118,6 +129,13 @@
         </NuxtLink>
         <NuxtLink v-if="secondaryTo" :to="secondaryTo" class="knx-stage-ghost">{{ secondaryLabel }}</NuxtLink>
       </div>
+
+      <div v-if="signals.length" class="knx-stage-signal-grid mt-10 grid w-full max-w-4xl grid-cols-1 gap-3 sm:grid-cols-3">
+        <div v-for="signal in signals" :key="signal.label" class="knx-stage-signal">
+          <strong>{{ signal.value }}</strong>
+          <span>{{ signal.label }}</span>
+        </div>
+      </div>
     </div>
 
     <!-- Credit line, mirroring how project photography is attributed -->
@@ -128,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title: string
     subtitle?: string
@@ -139,17 +157,32 @@ withDefaults(
     secondaryLabel?: string
     credit?: string
     /**
-     * Path to a hero film we hold the rights to (e.g. '/media/hero.mp4').
-     * Left unset the section renders the 3D block instead — so footage can be
-     * dropped in later without touching this component.
+     * Hero films we hold the rights to (for example WebM + MP4 fallbacks).
+     * Left empty, or if every source fails, the stage renders the in-house 3D
+     * block so the homepage never goes dark.
      */
-    videoSrc?: string
+    videoSources?: Array<{ src: string; type?: string }>
+    badges?: string[]
+    signals?: Array<{ value: string; label: string }>
   }>(),
-  { secondaryLabel: '' }
+  {
+    secondaryLabel: '',
+    videoSources: () => [],
+    badges: () => [],
+    signals: () => [],
+  }
 )
 
 /** True once a moving layer is actually on screen; retires the poster. */
 const sceneLive = ref(false)
+const motionFailed = ref(false)
+const normalizedVideoSources = computed(() => props.videoSources.filter((source) => source.src))
+const shouldRenderVideo = computed(() => normalizedVideoSources.value.length > 0 && !motionFailed.value)
+
+function handleVideoError() {
+  motionFailed.value = true
+  sceneLive.value = false
+}
 
 /** Diamond lattice across the tower face. */
 const diagrid = (() => {
@@ -216,6 +249,13 @@ const litWindows = windows.filter((_, i) => [3, 9, 14, 22, 27, 35, 41, 48, 55, 6
   background: rgba(74, 222, 128, .16);
   color: #86efac;
 }
+.knx-stage-badge {
+  @apply rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em];
+  background: rgba(8, 47, 73, .42);
+  border-color: rgba(103, 232, 249, .22);
+  color: rgba(207, 250, 254, .92);
+  box-shadow: 0 12px 28px rgba(3, 7, 18, .22);
+}
 
 .knx-stage-cta {
   @apply inline-flex items-center gap-3 rounded-full py-4 pl-8 pr-3 text-base font-semibold transition;
@@ -233,8 +273,21 @@ const litWindows = windows.filter((_, i) => [3, 9, 14, 22, 27, 35, 41, 48, 55, 6
   border-color: rgba(255, 255, 255, .4);
 }
 .knx-stage-ghost:hover { background: rgba(255, 255, 255, .12); }
+.knx-stage-signal {
+  @apply rounded-2xl border px-5 py-4 text-left backdrop-blur-md;
+  background: linear-gradient(135deg, rgba(15, 23, 42, .52), rgba(6, 78, 59, .28));
+  border-color: rgba(255, 255, 255, .16);
+  box-shadow: 0 18px 36px rgba(3, 7, 18, .24);
+}
+.knx-stage-signal strong {
+  @apply block text-lg font-bold text-white;
+}
+.knx-stage-signal span {
+  @apply mt-1 block text-xs font-medium uppercase tracking-[0.16em] text-emerald-100/70;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .knx-stage-outline { animation: none; opacity: .85; }
+  .knx-stage-art { transition: none; }
 }
 </style>

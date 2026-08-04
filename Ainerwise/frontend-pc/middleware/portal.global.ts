@@ -10,6 +10,19 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const localePrefix = getLocalePrefixFromPath(to.path)
   const path = stripLocalePrefix(to.path)
   const localized = (target: string) => localePrefix ? withLocalePrefix(target, localePrefix) : target
+  const publicAssetPrefixes = ['/_nuxt/', '/videos/', '/images/', '/img/', '/icons/', '/fonts/']
+  const publicAssetFiles = [
+    '/favicon.ico',
+    '/robots.txt',
+    '/sitemap.xml',
+    '/manifest.webmanifest',
+    '/site.webmanifest',
+    '/apple-touch-icon.png',
+  ]
+
+  if (publicAssetPrefixes.some(prefix => path.startsWith(prefix)) || publicAssetFiles.includes(path)) {
+    return
+  }
 
   if (path === '/' && isCebuHost) return navigateTo(localized('/market'))
   if (path === '/' && mode !== 'aislos') return navigateTo(localized(portal.home))
