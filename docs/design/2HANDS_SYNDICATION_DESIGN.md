@@ -327,3 +327,40 @@ P0 先跑起来收钱,P1/P2 才是护城河。**不要在 P0 就做 AI 和自动
 ### P1 仍缺(不影响使用)
 - **Celery 队列化 + 每渠道限流** —— 当前推流同步执行,小批量够用;批量上量必须异步化,否则请求会超时
 - 渠道回拉浏览/联系数(`fetch_stats`),这是 P2 分析的输入之一
+
+---
+
+## P2 落地记录(2026-07-06):分析事件脊柱
+
+**约束照旧:纯增量。** 原版系统只多了 14 行,全是注册(路由 include、模型导出、Celery imports/schedule),**零业务逻辑改动**。全量 425 测试通过。
+
+| 项 | 产出 |
+|---|---|
+| Schema | 新增第四个 schema `analytics`:`events`(append-only 脊柱)、`creatives`(广告图/文案变体)、`projection_cursors`(投影水位线)。迁移 082 |
+| 记录服务 | `record_event` 幂等 + `record_event_safe` 尽力而为(分析故障绝不影响成交) |
+| 埋点 | 2Hands 全链路(曝光/浏览/索要地址/授权/预订/成交)+ 推流(渠道发布/下架)。**都在自有代码内** |
+| **原版接入** | `analytics_projection.py` 按水位线读 `integration_events` 投影 —— **既有生产者一行不改**,`source_app='core'`。Celery beat 每 60s |
+| 读 API | `/analytics/funnel`、`/sku`、`/channel`、`/creative`、`/health`,外加 `/events` 批量摄取与 `/creatives` 管理 |
+
+### 实测能回答的三个问题
+```
+问题一 哪些SKU好卖    Laptop 浏览5 线索1 成交1 收入550EUR 看→问20%  |  Phone 浏览2 线索0 成交0
+问题二 哪个渠道转化高  Our storefront 浏览7 线索1 成交1 ...(推流渠道带来的流量按 channel_account_id 归因)
+问题三 哪张图CTR高     场景使用图(AI) 曝光100 点击12 CTR=12.0%  |  白底正面图(人工) 100/3 CTR=3.0%
+漏斗                  曝光10 → 浏览7(70%) → 索要地址1(14.3%) → 预订1(100%) → 成交
+```
+
+### 关键设计选择
+- **按需聚合,不物化**:当前量级 Postgres 走复合索引毫秒级返回,且实时查询不会过期或与事件漂移。等看板真的慢了再物化 —— 事件粒度不变,随时可加。
+- **GDPR**:`actor_hash` 用 app secret 加盐单向哈希(测试断言不可逆),`session_id` 是浏览器本地生成的不透明 token。不存任何原始访客 PII,所以数据可长期保留。
+- **幂等**:`idempotency_key` 唯一索引。重放批次返回 `duplicates` 计数而非重复计收入(已测)。
+
+### 测试中发现并修正的三个缺陷
+1. **`source_app` 可为空** → 外部摄取全落 "unknown",跨项目归因(这个 API 存在的理由)直接失效。已改为**批次级必填**。
+2. **漏斗转化率 >100% 显示为裸数字** → 外部渠道成交本就不经过我方浏览/预订步骤,200% 是真实的,但看板上像算错。已加 `exceeds_previous_step` 标记,让 UI 能注明"含未经上游追踪的活动"。
+3. **漏斗顶端恒为 0** → 浏览列表没埋点,缺曝光就没有"多少人看过才点进来"的分母。已在浏览接口埋点,前端配发本地 `session_id`。
+
+### P2 仍缺
+- **开放 API 的 API Key**(外部项目接入现在复用登录态;`MarketingIntegrationClient` 的 key_prefix/secret_hash/scopes 模式可直接照搬)
+- 后台分析看板 UI(现有只有 API)
+- 渠道回拉浏览/联系数(`fetch_stats`),让外部渠道的曝光也进漏斗

@@ -115,6 +115,11 @@ from app.models.syndication import (
     ChannelCategoryMap,
     ChannelListing,
 )
+from app.models.analytics import (
+    AnalyticsEvent,
+    AnalyticsProjectionCursor,
+    Creative,
+)
 from app.models.field_service import (
     PartnerCrew,
     CrewMembership,
@@ -216,4 +221,5 @@ __all__ = [
     "CommerceSettlement", "CommerceReconciliationRun",
     "SecondhandListing", "SecondhandAddressDisclosure", "SecondhandDeal",
     "ChannelListing", "ChannelCategoryMap",
+    "AnalyticsEvent", "Creative", "AnalyticsProjectionCursor",
 ]

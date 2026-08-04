@@ -197,6 +197,8 @@ async function load(reset = false) {
   }
   try {
     const params: Record<string, any> = { page: page.value, page_size: 24, sort: filters.sort }
+    const session = useSessionId()
+    if (session) params.session_id = session
     if (filters.keyword) params.keyword = filters.keyword
     if (filters.condition) params.condition = filters.condition
     if (filters.city) params.city = filters.city

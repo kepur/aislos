@@ -29,6 +29,7 @@ from app.models.syndication import (
     ChannelListing,
 )
 from app.models.user import Company
+from app.services.analytics import record_event_safe
 from app.services.syndication import (
     get_driver,
     map_listing_to_payload,
@@ -382,6 +383,20 @@ async def publish_listing(
         row.payload_json = payload.as_dict()
         row.last_synced_at = _now()
 
+        if row.status == "published":
+            # Channel attribution starts here: everything that later happens
+            # to this listing can be compared against where it was published.
+            await record_event_safe(
+                db,
+                "channel.published",
+                listing_id=listing.id,
+                channel_account_id=account.id,
+                region_id=account.region_id,
+                source_app="syndication",
+                idempotency_key=f"channel.published:{row.id}:{content_hash}",
+                meta={"channel": account.channel},
+            )
+
         results.append(
             {
                 **_channel_listing_as_dict(row),
@@ -500,6 +515,15 @@ async def delist_listing(listing_id: uuid.UUID, db: DB, user: CurrentUser):
             row.last_error = str(exc)[:2000]
         row.delisted_at = _now()
         row.last_synced_at = _now()
+        await record_event_safe(
+            db,
+            "channel.delisted",
+            listing_id=listing_id,
+            channel_account_id=account.id,
+            region_id=account.region_id,
+            source_app="syndication",
+            meta={"channel": account.channel, "status": row.status},
+        )
         results.append(
             {
                 **_channel_listing_as_dict(row),

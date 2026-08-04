@@ -256,7 +256,10 @@ const fulfillmentLabel = computed(
 async function loadItem() {
   pending.value = true
   try {
-    item.value = await api<any>(`/secondhand/listings/${route.params.id}`)
+    const session = useSessionId()
+    item.value = await api<any>(`/secondhand/listings/${route.params.id}`, {
+      params: session ? { session_id: session } : undefined,
+    })
     activeImage.value = item.value.images?.[0] || null
   } catch (err: any) {
     loadError.value = apiErrorMessage(err, 'This listing is no longer available')

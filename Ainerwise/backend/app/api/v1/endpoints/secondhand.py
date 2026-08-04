@@ -32,7 +32,11 @@ from app.models.secondhand import (
     SecondhandListing,
 )
 from app.models.user import Company, User
+from app.services.analytics import record_event_safe
 from app.services.syndication import delist_listing_everywhere
+
+PORTAL_KEY = "secondhand"
+SOURCE_APP = "2hands"
 
 router = APIRouter(prefix="/secondhand", tags=["secondhand"])
 
@@ -231,6 +235,7 @@ async def browse_listings(
     price_min_minor: int | None = None,
     price_max_minor: int | None = None,
     sort: str = Query(default="newest"),
+    session_id: str | None = Query(default=None),
 ):
     stmt = (
         select(SupplierListing, SecondhandListing, Company.name)
@@ -266,6 +271,21 @@ async def browse_listings(
         (await db.execute(stmt.order_by(order).offset((page - 1) * page_size).limit(page_size))).all()
     )
     items = [_public_listing(listing, detail, name) for listing, detail, name in rows]
+
+    # Top of the funnel: every listing actually shown to someone. Without this
+    # there is no denominator for "how many people saw it before clicking".
+    for listing, _detail, _name in rows:
+        await record_event_safe(
+            db,
+            "listing.impression",
+            listing_id=listing.id,
+            portal_key=PORTAL_KEY,
+            source_app=SOURCE_APP,
+            session_id=session_id,
+            meta={"page": page, "keyword": keyword or None},
+        )
+    await db.commit()
+
     return {
         "items": items,
         "total": total,
@@ -276,11 +296,20 @@ async def browse_listings(
 
 
 @router.get("/listings/{listing_id}")
-async def listing_detail(listing_id: uuid.UUID, db: DB):
+async def listing_detail(listing_id: uuid.UUID, db: DB, session_id: str | None = Query(default=None)):
     listing, detail = await _load_pair(db, listing_id)
     company_name = (
         await db.execute(select(Company.name).where(Company.id == listing.company_id))
     ).scalar_one_or_none()
+    await record_event_safe(
+        db,
+        "listing.view",
+        listing_id=listing.id,
+        portal_key=PORTAL_KEY,
+        source_app=SOURCE_APP,
+        session_id=session_id,
+        commit=True,
+    )
     return _public_listing(listing, detail, company_name)
 
 
@@ -357,6 +386,17 @@ async def create_listing(data: ListingCreate, db: DB, user: CurrentUser):
         quantity=1,
     )
     db.add(detail)
+    await record_event_safe(
+        db,
+        "listing.published",
+        listing_id=listing.id,
+        portal_key=PORTAL_KEY,
+        source_app=SOURCE_APP,
+        actor_id=user.id,
+        value_minor=listing.price_minor,
+        currency=listing.currency,
+        meta={"condition_grade": detail.condition_grade, "city": detail.pickup_city},
+    )
     await db.commit()
     await db.refresh(listing)
     await db.refresh(detail)
@@ -455,6 +495,16 @@ async def request_disclosure(
         reason=data.message,
     )
     db.add(row)
+    # An address request is the real lead signal on 2Hands — a buyer only asks
+    # when they intend to collect.
+    await record_event_safe(
+        db,
+        "contact.requested",
+        listing_id=listing.id,
+        portal_key=PORTAL_KEY,
+        source_app=SOURCE_APP,
+        actor_id=user.id,
+    )
     await db.commit()
     await db.refresh(row)
     return {"id": row.id, "status": row.status}
@@ -513,6 +563,14 @@ async def grant_disclosure(
     row.granted_by_user_id = user.id
     if data.reason:
         row.reason = data.reason
+    await record_event_safe(
+        db,
+        "contact.granted",
+        listing_id=listing.id,
+        portal_key=PORTAL_KEY,
+        source_app=SOURCE_APP,
+        actor_id=row.buyer_user_id,
+    )
     await db.commit()
     await db.refresh(row)
     return {"id": row.id, "status": row.status, "disclosed_fields": fields}
@@ -629,6 +687,16 @@ async def reserve(listing_id: uuid.UUID, data: DealCreate, db: DB, user: Current
         note=data.note,
     )
     db.add(deal)
+    await record_event_safe(
+        db,
+        "deal.reserved",
+        listing_id=listing.id,
+        portal_key=PORTAL_KEY,
+        source_app=SOURCE_APP,
+        actor_id=user.id,
+        value_minor=deal.agreed_price_minor,
+        currency=deal.currency,
+    )
     await db.commit()
     await db.refresh(deal)
     return _deal_as_dict(deal)
@@ -668,6 +736,19 @@ async def confirm_pickup(deal_id: uuid.UUID, data: PickupConfirm, db: DB, user: 
     detail.sold_at = detail.sold_at or _now()
     listing.status = "sold"
 
+    # Idempotent: confirming twice must not double-count revenue.
+    await record_event_safe(
+        db,
+        "deal.completed",
+        listing_id=listing.id,
+        portal_key=PORTAL_KEY,
+        source_app=SOURCE_APP,
+        actor_id=deal.buyer_user_id,
+        value_minor=deal.agreed_price_minor,
+        currency=deal.currency,
+        idempotency_key=f"deal.completed:{deal.id}",
+        meta={"payment_method": deal.payment_method, "fulfillment_mode": deal.fulfillment_mode},
+    )
     await db.commit()
 
     # Best-effort fan-out. A syndication problem must never invalidate a

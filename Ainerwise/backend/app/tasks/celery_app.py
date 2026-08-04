@@ -30,6 +30,7 @@ celery_app.conf.update(
         "app.tasks.briefing_tasks",
         "app.tasks.publishing_tasks",
         "app.tasks.backup_tasks",
+        "app.tasks.analytics_tasks",
     ),
     # Queue split: `default` = user-facing latency (notifications, outbox relay),
     # `ai_ingestion` = heavy/backloggable embedding work,
@@ -48,6 +49,7 @@ celery_app.conf.update(
         "dispatch_publish_jobs": {"queue": "automation"},
         "generate_weekly_marketing_report": {"queue": "automation"},
         "run_due_backup_schedules": {"queue": "automation"},
+        "project_analytics_events": {"queue": "automation"},
     },
     # FI.8.4 / FI.8.5 — scheduled lifecycle automation (requires `celery beat`).
     beat_schedule={
@@ -62,6 +64,10 @@ celery_app.conf.update(
         "consume-domain-events": {
             "task": "consume_domain_events",
             "schedule": 30.0,  # stream -> automation handlers
+        },
+        "project-analytics-events": {
+            "task": "project_analytics_events",
+            "schedule": 60.0,  # outbox -> analytics spine (reporting latency)
         },
         "send-daily-briefing": {
             "task": "send_daily_briefing",

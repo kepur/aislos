@@ -25,6 +25,21 @@ export function useMoney() {
   }
 }
 
+/**
+ * Opaque per-browser id used only to group a visitor's own events together.
+ * Not linked to any identity and never sent anywhere but our own analytics.
+ */
+export function useSessionId(): string | null {
+  if (!import.meta.client) return null
+  const KEY = '2hands_session'
+  let id = localStorage.getItem(KEY)
+  if (!id) {
+    id = (crypto.randomUUID?.() || `s-${Date.now()}-${Math.random().toString(36).slice(2)}`).slice(0, 64)
+    localStorage.setItem(KEY, id)
+  }
+  return id
+}
+
 /** Thin wrapper so every call sends auth headers and surfaces API detail messages. */
 export function useApi() {
   const config = useRuntimeConfig()
