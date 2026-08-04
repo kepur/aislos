@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" role="img" aria-label="AinerWise smart building and AI network">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#061512"/>
+      <stop offset=".42" stop-color="#092b25"/>
+      <stop offset="1" stop-color="#020806"/>
+    </linearGradient>
+    <linearGradient id="tower" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4fff9"/>
+      <stop offset=".48" stop-color="#a8beb5"/>
+      <stop offset="1" stop-color="#526b62"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d8fff0" stop-opacity=".82"/>
+      <stop offset="1" stop-color="#0e5f50" stop-opacity=".82"/>
+    </linearGradient>
+    <linearGradient id="greenLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#34d399" stop-opacity="0"/>
+      <stop offset=".52" stop-color="#6ee7b7"/>
+      <stop offset="1" stop-color="#34d399" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <circle cx="1480" cy="170" r="360" fill="#11f59a" opacity=".08"/>
+  <circle cx="1250" cy="320" r="480" fill="#38bdf8" opacity=".06"/>
+  <path d="M0 745 C240 690 360 735 550 705 C780 670 980 620 1210 650 C1470 682 1600 735 1920 675 L1920 1080 L0 1080Z" fill="#071b17" opacity=".92"/>
+
+  <g opacity=".24" fill="#0b312a">
+    <rect x="70" y="540" width="110" height="500"/>
+    <rect x="225" y="610" width="150" height="430"/>
+    <rect x="1530" y="520" width="125" height="520"/>
+    <rect x="1688" y="600" width="155" height="440"/>
+  </g>
+
+  <g transform="translate(520 115)">
+    <path d="M120 120 L690 45 L885 185 L885 965 L120 965Z" fill="url(#tower)"/>
+    <path d="M690 45 L885 185 L1010 240 L1010 965 L885 965 L885 185Z" fill="#425b52"/>
+    <path d="M120 120 L690 45 L885 185" fill="none" stroke="#ecfff6" stroke-width="10" opacity=".72"/>
+    <g stroke="#ecfff6" stroke-width="5" opacity=".42">
+      <path d="M-70 965 L610 65"/>
+      <path d="M70 965 L750 65"/>
+      <path d="M210 965 L890 65"/>
+      <path d="M350 965 L1030 65"/>
+      <path d="M490 965 L1170 65"/>
+      <path d="M1030 965 L350 65"/>
+      <path d="M890 965 L210 65"/>
+      <path d="M750 965 L70 65"/>
+      <path d="M610 965 L-70 65"/>
+    </g>
+    <g fill="url(#glass)" opacity=".72">
+      <rect x="180" y="220" width="88" height="44" rx="3"/>
+      <rect x="304" y="220" width="88" height="44" rx="3"/>
+      <rect x="428" y="220" width="88" height="44" rx="3"/>
+      <rect x="552" y="220" width="88" height="44" rx="3"/>
+      <rect x="676" y="220" width="88" height="44" rx="3"/>
+      <rect x="180" y="310" width="88" height="44" rx="3"/>
+      <rect x="304" y="310" width="88" height="44" rx="3"/>
+      <rect x="428" y="310" width="88" height="44" rx="3"/>
+      <rect x="552" y="310" width="88" height="44" rx="3"/>
+      <rect x="676" y="310" width="88" height="44" rx="3"/>
+      <rect x="180" y="400" width="88" height="44" rx="3"/>
+      <rect x="304" y="400" width="88" height="44" rx="3"/>
+      <rect x="428" y="400" width="88" height="44" rx="3"/>
+      <rect x="552" y="400" width="88" height="44" rx="3"/>
+      <rect x="676" y="400" width="88" height="44" rx="3"/>
+      <rect x="180" y="490" width="88" height="44" rx="3"/>
+      <rect x="304" y="490" width="88" height="44" rx="3"/>
+      <rect x="428" y="490" width="88" height="44" rx="3"/>
+      <rect x="552" y="490" width="88" height="44" rx="3"/>
+      <rect x="676" y="490" width="88" height="44" rx="3"/>
+      <rect x="180" y="580" width="88" height="44" rx="3"/>
+      <rect x="304" y="580" width="88" height="44" rx="3"/>
+      <rect x="428" y="580" width="88" height="44" rx="3"/>
+      <rect x="552" y="580" width="88" height="44" rx="3"/>
+      <rect x="676" y="580" width="88" height="44" rx="3"/>
+      <rect x="180" y="670" width="88" height="44" rx="3"/>
+      <rect x="304" y="670" width="88" height="44" rx="3"/>
+      <rect x="428" y="670" width="88" height="44" rx="3"/>
+      <rect x="552" y="670" width="88" height="44" rx="3"/>
+      <rect x="676" y="670" width="88" height="44" rx="3"/>
+      <rect x="180" y="760" width="88" height="44" rx="3"/>
+      <rect x="304" y="760" width="88" height="44" rx="3"/>
+      <rect x="428" y="760" width="88" height="44" rx="3"/>
+      <rect x="552" y="760" width="88" height="44" rx="3"/>
+      <rect x="676" y="760" width="88" height="44" rx="3"/>
+    </g>
+    <path d="M120 120 L690 45 L885 185 L1010 240" fill="none" stroke="#4ade80" stroke-width="7" filter="url(#glow)"/>
+  </g>
+
+  <g stroke="url(#greenLine)" stroke-width="3" fill="none" filter="url(#glow)" opacity=".72">
+    <path d="M180 260 C520 340 670 420 940 478 C1240 542 1460 492 1785 330"/>
+    <path d="M260 810 C520 700 650 742 920 650 C1200 554 1395 588 1660 790"/>
+  </g>
+  <g fill="#86efac" filter="url(#glow)">
+    <circle cx="320" cy="292" r="6"/>
+    <circle cx="620" cy="396" r="5"/>
+    <circle cx="960" cy="480" r="8"/>
+    <circle cx="1285" cy="522" r="5"/>
+    <circle cx="1658" cy="378" r="6"/>
+  </g>
+  <g transform="translate(1370 225)" filter="url(#glow)">
+    <circle cx="0" cy="0" r="92" fill="#10b981" opacity=".14"/>
+    <circle cx="0" cy="0" r="58" fill="#10b981" opacity=".2"/>
+    <path d="M-34 -8 C-56 -54 20 -72 18 -22 C62 -26 68 38 24 42 C12 76 -50 58 -32 18 C-72 12 -66 -32 -34 -8Z" fill="none" stroke="#d1fae5" stroke-width="5"/>
+    <path d="M0 -58 V58 M-45 -18 H45 M-34 30 H36" stroke="#d1fae5" stroke-width="3" opacity=".8"/>
+  </g>
+  <rect width="1920" height="1080" fill="url(#sky)" opacity=".16"/>
+</svg>

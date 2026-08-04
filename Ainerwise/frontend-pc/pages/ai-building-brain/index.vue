@@ -1,20 +1,20 @@
 <template>
   <div>
-    <KnxPageHero
+    <AinerwiseImmersiveHero
+      background-image="/images/brand/ainerwise-ai-brain-bg.svg"
       :eyebrow="$t('brain.eyebrow')"
       :title="$t('brain.overviewTitle')"
       :subtitle="$t('brain.overviewSubtitle')"
       :crumbs="[{ label: $t('nav.home'), to: '/' }, { label: $t('nav.aiBrain') }]"
-      :badges="[
-        { label: $t('solutions.badgeKnx') },
-        { label: $t('brain.badgeBeyondBus'), ai: true },
-      ]"
-    >
-      <template #actions>
-        <NuxtLink to="/submit-requirement" class="btn-primary">{{ $t('brain.startAssessment') }}</NuxtLink>
-        <NuxtLink to="/ai-building-brain-demo" class="btn-secondary">{{ $t('brain.open3d') }}</NuxtLink>
-      </template>
-    </KnxPageHero>
+      :badges="brainHeroBadges"
+      :stats="brainHeroStats"
+      :nodes="brainHeroNodes"
+      primary-to="/submit-requirement"
+      :primary-label="$t('brain.startAssessment')"
+      secondary-to="/ai-building-brain-demo"
+      :secondary-label="$t('brain.open3d')"
+      :core-label="$t('home.hubCore')"
+    />
 
     <KnxBrainNav />
 
@@ -133,6 +133,23 @@ const busItems = computed(() => [
 ])
 const brainItems = computed(() => [
   t('brain.ai1'), t('brain.ai2'), t('brain.ai3'), t('brain.ai4'),
+])
+
+const brainHeroBadges = computed(() => [
+  { label: t('solutions.badgeKnx') },
+  { label: t('brain.badgeBeyondBus'), ai: true },
+  { label: t('brain.capabilityTitle') },
+])
+const brainHeroStats = computed(() => [
+  { value: 'L1-L6', label: t('home.intelligenceKicker') },
+  { value: '7', label: t('brain.scenarioTitle') },
+  { value: '24/7', label: t('home.whyLifecycle') },
+])
+const brainHeroNodes = computed(() => [
+  t('brain.ai1'),
+  t('brain.ai2'),
+  t('brain.ai3'),
+  t('brain.ai4'),
 ])
 
 useHead({ title: () => `${t('brain.overviewTitle')} — AinerWise` })

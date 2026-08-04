@@ -1,73 +1,49 @@
 <template>
   <div>
-    <!-- Full-bleed stage. The original hero section is kept below it so no
-         existing copy or CTA was dropped when the new visual went in. -->
-    <KnxHeroStage
+    <AinerwiseImmersiveHero
+      background-image="/images/brand/ainerwise-grand-building.svg"
       :eyebrow="$t('home.heroKicker')"
-      :title="$t('home.stageTitle')"
-      :subtitle="$t('home.stageSubtitle')"
-      :video-sources="heroVideoSources"
+      :title="$t('home.heroTitle')"
+      :subtitle="$t('home.heroSubtitle')"
       :badges="stageBadges"
-      :signals="stageSignals"
+      :stats="stageSignals"
+      :nodes="heroSignals"
       primary-to="/submit-requirement"
       :primary-label="$t('home.heroCta1')"
       secondary-to="/ai-building-brain"
-      :secondary-label="$t('home.intelligenceExplore')"
-      :credit="$t('home.stageCredit')"
-    />
-
-    <section class="text-white knx-on-dark">
-      <div class="container-main px-4 sm:px-6 lg:px-8 pt-14 lg:pt-20">
-        <div class="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 items-center">
-          <div class="pb-8 lg:pb-16 glass-panel p-8">
-            <p class="text-sm font-semibold uppercase tracking-wider text-emerald-400">
-              {{ $t('home.heroKicker') }}
-            </p>
-            <h1 class="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white">
-              {{ $t('home.heroTitle') }}
-            </h1>
-            <p class="mt-5 text-lg text-slate-300 max-w-2xl">
-              {{ $t('home.heroSubtitle') }}
-            </p>
-            <div class="mt-8 flex flex-col sm:flex-row gap-3">
-              <NuxtLink to="/submit-requirement" class="bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-500 transition">
-                {{ $t('home.heroCta1') }}
-              </NuxtLink>
-              <a :href="marketUrl" class="glass-panel text-emerald-300 px-6 py-3 font-semibold hover:bg-white/10 transition">
-                {{ $t('procurement.title') }}
-              </a>
-              <NuxtLink to="/ai-building-brain" class="glass-panel text-cyan-300 px-6 py-3 font-semibold hover:bg-white/10 transition">
-                {{ $t('home.heroCta2') }}
-              </NuxtLink>
-              <NuxtLink to="/demo-login" class="glass-panel text-slate-300 px-6 py-3 font-semibold hover:bg-white/10 transition">
-                {{ $t('home.heroCta3') }}
-              </NuxtLink>
-            </div>
-            <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-slate-300">
-              <div v-for="signal in heroSignals" :key="signal" class="glass-panel px-3 py-2 text-center">
-                {{ signal }}
-              </div>
+      :secondary-label="$t('home.heroCta2')"
+      :core-label="$t('home.hubCore')"
+    >
+      <template #aside>
+        <div class="aw-home-command">
+          <div class="aw-home-command__header">
+            <p>{{ $t('home.stageTitle') }}</p>
+            <span>{{ $t('home.stageCredit') }}</span>
+          </div>
+          <BuildingBrainMap compact />
+          <div class="aw-home-command__signals">
+            <div v-for="signal in stageSignals" :key="signal.label">
+              <strong>{{ signal.value }}</strong>
+              <span>{{ signal.label }}</span>
             </div>
           </div>
-          <div class="lg:-mb-10">
-            <BuildingBrainMap compact />
-          </div>
         </div>
-      </div>
-    </section>
+      </template>
+    </AinerwiseImmersiveHero>
 
-    <section class="section-padding">
-      <div class="container-main">
-        <div class="mb-10 max-w-3xl">
-          <p class="text-sm font-semibold uppercase tracking-wider text-primary-400">{{ $t('home.layersEyebrow') }}</p>
-          <h2 class="mt-3 text-2xl sm:text-3xl font-bold text-white">{{ $t('home.layersTitle') }}</h2>
-          <p class="mt-3 text-slate-300">{{ $t('home.layersSubtitle') }}</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div v-for="item in operatingModel" :key="item.kicker" class="glass-panel p-6 hover:border-primary-500/50 transition">
-            <p class="text-xs font-semibold uppercase tracking-wider text-primary-400">{{ item.kicker }}</p>
-            <h2 class="mt-2 font-bold text-white text-xl">{{ item.title }}</h2>
-            <p class="mt-2 text-sm text-slate-300">{{ item.text }}</p>
+    <section class="aw-home-flow knx-on-dark">
+      <div class="container-main px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+        <div class="grid gap-5 lg:grid-cols-4">
+          <div class="aw-home-flow__intro">
+            <p class="knx-eyebrow">{{ $t('home.layersEyebrow') }}</p>
+            <h2>{{ $t('home.layersTitle') }}</h2>
+            <p>{{ $t('home.layersSubtitle') }}</p>
+            <a :href="marketUrl" class="aw-home-flow__link">{{ $t('procurement.title') }} →</a>
+          </div>
+          <div v-for="item in operatingModel" :key="item.kicker" class="aw-home-flow__card">
+            <span>{{ item.kicker }}</span>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.text }}</p>
           </div>
         </div>
       </div>
@@ -285,10 +261,6 @@ const hubSystems = computed(() => [
   { icon: 'network', label: t('home.sysNetwork') },
 ])
 const marketUrl = publicConfig.marketUrl as string
-const heroVideoSources = computed(() => [
-  { src: publicConfig.homeHeroVideoWebm as string, type: 'video/webm' },
-  { src: publicConfig.homeHeroVideoMp4 as string, type: 'video/mp4' },
-].filter((source) => source.src))
 
 const solutions = ref<any[]>([])
 const servicePackages = ref<any[]>([])
@@ -305,9 +277,9 @@ const heroSignals = [
 ]
 
 const stageBadges = computed(() => [
-  t('home.stageBadge1'),
-  t('home.stageBadge2'),
-  t('home.stageBadge3'),
+  { label: t('home.stageBadge1') },
+  { label: t('home.stageBadge2'), ai: true },
+  { label: t('home.stageBadge3') },
 ])
 
 const stageSignals = computed(() => [
@@ -395,3 +367,133 @@ async function loadPublicContent() {
 
 onMounted(loadPublicContent)
 </script>
+
+<style scoped>
+.aw-home-command {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(236, 253, 245, .14);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 70% 12%, rgba(45, 212, 191, .18), transparent 34%),
+    linear-gradient(145deg, rgba(2, 6, 23, .78), rgba(6, 78, 59, .34));
+  padding: 1rem;
+  box-shadow: 0 28px 80px rgba(2, 6, 23, .42), inset 0 1px 0 rgba(255, 255, 255, .08);
+  backdrop-filter: blur(20px);
+}
+.aw-home-command__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .45rem .6rem 1rem;
+}
+.aw-home-command__header p {
+  color: #ecfdf5;
+  font-size: .84rem;
+  font-weight: 900;
+}
+.aw-home-command__header span {
+  color: rgba(209, 250, 229, .66);
+  font-size: .72rem;
+  font-weight: 700;
+}
+.aw-home-command__signals {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .7rem;
+}
+.aw-home-command__signals div {
+  border: 1px solid rgba(236, 253, 245, .12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .06);
+  padding: .8rem;
+}
+.aw-home-command__signals strong {
+  display: block;
+  color: #ecfdf5;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+.aw-home-command__signals span {
+  margin-top: .35rem;
+  display: block;
+  color: rgba(209, 250, 229, .72);
+  font-size: .72rem;
+  font-weight: 800;
+}
+.aw-home-flow {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 16% 20%, rgba(16, 185, 129, .2), transparent 30%),
+    radial-gradient(circle at 76% 10%, rgba(34, 211, 238, .12), transparent 28%),
+    linear-gradient(135deg, #020617, #06231d 56%, #020617);
+}
+.aw-home-flow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(209, 250, 229, .06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(209, 250, 229, .06) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, black, transparent);
+  pointer-events: none;
+}
+.aw-home-flow__intro,
+.aw-home-flow__card {
+  position: relative;
+  min-height: 260px;
+  border: 1px solid rgba(236, 253, 245, .12);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(15, 23, 42, .58), rgba(6, 78, 59, .24));
+  padding: 1.4rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+  backdrop-filter: blur(16px);
+}
+.aw-home-flow__intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.aw-home-flow__intro h2 {
+  margin-top: .8rem;
+  color: #fff;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.04;
+}
+.aw-home-flow__intro p:not(.knx-eyebrow) {
+  margin-top: 1rem;
+  color: rgba(209, 250, 229, .78);
+  font-size: .95rem;
+  line-height: 1.7;
+}
+.aw-home-flow__link {
+  margin-top: 1.2rem;
+  color: #86efac;
+  font-weight: 900;
+}
+.aw-home-flow__card span {
+  color: #86efac;
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.aw-home-flow__card h3 {
+  margin-top: 1.3rem;
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.aw-home-flow__card p {
+  margin-top: .9rem;
+  color: rgba(226, 245, 237, .78);
+  font-size: .92rem;
+  line-height: 1.7;
+}
+</style>

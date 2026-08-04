@@ -1,20 +1,20 @@
 <template>
   <div>
-    <KnxPageHero
+    <AinerwiseImmersiveHero
+      background-image="/images/brand/ainerwise-solutions-bg.svg"
       :eyebrow="$t('solutions.eyebrow')"
       :title="$t('solutions.title')"
       :subtitle="$t('solutions.subtitle')"
       :crumbs="[{ label: $t('nav.home'), to: '/' }, { label: $t('nav.solutions') }]"
-      :badges="[
-        { label: $t('solutions.badgeKnx') },
-        { label: $t('solutions.badgeAi'), ai: true },
-      ]"
-    >
-      <template #actions>
-        <NuxtLink to="/submit-requirement" class="btn-primary">{{ $t('nav.submitRequirement') }}</NuxtLink>
-        <NuxtLink to="/ai-building-brain" class="btn-secondary">{{ $t('home.intelligenceExplore') }}</NuxtLink>
-      </template>
-    </KnxPageHero>
+      :badges="solutionHeroBadges"
+      :stats="solutionHeroStats"
+      :nodes="solutionHeroNodes"
+      primary-to="/submit-requirement"
+      :primary-label="$t('nav.submitRequirement')"
+      secondary-to="/ai-building-brain"
+      :secondary-label="$t('home.intelligenceExplore')"
+      :core-label="$t('home.hubCore')"
+    />
 
     <!-- The eight lines, as a KNX-style capability grid -->
     <KnxSectionBlock
@@ -148,6 +148,18 @@ const commonCapabilities = computed(() => [
   { icon: 'sensor', label: t('solutions.capMonitor'), hint: t('solutions.capMonitorHint') },
   { icon: 'lifecycle', label: t('solutions.capService'), hint: t('solutions.capServiceHint') },
 ])
+
+const solutionHeroBadges = computed(() => [
+  { label: t('solutions.badgeKnx') },
+  { label: t('solutions.badgeAi'), ai: true },
+  { label: t('procurement.title') },
+])
+const solutionHeroStats = computed(() => [
+  { value: '8', label: t('solutions.linesEyebrow') },
+  { value: 'AI', label: t('solutions.capAssess') },
+  { value: 'RFQ', label: t('procurement.title') },
+])
+const solutionHeroNodes = computed(() => lines.slice(0, 5).map((line) => line.name))
 
 async function loadSolutions() {
   loading.value = true
