@@ -1,6 +1,10 @@
 <template>
   <section class="aw-immersive-hero knx-on-dark relative isolate overflow-hidden border-b border-white/10">
-    <div class="aw-immersive-hero__bg absolute inset-0" :style="{ backgroundImage: `url(${backgroundImage})` }" aria-hidden="true" />
+    <div class="aw-immersive-hero__bg-layer absolute inset-0" aria-hidden="true">
+      <slot name="background">
+        <div class="aw-immersive-hero__bg absolute inset-0" :style="{ backgroundImage: `url(${backgroundImage})` }" />
+      </slot>
+    </div>
     <div class="aw-immersive-hero__grid absolute inset-0" aria-hidden="true" />
     <div class="aw-immersive-hero__beam aw-immersive-hero__beam-a" aria-hidden="true" />
     <div class="aw-immersive-hero__beam aw-immersive-hero__beam-b" aria-hidden="true" />
@@ -18,7 +22,7 @@
         </template>
       </nav>
 
-      <div class="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+      <div class="aw-hero-layout" :class="hideAside ? 'aw-hero-layout--single' : ''">
         <div>
           <div v-if="badges.length" class="mb-5 flex flex-wrap gap-2">
             <span v-for="badge in badges" :key="badge.label" :class="badge.ai ? 'aw-hero-pill aw-hero-pill--ai' : 'aw-hero-pill'">
@@ -45,7 +49,7 @@
           </div>
         </div>
 
-        <div class="relative">
+        <div v-if="!hideAside" class="relative">
           <div v-if="showOrbit" class="aw-orbit" aria-hidden="true">
             <span class="aw-orbit__ring aw-orbit__ring-a" />
             <span class="aw-orbit__ring aw-orbit__ring-b" />
@@ -92,6 +96,7 @@ withDefaults(
     secondaryLabel?: string
     coreLabel?: string
     showOrbit?: boolean
+    hideAside?: boolean
     crumbs?: Crumb[]
     badges?: Badge[]
     stats?: Stat[]
@@ -106,6 +111,7 @@ withDefaults(
     secondaryLabel: '',
     coreLabel: 'AinerWise AI',
     showOrbit: true,
+    hideAside: false,
     crumbs: () => [],
     badges: () => [],
     stats: () => [],
@@ -121,6 +127,9 @@ withDefaults(
     radial-gradient(circle at 78% 24%, rgba(34, 197, 94, .18), transparent 32%),
     radial-gradient(circle at 16% 68%, rgba(14, 165, 233, .1), transparent 32%),
     linear-gradient(135deg, #020617, #04130f 52%, #020617);
+}
+.aw-immersive-hero__bg-layer {
+  overflow: hidden;
 }
 .aw-immersive-hero__bg {
   background-size: cover;
@@ -143,6 +152,19 @@ withDefaults(
   background-size: 84px 84px;
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .8), transparent 92%);
   opacity: .55;
+}
+.aw-hero-layout {
+  display: grid;
+  gap: 3rem;
+}
+@media (min-width: 1024px) {
+  .aw-hero-layout {
+    grid-template-columns: 1.05fr .95fr;
+    align-items: center;
+  }
+  .aw-hero-layout--single {
+    grid-template-columns: minmax(0, .64fr) minmax(0, .36fr);
+  }
 }
 .aw-immersive-hero__beam {
   position: absolute;

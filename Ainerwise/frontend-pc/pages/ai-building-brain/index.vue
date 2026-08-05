@@ -13,8 +13,9 @@
       :primary-label="$t('brain.startAssessment')"
       :core-label="$t('home.hubCore')"
       :show-orbit="false"
+      hide-aside
     >
-      <template #aside>
+      <template #background>
         <BuildingBrainHeroVisual />
       </template>
     </AinerwiseImmersiveHero>
