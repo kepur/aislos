@@ -260,6 +260,7 @@ useHead({ title: "Catalog" });
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
+const appStore = useAppStore();
 const { formatPrice } = useApiUtils();
 
 const items = ref<any[]>([]);
@@ -288,7 +289,7 @@ const maxImages = 10;
 
 const form = reactive({
   title: '', description: '', unit: 'pc', stock_qty: 0, min_order_qty: 1,
-  currency: 'PHP', price_minor: 0, category_id: '', tags: [] as string[],
+  currency: 'EUR', price_minor: 0, category_id: '', tags: [] as string[],
   images: [] as string[],
   market_mode: 'B2B', origin_country: '', weight_kg: null as number | null, status: 'ACTIVE',
 });
@@ -362,13 +363,13 @@ async function loadCompany() {
 
 function openCreate() {
   editing.value = null; priceInput.value = 0; tagsInput.value = ''; imageUrlInput.value = '';
-  Object.assign(form, { title: '', description: '', unit: 'pc', stock_qty: 0, min_order_qty: 1, currency: 'PHP', price_minor: 0, category_id: '', tags: [], images: [], market_mode: 'B2B', origin_country: '', weight_kg: null, status: 'ACTIVE' });
+  Object.assign(form, { title: '', description: '', unit: 'pc', stock_qty: 0, min_order_qty: 1, currency: appStore.currency || 'EUR', price_minor: 0, category_id: '', tags: [], images: [], market_mode: 'B2B', origin_country: appStore.regionCountry || '', weight_kg: null, status: 'ACTIVE' });
   showSheet.value = true;
 }
 
 function editItem(item: any) {
   editing.value = item; priceInput.value = item.price_minor / 100; tagsInput.value = (item.tags ?? []).join(', '); imageUrlInput.value = '';
-  Object.assign(form, { title: item.title, description: item.description ?? '', unit: item.unit, stock_qty: item.stock_qty, min_order_qty: item.min_order_qty ?? 1, currency: item.currency ?? 'PHP', price_minor: item.price_minor, category_id: item.category_id ?? '', tags: item.tags ?? [], images: [...(item.images ?? [])].slice(0, maxImages), market_mode: item.market_mode ?? 'B2B', origin_country: item.origin_country ?? '', weight_kg: item.weight_kg ?? null, status: item.status });
+  Object.assign(form, { title: item.title, description: item.description ?? '', unit: item.unit, stock_qty: item.stock_qty, min_order_qty: item.min_order_qty ?? 1, currency: item.currency ?? appStore.currency ?? 'EUR', price_minor: item.price_minor, category_id: item.category_id ?? '', tags: item.tags ?? [], images: [...(item.images ?? [])].slice(0, maxImages), market_mode: item.market_mode ?? 'B2B', origin_country: item.origin_country ?? appStore.regionCountry ?? '', weight_kg: item.weight_kg ?? null, status: item.status });
   showSheet.value = true;
 }
 

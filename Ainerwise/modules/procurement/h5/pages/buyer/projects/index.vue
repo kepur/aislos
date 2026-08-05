@@ -103,11 +103,15 @@
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-semibold text-slate-500 mb-1">{{ $t('project.country') }}</label>
-                <input v-model="form.country" type="text" placeholder="Philippines" class="input-field" />
+                <select v-model="form.country" class="input-field">
+                  <option v-for="region in regionOptions" :key="region.code" :value="region.code">
+                    {{ region.label }} ({{ region.code }})
+                  </option>
+                </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-500 mb-1">{{ $t('project.city') }}</label>
-                <input v-model="form.city" type="text" placeholder="Cebu City" class="input-field" />
+                <input v-model="form.city" type="text" :placeholder="cityPlaceholder" class="input-field" />
               </div>
             </div>
 
@@ -151,12 +155,14 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { formatMoneyMinor } from '~/utils/currencyPolicy'
 
 definePageMeta({ layout: 'buyer', middleware: ['buyer'] })
 const { t } = useI18n({ useScope: 'global' })
 useHead({ title: t('project.title') })
 
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const config = useRuntimeConfig()
 
 const loading = ref(true)
@@ -167,7 +173,7 @@ const projects = ref<any[]>([])
 const form = reactive({
   title: '',
   project_type: 'GENERAL',
-  country: 'Philippines',
+  country: 'RS',
   city: '',
   area_value: null as number | null,
   budget_min: null as number | null,
@@ -194,8 +200,20 @@ function statusLabel(status: string) {
 }
 
 function formatCurrency(amount: number) {
-  return `₱${(amount || 0).toLocaleString('en-PH', { maximumFractionDigits: 0 })}`
+  return formatMoneyMinor(Math.round(Number(amount || 0) * 100), appStore.currency || 'EUR')
 }
+
+const regionOptions = computed(() => appStore.regionOptions.map((region) => ({
+  code: String(region.code || '').toUpperCase().slice(0, 2),
+  label: region.label || region.code,
+})))
+
+const cityPlaceholder = computed(() => {
+  if (form.country === 'RS') return 'Belgrade'
+  if (form.country === 'PL') return 'Warsaw'
+  if (form.country === 'PH') return 'Cebu City'
+  return t('project.city')
+})
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime()
@@ -241,7 +259,12 @@ async function createProject() {
   finally { creating.value = false }
 }
 
-onMounted(loadProjects)
+onMounted(async () => {
+  await appStore.fetchMarketLocalizationConfig()
+  await appStore.fetchPaymentRegionConfig(appStore.regionCountry || 'RS')
+  if (!regionOptions.value.some((region) => region.code === form.country)) form.country = appStore.regionCountry || regionOptions.value[0]?.code || 'RS'
+  await loadProjects()
+})
 </script>
 
 <style scoped>

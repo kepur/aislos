@@ -148,6 +148,7 @@ const intentStore = useIntentStore();
 const offerStore = useOfferStore();
 const { formatPrice } = useApiUtils();
 const api = useApiFetch();
+const appStore = useAppStore();
 
 const intentId = route.query.intent_id as string;
 const loading = ref(false);
@@ -173,7 +174,7 @@ const form = reactive({
   qty_available: 1,
   unit_price_minor: 0,
   delivery_fee_minor: 0,
-  currency: "PHP",
+  currency: "EUR",
   tier: "GOOD" as "GOOD" | "BETTER" | "BEST" | "CUSTOM",
   stock_confidence: "FIRM" as "FIRM" | "BACKORDER" | "UNKNOWN",
   message: "",
@@ -274,8 +275,8 @@ async function recalculateShipping() {
     }>("/shipping/estimate", {
       method: "POST",
       body: {
-        origin_country: selectedOriginAddress.value.country_code || "PH",
-        dest_country: intent.value.country || "PH",
+        origin_country: selectedOriginAddress.value.country_code || appStore.regionCountry || "RS",
+        dest_country: intent.value.country || appStore.regionCountry || "RS",
         weight_kg: Math.max(form.qty_available, 1),
         declared_value_minor: Math.max(form.unit_price_minor * form.qty_available, 0),
         currency: form.currency,
@@ -299,11 +300,13 @@ defaultExpiry.setDate(defaultExpiry.getDate() + 3);
 form.expires_at = defaultExpiry.toISOString().slice(0, 10);
 
 onMounted(async () => {
+  form.currency = appStore.currency || "EUR";
   await loadShippingFromAddresses();
   if (intentId) {
     await intentStore.fetchIntent(intentId);
     if (intent.value) {
       form.qty_available = intent.value.qty ?? 1;
+      form.currency = intent.value.currency || appStore.currency || "EUR";
     }
   }
   await recalculateShipping();

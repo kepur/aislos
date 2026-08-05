@@ -148,7 +148,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "/api",
-      appName: process.env.NUXT_PUBLIC_APP_NAME || "AISLOS Market",
+      appName: process.env.NUXT_PUBLIC_APP_NAME || "AinerWise Procurement",
       appDomain: process.env.NUXT_PUBLIC_APP_DOMAIN || "procurement-h5.localhost",
     },
   },

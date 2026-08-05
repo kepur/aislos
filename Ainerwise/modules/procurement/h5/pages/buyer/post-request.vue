@@ -124,9 +124,19 @@
         <p class="text-sm text-slate-500 mb-5">Setting a budget helps suppliers tailor their offers.</p>
 
         <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Settlement Currency</label>
+          <select v-model="form.currency" class="input-field bg-white">
+            <option v-for="option in appStore.currencyOptions" :key="option.code" :value="option.code">
+              {{ option.label }}
+            </option>
+          </select>
+          <p class="text-xs text-slate-400 mt-1">{{ currencyPolicyHint }}</p>
+        </div>
+
+        <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Max Budget (optional)</label>
           <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium text-sm">₱</span>
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium text-sm">{{ budgetCurrencySymbol }}</span>
             <input
               v-model.number="budgetDisplay"
               type="number"
@@ -165,8 +175,17 @@
         <p class="text-sm text-slate-500 mb-5">Tell suppliers where you need the items delivered.</p>
 
         <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Delivery Country *</label>
+          <select v-model="form.country" class="input-field bg-white">
+            <option v-for="region in regionOptions" :key="region.code" :value="region.code">
+              {{ region.label }} ({{ region.code }})
+            </option>
+          </select>
+        </div>
+
+        <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">City / Area *</label>
-          <input v-model="form.city" type="text" placeholder="e.g. Mandaue City, Cebu" class="input-field" />
+          <input v-model="form.city" type="text" :placeholder="cityPlaceholder" class="input-field" />
         </div>
 
         <div class="bg-primary-50 border border-primary-100 rounded-xl p-4">
@@ -198,13 +217,19 @@
         <button type="button"
           class="flex items-center gap-3 w-full bg-white border border-slate-200 rounded-xl p-4 text-left active:bg-slate-50"
           @click="useCurrentLocation"
+          :disabled="locationStatus === 'loading'"
         >
           <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" />
             <path d="M12 2v2M12 20v2M2 12h2M20 12h2" />
           </svg>
-          <span class="text-sm font-medium text-slate-700">Use my current location</span>
+          <span class="text-sm font-medium text-slate-700">
+            {{ locationStatus === "loading" ? "Detecting location..." : "Use my current location" }}
+          </span>
         </button>
+        <p v-if="locationMessage" class="text-xs" :class="locationStatus === 'error' ? 'text-amber-600' : 'text-slate-500'">
+          {{ locationMessage }}
+        </p>
       </div>
 
       <!-- Step 5: Review -->
@@ -237,7 +262,7 @@
           <div class="divider -mx-4"></div>
           <div>
             <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Location</p>
-            <p class="font-semibold text-slate-800 mt-0.5">{{ form.city || "Not specified" }} · {{ form.radius_km }}km radius</p>
+            <p class="font-semibold text-slate-800 mt-0.5">{{ form.city || "Not specified" }}<span v-if="form.country">, {{ form.country }}</span> · {{ form.radius_km }}km radius</p>
           </div>
           <div v-if="form.attachments.length" class="divider -mx-4"></div>
           <div v-if="form.attachments.length">
@@ -304,12 +329,17 @@
 </template>
 
 <script setup lang="ts">
+import { currencyMeta, currencyOptionLabel, localCurrencyLabel } from "~/utils/currencyPolicy";
+import { inferLocationFromCoords, inferLocationFromTimezone, type LocationGuess } from "~/utils/geoPolicy";
+
 definePageMeta({ layout: "default", middleware: ["buyer"] });
 useHead({ title: "Post Request" });
 
 const router = useRouter();
 const intentStore = useIntentStore();
 const authStore = useAuthStore();
+const appStore = useAppStore();
+const config = useRuntimeConfig();
 const { formatPrice } = useApiUtils();
 
 const step = ref(1);
@@ -320,6 +350,8 @@ const error = ref("");
 const budgetDisplay = ref<number | null>(null);
 const expiryDays = ref(7);
 const categoriesLoading = ref(true);
+const locationStatus = ref<"idle" | "loading" | "success" | "error">("idle");
+const locationMessage = ref("");
 
 const form = reactive({
   category_id: "",
@@ -328,11 +360,11 @@ const form = reactive({
   qty: 1,
   unit: "piece",
   budget_max_minor: 0,
-  currency: "PHP",
+  currency: "EUR",
   radius_km: 50,
   delivery_window_end: "",
   city: "",
-  country: "PH",
+  country: "RS",
   lat: null as number | null,
   lng: null as number | null,
   attachments: [] as string[],
@@ -342,6 +374,22 @@ const maxAttachments = computed(() => Math.max(0, Number(authStore.systemMode?.i
 
 interface Category { id: string; name: string; slug: string }
 const categories = ref<Category[]>([]);
+
+const regionOptions = computed(() => appStore.regionOptions.map((region) => ({
+  code: String(region.code || "").toUpperCase().slice(0, 2),
+  label: region.label || region.code,
+})));
+const budgetCurrencySymbol = computed(() => currencyMeta(form.currency || appStore.currency).symbol || form.currency || appStore.currency);
+const currencyPolicyHint = computed(() => {
+  const policy = appStore.paymentPolicy;
+  return `Budget is recorded in ${currencyOptionLabel(form.currency || appStore.currency)}; local reference for ${policy.country_name || form.country} is ${localCurrencyLabel(policy)}.`;
+});
+const cityPlaceholder = computed(() => {
+  if (form.country === "RS") return "e.g. Belgrade";
+  if (form.country === "PL") return "e.g. Warsaw";
+  if (form.country === "PH") return "e.g. Cebu City";
+  return "Enter city or area";
+});
 
 // Full 25-category map — synced with PC categories.vue
 const EMOJI_MAP: Record<string, string> = {
@@ -386,7 +434,10 @@ onMounted(async () => {
   if (!authStore.systemMode) {
     await authStore.fetchSystemMode();
   }
-  const config = useRuntimeConfig();
+  await appStore.fetchMarketLocalizationConfig();
+  await appStore.fetchPaymentRegionConfig(appStore.regionCountry || "RS");
+  ensureDefaultRegionAndCurrency();
+  applyTimezoneDefault();
   try {
     categories.value = await $fetch<Category[]>(`${config.public.apiBase}/categories`);
   } catch {
@@ -404,6 +455,27 @@ const minDate = computed(() => new Date().toISOString().slice(0, 10));
 
 watch(budgetDisplay, (val) => {
   form.budget_max_minor = val ? val * 100 : 0;
+});
+
+watch(regionOptions, ensureDefaultRegionAndCurrency, { immediate: true });
+
+watch(() => appStore.regionCountry, (country) => {
+  const normalized = String(country || "").toUpperCase().slice(0, 2);
+  if (normalized && normalized !== form.country) form.country = normalized;
+}, { immediate: true });
+
+watch(() => form.country, async (country) => {
+  const normalized = String(country || "").toUpperCase().slice(0, 2);
+  if (normalized && normalized !== appStore.regionCountry) await appStore.setRegionCountry(normalized);
+  ensureDefaultRegionAndCurrency();
+});
+
+watch(() => appStore.currency, (currency) => {
+  if (currency && !form.currency) form.currency = currency;
+});
+
+watch(() => form.currency, (currency) => {
+  if (currency && currency !== appStore.currency) appStore.setCurrency(currency);
 });
 
 const canProceed = computed(() => {
@@ -469,12 +541,43 @@ async function handleImageChange(event: Event) {
 }
 
 async function useCurrentLocation() {
-  if (!navigator.geolocation) return;
-  navigator.geolocation.getCurrentPosition((pos) => {
-    form.lat = pos.coords.latitude;
-    form.lng = pos.coords.longitude;
-    if (!form.city) form.city = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
-  });
+  if (!import.meta.client || !navigator.geolocation) {
+    locationStatus.value = "error";
+    locationMessage.value = "Browser location is not available. Choose country and city manually.";
+    return;
+  }
+
+  locationStatus.value = "loading";
+  locationMessage.value = "";
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const latitude = pos.coords.latitude;
+      const longitude = pos.coords.longitude;
+      form.lat = latitude;
+      form.lng = longitude;
+      const guess = inferLocationFromCoords(latitude, longitude, regionOptions.value);
+      if (guess) {
+        applyLocationGuess(guess, true);
+        locationStatus.value = "success";
+        locationMessage.value = `Detected ${guess.city || guess.countryName}. You can still edit it.`;
+        return;
+      }
+      const fallbackGuess = inferLocationFromTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone, regionOptions.value);
+      if (fallbackGuess) {
+        applyLocationGuess(fallbackGuess, false);
+        locationStatus.value = "success";
+        locationMessage.value = "Country inferred from browser timezone. Please confirm the city.";
+        return;
+      }
+      locationStatus.value = "error";
+      locationMessage.value = "Coordinates are outside the currently open countries. Select a country manually.";
+    },
+    () => {
+      locationStatus.value = "error";
+      locationMessage.value = "Location permission was denied or timed out. Manual country and city still work.";
+    },
+    { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+  );
 }
 
 async function submitRequest() {
@@ -491,10 +594,10 @@ async function submitRequest() {
     notes: form.notes || undefined,
     qty: form.qty,
     unit: form.unit,
-    currency: form.currency,
+    currency: form.currency || appStore.currency || "EUR",
     radius_km: form.radius_km,
     city: form.city || undefined,
-    country: form.country || undefined,
+    country: form.country || appStore.regionCountry || "RS",
     lat: form.lat || undefined,
     lng: form.lng || undefined,
     attachments: form.attachments,
@@ -514,5 +617,26 @@ async function submitRequest() {
   } finally {
     loading.value = false;
   }
+}
+
+function ensureDefaultRegionAndCurrency() {
+  if (regionOptions.value.length && !regionOptions.value.some((region) => region.code === form.country)) {
+    form.country = regionOptions.value[0].code;
+  }
+  if (!form.country && regionOptions.value.length) form.country = regionOptions.value[0].code;
+  if (!form.currency || !appStore.currencyOptions.some((option) => option.code === form.currency)) {
+    form.currency = appStore.currency || appStore.defaultSettlementCurrency || "EUR";
+  }
+}
+
+function applyTimezoneDefault() {
+  if (!import.meta.client) return;
+  const guess = inferLocationFromTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone, regionOptions.value);
+  if (guess) applyLocationGuess(guess, false);
+}
+
+function applyLocationGuess(guess: LocationGuess, overwriteCity: boolean) {
+  if (guess.countryCode) form.country = guess.countryCode;
+  if (guess.city && (overwriteCity || !form.city.trim())) form.city = guess.city;
 }
 </script>

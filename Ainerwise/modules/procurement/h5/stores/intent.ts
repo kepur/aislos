@@ -35,6 +35,7 @@ export const useIntentStore = defineStore("intent", {
         }
       } catch (error) {
         const authStore = useAuthStore();
+        const appStore = useAppStore();
         if (!authStore.isDemoMode || !isDemoToken(authStore.accessToken)) throw error;
         this.intents = demoIntents;
         this.total = demoIntents.length;
@@ -71,8 +72,8 @@ export const useIntentStore = defineStore("intent", {
           notes: String(payload.notes || ""),
           qty: Number(payload.qty || 1),
           unit: String(payload.unit || "pcs"),
-          currency: String(payload.currency || "PHP"),
-          city: String(payload.city || "Cebu City"),
+          currency: String(payload.currency || appStore.currency || "EUR"),
+          city: String(payload.city || ""),
           radius_km: Number(payload.radius_km || 25),
           status: "ACTIVE",
           created_at: new Date().toISOString(),

@@ -12,22 +12,22 @@
 
     <div class="mx-4 mt-4 rounded-2xl bg-primary-600 text-white p-5 shadow-card">
       <p class="text-xs text-primary-100 uppercase tracking-wide">{{ $t("wallet.available_balance") }}</p>
-      <p class="text-3xl font-extrabold mt-2">{{ money(wallet?.available_balance_minor || 0, wallet?.currency || "PHP") }}</p>
+      <p class="text-3xl font-extrabold mt-2">{{ money(wallet?.available_balance_minor || 0, wallet?.currency || appStore.currency) }}</p>
       <div class="grid grid-cols-2 gap-3 mt-4 text-xs">
         <div class="rounded-xl bg-white/10 p-3">
           <p class="text-primary-100">{{ $t("wallet.locked") }}</p>
-          <p class="font-bold mt-1">{{ money(wallet?.locked_balance_minor || 0, wallet?.currency || "PHP") }}</p>
+          <p class="font-bold mt-1">{{ money(wallet?.locked_balance_minor || 0, wallet?.currency || appStore.currency) }}</p>
         </div>
         <div class="rounded-xl bg-white/10 p-3">
           <p class="text-primary-100">{{ $t("wallet.deposited") }}</p>
-          <p class="font-bold mt-1">{{ money(wallet?.total_deposited_minor || 0, wallet?.currency || "PHP") }}</p>
+          <p class="font-bold mt-1">{{ money(wallet?.total_deposited_minor || 0, wallet?.currency || appStore.currency) }}</p>
         </div>
       </div>
     </div>
 
     <div class="mx-4 mt-4 card space-y-4">
       <div>
-        <p class="text-sm font-semibold text-slate-900">PHP Deposit</p>
+        <p class="text-sm font-semibold text-slate-900">{{ appStore.currency }} Deposit</p>
         <p class="text-xs text-slate-500 mt-1">{{ $t("wallet.deposit_help") }}</p>
       </div>
       <input v-model.number="depositAmount" type="number" min="1" class="input-field" :placeholder="$t('wallet.amount')" />
@@ -78,6 +78,7 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+import { formatMoneyMinor } from "~/utils/currencyPolicy";
 
 const props = withDefaults(defineProps<{ showBack?: boolean; title?: string }>(), {
   showBack: true,
@@ -112,6 +113,7 @@ const showBack = computed(() => props.showBack);
 const title = computed(() => props.title);
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
+const appStore = useAppStore();
 const loading = ref(true);
 const creating = ref(false);
 const submittingTx = ref(false);
@@ -129,16 +131,8 @@ function headers() {
   return { Authorization: `Bearer ${authStore.accessToken}` };
 }
 
-function money(minor: number, currency = "PHP") {
-  const amount = (minor || 0) / 100;
-  if (currency === "USDT") {
-    return `${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDT`;
-  }
-  try {
-    return new Intl.NumberFormat("en-PH", { style: "currency", currency }).format(amount);
-  } catch {
-    return `${amount.toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
-  }
+function money(minor: number, currency = appStore.currency || "EUR") {
+  return formatMoneyMinor(minor, currency);
 }
 
 async function loadWallet() {
@@ -160,10 +154,10 @@ async function createDeposit() {
       method: "POST",
       body: {
         amount_minor: Math.round(Number(depositAmount.value || 0) * 100),
-        currency: "PHP",
+        currency: appStore.currency || "EUR",
         network: network.value,
         provider: network.value === "LOCAL_BANK" ? "MANUAL_BANK" : "LOCAL_EWALLET",
-        payment_method: network.value === "LOCAL_BANK" ? "PHP_MANUAL_BANK" : `PHP_${network.value}`,
+        payment_method: network.value === "LOCAL_BANK" ? `${appStore.currency || "EUR"}_MANUAL_BANK` : `${appStore.currency || "EUR"}_${network.value}`,
       },
       headers: headers(),
     });

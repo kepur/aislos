@@ -259,22 +259,8 @@ function tierClass(tier: TrustTier) {
   }[tier] || "bg-slate-100 text-slate-700";
 }
 
-function formatDeposit(minor: number, currency = "PHP") {
-  if (!minor) return "0";
-  const amount = minor / 100;
-  if (currency === "USDT") {
-    return `${amount.toLocaleString("en-PH", { notation: "compact", maximumFractionDigits: 1 })} USDT`;
-  }
-  try {
-    return new Intl.NumberFormat("en-PH", {
-      style: "currency",
-      currency,
-      notation: "compact",
-      maximumFractionDigits: 1,
-    }).format(amount);
-  } catch {
-    return `${amount.toLocaleString("en-PH", { notation: "compact", maximumFractionDigits: 1 })} ${currency}`;
-  }
+function formatDeposit(minor: number, currency = "EUR") {
+  return formatPrice(minor, currency);
 }
 
 onMounted(async () => {

@@ -1,5 +1,6 @@
 import type { $Fetch } from "ofetch";
 import { isDemoToken } from "~/utils/demoData";
+import { formatMoneyMinor } from "~/utils/currencyPolicy";
 
 let _apiFetch: $Fetch | null = null;
 
@@ -31,21 +32,8 @@ export function useApiFetch() {
   return _apiFetch;
 }
 
-export function formatPrice(minor: number, currency = "PHP"): string {
-  const amount = minor / 100;
-  if (currency === "USDT") {
-    return `${amount.toLocaleString("en-PH", { minimumFractionDigits: 0, maximumFractionDigits: 2 })} USDT`;
-  }
-  try {
-    return new Intl.NumberFormat("en-PH", {
-      style: "currency",
-      currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  } catch {
-    return `${amount.toLocaleString("en-PH", { minimumFractionDigits: 0, maximumFractionDigits: 2 })} ${currency}`;
-  }
+export function formatPrice(minor: number, currency = "EUR"): string {
+  return formatMoneyMinor(minor, currency);
 }
 
 export function formatDate(dateStr: string): string {

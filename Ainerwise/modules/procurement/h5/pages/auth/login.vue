@@ -17,7 +17,7 @@
           <span class="text-white font-extrabold text-2xl">AW</span>
         </div>
         <h1 class="text-2xl font-bold text-slate-900">{{ $t("auth.welcome_back") }}</h1>
-        <p class="text-slate-500 text-sm mt-1">Sign in to your AISLOS Market account</p>
+        <p class="text-slate-500 text-sm mt-1">Sign in to your AinerWise Procurement account</p>
       </div>
 
       <!-- Demo Mode Banner -->

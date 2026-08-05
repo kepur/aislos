@@ -31,7 +31,7 @@
 
       <div>
         <label class="block text-sm font-medium text-slate-700 mb-1.5">Phone</label>
-        <input v-model="form.phone" type="tel" class="input-field" placeholder="+63 9XX XXX XXXX" />
+        <input v-model="form.phone" type="tel" class="input-field" :placeholder="phonePlaceholder" />
       </div>
 
       <div class="pt-2">
@@ -98,6 +98,7 @@ definePageMeta({ layout: "default", middleware: ["auth"] });
 useHead({ title: "Edit Profile" });
 
 const authStore = useAuthStore();
+const appStore = useAppStore();
 const config = useRuntimeConfig();
 const loading = ref(false);
 const addressLoading = ref(false);
@@ -108,6 +109,15 @@ const success = ref(false);
 const error = ref("");
 const api = useApiFetch();
 const addresses = ref<any[]>([]);
+const phonePlaceholder = computed(() => {
+  const code = String(appStore.regionCountry || "RS").toUpperCase().slice(0, 2);
+  if (code === "RS") return "+381 6X XXX XXXX";
+  if (code === "PL") return "+48 XXX XXX XXX";
+  if (code === "PH") return "+63 9XX XXX XXXX";
+  if (code === "BA") return "+387 6X XXX XXX";
+  if (code === "RO") return "+40 7XX XXX XXX";
+  return "Phone number";
+});
 
 const form = reactive({
   full_name: authStore.user?.full_name || "",
@@ -118,8 +128,8 @@ const addressForm = reactive({
   label: "",
   contact_name: "",
   contact_phone: "",
-  country_code: "PH",
-  country_name: "Philippines",
+  country_code: "RS",
+  country_name: "Serbia",
   city: "",
   address_line1: "",
   postal_code: "",
@@ -162,6 +172,8 @@ function resetAddressForm() {
   addressForm.label = "";
   addressForm.contact_name = "";
   addressForm.contact_phone = "";
+  addressForm.country_code = appStore.regionCountry || "RS";
+  addressForm.country_name = currentCountryName();
   addressForm.city = "";
   addressForm.address_line1 = "";
 }
@@ -171,8 +183,8 @@ function startEditAddress(addr: any) {
   addressForm.label = addr.label || "";
   addressForm.contact_name = addr.contact_name || "";
   addressForm.contact_phone = addr.contact_phone || "";
-  addressForm.country_code = addr.country_code || "PH";
-  addressForm.country_name = addr.country_name || "Philippines";
+  addressForm.country_code = addr.country_code || appStore.regionCountry || "RS";
+  addressForm.country_name = addr.country_name || currentCountryName();
   addressForm.city = addr.city || "";
   addressForm.address_line1 = addr.address_line1 || "";
   addressForm.postal_code = addr.postal_code || "";
@@ -219,5 +231,14 @@ async function deleteAddress(addressId: string) {
   await loadAddresses();
 }
 
-onMounted(loadAddresses);
+onMounted(async () => {
+  await appStore.fetchMarketLocalizationConfig();
+  resetAddressForm();
+  await loadAddresses();
+});
+
+function currentCountryName() {
+  const code = String(appStore.regionCountry || "RS").toUpperCase().slice(0, 2);
+  return appStore.regionOptions.find((region) => region.code === code)?.label || code;
+}
 </script>

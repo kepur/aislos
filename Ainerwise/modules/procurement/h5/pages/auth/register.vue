@@ -44,7 +44,7 @@
       <form class="space-y-4" @submit.prevent="handleRegister">
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ $t("auth.full_name") }}</label>
-          <input v-model="form.full_name" type="text" placeholder="Juan dela Cruz" class="input-field" required />
+          <input v-model="form.full_name" type="text" placeholder="Your full name" class="input-field" required />
         </div>
 
         <div>
@@ -54,7 +54,7 @@
 
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ $t("auth.phone_optional") }}</label>
-          <input v-model="form.phone" type="tel" placeholder="+63 9XX XXX XXXX" class="input-field" />
+          <input v-model="form.phone" type="tel" :placeholder="phonePlaceholder" class="input-field" />
         </div>
 
         <div>
@@ -84,7 +84,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1.5">City</label>
-            <input v-model="form.city" type="text" placeholder="Cebu City" class="input-field" />
+            <input v-model="form.city" type="text" :placeholder="defaultCityPlaceholder" class="input-field" />
           </div>
         </template>
 
@@ -125,6 +125,7 @@ definePageMeta({ layout: "default", middleware: ["guest"] });
 useHead({ title: "Create Account" });
 
 const authStore = useAuthStore();
+const appStore = useAppStore();
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n({ useScope: "global" });
@@ -133,6 +134,22 @@ const role = ref<UserRole>((route.query.role as UserRole) || "BUYER");
 const showPw = ref(false);
 const loading = ref(false);
 const errors = ref<Record<string, string>>({});
+const defaultCityPlaceholder = computed(() => {
+  if (appStore.regionCountry === "RS") return "Belgrade";
+  if (appStore.regionCountry === "PL") return "Warsaw";
+  if (appStore.regionCountry === "PH") return "Cebu City";
+  if (appStore.regionCountry === "BA") return "Sarajevo";
+  if (appStore.regionCountry === "RO") return "Bucharest";
+  return "City";
+});
+const phonePlaceholder = computed(() => {
+  if (appStore.regionCountry === "RS") return "+381 6X XXX XXXX";
+  if (appStore.regionCountry === "PL") return "+48 XXX XXX XXX";
+  if (appStore.regionCountry === "PH") return "+63 9XX XXX XXXX";
+  if (appStore.regionCountry === "BA") return "+387 6X XXX XXX";
+  if (appStore.regionCountry === "RO") return "+40 7XX XXX XXX";
+  return "Phone number";
+});
 
 const form = reactive({
   full_name: "",

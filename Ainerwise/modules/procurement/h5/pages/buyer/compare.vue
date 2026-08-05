@@ -91,6 +91,7 @@ const route = useRoute();
 const router = useRouter();
 const intentStore = useIntentStore();
 const api = useApiFetch();
+const appStore = useAppStore();
 const { formatPrice, formatDate, getOfferStatusLabel } = useApiUtils();
 
 const intentId = route.query.intent_id as string;
@@ -137,7 +138,7 @@ async function fetchShippingEstimateForOffer(offer: any) {
   const offerId = String(offer.id);
   shippingLoadingMap.value[offerId] = true;
   try {
-    const country = intentStore.currentIntent?.country || "PH";
+    const country = intentStore.currentIntent?.country || appStore.regionCountry || "RS";
     const response = await api<{ estimates: Array<{ total_shipping_minor: number; estimated_days_min: number; estimated_days_max: number; currency: string }> }>("/shipping/estimate", {
       method: "POST",
       body: {
@@ -145,7 +146,7 @@ async function fetchShippingEstimateForOffer(offer: any) {
         dest_country: country,
         weight_kg: resolveWeightKg(),
         declared_value_minor: offer.total_price_minor,
-        currency: offer.currency || "PHP",
+        currency: offer.currency || appStore.currency || "EUR",
       },
     });
     const best = response.estimates?.[0];
@@ -154,7 +155,7 @@ async function fetchShippingEstimateForOffer(offer: any) {
           total_shipping_minor: Number(best.total_shipping_minor || 0),
           estimated_days_min: Number(best.estimated_days_min || 0),
           estimated_days_max: Number(best.estimated_days_max || 0),
-          currency: best.currency || offer.currency || "PHP",
+          currency: best.currency || offer.currency || appStore.currency || "EUR",
         }
       : null;
   } catch {

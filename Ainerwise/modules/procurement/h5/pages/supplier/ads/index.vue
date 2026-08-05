@@ -171,6 +171,7 @@
 
 <script setup lang="ts">
 import { showToast } from "vant";
+import { formatMoneyMinor } from "~/utils/currencyPolicy";
 
 definePageMeta({ layout: "supplier", middleware: ["supplier"] });
 useHead({ title: "Ad Campaigns" });
@@ -240,9 +241,8 @@ function viewMetrics(c: any) {
   showMetrics.value = true;
 }
 
-function formatMinor(minor: number | null | undefined, currency = 'PHP') {
-  if (!minor) return '₱0';
-  return new Intl.NumberFormat('en-PH', { style: 'currency', currency: currency || 'PHP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(minor / 100);
+function formatMinor(minor: number | null | undefined, currency = 'EUR') {
+  return formatMoneyMinor(minor || 0, currency);
 }
 
 function placementIcon(p: string) {

@@ -14,7 +14,11 @@ export function normalizeH5Locale(value?: string | null) {
   const raw = String(value || '').trim()
   const upper = raw.toUpperCase()
   if (upper === 'ZH' || upper === 'CN' || upper === 'ZH-CN') return 'zh'
-  if (upper === 'SR' || upper === 'RS') return 'sr'
+  if (upper === 'SR' || upper === 'RS' || upper === 'SR-RS') return 'sr'
+  const primary = raw.split(/[-_]/)[0]?.toLowerCase()
+  if (primary === 'zh') return 'zh'
+  if (primary === 'sr') return 'sr'
+  if (primary === 'en') return 'en'
   return raw.toLowerCase()
 }
 

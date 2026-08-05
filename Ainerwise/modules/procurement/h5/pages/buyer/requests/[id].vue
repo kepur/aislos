@@ -150,7 +150,7 @@
 
               <!-- Price row -->
               <div v-if="c.unit_price_minor" class="mt-2 flex items-center gap-2">
-                <span class="text-sm font-bold text-slate-900">{{ formatPrice(c.unit_price_minor, c.currency ?? 'PHP') }}</span>
+                <span class="text-sm font-bold text-slate-900">{{ formatPrice(c.unit_price_minor, c.currency ?? appStore.currency) }}</span>
                 <span class="text-xs text-slate-400">/ {{ c.unit }}</span>
                 <span v-if="c.eta_days" class="text-xs text-slate-400">· ETA {{ c.eta_days }}d</span>
               </div>
@@ -302,6 +302,7 @@ const router = useRouter();
 const config = useRuntimeConfig();
 const intentStore = useIntentStore();
 const authStore = useAuthStore();
+const appStore = useAppStore();
 const { formatPrice, formatDate, formatRelativeTime, getIntentStatusLabel, getOfferStatusLabel } = useApiUtils();
 
 const id = route.params.id as string;
@@ -351,7 +352,7 @@ function normalizeCandidate(row: any) {
     trust_score: row.trust_score,
     stock_score: row.stock_score,
     unit_price_minor: row.unit_price_minor ?? row.price_minor ?? scoreBreakdown.price_minor,
-    currency: row.currency || intent.value?.currency || "PHP",
+    currency: row.currency || intent.value?.currency || appStore.currency || "EUR",
     unit: row.unit || attrs.unit || intent.value?.unit || "unit",
     eta_days: row.eta_days || attrs.eta_days,
     why_recommended: row.why_recommended || "Matched from AinerWise Core supplier catalog.",

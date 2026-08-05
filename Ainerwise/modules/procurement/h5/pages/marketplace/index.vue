@@ -19,12 +19,25 @@
         </button>
       </div>
 
-      <!-- Location picker row -->
-      <div class="mt-2">
-        <CommonLocationPicker
-          v-model="userLocation"
-          :placeholder="t('market.near_me')"
-          @update:modelValue="loadFeed(true)"
+      <!-- Delivery policy row -->
+      <div class="mt-2 grid grid-cols-[minmax(105px,36%)_1fr] gap-2">
+        <select
+          v-model="deliveryCountry"
+          class="min-w-0 rounded-xl bg-slate-100 px-3 py-3 text-sm font-semibold text-slate-700 outline-none"
+          @change="handleDeliveryCountryChange"
+        >
+          <option value="">All countries</option>
+          <option v-for="region in appStore.regionOptions" :key="region.code" :value="region.code">
+            {{ region.label }}
+          </option>
+        </select>
+        <input
+          v-model="deliveryCity"
+          type="text"
+          placeholder="City or area"
+          class="min-w-0 rounded-xl bg-slate-100 px-4 py-3 text-sm outline-none placeholder:text-slate-400"
+          @keyup.enter="loadFeed(true)"
+          @blur="loadFeed(true)"
         />
       </div>
 
@@ -42,6 +55,19 @@
           @click="sort = s.value; loadFeed(true)"
           :class="['flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors', sort === s.value ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600']"
         >{{ s.label }}</button>
+      </div>
+
+      <div v-if="searchContextChips.length" class="mt-2 flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
+        <span
+          v-for="chip in searchContextChips"
+          :key="chip"
+          class="flex-shrink-0 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-[11px] font-semibold text-indigo-700"
+        >
+          {{ chip }}
+        </span>
+        <button class="flex-shrink-0 rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-semibold text-slate-500" @click="clearSearchContext">
+          Clear
+        </button>
       </div>
     </header>
 
@@ -81,6 +107,32 @@
           <input type="checkbox" v-model="verifiedOnly" @change="loadFeed(true)" class="rounded" />
           {{ t('market.verified_only') }}
         </label>
+
+        <div class="space-y-2 rounded-2xl bg-slate-50 p-3">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-semibold text-slate-500">Budget</p>
+            <span class="text-[11px] font-semibold text-slate-500">{{ budgetCurrency || appStore.currency }}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <input
+              v-model="budgetMinInput"
+              type="number"
+              min="0"
+              placeholder="Min"
+              class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none"
+            />
+            <input
+              v-model="budgetMaxInput"
+              type="number"
+              min="0"
+              placeholder="Max"
+              class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none"
+            />
+          </div>
+          <button class="w-full rounded-xl bg-indigo-600 py-2 text-xs font-semibold text-white" @click="applyBudgetFilter">
+            Apply budget
+          </button>
+        </div>
       </div>
     </Transition>
 
@@ -89,9 +141,9 @@
       <span v-if="!loading">{{ total }} {{ t('market.products') }}</span>
       <span v-else>{{ t('market.loading') }}</span>
       <span v-if="activeCategoryName"> in {{ activeCategoryName }}</span>
-      <span v-if="userLocation" class="ml-auto flex items-center gap-1 text-indigo-500 font-medium">
+      <span v-if="deliveryCountry || deliveryCity" class="ml-auto flex items-center gap-1 text-indigo-500 font-medium">
         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
-        {{ t('market.near') }} {{ userLocation.label.split(',')[0] }}
+        {{ deliveryCity || countryName(deliveryCountry) }}
       </span>
     </div>
 
@@ -189,6 +241,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { formatMoneyMinor } from '~/utils/currencyPolicy'
+import { getLocalePrefixFromPath, withLocalePrefix } from '~/utils/localeRoutes'
 
 definePageMeta({ layout: 'default' })
 
@@ -196,6 +250,7 @@ const config = useRuntimeConfig()
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
+const appStore = useAppStore()
 
 interface FeedItem {
   id: string
@@ -226,13 +281,27 @@ const showFilter = ref(false)
 
 const categoryId = ref<string | null>((route.query.category_id as string) || null)
 const activeCategoryName = ref<string>((route.query.category_name as string) || '')
-const marketMode = ref('')
-const keyword = ref('')
-const sort = ref('rank')
+const marketMode = ref<string>((route.query.market_mode as string) || '')
+const keyword = ref<string>((route.query.keyword as string) || '')
+const sort = ref<string>((route.query.sort as string) || 'rank')
+const originCountry = ref<string>((route.query.origin_country as string) || '')
+const deliveryCountry = ref<string>(
+  ((route.query.delivery_country as string) || (route.query.country as string) || '').toUpperCase().slice(0, 2)
+)
+const deliveryCountryName = ref<string>((route.query.delivery_country_name as string) || '')
+const deliveryCity = ref<string>((route.query.delivery_city as string) || (route.query.city as string) || (route.query.location as string) || '')
+const radiusKm = ref<string>((route.query.radius_km as string) || (route.query.radius as string) || '')
+const budgetMinMinor = ref<string>((route.query.budget_min_minor as string) || (route.query.budget_min as string) || '')
+const budgetMaxMinor = ref<string>((route.query.budget_max_minor as string) || (route.query.budget_max as string) || '')
+const budgetCurrency = ref<string>((route.query.budget_currency as string) || '')
+const latitude = ref<string>((route.query.lat as string) || '')
+const longitude = ref<string>((route.query.lng as string) || '')
+const budgetMinInput = ref<string>(budgetMinMinor.value ? String(Math.round(Number(budgetMinMinor.value) / 100)) : '')
+const budgetMaxInput = ref<string>(budgetMaxMinor.value ? String(Math.round(Number(budgetMaxMinor.value) / 100)) : '')
 const merchantType = ref('')
 const verifiedOnly = ref(false)
 const filterCategories = ref<FilterCat[]>([])
-const userLocation = ref<{ lat: number; lng: number; label: string; regionId?: string } | null>(null)
+const filterOriginCountries = ref<string[]>([])
 
 const sortOptions = computed(() => [
   { value: 'rank', label: t('market.sort_best') },
@@ -249,11 +318,30 @@ const sellerTypeOptions = computed(() => [
 ])
 
 onMounted(async () => {
+  await appStore.fetchMarketLocalizationConfig()
+  await appStore.fetchPaymentRegionConfig(appStore.regionCountry || 'RS')
   try {
     const f = await $fetch<any>(`${config.public.apiBase}/marketplace/filters`)
     filterCategories.value = f.categories ?? []
+    filterOriginCountries.value = f.origin_countries ?? []
+    if (categoryId.value && !activeCategoryName.value) {
+      activeCategoryName.value = filterCategories.value.find((cat) => cat.id === categoryId.value)?.name || ''
+    }
   } catch {}
   await loadFeed(true)
+})
+
+const searchContextChips = computed(() => {
+  const chips: string[] = []
+  if (activeCategoryName.value) chips.push(`Category: ${activeCategoryName.value}`)
+  if (deliveryCountry.value) chips.push(`Country: ${deliveryCountryName.value || countryName(deliveryCountry.value)}`)
+  if (deliveryCity.value) chips.push(`City: ${deliveryCity.value}`)
+  if (radiusKm.value) chips.push(`Radius: ${radiusKm.value} km`)
+  if (budgetMinMinor.value || budgetMaxMinor.value) {
+    chips.push(`Budget: ${formatBudgetRange()}`)
+  }
+  if (latitude.value && longitude.value) chips.push('Location detected')
+  return chips
 })
 
 async function loadFeed(reset = false) {
@@ -265,13 +353,19 @@ async function loadFeed(reset = false) {
     if (categoryId.value) params.category_id = categoryId.value
     if (marketMode.value) params.market_mode = marketMode.value
     if (keyword.value.trim()) params.keyword = keyword.value.trim()
+    if (originCountry.value) params.origin_country = originCountry.value
+    if (deliveryCountry.value) params.country = deliveryCountry.value
+    if (deliveryCity.value) params.city = deliveryCity.value
+    if (radiusKm.value) params.radius_km = radiusKm.value
+    if (budgetMinMinor.value) params.budget_min_minor = budgetMinMinor.value
+    if (budgetMaxMinor.value) params.budget_max_minor = budgetMaxMinor.value
+    if (budgetCurrency.value) params.budget_currency = budgetCurrency.value
+    if (latitude.value && longitude.value) {
+      params.lat = latitude.value
+      params.lng = longitude.value
+    }
     if (merchantType.value) params.account_type = merchantType.value
     if (verifiedOnly.value) params.verified_only = true
-    if (userLocation.value) {
-      params.lat = userLocation.value.lat
-      params.lng = userLocation.value.lng
-      if (userLocation.value.regionId) params.region_id = userLocation.value.regionId
-    }
 
     const data = await $fetch<any>(`${config.public.apiBase}/marketplace/feed`, { params })
     if (reset) items.value = data.items
@@ -297,9 +391,59 @@ function setCategoryFilter(id: string | null, name?: string) {
 async function loadMore() { page.value++; await loadFeed(false) }
 
 function formatPrice(minor: number, currency: string): string {
-  const amount = minor / 100
-  if (amount >= 1000) return `${(amount / 1000).toFixed(1)}k ${currency}`
-  return `${amount.toLocaleString()} ${currency}`
+  return formatMoneyMinor(minor, currency)
+}
+
+function formatBudgetRange() {
+  const currency = budgetCurrency.value || appStore.currency
+  const min = budgetMinMinor.value ? formatMoneyMinor(Number(budgetMinMinor.value), currency) : '0'
+  const max = budgetMaxMinor.value ? formatMoneyMinor(Number(budgetMaxMinor.value), currency) : 'Max'
+  return `${min} - ${max}`
+}
+
+async function handleDeliveryCountryChange() {
+  deliveryCountryName.value = ''
+  if (deliveryCountry.value) await appStore.setRegionCountry(deliveryCountry.value)
+  loadFeed(true)
+}
+
+function applyBudgetFilter() {
+  budgetMinMinor.value = budgetMinInput.value ? String(Math.round(Number(budgetMinInput.value) * 100)) : ''
+  budgetMaxMinor.value = budgetMaxInput.value ? String(Math.round(Number(budgetMaxInput.value) * 100)) : ''
+  budgetCurrency.value = appStore.currency
+  loadFeed(true)
+  showFilter.value = false
+}
+
+function clearSearchContext() {
+  categoryId.value = null
+  activeCategoryName.value = ''
+  keyword.value = ''
+  originCountry.value = ''
+  deliveryCountry.value = ''
+  deliveryCountryName.value = ''
+  deliveryCity.value = ''
+  radiusKm.value = ''
+  budgetMinMinor.value = ''
+  budgetMaxMinor.value = ''
+  budgetCurrency.value = ''
+  budgetMinInput.value = ''
+  budgetMaxInput.value = ''
+  latitude.value = ''
+  longitude.value = ''
+  router.replace(localizedPath('/marketplace'))
+  loadFeed(true)
+}
+
+function countryName(countryCode: string) {
+  const normalized = String(countryCode || '').toUpperCase().slice(0, 2)
+  return appStore.regionOptions.find((region) => region.code === normalized)?.label || normalized
+}
+
+function localizedPath(path: string) {
+  if (!import.meta.client) return path
+  const prefix = getLocalePrefixFromPath(route.path) || localStorage.getItem('h5_locale_prefix') || ''
+  return prefix ? withLocalePrefix(path, prefix) : path
 }
 
 function handleCta(item: FeedItem) {

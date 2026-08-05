@@ -42,11 +42,11 @@
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-1.5">Country</label>
-              <input v-model="form.country" class="input-field" placeholder="Philippines" />
+              <input v-model="form.country" class="input-field" placeholder="RS / Serbia" />
             </div>
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-1.5">City</label>
-              <input v-model="form.city" class="input-field" placeholder="Cebu" />
+              <input v-model="form.city" class="input-field" :placeholder="cityPlaceholder" />
             </div>
           </div>
           <div>
@@ -97,6 +97,7 @@ definePageMeta({ layout: "default", middleware: ["auth"] });
 useHead({ title: "Company Profile" });
 
 const authStore = useAuthStore();
+const appStore = useAppStore();
 const config = useRuntimeConfig();
 const { formatDate } = useApiUtils();
 
@@ -109,20 +110,31 @@ const company = ref<Company | null>(null);
 const form = reactive({
   name: "",
   tax_id: "",
-  country: "Philippines",
-  city: "Cebu",
+  country: "RS",
+  city: "",
   address: "",
+});
+const cityPlaceholder = computed(() => {
+  const code = String(form.country || appStore.regionCountry || "RS").toUpperCase().slice(0, 2);
+  if (code === "RS") return "Belgrade";
+  if (code === "PL") return "Warsaw";
+  if (code === "PH") return "Cebu City";
+  if (code === "BA") return "Sarajevo";
+  if (code === "RO") return "Bucharest";
+  return "City";
 });
 
 function syncForm(next: Company | null) {
   form.name = next?.name || "";
   form.tax_id = next?.tax_id || "";
-  form.country = next?.country || "Philippines";
-  form.city = next?.city || "Cebu";
+  form.country = next?.country || appStore.regionCountry || "RS";
+  form.city = next?.city || "";
   form.address = next?.address || "";
 }
 
 onMounted(async () => {
+  await appStore.fetchMarketLocalizationConfig();
+  if (!form.country) form.country = appStore.regionCountry || "RS";
   try {
     company.value = await $fetch<Company>(`${config.public.apiBase}/companies/my`, {
       headers: { Authorization: `Bearer ${authStore.accessToken}` },

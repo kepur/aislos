@@ -170,7 +170,7 @@ const order = computed(() => orderStore.currentOrder);
 const escrowMessage = computed(() => {
   const status = order.value?.escrow?.status;
   if (status === "CAPTURED") return "Your payment is securely held. Funds will be released to the supplier only after you confirm delivery.";
-  if (status === "RELEASED") return "Payment has been released to the supplier. Thank you for using AISLOS Market!";
+  if (status === "RELEASED") return "Payment has been released to the supplier. Thank you for using AinerWise Procurement!";
   if (status === "REFUNDED") return "A refund has been processed to your account.";
   return "Escrow is active and protecting your transaction.";
 });

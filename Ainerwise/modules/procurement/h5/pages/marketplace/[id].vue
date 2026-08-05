@@ -141,7 +141,7 @@
               <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center text-lg flex-shrink-0">📦</div>
               <div class="min-w-0">
                 <p class="text-sm font-semibold text-slate-900 truncate">{{ item?.title }}</p>
-                <p class="text-xs text-indigo-600">{{ item?.company_name }} · {{ formatPrice(item?.price_minor ?? 0, item?.currency ?? 'PHP') }}/{{ item?.unit }}</p>
+                <p class="text-xs text-indigo-600">{{ item?.company_name }} · {{ formatPrice(item?.price_minor ?? 0, item?.currency) }}/{{ item?.unit }}</p>
               </div>
             </div>
 
@@ -223,7 +223,7 @@
               <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-lg flex-shrink-0">🛒</div>
               <div class="min-w-0">
                 <p class="text-sm font-semibold text-slate-900 truncate">{{ item?.title }}</p>
-                <p class="text-xs text-green-700 font-semibold">{{ formatPrice(item?.price_minor ?? 0, item?.currency ?? 'PHP') }} / {{ item?.unit }}</p>
+                <p class="text-xs text-green-700 font-semibold">{{ formatPrice(item?.price_minor ?? 0, item?.currency) }} / {{ item?.unit }}</p>
               </div>
             </div>
 
@@ -239,7 +239,7 @@
                   class="w-10 h-10 rounded-xl bg-slate-100 text-xl font-bold flex items-center justify-center">+</button>
               </div>
               <p class="text-xs text-green-700 font-semibold mt-2 text-center">
-                Total: {{ formatPrice((item?.price_minor ?? 0) * buy.qty, item?.currency ?? 'PHP') }}
+                Total: {{ formatPrice((item?.price_minor ?? 0) * buy.qty, item?.currency) }}
               </p>
             </div>
 
@@ -268,7 +268,7 @@
             <p v-if="buyError" class="text-xs text-red-600 mb-2">{{ buyError }}</p>
             <button @click="submitBuyNow" :disabled="buyLoading || !buyValid"
               class="w-full bg-green-600 text-white font-semibold py-4 rounded-2xl text-sm disabled:opacity-50 active:scale-95 transition-transform">
-              {{ buyLoading ? 'Processing...' : `🛒 Confirm Order · ${formatPrice((item?.price_minor ?? 0) * buy.qty, item?.currency ?? 'PHP')}` }}
+              {{ buyLoading ? 'Processing...' : `🛒 Confirm Order · ${formatPrice((item?.price_minor ?? 0) * buy.qty, item?.currency)}` }}
             </button>
           </div>
         </div>
@@ -278,6 +278,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatMoneyMinor } from '~/utils/currencyPolicy'
 
 definePageMeta({ layout: 'default' })
 
@@ -286,6 +287,7 @@ const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const intentStore = useIntentStore()
+const appStore = useAppStore()
 
 interface Product {
   id: string; title: string; description: string | null
@@ -339,11 +341,8 @@ const buyValid = computed(() => {
   return true
 })
 
-function formatPrice(minor: number, currency: string): string {
-  const amount = minor / 100
-  if (amount >= 1000000) return `${(amount / 1000000).toFixed(1)}M ${currency}`
-  if (amount >= 1000) return `${(amount / 1000).toFixed(1)}k ${currency}`
-  return `${amount.toLocaleString()} ${currency}`
+function formatPrice(minor: number, currency?: string | null): string {
+  return formatMoneyMinor(minor, currency || appStore.currency || 'EUR')
 }
 
 async function loadAddresses() {
@@ -392,11 +391,11 @@ async function submitRfq() {
       title: `Quote Request: ${item.value.title}`,
       qty: rfq.qty,
       unit: item.value.unit,
-      currency: item.value.currency,
+      currency: item.value.currency || appStore.currency || 'EUR',
       notes: [
         `Supplier: ${item.value.company_name}`,
         `Item: ${item.value.title}`,
-        `Unit Price: ${formatPrice(item.value.price_minor, item.value.currency)}/${item.value.unit}`,
+        `Unit Price: ${formatPrice(item.value.price_minor, item.value.currency || appStore.currency)}/${item.value.unit}`,
         `Deal Mode: ${rfq.deal_mode}`,
         rfq.notes ? `Notes: ${rfq.notes}` : '',
       ].filter(Boolean).join('\n'),

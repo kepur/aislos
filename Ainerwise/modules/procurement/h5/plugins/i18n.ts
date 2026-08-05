@@ -51,6 +51,22 @@ const H5_TO_PC_LOCALE: Record<string, string> = Object.fromEntries(
 );
 let globalLocaleRef: { value: string } | null = null;
 
+function readCookie(name: string) {
+  if (!import.meta.client) return "";
+  const found = document.cookie
+    .split(";")
+    .map((item) => item.trim())
+    .find((item) => item.startsWith(`${name}=`));
+  return found ? decodeURIComponent(found.slice(name.length + 1)) : "";
+}
+
+function browserLocale() {
+  if (!import.meta.client) return "en";
+  const browserLang = navigator.languages?.[0] || navigator.language || "";
+  const normalized = normalizeLocale(browserLang);
+  return LOCALE_CODES.has(normalized) ? normalized : "en";
+}
+
 function normalizeLocale(value?: string | null) {
   if (!value) return "en";
   const fromPc = PC_TO_H5_LOCALE[value.toUpperCase()];
@@ -80,7 +96,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     savedLocale = normalizeLocale(
       localeFromPrefix(routePrefix) ||
       localStorage.getItem("h5_locale") ||
-      localStorage.getItem("pp_language")
+      localStorage.getItem("pp_language") ||
+      readCookie("pp_language") ||
+      browserLocale()
     );
   }
 

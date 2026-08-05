@@ -149,6 +149,7 @@ useHead({ title: "Create Campaign" });
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const router = useRouter();
+const appStore = useAppStore();
 
 const saving = ref(false);
 const budgetInput = ref(1000);
@@ -163,7 +164,7 @@ const form = reactive({
   catalog_item_id: '',
   budget_minor: 100000,
   bid_per_click_minor: 500,
-  currency: 'PHP',
+  currency: 'EUR',
   target_keywords: [] as string[],
   target_countries: [] as string[],
 });
@@ -220,5 +221,8 @@ async function createCampaign() {
   } finally { saving.value = false; }
 }
 
-onMounted(loadCatalog);
+onMounted(() => {
+  form.currency = appStore.currency || 'EUR';
+  loadCatalog();
+});
 </script>

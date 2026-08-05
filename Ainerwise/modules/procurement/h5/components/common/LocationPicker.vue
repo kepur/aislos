@@ -143,16 +143,16 @@
               <p class="text-xs text-slate-500">Enter coordinates manually or search by address.</p>
               <div>
                 <label class="block text-xs text-slate-500 mb-1 font-medium">Address / Label</label>
-                <input v-model="manualLabel" type="text" placeholder="e.g. Ayala Center Cebu" class="w-full bg-slate-100 rounded-xl px-4 py-2.5 text-sm outline-none" />
+                <input v-model="manualLabel" type="text" :placeholder="manualLabelPlaceholder" class="w-full bg-slate-100 rounded-xl px-4 py-2.5 text-sm outline-none" />
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <div>
                   <label class="block text-xs text-slate-500 mb-1 font-medium">Latitude</label>
-                  <input v-model.number="manualLat" type="number" step="0.0001" placeholder="10.3157" class="w-full bg-slate-100 rounded-xl px-3 py-2.5 text-sm outline-none" />
+                  <input v-model.number="manualLat" type="number" step="0.0001" :placeholder="manualCoordinatePlaceholder.lat" class="w-full bg-slate-100 rounded-xl px-3 py-2.5 text-sm outline-none" />
                 </div>
                 <div>
                   <label class="block text-xs text-slate-500 mb-1 font-medium">Longitude</label>
-                  <input v-model.number="manualLng" type="number" step="0.0001" placeholder="123.8854" class="w-full bg-slate-100 rounded-xl px-3 py-2.5 text-sm outline-none" />
+                  <input v-model.number="manualLng" type="number" step="0.0001" :placeholder="manualCoordinatePlaceholder.lng" class="w-full bg-slate-100 rounded-xl px-3 py-2.5 text-sm outline-none" />
                 </div>
               </div>
               <button
@@ -187,6 +187,8 @@
 </template>
 
 <script setup lang="ts">
+import { countryLabel, inferLocationFromCoords } from "~/utils/geoPolicy"
+
 interface Region {
   id: string
   name: string
@@ -202,6 +204,8 @@ interface LocationValue {
   lng: number
   regionId?: string
   regionName?: string
+  countryCode?: string
+  city?: string
   label: string
 }
 
@@ -215,6 +219,7 @@ const emit = defineEmits<{
 }>()
 
 const config = useRuntimeConfig()
+const appStore = useAppStore()
 
 const open = ref(false)
 const activeTab = ref<'gps' | 'region' | 'manual'>('gps')
@@ -240,6 +245,21 @@ const manualLat = ref<number | null>(null)
 const manualLng = ref<number | null>(null)
 const manualLabel = ref('')
 
+const manualCityExamples: Record<string, { label: string; lat: string; lng: string }> = {
+  RS: { label: 'e.g. Belgrade Waterfront', lat: '44.8125', lng: '20.4612' },
+  PL: { label: 'e.g. Warsaw City Center', lat: '52.2297', lng: '21.0122' },
+  PH: { label: 'e.g. Cebu Business Park', lat: '10.3157', lng: '123.8854' },
+  BA: { label: 'e.g. Sarajevo City Center', lat: '43.8563', lng: '18.4131' },
+  RO: { label: 'e.g. Bucharest City Center', lat: '44.4268', lng: '26.1025' },
+}
+
+const activeCountryCode = computed(() => String(appStore.regionCountry || 'RS').toUpperCase().slice(0, 2))
+const manualLabelPlaceholder = computed(() => (manualCityExamples[activeCountryCode.value] || manualCityExamples.RS).label)
+const manualCoordinatePlaceholder = computed(() => {
+  const example = manualCityExamples[activeCountryCode.value] || manualCityExamples.RS
+  return { lat: example.lat, lng: example.lng }
+})
+
 const filteredRegions = computed(() => {
   if (!regionSearch.value.trim()) return regions.value
   const q = regionSearch.value.toLowerCase()
@@ -251,23 +271,12 @@ const filteredRegions = computed(() => {
 async function loadRegions() {
   if (regions.value.length) return
   regionsLoading.value = true
+  await appStore.fetchMarketLocalizationConfig()
   try {
     const data = await $fetch<Region[]>(`${config.public.apiBase}/admin/regions`)
     regions.value = data
   } catch {
-    // Fallback to common PH cities
-    regions.value = [
-      { id: 'cebu', name: 'Cebu City', country: 'Philippines', region_type: 'CITY', center_lat: 10.3157, center_lng: 123.8854, default_radius_km: 20 },
-      { id: 'manila', name: 'Manila', country: 'Philippines', region_type: 'CITY', center_lat: 14.5995, center_lng: 120.9842, default_radius_km: 25 },
-      { id: 'davao', name: 'Davao City', country: 'Philippines', region_type: 'CITY', center_lat: 7.0707, center_lng: 125.6087, default_radius_km: 25 },
-      { id: 'quezon', name: 'Quezon City', country: 'Philippines', region_type: 'DISTRICT', center_lat: 14.6760, center_lng: 121.0437, default_radius_km: 15 },
-      { id: 'lapu', name: 'Lapu-Lapu City', country: 'Philippines', region_type: 'CITY', center_lat: 10.3103, center_lng: 123.9494, default_radius_km: 15 },
-      { id: 'mandaue', name: 'Mandaue City', country: 'Philippines', region_type: 'CITY', center_lat: 10.3236, center_lng: 123.9223, default_radius_km: 10 },
-      { id: 'cagayan', name: 'Cagayan de Oro', country: 'Philippines', region_type: 'CITY', center_lat: 8.4542, center_lng: 124.6319, default_radius_km: 20 },
-      { id: 'iloilo', name: 'Iloilo City', country: 'Philippines', region_type: 'CITY', center_lat: 10.7202, center_lng: 122.5621, default_radius_km: 20 },
-      { id: 'bacolod', name: 'Bacolod City', country: 'Philippines', region_type: 'CITY', center_lat: 10.6840, center_lng: 122.9567, default_radius_km: 20 },
-      { id: 'zamboanga', name: 'Zamboanga City', country: 'Philippines', region_type: 'CITY', center_lat: 6.9214, center_lng: 122.0790, default_radius_km: 20 },
-    ]
+    regions.value = fallbackRegions()
   } finally {
     regionsLoading.value = false
   }
@@ -284,15 +293,22 @@ function getGPS() {
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
       const { latitude: lat, longitude: lng } = pos.coords
-      // Reverse geocode via backend if available
       let label = `${lat.toFixed(4)}, ${lng.toFixed(4)}`
+      const guess = inferLocationFromCoords(lat, lng, appStore.regionOptions)
+      if (guess) label = [guess.city, guess.countryName].filter(Boolean).join(', ')
       try {
         const geo = await $fetch<any>(`${config.public.apiBase}/maps/reverse-geocode`, {
           params: { lat, lng }
         })
         label = geo.formatted_address || geo.address || label
       } catch {}
-      gpsResult.value = { lat, lng, label }
+      gpsResult.value = {
+        lat,
+        lng,
+        label,
+        countryCode: guess?.countryCode,
+        city: guess?.city,
+      }
       gpsLoading.value = false
     },
     (err) => {
@@ -326,10 +342,13 @@ function selectRegion(region: Region) {
 
 function confirmManual() {
   if (!manualLat.value || !manualLng.value) return
+  const guess = inferLocationFromCoords(manualLat.value, manualLng.value, appStore.regionOptions)
   emit('update:modelValue', {
     lat: manualLat.value,
     lng: manualLng.value,
-    label: manualLabel.value || `${manualLat.value.toFixed(4)}, ${manualLng.value.toFixed(4)}`,
+    countryCode: guess?.countryCode,
+    city: guess?.city,
+    label: manualLabel.value || (guess ? [guess.city, guess.countryName].filter(Boolean).join(', ') : `${manualLat.value.toFixed(4)}, ${manualLng.value.toFixed(4)}`),
   })
   open.value = false
 }
@@ -350,6 +369,26 @@ watch(activeTab, (tab) => {
 onMounted(() => {
   if (activeTab.value === 'region') loadRegions()
 })
+
+function fallbackRegions(): Region[] {
+  const byCountry: Record<string, Region[]> = {
+    RS: [
+      { id: 'rs-belgrade', name: 'Belgrade', country: countryLabel('RS', appStore.regionOptions), region_type: 'CITY', center_lat: 44.8125, center_lng: 20.4612, default_radius_km: 25 },
+      { id: 'rs-novi-sad', name: 'Novi Sad', country: countryLabel('RS', appStore.regionOptions), region_type: 'CITY', center_lat: 45.2671, center_lng: 19.8335, default_radius_km: 25 },
+    ],
+    PL: [
+      { id: 'pl-warsaw', name: 'Warsaw', country: countryLabel('PL', appStore.regionOptions), region_type: 'CITY', center_lat: 52.2297, center_lng: 21.0122, default_radius_km: 25 },
+      { id: 'pl-krakow', name: 'Krakow', country: countryLabel('PL', appStore.regionOptions), region_type: 'CITY', center_lat: 50.0647, center_lng: 19.945, default_radius_km: 25 },
+    ],
+    PH: [
+      { id: 'ph-cebu', name: 'Cebu City', country: countryLabel('PH', appStore.regionOptions), region_type: 'CITY', center_lat: 10.3157, center_lng: 123.8854, default_radius_km: 20 },
+      { id: 'ph-manila', name: 'Manila', country: countryLabel('PH', appStore.regionOptions), region_type: 'CITY', center_lat: 14.5995, center_lng: 120.9842, default_radius_km: 25 },
+    ],
+  }
+  const codes = appStore.regionOptions.map((region) => String(region.code || '').toUpperCase().slice(0, 2))
+  const selected = codes.flatMap((code) => byCountry[code] || [])
+  return selected.length ? selected : Object.values(byCountry).flat()
+}
 </script>
 
 <style scoped>

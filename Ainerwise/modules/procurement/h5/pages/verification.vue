@@ -121,6 +121,7 @@ type CompanyDocument = {
 };
 
 const company = ref<Company | null>(null);
+const appStore = useAppStore();
 const documents = ref<CompanyDocument[]>([]);
 const businessFile = ref<File | null>(null);
 const ownerFile = ref<File | null>(null);
@@ -130,8 +131,8 @@ const noticeType = ref<"success" | "error">("success");
 const companyForm = reactive({
   name: "",
   tax_id: "",
-  country: "Philippines",
-  city: "Cebu City",
+  country: "RS",
+  city: "",
   address: "",
 });
 
@@ -193,11 +194,17 @@ async function loadVerification() {
     company.value = await $fetch<Company>(`${config.public.apiBase}/companies/me`, {
       headers: authHeaders(),
     });
+    companyForm.name = company.value.name || "";
+    companyForm.tax_id = company.value.tax_id || "";
+    companyForm.country = company.value.country || appStore.regionCountry || "RS";
+    companyForm.city = company.value.city || "";
+    companyForm.address = company.value.address || "";
     documents.value = await $fetch<CompanyDocument[]>(`${config.public.apiBase}/companies/me/documents`, {
       headers: authHeaders(),
     });
   } catch {
     company.value = null;
+    companyForm.country = appStore.regionCountry || "RS";
     documents.value = [];
   }
 }
@@ -252,5 +259,9 @@ async function submitVerification() {
   }
 }
 
-onMounted(loadVerification);
+onMounted(async () => {
+  await appStore.fetchMarketLocalizationConfig();
+  companyForm.country = appStore.regionCountry || "RS";
+  await loadVerification();
+});
 </script>

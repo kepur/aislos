@@ -100,6 +100,7 @@
 import { showConfirmDialog, showToast } from "vant";
 import { useI18n } from "vue-i18n";
 import type { TrustMe, TrustProfile, TrustTier, UserRole } from "~/types";
+import { formatMoneyMinor } from "~/utils/currencyPolicy";
 
 const props = withDefaults(defineProps<{ showBack?: boolean; title?: string }>(), {
   showBack: true,
@@ -109,6 +110,7 @@ const props = withDefaults(defineProps<{ showBack?: boolean; title?: string }>()
 const showBack = computed(() => props.showBack);
 const title = computed(() => props.title);
 const authStore = useAuthStore();
+const appStore = useAppStore();
 const router = useRouter();
 const config = useRuntimeConfig();
 const trustProfile = ref<TrustProfile | null>(null);
@@ -197,22 +199,11 @@ function tierClass(tier: TrustTier) {
   }[tier] || "bg-slate-100 text-slate-700";
 }
 
-function formatDeposit(minor: number, currency = "PHP") {
-  if (!minor) return "0";
-  const amount = minor / 100;
-  if (currency === "USDT") {
-    return `${amount.toLocaleString("en-PH", { notation: "compact", maximumFractionDigits: 1 })} USDT`;
-  }
-  try {
-    return new Intl.NumberFormat("en-PH", {
-      style: "currency",
-      currency,
-      notation: "compact",
-      maximumFractionDigits: 1,
-    }).format(amount);
-  } catch {
-    return `${amount.toLocaleString("en-PH", { notation: "compact", maximumFractionDigits: 1 })} ${currency}`;
-  }
+function formatDeposit(minor: number, currency = appStore.currency || "EUR") {
+  return formatMoneyMinor(Number(minor || 0), currency || appStore.currency || "EUR", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  });
 }
 
 onMounted(async () => {
