@@ -139,8 +139,12 @@
         <div class="flex items-center space-x-4 flex-shrink-0">
           <ClientOnly>
             <div class="hidden lg:flex items-center space-x-2 border-r border-slate-200 pr-4 mr-2">
-              <USelect v-model="appStore.language" :options="appStore.languageOptions" option-attribute="label" value-attribute="code" size="sm" class="w-36" @update:model-value="switchLanguage" />
-              <USelect v-model="appStore.currency" :options="appStore.currencyOptions" option-attribute="label" value-attribute="code" size="sm" class="w-36" @update:model-value="appStore.setCurrency" />
+              <USelect v-model="appStore.language" :options="appStore.languageOptions" option-attribute="label" value-attribute="code" size="sm" class="w-32" @update:model-value="switchLanguage" />
+              <USelect v-model="appStore.regionCountry" :options="appStore.regionOptions" option-attribute="label" value-attribute="code" size="sm" class="w-32" @update:model-value="appStore.setRegionCountry" />
+              <div class="flex items-center gap-1">
+                <span class="hidden xl:inline text-[11px] font-medium text-slate-400">{{ appStore.t('layout.settlementCurrency') }}</span>
+                <USelect v-model="appStore.currency" :options="appStore.currencyOptions" option-attribute="label" value-attribute="code" size="sm" class="w-40" @update:model-value="appStore.setCurrency" />
+              </div>
             </div>
           </ClientOnly>
 

@@ -72,22 +72,25 @@
 
         <div class="grid grid-cols-2 gap-6">
           <div class="space-y-1">
-            <label class="block text-sm font-medium text-slate-700">Budget Min</label>
+            <label class="block text-sm font-medium text-slate-700">Budget Min ({{ appStore.currency }})</label>
             <div class="relative">
-              <span class="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm pointer-events-none">$</span>
+              <span class="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm pointer-events-none">{{ budgetCurrencySymbol }}</span>
               <input v-model="form.budgetMin" type="number" min="0"
-                class="w-full rounded-lg border border-slate-200 bg-white pl-7 pr-4 py-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
+                class="w-full rounded-lg border border-slate-200 bg-white pl-12 pr-4 py-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
             </div>
           </div>
           <div class="space-y-1">
-            <label class="block text-sm font-medium text-slate-700">Budget Max</label>
+            <label class="block text-sm font-medium text-slate-700">Budget Max ({{ appStore.currency }})</label>
             <div class="relative">
-              <span class="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm pointer-events-none">$</span>
+              <span class="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm pointer-events-none">{{ budgetCurrencySymbol }}</span>
               <input v-model="form.budgetMax" type="number" min="0"
-                class="w-full rounded-lg border border-slate-200 bg-white pl-7 pr-4 py-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
+                class="w-full rounded-lg border border-slate-200 bg-white pl-12 pr-4 py-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
             </div>
           </div>
         </div>
+        <p class="text-xs text-slate-500">
+          {{ currencyPolicyHint }}
+        </p>
 
         <UFormGroup label="Detailed Description">
           <UTextarea v-model="form.description" :rows="4" placeholder="Describe specific requirements, brands, quality standards..." />
@@ -234,7 +237,7 @@
               <p class="text-sm text-slate-500">Category: {{ form.category }}</p>
             </div>
             <div class="text-right">
-              <div class="text-lg font-bold text-indigo-600">${{ form.budgetMin || 0 }} - ${{ form.budgetMax || 0 }}</div>
+              <div class="text-lg font-bold text-indigo-600">{{ reviewBudget }}</div>
               <p class="text-sm text-slate-500">Budget</p>
             </div>
           </div>
@@ -294,8 +297,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import {
+  currencyMeta,
+  currencyOptionLabel,
+  formatMoneyMinor,
+  localeForLanguage,
+} from '~/utils/currencyPolicy'
 
 definePageMeta({
   layout: 'buyer'
@@ -314,6 +323,21 @@ const categorySearch = ref('')
 const imageInputRef = ref<HTMLInputElement | null>(null)
 const uploadingImages = ref(false)
 const submitError = ref('')
+const dateLocale = computed(() => localeForLanguage(appStore.language, appStore.currency))
+const budgetCurrencySymbol = computed(() => currencyMeta(appStore.currency).symbol || appStore.currency)
+const currencyPolicyHint = computed(() => {
+  const policy = appStore.paymentPolicy
+  const local = policy.local_currency_alias ? `${policy.local_currency} / ${policy.local_currency_alias}` : policy.local_currency
+  if (appStore.language === 'ZH') {
+    return `当前按 ${currencyOptionLabel(appStore.currency)} 记录预算；${policy.country_name || form.value.country} 本地参考币为 ${local}。`
+  }
+  return `Budget is recorded in ${currencyOptionLabel(appStore.currency)}; local reference for ${policy.country_name || form.value.country} is ${local}.`
+})
+const reviewBudget = computed(() => {
+  const min = Number(form.value.budgetMin || 0) * 100
+  const max = Number(form.value.budgetMax || 0) * 100
+  return `${formatMoneyMinor(min, appStore.currency || 'EUR', dateLocale.value)} - ${formatMoneyMinor(max, appStore.currency || 'EUR', dateLocale.value)}`
+})
 
 const categories = ref<string[]>([
   'Construction Materials', 'Marine Parts', 'Auto Parts', 'IT / Electronics',
@@ -351,6 +375,10 @@ const regionOptions = computed(() => {
 watch(regionOptions, (options) => {
   if (!form.value.country && options.length) form.value.country = options[0].code
 }, { immediate: true })
+
+watch(() => form.value.country, async (country) => {
+  if (country) await appStore.setRegionCountry(country)
+})
 
 onMounted(async () => {
   if (!authStore.systemMode) {

@@ -4,6 +4,12 @@ import {
   normalizeLanguageCode,
   withLocalePrefix,
 } from '~/utils/localeRoutes'
+import {
+  FALLBACK_PAYMENT_POLICIES,
+  currencyOptionLabel,
+  normalizeCurrencyCode,
+  normalizePaymentPolicy,
+} from '~/utils/currencyPolicy'
 
 type LanguageCode = 'EN' | 'ZH' | 'JA' | 'ES' | 'TL' | 'KO' | 'TH' | 'VI' | 'ID' | 'AR' | 'SR' | 'BS' | 'PL' | 'DE' | 'RO'
 
@@ -169,6 +175,8 @@ const messages: Partial<Record<LanguageCode, Record<string, string>>> = {
     'layout.viewAllNotifications': 'View all notifications',
     'layout.dashboard': 'Dashboard',
     'layout.ainerwiseSite': 'AinerWise Official Site',
+    'layout.operatingCountry': 'Operating Country',
+    'layout.settlementCurrency': 'Settlement',
     'buyer.nav.dashboard': 'Dashboard',
     'buyer.nav.marketplace': 'Marketplace',
     'buyer.nav.requests': 'My Requests',
@@ -344,6 +352,7 @@ const messages: Partial<Record<LanguageCode, Record<string, string>>> = {
     'wallet.status.CANCELED': 'Cancelled',
     'wallet.status.CREATED': 'Created',
     'wallet.currencyNote': 'Showing totals for the currency selected in the top bar. Orders in other currencies are kept separate and are not mixed into this total.',
+    'wallet.localReference': 'Local reference:',
     'buyer.notifications.title': 'Notifications',
     'buyer.notifications.subtitle': 'Buyer alerts for new offers, order updates, disputes, and messages.',
     'buyer.notifications.loading': 'Loading notifications...',
@@ -623,6 +632,8 @@ const messages: Partial<Record<LanguageCode, Record<string, string>>> = {
     'layout.viewAllNotifications': '查看全部通知',
     'layout.dashboard': '仪表盘',
     'layout.ainerwiseSite': 'AinerWise 官网',
+    'layout.operatingCountry': '运营国家',
+    'layout.settlementCurrency': '结算币',
     'buyer.nav.dashboard': '买家仪表盘',
     'buyer.nav.marketplace': '采购市场',
     'buyer.nav.requests': '我的需求',
@@ -798,6 +809,7 @@ const messages: Partial<Record<LanguageCode, Record<string, string>>> = {
     'wallet.status.CANCELED': '已取消',
     'wallet.status.CREATED': '已创建',
     'wallet.currencyNote': '当前汇总按顶部选择的币种显示。其它币种订单会单独保留，不会混入这个总数。',
+    'wallet.localReference': '本地参考：',
     'buyer.notifications.title': '通知',
     'buyer.notifications.subtitle': '买家关于新报价、订单更新、争议和消息的提醒。',
     'buyer.notifications.loading': '正在加载通知...',
@@ -894,6 +906,8 @@ const messages: Partial<Record<LanguageCode, Record<string, string>>> = {
     'layout.myBusiness': 'Moje poslovanje',
     'layout.shoppingFirst': 'Kupovina prvo',
     'layout.marketplaceShortcutDesc': 'Nabavka je dostupna jednim klikom sa svake buyer stranice.',
+    'layout.operatingCountry': 'Zemlja poslovanja',
+    'layout.settlementCurrency': 'Valuta obracuna',
     'buyer.nav.dashboard': 'Kontrolna tabla',
     'buyer.nav.marketplace': 'Trziste',
     'buyer.nav.requests': 'Moji zahtevi',
@@ -947,6 +961,7 @@ const messages: Partial<Record<LanguageCode, Record<string, string>>> = {
     'buyer.table.actions': 'Akcije',
     'buyer.status.receivingOffers': 'Prima ponude',
     'buyer.status.reviewing': 'U pregledu',
+    'wallet.localReference': 'Lokalna referenca:',
     'footer.buyers': 'Kupci',
     'footer.suppliers': 'Dobavljaci',
     'footer.settings': 'Podesavanja',
@@ -1403,29 +1418,58 @@ export const useAppStore = defineStore('app', {
       return MARKET_LANGUAGE_OPTIONS.filter(option => enabled.has(option.code as LanguageCode))
     },
     allCurrencyOptions: (): SelectOption[] => [
-      { code: 'USD', label: 'USD - US Dollar' },
-      { code: 'PHP', label: 'PHP - Philippine Peso' },
-      { code: 'EUR', label: 'EUR - Euro' },
-      { code: 'RSD', label: 'RSD - Serbian Dinar' },
-      { code: 'PLN', label: 'PLN - Polish Złoty' },
-      { code: 'BAM', label: 'BAM - Bosnia Mark' },
-      { code: 'RON', label: 'RON - Romanian Leu' },
-      { code: 'JPY', label: 'JPY - Japanese Yen' },
-      { code: 'CNY', label: 'CNY - Chinese Yuan' },
-      { code: 'SGD', label: 'SGD - Singapore Dollar' },
-      { code: 'HKD', label: 'HKD - Hong Kong Dollar' },
-      { code: 'AUD', label: 'AUD - Australian Dollar' },
-      { code: 'GBP', label: 'GBP - British Pound' },
-      { code: 'CAD', label: 'CAD - Canadian Dollar' },
-      { code: 'KRW', label: 'KRW - Korean Won' },
-      { code: 'AED', label: 'AED - UAE Dirham' },
-      { code: 'INR', label: 'INR - Indian Rupee' },
-      { code: 'THB', label: 'THB - Thai Baht' },
-      { code: 'USDT', label: 'USDT - Tether' },
-    ],
+      'USD',
+      'PHP',
+      'EUR',
+      'RSD',
+      'PLN',
+      'BAM',
+      'RON',
+      'JPY',
+      'CNY',
+      'SGD',
+      'HKD',
+      'AUD',
+      'GBP',
+      'CAD',
+      'KRW',
+      'AED',
+      'INR',
+      'THB',
+      'USDT',
+    ].map((code) => ({ code, label: currencyOptionLabel(code) })),
+    regionOptions(state): SelectOption[] {
+      const configured = (state.marketLocalizationConfig?.supported_regions || [])
+        .map((region: any) => ({
+          code: String(region.code || '').toUpperCase(),
+          label: String(region.name || region.label || region.code || '').trim(),
+        }))
+        .filter((region: SelectOption) => region.code && region.label)
+      if (configured.length) return configured
+      return Object.values(FALLBACK_PAYMENT_POLICIES).map((policy) => ({
+        code: policy.country_code,
+        label: policy.country_name,
+      }))
+    },
+    paymentPolicy(state) {
+      return normalizePaymentPolicy(state.paymentRegionConfig, state.regionCountry)
+    },
     currencyOptions(state): SelectOption[] {
-      const enabled = new Set(state.enabledCurrencies?.length ? state.enabledCurrencies : ['PHP'])
+      const policy = normalizePaymentPolicy(state.paymentRegionConfig, state.regionCountry)
+      const enabled = new Set(
+        policy.settlement_currencies?.length
+          ? policy.settlement_currencies
+          : state.enabledCurrencies?.length
+            ? state.enabledCurrencies
+            : [policy.default_settlement_currency]
+      )
       return this.allCurrencyOptions.filter(option => enabled.has(option.code))
+    },
+    localCurrency(state): string {
+      return normalizePaymentPolicy(state.paymentRegionConfig, state.regionCountry).local_currency
+    },
+    defaultSettlementCurrency(state): string {
+      return normalizePaymentPolicy(state.paymentRegionConfig, state.regionCountry).default_settlement_currency
     },
     t: (state) => (key: string): string => messages[state.language]?.[key] ?? messages.EN?.[key] ?? key,
     prefixForLanguage: () => (lang: string): string => LANGUAGE_TO_URI_LOCALE_PREFIX[normalizeLanguageCode(lang)] || '',
@@ -1451,31 +1495,46 @@ export const useAppStore = defineStore('app', {
       this.routeLocalePrefix = String(prefix || '').trim().toLowerCase()
     },
     setCurrency(curr: string) {
-      if (this.currencyOptions.some(option => option.code === curr)) {
-        this.currency = curr
+      const normalized = normalizeCurrencyCode(curr, this.defaultSettlementCurrency)
+      if (this.currencyOptions.some(option => option.code === normalized)) {
+        this.currency = normalized
         this.persist()
       }
     },
-    async fetchPaymentRegionConfig(country = 'PH') {
-      this.regionCountry = country.toUpperCase()
+    async setRegionCountry(country: string) {
+      const normalized = String(country || this.regionCountry || 'RS').toUpperCase().slice(0, 2)
+      this.regionCountry = normalized
+      this.persist()
+      await this.fetchPaymentRegionConfig(normalized)
+    },
+    async fetchPaymentRegionConfig(country = this.regionCountry || 'RS') {
+      this.regionCountry = String(country || 'RS').toUpperCase().slice(0, 2)
       try {
         const config = useRuntimeConfig()
         const data = await $fetch<Record<string, any>>(`${config.public.apiBase}/payments/region-config`, {
           query: { country: this.regionCountry },
         })
-        this.paymentRegionConfig = data
-        const enabled = Array.isArray(data.enabled_currencies) && data.enabled_currencies.length
-          ? data.enabled_currencies.map((c: string) => c.toUpperCase())
-          : [String(data.local_currency || 'PHP').toUpperCase()]
+        const policy = normalizePaymentPolicy(data, this.regionCountry)
+        this.paymentRegionConfig = policy
+        const enabled = policy.settlement_currencies?.length
+          ? policy.settlement_currencies
+          : policy.enabled_currencies
         this.enabledCurrencies = enabled
-        const localCurrency = String(data.local_currency || enabled[0] || 'PHP').toUpperCase()
+        const defaultSettlement = policy.default_settlement_currency
         if (!enabled.includes(this.currency)) {
-          this.currency = enabled.includes(localCurrency) ? localCurrency : enabled[0]
+          this.currency = enabled.includes(defaultSettlement) ? defaultSettlement : enabled[0]
           this.persist()
         }
       } catch {
-        this.enabledCurrencies = ['PHP']
-        this.currency = 'PHP'
+        const policy = normalizePaymentPolicy(null, this.regionCountry)
+        this.paymentRegionConfig = policy
+        this.enabledCurrencies = policy.settlement_currencies || policy.enabled_currencies
+        if (!this.enabledCurrencies.includes(this.currency)) {
+          this.currency = this.enabledCurrencies.includes(policy.default_settlement_currency)
+            ? policy.default_settlement_currency
+            : this.enabledCurrencies[0]
+        }
+        this.persist()
       }
     },
     async fetchMarketLocalizationConfig() {
@@ -1499,6 +1558,7 @@ export const useAppStore = defineStore('app', {
     hydrate() {
       if (!import.meta.client) return
       this.setLanguage(localStorage.getItem('pp_language') || this.language)
+      this.regionCountry = String(localStorage.getItem('pp_region_country') || this.regionCountry || 'RS').toUpperCase().slice(0, 2)
       this.setCurrency(localStorage.getItem('pp_currency') || this.currency)
       this.routeLocalePrefix = localStorage.getItem('pp_locale_prefix') || this.routeLocalePrefix
     },
@@ -1506,10 +1566,12 @@ export const useAppStore = defineStore('app', {
       if (!import.meta.client) return
       localStorage.setItem('pp_language', this.language)
       localStorage.setItem('pp_currency', this.currency)
+      localStorage.setItem('pp_region_country', this.regionCountry)
       if (this.routeLocalePrefix) localStorage.setItem('pp_locale_prefix', this.routeLocalePrefix)
       const maxAge = 60 * 60 * 24 * 365
       document.cookie = `pp_language=${encodeURIComponent(this.language)}; Path=/; Max-Age=${maxAge}; SameSite=Lax`
       document.cookie = `pp_currency=${encodeURIComponent(this.currency)}; Path=/; Max-Age=${maxAge}; SameSite=Lax`
+      document.cookie = `pp_region_country=${encodeURIComponent(this.regionCountry)}; Path=/; Max-Age=${maxAge}; SameSite=Lax`
     },
     applyDocumentLocale() {
       if (!import.meta.client) return

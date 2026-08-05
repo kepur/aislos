@@ -16,19 +16,25 @@
       :description="t('wallet.directDesc')"
     />
     <p class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 shadow-sm">
-      {{ t('wallet.currencyNote') }}
+      {{ currencyPolicyNote }}
     </p>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
       <UCard class="bg-indigo-600 text-white">
         <p class="text-indigo-100 text-sm font-medium">{{ t('wallet.recordedPayments') }}</p>
         <p class="text-3xl font-bold mt-2">{{ money(recordedMinor, ledgerCurrency) }}</p>
+        <p v-if="recordedLocalReference" class="mt-2 text-xs text-indigo-100">
+          {{ t('wallet.localReference') }} {{ recordedLocalReference }}
+        </p>
         <p class="mt-4 text-xs text-indigo-100">{{ t('wallet.recordedDesc') }}</p>
       </UCard>
 
       <UCard class="bg-white">
         <p class="text-slate-500 text-sm font-medium">{{ t('wallet.settled') }}</p>
         <p class="text-3xl font-bold text-slate-900 mt-2">{{ money(settledMinor, ledgerCurrency) }}</p>
+        <p v-if="settledLocalReference" class="mt-2 text-xs text-slate-500">
+          {{ t('wallet.localReference') }} {{ settledLocalReference }}
+        </p>
         <div class="mt-4 flex items-center text-xs text-green-600">
           <UIcon name="i-heroicons-check-badge" class="mr-1" />
           {{ t('wallet.settledDesc') }}
@@ -65,6 +71,12 @@
         <template #reference-data="{ row }">
           <span class="font-mono text-xs text-slate-600">{{ row.reference || '—' }}</span>
         </template>
+        <template #amount-data="{ row }">
+          <div>
+            <p class="font-medium text-slate-900">{{ row.amount }}</p>
+            <p v-if="row.localAmount" class="text-xs text-slate-400">{{ t('wallet.localReference') }} {{ row.localAmount }}</p>
+          </div>
+        </template>
       </UTable>
     </UCard>
 
@@ -88,6 +100,14 @@
 </template>
 
 <script setup lang="ts">
+import {
+  convertMinorReference,
+  currencyOptionLabel,
+  formatMoneyMinor,
+  localCurrencyLabel,
+  localeForLanguage,
+} from '~/utils/currencyPolicy'
+
 definePageMeta({ layout: 'buyer', middleware: ['auth'] })
 
 type WalletTransaction = {
@@ -106,6 +126,12 @@ const t = (key: string) => appStore.t(key)
 const loading = ref(true)
 const orders = ref<any[]>([])
 const transactions = ref<WalletTransaction[]>([])
+
+const paymentPolicy = computed(() => appStore.paymentPolicy)
+const settlementCurrencyLabel = computed(() => currencyOptionLabel(ledgerCurrency.value))
+const localCurrency = computed(() => String(paymentPolicy.value.local_currency || ledgerCurrency.value).toUpperCase())
+const localCurrencyDisplay = computed(() => localCurrencyLabel(paymentPolicy.value))
+const showLocalReference = computed(() => localCurrency.value !== ledgerCurrency.value)
 
 const paymentColumns = computed(() => [
   { key: 'order', label: t('wallet.column.order') },
@@ -147,6 +173,7 @@ const paymentRows = computed(() =>
       id: order.id,
       date: order.created_at ? new Date(order.created_at).toLocaleDateString(dateLocale.value) : '—',
       amount: money(order.total_amount_minor || 0, order.currency),
+      localAmount: localReference(order.total_amount_minor || 0, order.currency),
       statusLabel: meta.label.startsWith('wallet.') ? t(meta.label) : meta.label,
       statusColor: meta.color,
       reference: order.escrow?.provider_reference || null,
@@ -168,6 +195,9 @@ const awaitingCount = computed(() => orders.value
   .filter((order) => String(order.currency || ledgerCurrency.value).toUpperCase() === ledgerCurrency.value)
   .filter((order) => String(order.status || '').toUpperCase() === 'AWAITING_PAYMENT').length)
 
+const recordedLocalReference = computed(() => localReference(recordedMinor.value, ledgerCurrency.value))
+const settledLocalReference = computed(() => localReference(settledMinor.value, ledgerCurrency.value))
+
 const transactionRows = computed(() =>
   transactions.value
   .filter((tx) => String(tx.currency || ledgerCurrency.value).toUpperCase() === ledgerCurrency.value)
@@ -181,9 +211,18 @@ const transactionRows = computed(() =>
 )
 
 const dateLocale = computed(() => {
-  if (appStore.language === 'ZH') return 'zh-CN'
-  if (appStore.language === 'SR') return 'sr-RS'
-  return 'en'
+  return localeForLanguage(appStore.language, ledgerCurrency.value)
+})
+
+const currencyPolicyNote = computed(() => {
+  const country = paymentPolicy.value.country_name || appStore.regionCountry
+  if (appStore.language === 'ZH') {
+    return `${country} 当前按 ${settlementCurrencyLabel.value} 做结算台账；本地参考币为 ${localCurrencyDisplay.value}。本地金额仅用于阅读和对账提示，最终付款以订单/报价冻结时的结算币和 FX 快照为准。`
+  }
+  if (appStore.language === 'SR') {
+    return `${country}: ledger settlement is ${settlementCurrencyLabel.value}; local reference currency is ${localCurrencyDisplay.value}. Local amounts are indicative until the order or quote freezes an FX snapshot.`
+  }
+  return `${country}: ledger settlement is ${settlementCurrencyLabel.value}; local reference currency is ${localCurrencyDisplay.value}. Local amounts are indicative until the order or quote freezes an FX snapshot.`
 })
 
 function headers() {
@@ -191,12 +230,14 @@ function headers() {
 }
 
 function money(minor: number, currency = 'EUR') {
-  const value = (minor || 0) / 100
-  try {
-    return new Intl.NumberFormat(dateLocale.value, { style: 'currency', currency }).format(value)
-  } catch {
-    return `${value.toFixed(2)} ${currency}`
-  }
+  return formatMoneyMinor(minor, currency, dateLocale.value)
+}
+
+function localReference(minor: number, currency = ledgerCurrency.value) {
+  if (!showLocalReference.value) return null
+  const converted = convertMinorReference(minor, currency, localCurrency.value, paymentPolicy.value)
+  if (converted == null) return null
+  return formatMoneyMinor(converted, localCurrency.value, dateLocale.value)
 }
 
 async function loadLedger() {

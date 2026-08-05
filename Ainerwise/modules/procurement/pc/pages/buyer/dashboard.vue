@@ -298,6 +298,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatMoneyMinor, localeForLanguage } from '~/utils/currencyPolicy'
 import type { TrustMe, TrustProfile, TrustTier } from '~/types'
 
 definePageMeta({
@@ -325,7 +326,7 @@ const ordersInProgressCount = computed(() => buyerOrders.value.filter((row) => i
 const escrowHeldMinor = computed(() => buyerOrders.value
   .filter((row) => ['PAID_IN_ESCROW', 'IN_PROGRESS', 'DELIVERED', 'ACCEPTED'].includes(String(row.status || '').toUpperCase()))
   .reduce((sum, row) => sum + Number(row.total_amount_minor ?? row.total_minor ?? 0), 0))
-const escrowCurrency = computed(() => buyerOrders.value.find((row) => row.currency)?.currency || 'PHP')
+const escrowCurrency = computed(() => buyerOrders.value.find((row) => row.currency)?.currency || appStore.currency || 'EUR')
 const escrowHeldLabel = computed(() => escrowHeldMinor.value ? formatMinor(escrowHeldMinor.value, escrowCurrency.value) : '—')
 const recommendedTags = computed(() => {
   const tags = new Set<string>()
@@ -370,21 +371,8 @@ function trustTierColor(tier: TrustTier) {
   }[tier] || 'gray'
 }
 
-function formatMinor(minor: number, currency = 'PHP') {
-  const amount = (minor || 0) / 100
-  if (currency === 'USDT') {
-    return `${amount.toLocaleString('en-PH', { maximumFractionDigits: 2 })} USDT`
-  }
-  try {
-    return new Intl.NumberFormat('en-PH', {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount)
-  } catch {
-    return `${amount.toLocaleString('en-PH', { maximumFractionDigits: 2 })} ${currency}`
-  }
+function formatMinor(minor: number, currency = appStore.currency || 'EUR') {
+  return formatMoneyMinor(minor, currency, localeForLanguage(appStore.language, currency))
 }
 
 function normalizeList(data: any, keys: string[]) {
@@ -407,7 +395,7 @@ function isInProgressOrder(status: string) {
 function formatIntentBudget(row: any) {
   const min = Number(row.budget_min_minor || 0)
   const max = Number(row.budget_max_minor || 0)
-  const currency = row.currency || 'PHP'
+  const currency = row.currency || appStore.currency || 'EUR'
   if (min && max) return `${formatMinor(min, currency)} - ${formatMinor(max, currency)}`
   if (max) return `Up to ${formatMinor(max, currency)}`
   if (min) return `From ${formatMinor(min, currency)}`

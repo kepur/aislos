@@ -146,6 +146,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatMoneyMinor, localeForLanguage } from '~/utils/currencyPolicy'
 import type { Intent, Offer } from '~/types'
 
 definePageMeta({
@@ -161,6 +162,7 @@ type ShippingEstimate = {
 
 const route = useRoute()
 const api = useApi()
+const appStore = useAppStore()
 const requestId = route.params.id as string
 const intent = ref<Intent | null>(null)
 const offers = ref<Offer[]>([])
@@ -233,7 +235,7 @@ const locationLabel = computed(() => {
 const averageOfferLabel = computed(() => {
   if (offers.value.length === 0) return '—'
   const total = offers.value.reduce((sum, offer) => sum + Number(offer.total_price_minor || 0), 0)
-  return formatMinor(Math.round(total / offers.value.length), offers.value[0]?.currency || intent.value?.currency || 'PHP')
+  return formatMinor(Math.round(total / offers.value.length), offers.value[0]?.currency || intent.value?.currency || appStore.currency || 'EUR')
 })
 
 async function loadData() {
@@ -307,23 +309,12 @@ function stockColor(stock?: string) {
   return { FIRM: 'green', BACKORDER: 'yellow', UNKNOWN: 'gray' }[stock || 'UNKNOWN'] || 'gray'
 }
 
-function formatMinor(minor: number, currency = 'PHP') {
-  const amount = Number(minor || 0) / 100
-  if (currency === 'USDT') return `${amount.toLocaleString('en-PH', { maximumFractionDigits: 2 })} USDT`
-  try {
-    return new Intl.NumberFormat('en-PH', {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(amount)
-  } catch {
-    return `${amount.toLocaleString('en-PH', { maximumFractionDigits: 2 })} ${currency}`
-  }
+function formatMinor(minor: number, currency = appStore.currency || 'EUR') {
+  return formatMoneyMinor(minor, currency, localeForLanguage(appStore.language, currency))
 }
 
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('en-PH', {
+  return new Date(dateStr).toLocaleDateString(localeForLanguage(appStore.language, appStore.currency), {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
@@ -343,7 +334,7 @@ async function fetchEstimateForOffer(offer: Offer) {
         dest_country: country,
         weight_kg: resolveWeightKg(),
         declared_value_minor: offer.total_price_minor,
-        currency: offer.currency || intent.value?.currency || 'PHP'
+        currency: offer.currency || intent.value?.currency || appStore.currency || 'EUR'
       }
     })
     shippingMap.value[offer.id] = res.estimates?.[0] || null

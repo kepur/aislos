@@ -3,7 +3,7 @@ import asyncio
 import uuid
 
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from app.db.session import async_session_factory, engine
 from app.main import app
@@ -81,5 +81,40 @@ def test_cebu_payment_policy_and_reconciliation_are_real_and_admin_only():
                 "cebu.admin.payment_region_config_created",
                 "cebu.admin.payment_region_config_updated",
             }
+
+    asyncio.run(_run())
+
+
+def test_cebu_payment_region_fallback_supports_serbia_and_poland():
+    async def _run():
+        await engine.dispose()
+        async with async_session_factory() as db:
+            await db.execute(
+                delete(RegionPaymentConfig).where(
+                    RegionPaymentConfig.country_code.in_(["RS", "PL"])
+                )
+            )
+            await db.commit()
+
+        async with _client() as client:
+            serbia = await client.get("/api/v1/cebu-compat/payments/region-config?country=RS")
+            assert serbia.status_code == 200, serbia.text
+            rs_policy = serbia.json()
+            assert rs_policy["country_code"] == "RS"
+            assert rs_policy["country_name"] == "Serbia"
+            assert rs_policy["local_currency"] == "RSD"
+            assert rs_policy["local_currency_alias"] == "DIN"
+            assert rs_policy["default_settlement_currency"] == "EUR"
+            assert rs_policy["settlement_currencies"] == ["EUR", "RSD"]
+            assert "USD" not in rs_policy["settlement_currencies"]
+            assert rs_policy["reference_rates"]["EUR:RSD"]
+
+            poland = await client.get("/api/v1/cebu-compat/payments/region-config?country=PL")
+            assert poland.status_code == 200, poland.text
+            pl_policy = poland.json()
+            assert pl_policy["country_code"] == "PL"
+            assert pl_policy["local_currency"] == "PLN"
+            assert pl_policy["default_settlement_currency"] == "PLN"
+            assert pl_policy["settlement_currencies"] == ["PLN", "EUR"]
 
     asyncio.run(_run())

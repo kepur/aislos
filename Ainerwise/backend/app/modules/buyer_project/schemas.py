@@ -19,7 +19,7 @@ class ProjectCreate(BaseModel):
     area_unit: str | None = None
     budget_min: int | None = None
     budget_max: int | None = None
-    currency: str = "PHP"
+    currency: str = "EUR"
     quality_preference: str = "NOT_SURE"
     description: str | None = None
 
@@ -44,7 +44,7 @@ class ProjectRead(BaseModel):
     city: str | None = None
     budget_min: int | None = None
     budget_max: int | None = None
-    currency: str = "PHP"
+    currency: str = "EUR"
     quality_preference: str = "NOT_SURE"
     description: str | None = None
     ai_summary: str | None = None
@@ -64,7 +64,7 @@ class LineItemRead(BaseModel):
     quality_tier: str = "MID_RANGE"
     estimated_unit_price: float | None = None
     estimated_total_price: float | None = None
-    currency: str = "PHP"
+    currency: str = "EUR"
     confidence: float | None = None
     sourcing_notes: str | None = None
     category_hint: str | None = None

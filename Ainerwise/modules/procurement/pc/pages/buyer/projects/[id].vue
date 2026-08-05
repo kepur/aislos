@@ -367,9 +367,9 @@
                           <option value="PREMIUM">Premium</option>
                         </select>
                       </td>
-                      <td class="px-3 py-2 text-right">₱{{ reportTierTotal(row, 'BUDGET').toLocaleString() }}</td>
-                      <td class="px-3 py-2 text-right">₱{{ reportTierTotal(row, 'MID_RANGE').toLocaleString() }}</td>
-                      <td class="px-3 py-2 text-right">₱{{ reportTierTotal(row, 'PREMIUM').toLocaleString() }}</td>
+                      <td class="px-3 py-2 text-right">{{ moneyMajor(reportTierTotal(row, 'BUDGET')) }}</td>
+                      <td class="px-3 py-2 text-right">{{ moneyMajor(reportTierTotal(row, 'MID_RANGE')) }}</td>
+                      <td class="px-3 py-2 text-right">{{ moneyMajor(reportTierTotal(row, 'PREMIUM')) }}</td>
                       <td class="px-3 py-2 text-center">
                         <input type="checkbox" :checked="row.include_in_total" @change="updateReportCell(row.id, 'include_in_total', eventChecked($event))" />
                       </td>
@@ -503,10 +503,10 @@
                   <div class="flex items-center gap-4 text-xs text-slate-500">
                     <span>{{ item.qty }} {{ item.unit }}</span>
                     <span v-if="item.estimated_unit_price">
-                      ₱{{ item.estimated_unit_price?.toLocaleString() }}/{{ item.unit }}
+                      {{ moneyMajor(item.estimated_unit_price, item.currency) }}/{{ item.unit }}
                     </span>
                     <span v-if="item.estimated_total_price" class="font-semibold text-slate-700">
-                      Total: ₱{{ item.estimated_total_price?.toLocaleString() }}
+                      Total: {{ moneyMajor(item.estimated_total_price, item.currency) }}
                     </span>
                     <span>{{ item.quality_tier?.replace(/_/g, ' ') }}</span>
                   </div>
@@ -523,7 +523,7 @@
                           size="xs"
                         >
                           {{ sample.title || sample.catalog_item_title || 'Catalog item' }}
-                          <span v-if="sample.unit_price"> · ₱{{ Number(sample.unit_price).toLocaleString() }}</span>
+                          <span v-if="sample.unit_price"> · {{ moneyMajor(sample.unit_price, sample.currency || item.currency) }}</span>
                         </UBadge>
                       </div>
                     </template>
@@ -559,7 +559,7 @@
                         {{ tier === 'MID_RANGE' ? 'Mid-Range' : tier === 'BUDGET' ? '💰 Budget' : '👑 Premium' }}
                       </p>
                       <p class="text-xs font-bold text-slate-800 mt-0.5">
-                        ₱{{ (item.price_tiers_jsonb[tier]?.total_price || 0).toLocaleString() }}
+                        {{ moneyMajor(item.price_tiers_jsonb[tier]?.total_price || 0, item.currency) }}
                       </p>
                       <p class="text-[10px] text-slate-400 mt-0.5 line-clamp-1">
                         {{ item.price_tiers_jsonb[tier]?.notes || '' }}
@@ -595,14 +595,14 @@
                     </p>
                   </div>
                   <UBadge color="blue" variant="subtle" size="xs">
-                    Median ₱{{ (row.price_snapshot.median_unit_price || 0).toLocaleString() }}
+                    Median {{ moneyMajor(row.price_snapshot.median_unit_price || 0, row.price_snapshot.currency || row.line_item?.currency) }}
                   </UBadge>
                 </div>
                 <div class="grid grid-cols-3 gap-2 mt-3">
                   <div v-for="tier in ['BUDGET', 'MID_RANGE', 'PREMIUM']" :key="tier" class="rounded-lg bg-slate-50 p-2">
                     <p class="text-[10px] font-bold text-slate-500">{{ tier }}</p>
                     <p class="text-sm font-bold text-slate-900">
-                      ₱{{ (row.line_item.price_tiers?.[tier]?.total_price || 0).toLocaleString() }}
+                      {{ moneyMajor(row.line_item.price_tiers?.[tier]?.total_price || 0, row.line_item.currency) }}
                     </p>
                     <p class="text-[10px] text-slate-400 line-clamp-1">{{ row.line_item.price_tiers?.[tier]?.source || 'N/A' }}</p>
                   </div>
@@ -674,7 +674,7 @@
               <div v-if="project.budget_min || project.budget_max">
                 <dt class="text-xs text-slate-400">Budget</dt>
                 <dd class="font-medium text-slate-900">
-                  ₱{{ (project.budget_min || 0).toLocaleString() }} — ₱{{ (project.budget_max || 0).toLocaleString() }}
+                  {{ moneyMajor(project.budget_min, project.currency) }} — {{ moneyMajor(project.budget_max, project.currency) }}
                 </dd>
               </div>
               <div>
@@ -711,12 +711,12 @@
             </template>
             <div class="text-center py-2">
               <p class="text-2xl font-bold text-green-800">
-                ₱{{ (project.estimated_budget_jsonb.min || 0).toLocaleString() }}
+                {{ moneyMajor(project.estimated_budget_jsonb.min || 0, project.estimated_budget_jsonb.currency || project.currency) }}
                 —
-                ₱{{ (project.estimated_budget_jsonb.max || 0).toLocaleString() }}
+                {{ moneyMajor(project.estimated_budget_jsonb.max || 0, project.estimated_budget_jsonb.currency || project.currency) }}
               </p>
               <p class="text-xs text-green-600 mt-1">
-                {{ project.estimated_budget_jsonb.currency || 'PHP' }}
+                {{ project.estimated_budget_jsonb.currency || project.currency || appStore.currency || 'EUR' }}
                 · {{ ((project.estimated_budget_jsonb.confidence || 0) * 100).toFixed(0) }}% confidence
               </p>
             </div>
@@ -726,28 +726,28 @@
               <div class="text-center rounded-lg bg-green-100/50 py-2 px-1">
                 <p class="text-[10px] font-bold text-green-700 uppercase">💰 Budget</p>
                 <p class="text-xs font-bold text-green-900 mt-1">
-                  ₱{{ (project.estimated_budget_jsonb.by_tier.BUDGET?.min || 0).toLocaleString() }}
+                  {{ moneyMajor(project.estimated_budget_jsonb.by_tier.BUDGET?.min || 0, project.estimated_budget_jsonb.currency || project.currency) }}
                 </p>
                 <p class="text-[10px] text-green-600">
-                  ~ ₱{{ (project.estimated_budget_jsonb.by_tier.BUDGET?.max || 0).toLocaleString() }}
+                  ~ {{ moneyMajor(project.estimated_budget_jsonb.by_tier.BUDGET?.max || 0, project.estimated_budget_jsonb.currency || project.currency) }}
                 </p>
               </div>
               <div class="text-center rounded-lg bg-blue-100/50 py-2 px-1">
                 <p class="text-[10px] font-bold text-blue-700 uppercase">⭐ Mid-Range</p>
                 <p class="text-xs font-bold text-blue-900 mt-1">
-                  ₱{{ (project.estimated_budget_jsonb.by_tier.MID_RANGE?.min || 0).toLocaleString() }}
+                  {{ moneyMajor(project.estimated_budget_jsonb.by_tier.MID_RANGE?.min || 0, project.estimated_budget_jsonb.currency || project.currency) }}
                 </p>
                 <p class="text-[10px] text-blue-600">
-                  ~ ₱{{ (project.estimated_budget_jsonb.by_tier.MID_RANGE?.max || 0).toLocaleString() }}
+                  ~ {{ moneyMajor(project.estimated_budget_jsonb.by_tier.MID_RANGE?.max || 0, project.estimated_budget_jsonb.currency || project.currency) }}
                 </p>
               </div>
               <div class="text-center rounded-lg bg-purple-100/50 py-2 px-1">
                 <p class="text-[10px] font-bold text-purple-700 uppercase">👑 Premium</p>
                 <p class="text-xs font-bold text-purple-900 mt-1">
-                  ₱{{ (project.estimated_budget_jsonb.by_tier.PREMIUM?.min || 0).toLocaleString() }}
+                  {{ moneyMajor(project.estimated_budget_jsonb.by_tier.PREMIUM?.min || 0, project.estimated_budget_jsonb.currency || project.currency) }}
                 </p>
                 <p class="text-[10px] text-purple-600">
-                  ~ ₱{{ (project.estimated_budget_jsonb.by_tier.PREMIUM?.max || 0).toLocaleString() }}
+                  ~ {{ moneyMajor(project.estimated_budget_jsonb.by_tier.PREMIUM?.max || 0, project.estimated_budget_jsonb.currency || project.currency) }}
                 </p>
               </div>
             </div>
@@ -785,6 +785,8 @@
 </template>
 
 <script setup lang="ts">
+import { formatMoneyMinor, localeForLanguage } from '~/utils/currencyPolicy'
+
 definePageMeta({ layout: 'buyer', middleware: ['buyer'] })
 
 const route = useRoute()
@@ -818,6 +820,7 @@ const reportChatInput = ref('')
 const pendingReportPatch = ref<any>(null)
 const chatInput = ref('')
 const chatError = ref('')
+const projectCurrency = computed(() => project.value?.currency || appStore.currency || 'EUR')
 
 const showEditDesc = ref(false)
 const editDesc = ref('')
@@ -835,6 +838,11 @@ function tt(key: string, params: Record<string, string | number> = {}) {
 
 function projectStatusLabel(status: string) {
   return status ? status.replace(/_/g, ' ') : ''
+}
+
+function moneyMajor(amount: number | string | null | undefined, currency?: string | null) {
+  const numeric = Number(amount || 0)
+  return formatMoneyMinor(Math.round(numeric * 100), currency || projectCurrency.value, localeForLanguage(appStore.language, currency || projectCurrency.value))
 }
 
 const confirmedCount = computed(() => lineItems.value.filter(i => i.status === 'CONFIRMED').length)
@@ -858,11 +866,11 @@ const showReportSheet = computed(() => {
 const reportTotalCards = computed(() => {
   const totals = report.value?.current_version?.totals_jsonb || {}
   return [
-    { key: 'budget', label: 'Budget', value: `₱${Math.round(totals.BUDGET || 0).toLocaleString()}` },
-    { key: 'mid', label: 'Mid', value: `₱${Math.round(totals.MID_RANGE || 0).toLocaleString()}` },
-    { key: 'premium', label: 'Premium', value: `₱${Math.round(totals.PREMIUM || 0).toLocaleString()}` },
-    { key: 'selected', label: 'Selected', value: `₱${Math.round(totals.selected_total || 0).toLocaleString()}` },
-    { key: 'excluded', label: 'Excluded', value: `₱${Math.round(totals.excluded_total || 0).toLocaleString()}` },
+    { key: 'budget', label: 'Budget', value: moneyMajor(totals.BUDGET || 0) },
+    { key: 'mid', label: 'Mid', value: moneyMajor(totals.MID_RANGE || 0) },
+    { key: 'premium', label: 'Premium', value: moneyMajor(totals.PREMIUM || 0) },
+    { key: 'selected', label: 'Selected', value: moneyMajor(totals.selected_total || 0) },
+    { key: 'excluded', label: 'Excluded', value: moneyMajor(totals.excluded_total || 0) },
     { key: 'unmatched', label: 'Unmatched', value: `${totals.unmatched_rows || 0} rows` },
   ]
 })
@@ -1126,7 +1134,7 @@ async function addReportRow() {
     await $fetch(`${config.public.apiBase}/buyer/projects/${projectId}/report/rows`, {
       method: 'POST',
       headers: headers.value,
-      body: { name, qty: 1, unit: 'pcs', currency: project.value?.currency || 'PHP' },
+      body: { name, qty: 1, unit: 'pcs', currency: project.value?.currency || appStore.currency || 'EUR' },
     })
     await loadReport()
   } catch (e) { console.error(e) }

@@ -137,6 +137,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatMoneyMinor, localeForLanguage } from '~/utils/currencyPolicy'
 import type { Offer } from '~/types'
 
 definePageMeta({
@@ -146,6 +147,7 @@ definePageMeta({
 
 const route = useRoute()
 const api = useApi()
+const appStore = useAppStore()
 const offerId = route.params.id as string
 
 const offer = ref<Offer | null>(null)
@@ -209,23 +211,12 @@ function stockColor(stock?: string) {
   return { FIRM: 'green', BACKORDER: 'yellow', UNKNOWN: 'gray' }[stock || 'UNKNOWN'] || 'gray'
 }
 
-function formatMinor(minor: number, currency = 'PHP') {
-  const amount = Number(minor || 0) / 100
-  if (currency === 'USDT') return `${amount.toLocaleString('en-PH', { maximumFractionDigits: 2 })} USDT`
-  try {
-    return new Intl.NumberFormat('en-PH', {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(amount)
-  } catch {
-    return `${amount.toLocaleString('en-PH', { maximumFractionDigits: 2 })} ${currency}`
-  }
+function formatMinor(minor: number, currency = appStore.currency || 'EUR') {
+  return formatMoneyMinor(minor, currency, localeForLanguage(appStore.language, currency))
 }
 
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('en-PH', {
+  return new Date(dateStr).toLocaleDateString(localeForLanguage(appStore.language, appStore.currency), {
     year: 'numeric',
     month: 'short',
     day: 'numeric'

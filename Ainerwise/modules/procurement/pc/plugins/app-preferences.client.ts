@@ -3,6 +3,7 @@ export default defineNuxtPlugin(() => {
 
   appStore.hydrate()
   appStore.fetchMarketLocalizationConfig()
+  appStore.fetchPaymentRegionConfig(appStore.regionCountry || 'RS')
   appStore.$subscribe(() => {
     appStore.persist()
     appStore.applyDocumentLocale()

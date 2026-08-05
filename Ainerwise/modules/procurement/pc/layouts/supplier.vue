@@ -133,7 +133,8 @@
           <ClientOnly>
             <div class="hidden lg:flex items-center space-x-2 border-r border-slate-200 pr-4">
               <USelect v-model="appStore.language" :options="appStore.languageOptions" option-attribute="label" value-attribute="code" size="sm" class="w-28" variant="none" @update:model-value="appStore.setLanguage" />
-              <USelect v-model="appStore.currency" :options="appStore.currencyOptions" option-attribute="label" value-attribute="code" size="sm" class="w-36" variant="none" @update:model-value="appStore.setCurrency" />
+              <USelect v-model="appStore.regionCountry" :options="appStore.regionOptions" option-attribute="label" value-attribute="code" size="sm" class="w-32" variant="none" @update:model-value="appStore.setRegionCountry" />
+              <USelect v-model="appStore.currency" :options="appStore.currencyOptions" option-attribute="label" value-attribute="code" size="sm" class="w-40" variant="none" @update:model-value="appStore.setCurrency" />
             </div>
           </ClientOnly>
           <a :href="$config.public.aislosSiteUrl" class="hidden text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600 lg:inline">AinerWise 官网 ↗</a>

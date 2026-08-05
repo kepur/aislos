@@ -126,6 +126,18 @@
             </UFormGroup>
           </div>
 
+          <UFormGroup label="Settlement Currency">
+            <USelect
+              v-model="form.currency"
+              :options="appStore.currencyOptions"
+              option-attribute="label"
+              value-attribute="code"
+            />
+            <p class="mt-1 text-xs text-slate-500">
+              {{ currencyPolicyHint }}
+            </p>
+          </UFormGroup>
+
           <UFormGroup label="Description">
             <UTextarea
               v-model="form.description"
@@ -149,9 +161,12 @@
 </template>
 
 <script setup lang="ts">
+import { FALLBACK_PAYMENT_POLICIES, currencyOptionLabel, formatMoneyMinor, localeForLanguage } from '~/utils/currencyPolicy'
+
 definePageMeta({ layout: 'buyer', middleware: ['buyer'] })
 
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const config = useRuntimeConfig()
 
 const loading = ref(true)
@@ -188,13 +203,24 @@ const form = reactive({
   area_unit: 'sqm',
   budget_min: null as number | null,
   budget_max: null as number | null,
+  currency: 'EUR',
   quality_preference: 'NOT_SURE',
   description: '',
 })
 
-const fallbackRegions: RegionOption[] = [
-  { code: 'RS', name: 'Serbia', defaultCity: 'Belgrade' },
-]
+const fallbackDefaultCities: Record<string, string> = {
+  RS: 'Belgrade',
+  PL: 'Warsaw',
+  PH: 'Cebu City',
+  BA: 'Sarajevo',
+  RO: 'Bucharest',
+}
+
+const fallbackRegions: RegionOption[] = Object.values(FALLBACK_PAYMENT_POLICIES).map((policy) => ({
+  code: policy.country_code,
+  name: policy.country_name,
+  defaultCity: fallbackDefaultCities[policy.country_code],
+}))
 
 const regionOptions = computed<RegionOption[]>(() => {
   const regions = (authStore.systemMode as any)?.regions
@@ -211,10 +237,22 @@ const regionOptions = computed<RegionOption[]>(() => {
 })
 
 const selectedRegion = computed(() => regionOptions.value.find(region => region.code === form.country))
+const dateLocale = computed(() => localeForLanguage(appStore.language, form.currency || appStore.currency))
+const currencyPolicyHint = computed(() => {
+  const policy = appStore.paymentPolicy
+  const local = policy.local_currency_alias ? `${policy.local_currency} / ${policy.local_currency_alias}` : policy.local_currency
+  if (appStore.language === 'ZH') {
+    return `${policy.country_name || form.country}: 结算币 ${currencyOptionLabel(form.currency)}；本地参考币 ${local}。`
+  }
+  return `${policy.country_name || form.country}: settlement ${currencyOptionLabel(form.currency)}; local reference ${local}.`
+})
 
 function ensureDefaultRegion() {
   if (!form.country && regionOptions.value.length) {
     form.country = regionOptions.value[0].code
+  }
+  if (!form.currency) {
+    form.currency = appStore.currency || 'EUR'
   }
 }
 
@@ -243,10 +281,8 @@ function statusColor(status: string) {
   return map[status] || 'gray'
 }
 
-function formatCurrency(amount: number, currency = 'PHP') {
-  try {
-    return new Intl.NumberFormat('en-PH', { style: 'currency', currency, maximumFractionDigits: 0 }).format(amount)
-  } catch { return `${amount} ${currency}` }
+function formatCurrency(amount: number, currency = appStore.currency || 'EUR') {
+  return formatMoneyMinor(Number(amount || 0) * 100, currency, localeForLanguage(appStore.language, currency))
 }
 
 function timeAgo(dateStr: string): string {
@@ -283,6 +319,7 @@ async function createProject() {
     if (form.area_unit) body.area_unit = form.area_unit
     if (form.budget_min) body.budget_min = form.budget_min
     if (form.budget_max) body.budget_max = form.budget_max
+    body.currency = form.currency || appStore.currency || 'EUR'
     if (form.quality_preference) body.quality_preference = form.quality_preference
     if (form.description) body.description = form.description
 
@@ -301,12 +338,18 @@ async function createProject() {
 }
 
 watch(regionOptions, ensureDefaultRegion, { immediate: true })
+watch(() => form.country, async (country) => {
+  if (!country) return
+  await appStore.setRegionCountry(country)
+  form.currency = appStore.currency || appStore.defaultSettlementCurrency || 'EUR'
+})
 
 onMounted(async () => {
   if (!authStore.systemMode) {
     await authStore.fetchSystemMode()
   }
   ensureDefaultRegion()
+  form.currency = appStore.currency || 'EUR'
   await loadProjects()
 })
 </script>

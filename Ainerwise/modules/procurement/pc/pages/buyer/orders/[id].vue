@@ -231,10 +231,13 @@
 </template>
 
 <script setup lang="ts">
+import { formatMoneyMinor, localeForLanguage } from '~/utils/currencyPolicy'
+
 definePageMeta({ layout: 'buyer', middleware: ['buyer'] })
 
 const route = useRoute()
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const config = useRuntimeConfig()
 const toast = useToast()
 
@@ -303,11 +306,9 @@ function statusColor(s: string) {
   }[s] || 'gray'
 }
 
-function formatMinor(minor: number, currency = 'PHP') {
+function formatMinor(minor: number, currency = appStore.currency || 'EUR') {
   if (!minor) return '—'
-  const amount = minor / 100
-  try { return new Intl.NumberFormat('en-PH', { style: 'currency', currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount) }
-  catch { return `${amount.toLocaleString()} ${currency}` }
+  return formatMoneyMinor(minor, currency, localeForLanguage(appStore.language, currency))
 }
 
 async function loadOrder() {

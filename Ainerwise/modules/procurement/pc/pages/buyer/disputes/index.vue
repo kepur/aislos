@@ -31,6 +31,8 @@
 </template>
 
 <script setup lang="ts">
+import { formatMoneyMinor, localeForLanguage } from '~/utils/currencyPolicy'
+
 definePageMeta({
   layout: 'buyer'
 })
@@ -49,10 +51,11 @@ const columns = [
 const loading = ref(true)
 const disputes = ref<any[]>([])
 const { getDisputes } = useApi()
+const appStore = useAppStore()
 
 function fmtDate(value?: string) {
   if (!value) return '—'
-  return new Date(value).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+  return new Date(value).toLocaleDateString(localeForLanguage(appStore.language, appStore.currency), { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 onMounted(async () => {
@@ -66,7 +69,9 @@ onMounted(async () => {
       rawOrderId: item.order_id || item.commerce_order_id,
       supplier: item.opened_by_role === 'SUPPLIER' ? 'Opened by supplier' : 'Supplier',
       reason: String(item.reason || item.reason_code || 'OTHER').replace(/_/g, ' '),
-      amount: item.refund_amount_minor ? `$${(Number(item.refund_amount_minor) / 100).toLocaleString()}` : '—',
+      amount: item.refund_amount_minor
+        ? formatMoneyMinor(Number(item.refund_amount_minor), item.currency || appStore.currency || 'EUR', localeForLanguage(appStore.language, item.currency || appStore.currency))
+        : '—',
       status: String(item.status || 'OPEN').replace(/_/g, ' '),
       date: fmtDate(item.created_at),
     }))

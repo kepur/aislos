@@ -29,7 +29,7 @@
           <div>
             <dt class="text-sm font-medium text-slate-500">Budget Range</dt>
             <dd class="mt-1 text-sm text-slate-900 font-semibold" v-if="intent.budget_min_minor || intent.budget_max_minor">
-              {{ intent.currency }} {{ intent.budget_min_minor ? intent.budget_min_minor / 100 : 0 }} - {{ intent.budget_max_minor ? intent.budget_max_minor / 100 : 'Max' }}
+              {{ intentBudgetLabel }}
             </dd>
             <dd class="mt-1 text-sm text-slate-900 font-semibold" v-else>Open</dd>
           </div>
@@ -290,6 +290,8 @@
 </template>
 
 <script setup lang="ts">
+import { formatMoneyMinor, localeForLanguage } from '~/utils/currencyPolicy'
+
 definePageMeta({
   layout: 'buyer'
 })
@@ -297,6 +299,7 @@ definePageMeta({
 const route = useRoute()
 const api = useApi()
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const config = useRuntimeConfig()
 const id = route.params.id as string
 const intent = ref<any>(null)
@@ -309,6 +312,16 @@ const candidatesLoading = ref(false)
 const candidateError = ref('')
 const candidateSort = ref('comprehensive')
 const selectedCandidate = ref<any | null>(null)
+const intentBudgetLabel = computed(() => {
+  if (!intent.value) return 'Open'
+  const currency = intent.value.currency || appStore.currency || 'EUR'
+  const min = intent.value.budget_min_minor
+  const max = intent.value.budget_max_minor
+  if (min && max) return `${formatCandidatePrice(min, currency)} - ${formatCandidatePrice(max, currency)}`
+  if (max) return `Up to ${formatCandidatePrice(max, currency)}`
+  if (min) return `From ${formatCandidatePrice(min, currency)}`
+  return 'Open'
+})
 
 const fetchIntent = async () => {
   loading.value = true
@@ -408,7 +421,7 @@ function normalizeCandidate(row: any) {
     catalog_item_title: row.catalog_item_title || row.title || attrs.title || 'Catalog item',
     ranking_score: Number(row.ranking_score ?? row.score ?? 0),
     unit_price_minor: row.unit_price_minor ?? row.price_minor ?? scoreBreakdown.price_minor,
-    currency: row.currency || intent.value?.currency || 'PHP',
+    currency: row.currency || intent.value?.currency || appStore.currency || 'EUR',
     unit: row.unit || attrs.unit || intent.value?.unit || 'unit',
     market_mode: row.market_mode || attrs.market_mode,
     origin_country: row.origin_country || attrs.origin_country,
@@ -438,11 +451,6 @@ const getStatusColor = (status: string) => {
 }
 
 function formatCandidatePrice(minor: number, currency: string): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency || 'PHP',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(minor / 100)
+  return formatMoneyMinor(minor, currency || appStore.currency || 'EUR', localeForLanguage(appStore.language, currency || appStore.currency))
 }
 </script>

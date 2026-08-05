@@ -55,6 +55,7 @@ from app.modules.cebu_trade.models import (
     WalletDeposit,
     WalletTransaction,
 )
+from app.modules.cebu_trade.payment_policy import fallback_payment_policy, normalize_country_code
 from app.modules.cebu_trade.schemas import (
     WalletDepositRead,
     WalletRead,
@@ -194,10 +195,10 @@ class LegacyNotificationPreferencesUpdate(BaseModel):
 
 class LegacyWalletDepositCreate(BaseModel):
     amount_minor: int
-    currency: str = "PHP"
+    currency: str = "EUR"
     network: str = "LOCAL_BANK"
     provider: str = "MANUAL_BANK"
-    payment_method: str = "PHP_MANUAL_BANK"
+    payment_method: str = "BANK_TRANSFER"
     source_currency: str | None = None
     target_currency: str | None = None
     deposit_address: str | None = None
@@ -239,7 +240,7 @@ class LegacyProjectReportRowCreate(BaseModel):
     description: str | None = None
     qty: float = 1
     unit: str = "pcs"
-    currency: str = "PHP"
+    currency: str = "EUR"
     quality_tier: str = "MID_RANGE"
     selected_tier: str = "MID_RANGE"
     notes: str | None = None
@@ -268,20 +269,12 @@ async def legacy_system_mode(db: DB):
 
 
 def _payment_region_config_as_legacy(row: RegionPaymentConfig | None, country: str) -> dict:
-    normalized = (country or "PH").upper()[:2]
+    normalized = normalize_country_code(country)
+    fallback = fallback_payment_policy(normalized)
     if row is None:
-        local_currency = "PHP" if normalized == "PH" else "USD"
         return {
             "country_code": normalized,
-            "country_name": "Philippines" if normalized == "PH" else normalized,
-            "local_currency": local_currency,
-            "default_settlement_currency": local_currency,
-            "default_transaction_mode": "LOCAL_ONLY",
-            "enabled_currencies": [local_currency, "USD"] if local_currency != "USD" else ["USD"],
-            "enabled_payment_methods": ["WALLET", "BANK_TRANSFER", "CASH_ON_DELIVERY"],
-            "cross_border_currencies": ["USD"],
-            "force_usd_bridge": False,
-            "allow_supplier_payout_currency": True,
+            **fallback,
             "is_active": True,
             "source": "fallback",
         }
@@ -290,13 +283,17 @@ def _payment_region_config_as_legacy(row: RegionPaymentConfig | None, country: s
         "country_code": row.country_code,
         "country_name": row.country_name,
         "local_currency": row.local_currency,
+        "local_currency_alias": fallback.get("local_currency_alias"),
         "default_settlement_currency": row.default_settlement_currency,
         "default_transaction_mode": row.default_transaction_mode,
         "enabled_currencies": row.enabled_currencies or [row.local_currency],
+        "settlement_currencies": fallback.get("settlement_currencies") or row.enabled_currencies or [row.default_settlement_currency],
         "enabled_payment_methods": row.enabled_payment_methods or ["WALLET"],
         "cross_border_currencies": row.cross_border_currencies or [],
         "force_usd_bridge": row.force_usd_bridge,
         "allow_supplier_payout_currency": row.allow_supplier_payout_currency,
+        "reference_rates": fallback.get("reference_rates", {}),
+        "rate_source": fallback.get("rate_source", "REQUIRES_FX_QUOTE"),
         "is_active": row.is_active,
         "source": "core",
         "created_at": row.created_at,
@@ -985,7 +982,7 @@ def _intent_as_legacy(row: ProcurementRequest, offer_count: int | None = None) -
         "unit": str(requirements.get("unit") or attrs.get("unit") or "pcs"),
         "budget_min_minor": requirements.get("budget_min_minor") or attrs.get("budget_min_minor"),
         "budget_max_minor": requirements.get("budget_max_minor") or attrs.get("budget_max_minor"),
-        "currency": str(requirements.get("currency") or attrs.get("currency") or "PHP"),
+        "currency": str(requirements.get("currency") or attrs.get("currency") or "EUR"),
         "country": requirements.get("country") or attrs.get("country"),
         "city": requirements.get("city") or attrs.get("city"),
         "lat": requirements.get("lat") or attrs.get("lat"),
@@ -1348,7 +1345,7 @@ def _trust_profile_as_admin_legacy(row: TrustProfile, company: Company | None = 
         "successful_deals_count": row.completed_orders,
         "canceled_deals_count": metrics.get("canceled_deals_count", 0),
         "deposit_amount_minor": metrics.get("deposit_amount_minor", 0),
-        "deposit_currency": metrics.get("deposit_currency", "PHP"),
+        "deposit_currency": metrics.get("deposit_currency", "EUR"),
         "dispute_rate": metrics.get("dispute_rate", dispute_rate),
         "refund_rate": metrics.get("refund_rate", 0),
         "completed_orders": row.completed_orders,
@@ -2155,9 +2152,9 @@ def _wallet_instruction_address(data: LegacyWalletDepositCreate, user: CurrentUs
     provided = (data.deposit_address or "").strip()
     if provided:
         return provided
-    currency = (data.currency or "PHP").upper()
+    currency = (data.currency or "EUR").upper()
     network = (data.network or "LOCAL_BANK").upper()
-    method = (data.payment_method or "PHP_MANUAL_BANK").upper()
+    method = (data.payment_method or "BANK_TRANSFER").upper()
     user_ref = str(user.id).replace("-", "")[:10].upper()
     return f"AINERWISE-PROCUREMENT-{currency}-{network}-{method}-{user_ref}"
 
@@ -2355,7 +2352,7 @@ async def _run_core_project_analysis(db: DB, project: BuyerProject, user: Curren
                     else "MID_RANGE",
                     estimated_unit_price=round(total, 2),
                     estimated_total_price=round(total, 2),
-                    currency=project.currency or "PHP",
+                    currency=project.currency or "EUR",
                     confidence=0.72,
                     sourcing_notes="Review quantities and specifications before publishing RFQ.",
                     price_tiers_json=_tier_prices(total),
@@ -2395,7 +2392,7 @@ async def _run_core_project_analysis(db: DB, project: BuyerProject, user: Curren
         "Supplier quotations include warranty, tax mode and delivery terms.",
     ]
     project.estimated_budget_json = {
-        "currency": project.currency or "PHP",
+        "currency": project.currency or "EUR",
         "min": int(base_total * 0.8),
         "max": int(base_total * 1.35),
         "confidence": 0.72,
@@ -2894,7 +2891,7 @@ async def legacy_category_schema(category_id: uuid.UUID, db: DB):
 
 @router.get("/payments/region-config")
 async def legacy_payment_region_config(db: DB, country: str = Query(default="PH")):
-    normalized = (country or "PH").upper()[:2]
+    normalized = normalize_country_code(country)
     row = (
         await db.execute(
             select(RegionPaymentConfig).where(
@@ -2910,9 +2907,9 @@ async def legacy_payment_region_config(db: DB, country: str = Query(default="PH"
 async def legacy_wallets_me(
     db: DB,
     user: CurrentUser,
-    currency: str = Query(default="PHP"),
+    currency: str = Query(default="EUR"),
 ):
-    normalized_currency = (currency or "PHP").upper()
+    normalized_currency = (currency or "EUR").upper()
     await get_or_create_wallet(db, user.id, normalized_currency)
     await db.commit()
     wallets = await wallet_balance(db, user.id)
@@ -2974,13 +2971,13 @@ async def legacy_create_wallet_deposit(
     await _require_wallet_payments_enabled(db)
     if data.amount_minor <= 0:
         raise HTTPException(status_code=422, detail="amount_minor must be greater than 0")
-    currency = (data.currency or "PHP").upper()
+    currency = (data.currency or "EUR").upper()
     wallet = await get_or_create_wallet(db, user.id, currency)
     fields = data.model_dump()
     fields["currency"] = currency
     fields["network"] = (fields.get("network") or "LOCAL_BANK").upper()
     fields["provider"] = fields.get("provider") or "MANUAL_BANK"
-    fields["payment_method"] = fields.get("payment_method") or "PHP_MANUAL_BANK"
+    fields["payment_method"] = fields.get("payment_method") or "BANK_TRANSFER"
     fields["deposit_address"] = _wallet_instruction_address(data, user)
     deposit = await create_deposit(
         db,
@@ -3635,7 +3632,7 @@ async def legacy_marketplace_filters(db: DB):
         "categories": [_category_as_legacy(row) for row in categories],
         "market_modes": ["B2B", "B2C", "BOTH"],
         "sort_options": ["newest", "price_asc", "price_desc"],
-        "currencies": ["PHP", "USD", "EUR"],
+        "currencies": ["EUR", "RSD", "PLN", "PHP", "USD"],
     }
 
 
@@ -3743,7 +3740,7 @@ async def legacy_create_supplier_catalog_item(data: dict, db: DB, user: CurrentU
         title=title,
         attributes_json=attrs,
         price_minor=int(data.get("price_minor") or 0),
-        currency=str(data.get("currency") or "PHP").upper(),
+        currency=str(data.get("currency") or "EUR").upper(),
         status=_catalog_status_to_core(data.get("status")) or "active",
         legacy_catalog_item_id=data.get("legacy_catalog_item_id"),
     )
@@ -5650,7 +5647,7 @@ async def legacy_admin_create_region(data: dict, db: DB, user: CurrentUser):
     row = Region(
         code=code,
         name=data.get("name") or code,
-        currency_code=str(data.get("currency_code") or ("PHP" if str(data.get("country") or "").lower() == "philippines" else "USD")).upper(),
+        currency_code=str(data.get("currency_code") or ("PHP" if str(data.get("country") or "").lower() == "philippines" else "EUR")).upper(),
         language_codes_json=data.get("language_codes_json") or ["en"],
         tax_rules_json={"procurement_admin": extra},
         timezone=data.get("timezone") or "Asia/Manila",
@@ -6294,7 +6291,7 @@ async def legacy_submit_offer(intent_id: uuid.UUID, data: dict, db: DB, user: Cu
         supplier_listing_id=data.get("supplier_listing_id") or data.get("catalog_item_id"),
         supplier_company_id=data.get("supplier_company_id") or data.get("company_id"),
         price_minor=total,
-        currency=data.get("currency") or "PHP",
+        currency=data.get("currency") or "EUR",
         terms_json={
             **(data.get("terms_json") or {}),
             "unit_price_minor": unit_price,

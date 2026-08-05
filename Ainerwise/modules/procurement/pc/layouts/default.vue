@@ -89,7 +89,8 @@
           <ClientOnly>
             <div class="flex flex-wrap gap-2">
               <USelect v-model="appStore.language" :options="appStore.languageOptions" option-attribute="label" value-attribute="code" placeholder="Language" class="w-full max-w-[190px]" @update:model-value="switchLanguage" />
-              <USelect v-model="appStore.currency" :options="appStore.currencyOptions" option-attribute="label" value-attribute="code" placeholder="Currency" class="w-full max-w-[230px]" @update:model-value="appStore.setCurrency" />
+              <USelect v-model="appStore.regionCountry" :options="appStore.regionOptions" option-attribute="label" value-attribute="code" :placeholder="appStore.t('layout.operatingCountry')" class="w-full max-w-[190px]" @update:model-value="appStore.setRegionCountry" />
+              <USelect v-model="appStore.currency" :options="appStore.currencyOptions" option-attribute="label" value-attribute="code" :placeholder="appStore.t('layout.settlementCurrency')" class="w-full max-w-[230px]" @update:model-value="appStore.setCurrency" />
             </div>
           </ClientOnly>
         </div>
