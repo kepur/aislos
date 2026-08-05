@@ -3,14 +3,14 @@
     <!-- Sidebar Navigation -->
     <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col sticky top-0 h-screen">
       <div class="h-16 flex items-center px-6 border-b border-slate-200">
-        <NuxtLink to="/" class="text-xl font-bold text-indigo-600 tracking-tight">
+        <NuxtLink :to="pathTo('/')" class="text-xl font-bold text-indigo-600 tracking-tight">
           {{ $config.public.appName }}
         </NuxtLink>
       </div>
 
       <div :key="buyerNavRenderKey" class="flex-grow py-6 px-4 overflow-y-auto">
         <div class="mb-8">
-          <UButton block color="indigo" variant="solid" size="lg" to="/post-request" class="shadow-md">
+          <UButton block color="indigo" variant="solid" size="lg" :to="pathTo('/post-request')" class="shadow-md">
             <template #leading>
               <UIcon name="i-heroicons-plus-circle" class="w-5 h-5" />
             </template>
@@ -22,7 +22,7 @@
           <NuxtLink
             v-for="item in mainNav"
             :key="`${buyerNavRenderKey}:${item.to}`"
-            :to="item.to"
+            :to="pathTo(item.to)"
             custom
             v-slot="{ href, navigate }"
           >
@@ -69,7 +69,7 @@
           <h3 class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{{ appStore.t('layout.business') }}</h3>
           <nav class="space-y-1">
             <NuxtLink
-              to="/buyer/company-profile"
+              :to="pathTo('/buyer/company-profile')"
               :key="`${buyerNavRenderKey}:company-profile`"
               custom
               v-slot="{ href, navigate }"
@@ -86,7 +86,7 @@
               </a>
             </NuxtLink>
             <NuxtLink
-              to="/buyer/team"
+              :to="pathTo('/buyer/team')"
               :key="`${buyerNavRenderKey}:team`"
               custom
               v-slot="{ href, navigate }"
@@ -139,12 +139,12 @@
         <div class="flex items-center space-x-4 flex-shrink-0">
           <ClientOnly>
             <div class="hidden lg:flex items-center space-x-2 border-r border-slate-200 pr-4 mr-2">
-              <USelect v-model="appStore.language" :options="appStore.languageOptions" option-attribute="label" value-attribute="code" size="sm" class="w-36" @update:model-value="appStore.setLanguage" />
+              <USelect v-model="appStore.language" :options="appStore.languageOptions" option-attribute="label" value-attribute="code" size="sm" class="w-36" @update:model-value="switchLanguage" />
               <USelect v-model="appStore.currency" :options="appStore.currencyOptions" option-attribute="label" value-attribute="code" size="sm" class="w-36" @update:model-value="appStore.setCurrency" />
             </div>
           </ClientOnly>
 
-          <a :href="$config.public.aislosSiteUrl" class="hidden text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600 lg:inline">AinerWise 官网 ↗</a>
+          <a :href="$config.public.aislosSiteUrl" class="hidden text-sm font-medium text-slate-500 transition-colors hover:text-indigo-600 lg:inline">{{ appStore.t('layout.ainerwiseSite') }} ↗</a>
 
           <!-- Notification Bell -->
           <div class="relative" ref="notifRef">
@@ -152,7 +152,7 @@
               color="gray"
               variant="ghost"
               icon="i-heroicons-bell"
-              aria-label="Notifications"
+              :aria-label="appStore.t('layout.notifications')"
               class="relative"
               @click="toggleNotif"
             >
@@ -167,7 +167,7 @@
               >
                 <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100">
                   <h4 class="text-sm font-semibold text-slate-900">
-                    Notifications
+                    {{ appStore.t('layout.notifications') }}
                     <UBadge v-if="unreadCount > 0" color="red" size="xs" class="ml-2">{{ unreadCount }}</UBadge>
                   </h4>
                   <button
@@ -175,20 +175,20 @@
                     class="text-xs text-indigo-600 hover:underline"
                     @click="markAllRead"
                   >
-                    Mark all read
+                    {{ appStore.t('layout.markAllRead') }}
                   </button>
                 </div>
 
                 <div class="max-h-72 overflow-y-auto divide-y divide-slate-50">
                   <div v-if="notifLoading" class="py-8 text-center text-xs text-slate-400">
-                    Loading...
+                    {{ appStore.t('layout.loading') }}
                   </div>
                   <div
                     v-else-if="notifications.length === 0"
                     class="py-10 text-center text-slate-400"
                   >
                     <div class="text-3xl mb-2">🔔</div>
-                    <p class="text-xs">No notifications yet</p>
+                    <p class="text-xs">{{ appStore.t('layout.noNotifications') }}</p>
                   </div>
                   <button
                     v-for="n in notifications"
@@ -209,8 +209,8 @@
                 </div>
 
                 <div class="border-t border-slate-100 px-4 py-2">
-                  <NuxtLink to="/buyer/notifications" class="text-xs text-indigo-600 hover:underline" @click="showNotif = false">
-                    View all notifications →
+                  <NuxtLink :to="pathTo('/buyer/notifications')" class="text-xs text-indigo-600 hover:underline" @click="showNotif = false">
+                    {{ appStore.t('layout.viewAllNotifications') }} →
                   </NuxtLink>
                 </div>
               </div>
@@ -239,6 +239,7 @@
 <script setup lang="ts">
 import { useAppStore } from '~/stores/app'
 import { useAuthStore } from '~/stores/auth'
+import { stripLocalePrefix } from '~/utils/localeRoutes'
 
 const appStore = useAppStore()
 const authStore = useAuthStore()
@@ -263,7 +264,7 @@ async function loadAccountCtx() {
 const mainNav = computed(() => [
   { to: '/buyer/dashboard', icon: 'i-heroicons-home', label: appStore.t('buyer.nav.dashboard') },
   { to: '/buyer/requests', icon: 'i-heroicons-clipboard-document-list', label: appStore.t('buyer.nav.requests') },
-  { to: '/buyer/projects', icon: 'i-heroicons-cpu-chip', label: 'AI Projects' },
+  { to: '/buyer/projects', icon: 'i-heroicons-cpu-chip', label: appStore.t('layout.aiProjects') },
   { to: '/buyer/orders', icon: 'i-heroicons-shopping-cart', label: appStore.t('buyer.nav.orders') },
   { to: '/buyer/messages', icon: 'i-heroicons-chat-bubble-left-right', label: appStore.t('buyer.nav.messages'), badge: unreadCount.value > 0 ? String(unreadCount.value) : undefined },
   { to: '/buyer/disputes', icon: 'i-heroicons-exclamation-triangle', label: appStore.t('buyer.nav.disputes') },
@@ -280,14 +281,14 @@ const userMenuItems = computed(() => {
   const items: any[] = []
 
   const profileGroup: any[] = [
-    { label: 'My Profile', icon: 'i-heroicons-user-circle', click: () => navigateTo('/buyer/settings') },
-    { label: 'Delivery Addresses', icon: 'i-heroicons-map-pin', click: () => navigateTo('/buyer/settings#addresses') },
-    { label: 'Notification Settings', icon: 'i-heroicons-bell-alert', click: () => navigateTo('/buyer/settings#notifications') },
+    { label: appStore.t('layout.myProfile'), icon: 'i-heroicons-user-circle', click: () => navigateTo(pathTo('/buyer/settings')) },
+    { label: appStore.t('layout.deliveryAddresses'), icon: 'i-heroicons-map-pin', click: () => navigateTo(pathTo('/buyer/settings#addresses')) },
+    { label: appStore.t('layout.notificationSettings'), icon: 'i-heroicons-bell-alert', click: () => navigateTo(pathTo('/buyer/settings#notifications')) },
   ]
   if (accountCtx.value?.account_type === 'BUSINESS') {
     profileGroup.push(
-      { label: appStore.t('layout.companyProfile'), icon: 'i-heroicons-building-office', click: () => navigateTo('/buyer/company-profile') },
-      { label: appStore.t('layout.team'), icon: 'i-heroicons-users', click: () => navigateTo('/buyer/team') },
+      { label: appStore.t('layout.companyProfile'), icon: 'i-heroicons-building-office', click: () => navigateTo(pathTo('/buyer/company-profile')) },
+      { label: appStore.t('layout.team'), icon: 'i-heroicons-users', click: () => navigateTo(pathTo('/buyer/team')) },
     )
   }
   items.push(profileGroup)
@@ -309,7 +310,17 @@ watch(
 let removeAfterEach: (() => void) | undefined
 
 function normalizePath(path: string) {
-  return path.replace(/\/+$/, '') || '/'
+  return stripLocalePrefix(path).replace(/\/+$/, '') || '/'
+}
+
+function pathTo(path: string) {
+  return appStore.localizedPath(path)
+}
+
+function switchLanguage(lang: string) {
+  appStore.setLanguage(lang)
+  const target = appStore.localizedPath(route.fullPath, lang)
+  if (target !== route.fullPath) navigateTo(target)
 }
 
 function isActive(path: string) {
@@ -344,7 +355,7 @@ function handleNavClick(event: MouseEvent, navigate: (event?: MouseEvent) => Pro
 
 const handleLogout = async () => {
   await authStore.logout()
-  navigateTo('/login')
+  navigateTo(pathTo('/login'))
 }
 
 // ─── Notifications ──────────────────────────────────

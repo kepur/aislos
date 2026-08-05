@@ -12,9 +12,11 @@ class NotificationPreferenceRead(BaseSchema):
     telegram_enabled: bool
     email_enabled: bool
     whatsapp_enabled: bool
+    viber_enabled: bool
     telegram_chat_id: str | None = None
     email: str | None = None
     whatsapp_number: str | None = None
+    viber_number: str | None = None
     alerts_enabled: bool
     reports_enabled: bool
     maintenance_enabled: bool
@@ -27,9 +29,11 @@ class NotificationPreferenceUpdate(BaseSchema):
     telegram_enabled: bool | None = None
     email_enabled: bool | None = None
     whatsapp_enabled: bool | None = None
+    viber_enabled: bool | None = None
     telegram_chat_id: str | None = None
     email: str | None = None
     whatsapp_number: str | None = None
+    viber_number: str | None = None
     alerts_enabled: bool | None = None
     reports_enabled: bool | None = None
     maintenance_enabled: bool | None = None

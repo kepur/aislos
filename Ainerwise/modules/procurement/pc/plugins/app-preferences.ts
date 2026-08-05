@@ -5,6 +5,6 @@ export default defineNuxtPlugin(async () => {
 
   if (language.value) appStore.setLanguage(language.value)
   await appStore.fetchMarketLocalizationConfig()
-  await appStore.fetchPaymentRegionConfig('PH')
+  await appStore.fetchPaymentRegionConfig('RS')
   if (currency.value) appStore.setCurrency(currency.value)
 })

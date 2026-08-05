@@ -2,24 +2,24 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-slate-900">Notifications</h1>
-        <p class="text-sm text-slate-500 mt-1">Buyer alerts for new offers, order updates, disputes, and messages.</p>
+        <h1 class="text-2xl font-bold text-slate-900">{{ t('buyer.notifications.title') }}</h1>
+        <p class="text-sm text-slate-500 mt-1">{{ t('buyer.notifications.subtitle') }}</p>
       </div>
       <div class="flex gap-2">
         <UButton color="gray" variant="outline" icon="i-heroicons-arrow-path" :loading="loading" @click="loadNotifications">
-          Refresh
+          {{ t('wallet.refresh') }}
         </UButton>
         <UButton color="indigo" variant="soft" :disabled="unreadCount === 0" @click="markAllRead">
-          Mark all read
+          {{ t('layout.markAllRead') }}
         </UButton>
       </div>
     </div>
 
     <UCard>
-      <div v-if="loading" class="py-12 text-center text-sm text-slate-400">Loading notifications...</div>
+      <div v-if="loading" class="py-12 text-center text-sm text-slate-400">{{ t('buyer.notifications.loading') }}</div>
       <div v-else-if="notifications.length === 0" class="py-16 text-center text-slate-400">
         <div class="text-4xl mb-2">🔔</div>
-        <p class="text-sm">No notifications yet.</p>
+        <p class="text-sm">{{ t('buyer.notifications.empty') }}</p>
       </div>
       <div v-else class="divide-y divide-slate-100">
         <button
@@ -35,7 +35,7 @@
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2">
                 <p class="font-semibold text-slate-900">{{ notificationTitle(n) }}</p>
-                <UBadge v-if="!n.read_at" color="indigo" variant="subtle" size="xs">New</UBadge>
+                <UBadge v-if="!n.read_at" color="indigo" variant="subtle" size="xs">{{ t('buyer.notifications.new') }}</UBadge>
               </div>
               <p class="text-sm text-slate-600 mt-1">{{ n.body }}</p>
               <p class="text-xs text-slate-400 mt-2">{{ timeAgo(n.created_at) }}</p>
@@ -51,7 +51,9 @@
 definePageMeta({ layout: 'buyer', middleware: ['auth'] })
 
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const config = useRuntimeConfig()
+const t = (key: string) => appStore.t(key)
 
 interface Notification {
   id: string
@@ -102,7 +104,7 @@ async function markAllRead() {
 
 async function openNotification(n: Notification) {
   await markRead(n)
-  navigateTo(notificationTarget(n.notification_type))
+  navigateTo(appStore.localizedPath(notificationTarget(n.notification_type)))
 }
 
 function notificationTitle(n: Notification) {
@@ -111,13 +113,13 @@ function notificationTitle(n: Notification) {
 
 function notificationTypeLabel(type: string) {
   const labels: Record<string, string> = {
-    NEW_OFFER_FOR_BUYER: 'New offer received',
-    OFFER_UPDATED_BUYER: 'Offer updated',
-    ORDER_CREATED_BUYER: 'Order created',
-    DELIVERY_UPDATED_BUYER: 'Delivery updated',
-    DISPUTE_OPENED: 'Dispute opened',
-    MESSAGE_RECEIVED: 'New message',
-    ADMIN_TEST: 'Admin notification',
+    NEW_OFFER_FOR_BUYER: t('buyer.notifications.type.NEW_OFFER_FOR_BUYER'),
+    OFFER_UPDATED_BUYER: t('buyer.notifications.type.OFFER_UPDATED_BUYER'),
+    ORDER_CREATED_BUYER: t('buyer.notifications.type.ORDER_CREATED_BUYER'),
+    DELIVERY_UPDATED_BUYER: t('buyer.notifications.type.DELIVERY_UPDATED_BUYER'),
+    DISPUTE_OPENED: t('buyer.notifications.type.DISPUTE_OPENED'),
+    MESSAGE_RECEIVED: t('buyer.notifications.type.MESSAGE_RECEIVED'),
+    ADMIN_TEST: t('buyer.notifications.type.ADMIN_TEST'),
   }
   return labels[type] || type.replaceAll('_', ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase())
 }
@@ -150,7 +152,7 @@ function notifIcon(type: string): string {
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return 'just now'
+  if (mins < 1) return t('time.justNow')
   if (mins < 60) return `${mins}m ago`
   const hrs = Math.floor(mins / 60)
   if (hrs < 24) return `${hrs}h ago`

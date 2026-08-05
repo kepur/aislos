@@ -181,9 +181,11 @@ class LegacyNotificationPreferencesUpdate(BaseModel):
     telegram_enabled: bool | None = None
     email_enabled: bool | None = None
     whatsapp_enabled: bool | None = None
+    viber_enabled: bool | None = None
     telegram_chat_id: str | None = None
     email: str | None = None
     whatsapp_number: str | None = None
+    viber_number: str | None = None
     alerts_enabled: bool | None = None
     reports_enabled: bool | None = None
     maintenance_enabled: bool | None = None
@@ -2835,9 +2837,11 @@ def _notification_preference_as_legacy(row: NotificationPreference) -> dict:
         "telegram_enabled": row.telegram_enabled,
         "email_enabled": row.email_enabled,
         "whatsapp_enabled": row.whatsapp_enabled,
+        "viber_enabled": row.viber_enabled,
         "telegram_chat_id": row.telegram_chat_id,
         "email": row.email,
         "whatsapp_number": row.whatsapp_number,
+        "viber_number": row.viber_number,
         "alerts_enabled": row.alerts_enabled,
         "reports_enabled": row.reports_enabled,
         "maintenance_enabled": row.maintenance_enabled,

@@ -132,9 +132,11 @@ async def anonymize_user(db: AsyncSession, user: User) -> None:
             telegram_enabled=False,
             email_enabled=False,
             whatsapp_enabled=False,
+            viber_enabled=False,
             telegram_chat_id=None,
             email=None,
             whatsapp_number=None,
+            viber_number=None,
         )
     )
     await db.execute(delete(PortalNotification).where(PortalNotification.user_id == user.id))

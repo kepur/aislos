@@ -25,9 +25,11 @@ class NotificationPreference(Base, UUIDMixin, TimestampMixin):
     telegram_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     email_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     whatsapp_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    viber_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     telegram_chat_id: Mapped[str | None] = mapped_column(String(100))
     email: Mapped[str | None] = mapped_column(String(255))
     whatsapp_number: Mapped[str | None] = mapped_column(String(50))
+    viber_number: Mapped[str | None] = mapped_column(String(50))
     # Event categories
     alerts_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     reports_enabled: Mapped[bool] = mapped_column(Boolean, default=True)

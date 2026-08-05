@@ -35,17 +35,17 @@
           </ClientOnly>
           <a
             :href="$config.public.aislosSiteUrl"
-            title="返回 AinerWise 官网 · Back to AinerWise"
+            :title="appStore.t('layout.ainerwiseSite')"
             class="hidden sm:inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-sm font-semibold text-indigo-700 transition-colors hover:border-indigo-300 hover:bg-indigo-100"
           >
-            <span aria-hidden="true">←</span> AinerWise 官网
+            <span aria-hidden="true">←</span> {{ appStore.t('layout.ainerwiseSite') }}
           </a>
           <ClientOnly>
             <div v-if="!authStore.isLoggedIn">
               <NuxtLink :to="localizedPath('/login')" class="text-sm font-medium text-slate-600 hover:text-indigo-600">{{ appStore.t('auth.login') }}</NuxtLink>
             </div>
             <div v-else class="flex items-center space-x-4">
-              <NuxtLink :to="dashboardPath" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Dashboard</NuxtLink>
+              <NuxtLink :to="dashboardPath" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">{{ appStore.t('layout.dashboard') }}</NuxtLink>
               <UButton size="xs" color="gray" variant="ghost" @click="handleLogout">{{ appStore.t('auth.logout') }}</UButton>
             </div>
             <template #fallback>
