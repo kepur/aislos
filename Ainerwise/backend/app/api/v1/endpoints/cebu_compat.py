@@ -256,7 +256,7 @@ async def legacy_system_mode(db: DB):
     return {
         "demo_mode": await is_demo_mode_enabled(db),
         "registration_enabled": True,
-        "app_name": "AISLOS Market",
+        "app_name": "AinerWise Procurement",
         "intent_max_attachments": 10,
         "default_locale": localization.get("default_locale_prefix", "en"),
         "locales": localization.get("supported_locales", []),

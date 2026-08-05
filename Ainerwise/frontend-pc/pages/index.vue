@@ -173,9 +173,9 @@
             :key="pkg.slug"
             class="glass-panel p-5 hover:border-primary-400 transition"
           >
-            <h3 class="font-semibold text-white">{{ pkg.name }}</h3>
-            <p class="text-sm text-primary-300 mt-1">{{ pkg.years }} {{ $t('services.years') }}</p>
-            <p class="text-xs text-slate-300 mt-2 line-clamp-3">{{ pkg.description }}</p>
+            <h3 class="font-semibold text-white">{{ packageName(pkg) }}</h3>
+            <p class="text-sm text-primary-300 mt-1">{{ packageTerm(pkg) }}</p>
+            <p class="text-xs text-slate-300 mt-2 line-clamp-3">{{ packageDescription(pkg) }}</p>
             <NuxtLink to="/services" class="mt-3 inline-block text-xs text-primary-400 font-medium">{{ $t('common.viewDetails') }}</NuxtLink>
           </div>
         </div>
@@ -235,7 +235,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t, te } = useI18n()
 const { apiFetch } = useApi()
 const publicConfig = useRuntimeConfig().public
 
@@ -340,6 +340,34 @@ const whyReasons = computed(() => [
   { icon: 'lifecycle', title: t('home.whyLifecycle'), desc: t('home.whyLifecycleDesc') },
 ])
 
+function isPublishedServicePackage(pkg: any) {
+  const name = String(pkg?.name || '')
+  const slug = String(pkg?.slug || '')
+  return Boolean(slug)
+    && !/^projection\b/i.test(name)
+    && !/^projection-/i.test(slug)
+    && !/^public support\b/i.test(name)
+    && !/^public-support-/i.test(slug)
+    && !/^private-/i.test(slug)
+}
+
+function packageTerm(pkg: any) {
+  const key = `services.packages.${pkg.slug}.term`
+  if (te(key)) return t(key)
+  if (pkg.price_rule_json?.term_label) return pkg.price_rule_json.term_label
+  return pkg.years ? `${pkg.years} ${t('services.years')}` : t('services.defaultKicker')
+}
+
+function packageName(pkg: any) {
+  const key = `services.packages.${pkg.slug}.name`
+  return te(key) ? t(key) : pkg.name
+}
+
+function packageDescription(pkg: any) {
+  const key = `services.packages.${pkg.slug}.description`
+  return te(key) ? t(key) : pkg.description
+}
+
 async function loadPublicContent() {
   contentLoading.value = true
   solutionsError.value = ''
@@ -356,7 +384,14 @@ async function loadPublicContent() {
     solutionsError.value = error?.data?.detail || error?.message || 'Unable to load solutions.'
   }
   if (servicesResult.status === 'fulfilled') {
-    servicePackages.value = servicesResult.value.items || servicesResult.value || []
+    const rows = Array.isArray(servicesResult.value?.items)
+      ? servicesResult.value.items
+      : Array.isArray(servicesResult.value)
+        ? servicesResult.value
+        : []
+    servicePackages.value = rows
+      .filter(isPublishedServicePackage)
+      .slice(0, 5)
   } else {
     servicePackages.value = []
     const error: any = servicesResult.reason

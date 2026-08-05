@@ -10,6 +10,10 @@ class CRUDServicePackage(CRUDBase[ServicePackage]):
         result = await db.execute(
             select(self.model)
             .where(self.model.public_visible == True)
+            .where(~self.model.name.ilike("Projection %"))
+            .where(~self.model.slug.ilike("projection-%"))
+            .where(~self.model.name.ilike("Public support %"))
+            .where(~self.model.slug.ilike("public-support-%"))
             .order_by(self.model.sort_order)
         )
         return list(result.scalars().all())

@@ -60,4 +60,22 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (savedPrefix && savedLocale && isSupported(savedLocale)) {
     return navigateTo(withLocalePrefix(to.fullPath, savedPrefix), { replace: true })
   }
+
+  if (import.meta.client) {
+    const savedCookieLocale = normalizeLocaleCode(localeCookie.value || '')
+    const savedCookiePrefix = prefixForLocale(savedCookieLocale)
+    if (savedCookieLocale && savedCookiePrefix && isSupported(savedCookieLocale)) {
+      localStorage.setItem('ainerwise_locale_prefix', savedCookiePrefix)
+      return navigateTo(withLocalePrefix(to.fullPath, savedCookiePrefix), { replace: true })
+    }
+
+    const browserLocale = (navigator.languages || [navigator.language || ''])
+      .map(value => normalizeLocaleCode(String(value).split('-')[0] || value))
+      .find(code => code && isSupported(code))
+      || 'en'
+    const browserPrefix = prefixForLocale(browserLocale)
+    if (browserPrefix) {
+      return navigateTo(withLocalePrefix(to.fullPath, browserPrefix), { replace: true })
+    }
+  }
 })

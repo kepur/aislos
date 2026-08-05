@@ -1,67 +1,118 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" role="img" aria-label="AinerWise solution marketplace background">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" role="img" aria-label="AinerWise premium solution architecture background">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#071713"/>
-      <stop offset=".5" stop-color="#0f2f27"/>
-      <stop offset="1" stop-color="#020617"/>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#020617"/>
+      <stop offset=".42" stop-color="#061711"/>
+      <stop offset="1" stop-color="#031b24"/>
     </linearGradient>
-    <linearGradient id="stroke" x1="0" x2="1">
+    <linearGradient id="glassA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ecfeff" stop-opacity=".66"/>
+      <stop offset=".45" stop-color="#34d399" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#020617" stop-opacity=".86"/>
+    </linearGradient>
+    <linearGradient id="glassB" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dbeafe" stop-opacity=".42"/>
+      <stop offset=".5" stop-color="#22d3ee" stop-opacity=".15"/>
+      <stop offset="1" stop-color="#020617" stop-opacity=".82"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#34d399" stop-opacity="0"/>
-      <stop offset=".5" stop-color="#a7f3d0"/>
+      <stop offset=".5" stop-color="#a7f3d0" stop-opacity=".88"/>
       <stop offset="1" stop-color="#38bdf8" stop-opacity="0"/>
     </linearGradient>
-    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="8" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ecfdf5" stop-opacity=".98"/>
+      <stop offset=".28" stop-color="#22c55e" stop-opacity=".78"/>
+      <stop offset=".66" stop-color="#14b8a6" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
+    <pattern id="grid" width="96" height="96" patternUnits="userSpaceOnUse">
+      <path d="M96 0H0V96" fill="none" stroke="#d1fae5" stroke-opacity=".08" stroke-width="1"/>
+    </pattern>
   </defs>
-  <rect width="1920" height="1080" fill="url(#bg)"/>
-  <circle cx="1460" cy="150" r="390" fill="#10b981" opacity=".12"/>
-  <circle cx="420" cy="710" r="430" fill="#38bdf8" opacity=".07"/>
-  <g opacity=".1" stroke="#e2e8f0">
-    <path d="M0 260 H1920 M0 420 H1920 M0 580 H1920 M0 740 H1920"/>
-    <path d="M240 0 V1080 M480 0 V1080 M720 0 V1080 M960 0 V1080 M1200 0 V1080 M1440 0 V1080 M1680 0 V1080"/>
+
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <rect width="1920" height="1080" fill="url(#grid)" opacity=".86"/>
+
+  <g opacity=".52">
+    <circle cx="1508" cy="138" r="430" fill="#10b981" opacity=".10"/>
+    <circle cx="1180" cy="680" r="620" fill="#38bdf8" opacity=".055"/>
+    <circle cx="420" cy="820" r="520" fill="#22c55e" opacity=".048"/>
   </g>
-  <g stroke="url(#stroke)" stroke-width="3" fill="none" filter="url(#glow)">
-    <path d="M190 510 C440 320 610 430 850 305 C1135 158 1325 278 1735 170"/>
-    <path d="M170 805 C430 675 650 760 910 620 C1195 467 1420 520 1740 725"/>
-    <path d="M340 240 C585 395 760 480 965 540 C1240 620 1455 620 1685 500"/>
+
+  <g transform="translate(690 130)" opacity=".78">
+    <path d="M92 790L278 205L580 92L875 226L1040 790Z" fill="#03130f" opacity=".94"/>
+    <path d="M278 205L580 92L875 226L604 338Z" fill="#f8fafc" opacity=".12"/>
+    <path d="M92 790L278 205L604 338L604 790Z" fill="url(#glassA)"/>
+    <path d="M604 338L875 226L1040 790H604Z" fill="url(#glassB)"/>
+    <path d="M278 205L580 92L875 226" fill="none" stroke="#ecfeff" stroke-width="5" opacity=".32"/>
+    <path d="M278 205L604 338V790" fill="none" stroke="#a7f3d0" stroke-width="2" opacity=".28"/>
+    <path d="M604 338L875 226" fill="none" stroke="#bae6fd" stroke-width="2" opacity=".22"/>
+    <g opacity=".24" stroke="#ecfeff" stroke-width="1.5">
+      <path d="M188 790L362 176"/>
+      <path d="M306 790L470 132"/>
+      <path d="M438 790L582 92"/>
+      <path d="M720 790L804 224"/>
+      <path d="M888 790L836 244"/>
+    </g>
+    <g opacity=".3" stroke="#d1fae5" stroke-width="1">
+      <path d="M210 455H807"/>
+      <path d="M182 555H850"/>
+      <path d="M150 665H900"/>
+    </g>
   </g>
-  <g transform="translate(246 210)">
-    <rect width="250" height="160" rx="28" fill="#ecfdf5" opacity=".92"/>
-    <path d="M63 92 L125 45 L188 92 V130 H63Z" fill="#064e3b"/>
-    <path d="M84 108 H166" stroke="#6ee7b7" stroke-width="8" stroke-linecap="round"/>
-    <text x="125" y="198" font-family="Inter,Arial" font-size="28" fill="#d1fae5" text-anchor="middle">Smart Home</text>
+
+  <g filter="url(#glow)" opacity=".94">
+    <circle cx="1178" cy="532" r="164" fill="url(#core)"/>
+    <circle cx="1178" cy="532" r="72" fill="#12bfa6" opacity=".82"/>
+    <circle cx="1178" cy="532" r="23" fill="#ecfdf5"/>
   </g>
-  <g transform="translate(625 395)">
-    <rect width="250" height="160" rx="28" fill="#ecfeff" opacity=".92"/>
-    <path d="M70 118 L108 45 H180 L142 118Z" fill="#075985"/>
-    <path d="M103 45 L137 118 M143 45 L111 118" stroke="#67e8f9" stroke-width="6"/>
-    <text x="125" y="198" font-family="Inter,Arial" font-size="28" fill="#d1fae5" text-anchor="middle">Solar</text>
+
+  <g fill="none" stroke-linecap="round" opacity=".76" filter="url(#glow)">
+    <path d="M1178 532C1018 410 828 332 560 288" stroke="url(#beam)" stroke-width="3"/>
+    <path d="M1178 532C964 558 742 650 470 790" stroke="url(#beam)" stroke-width="3"/>
+    <path d="M1178 532C1394 408 1592 350 1830 310" stroke="url(#beam)" stroke-width="2.5"/>
+    <path d="M1178 532C1404 612 1602 740 1818 888" stroke="url(#beam)" stroke-width="2.5"/>
+    <path d="M1178 532C1032 670 948 770 840 944" stroke="url(#beam)" stroke-width="2"/>
   </g>
-  <g transform="translate(1040 255)">
-    <rect width="250" height="160" rx="28" fill="#eef2ff" opacity=".92"/>
-    <rect x="72" y="62" width="106" height="76" rx="18" fill="#312e81"/>
-    <path d="M92 62 V42 C92 22 158 22 158 42 V62" fill="none" stroke="#818cf8" stroke-width="10"/>
-    <text x="125" y="198" font-family="Inter,Arial" font-size="28" fill="#d1fae5" text-anchor="middle">Security</text>
+
+  <g opacity=".9">
+    <g transform="translate(250 218)">
+      <rect width="238" height="78" rx="22" fill="#020617" fill-opacity=".62" stroke="#a7f3d0" stroke-opacity=".22"/>
+      <circle cx="40" cy="39" r="7" fill="#6ee7b7"/>
+      <text x="66" y="47" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#ecfdf5">Assessment</text>
+    </g>
+    <g transform="translate(318 752)">
+      <rect width="250" height="78" rx="22" fill="#020617" fill-opacity=".62" stroke="#a7f3d0" stroke-opacity=".22"/>
+      <circle cx="40" cy="39" r="7" fill="#38bdf8"/>
+      <text x="66" y="47" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#ecfdf5">Procurement</text>
+    </g>
+    <g transform="translate(1512 264)">
+      <rect width="232" height="78" rx="22" fill="#020617" fill-opacity=".62" stroke="#a7f3d0" stroke-opacity=".22"/>
+      <circle cx="40" cy="39" r="7" fill="#fbbf24"/>
+      <text x="66" y="47" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#ecfdf5">Integration</text>
+    </g>
+    <g transform="translate(1502 846)">
+      <rect width="214" height="78" rx="22" fill="#020617" fill-opacity=".62" stroke="#a7f3d0" stroke-opacity=".22"/>
+      <circle cx="40" cy="39" r="7" fill="#34d399"/>
+      <text x="66" y="47" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#ecfdf5">Lifecycle</text>
+    </g>
   </g>
-  <g transform="translate(1385 600)">
-    <rect width="250" height="160" rx="28" fill="#f0fdf4" opacity=".92"/>
-    <circle cx="125" cy="82" r="47" fill="#065f46"/>
-    <path d="M125 35 V129 M78 82 H172 M92 50 L158 116 M158 50 L92 116" stroke="#a7f3d0" stroke-width="7"/>
-    <text x="125" y="198" font-family="Inter,Arial" font-size="28" fill="#d1fae5" text-anchor="middle">AI Brain</text>
+
+  <g fill="#ecfdf5" opacity=".86">
+    <circle cx="560" cy="288" r="5"/>
+    <circle cx="470" cy="790" r="5"/>
+    <circle cx="1830" cy="310" r="4"/>
+    <circle cx="1818" cy="888" r="4"/>
+    <circle cx="840" cy="944" r="4"/>
   </g>
-  <g transform="translate(840 705)">
-    <rect width="250" height="160" rx="28" fill="#fffbeb" opacity=".92"/>
-    <path d="M82 115 H168 L145 48 H105Z" fill="#92400e"/>
-    <path d="M100 92 H150" stroke="#fcd34d" stroke-width="8"/>
-    <text x="125" y="198" font-family="Inter,Arial" font-size="28" fill="#d1fae5" text-anchor="middle">Procurement</text>
-  </g>
-  <g fill="#a7f3d0" filter="url(#glow)">
-    <circle cx="490" cy="350" r="7"/>
-    <circle cx="750" cy="455" r="6"/>
-    <circle cx="1040" cy="355" r="7"/>
-    <circle cx="1350" cy="650" r="6"/>
-    <circle cx="930" cy="760" r="8"/>
-  </g>
+
+  <rect width="1920" height="1080" fill="#020617" opacity=".1"/>
 </svg>

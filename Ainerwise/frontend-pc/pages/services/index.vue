@@ -65,6 +65,17 @@ const packages = ref<any[]>([])
 const loading = ref(true)
 const error = ref('')
 
+function isPublishedServicePackage(pkg: any) {
+  const name = String(pkg?.name || '')
+  const slug = String(pkg?.slug || '')
+  return Boolean(slug)
+    && !/^projection\b/i.test(name)
+    && !/^projection-/i.test(slug)
+    && !/^public support\b/i.test(name)
+    && !/^public-support-/i.test(slug)
+    && !/^private-/i.test(slug)
+}
+
 function packageTerm(pkg: any) {
   const key = `services.packages.${pkg.slug}.term`
   return te(key) ? t(key) : pkg.price_rule_json?.term_label || `${pkg.years} ${t('services.years')}`
@@ -90,7 +101,8 @@ async function loadPackages() {
   error.value = ''
   try {
     const res = await apiFetch<any>('/service-packages')
-    packages.value = res.items || res || []
+    const rows = Array.isArray(res?.items) ? res.items : Array.isArray(res) ? res : []
+    packages.value = rows.filter(isPublishedServicePackage)
   } catch (e: any) {
     packages.value = []
     error.value = e?.data?.detail || e?.message || 'Unable to load service plans.'

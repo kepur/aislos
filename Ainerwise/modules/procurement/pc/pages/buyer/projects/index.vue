@@ -11,7 +11,7 @@
           Describe your project, upload documents — AI generates a structured procurement list.
         </p>
       </div>
-      <UButton color="indigo" icon="i-heroicons-plus" class="flex-shrink-0" @click="showCreate = true">
+      <UButton color="indigo" icon="i-heroicons-plus" class="flex-shrink-0" @click="openCreateModal">
         New Project
       </UButton>
     </div>
@@ -23,7 +23,7 @@
       <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto">
         Create your first project to let AI analyze your requirements and generate a smart procurement list.
       </p>
-      <UButton color="indigo" icon="i-heroicons-plus" size="lg" class="mt-6" @click="showCreate = true">
+      <UButton color="indigo" icon="i-heroicons-plus" size="lg" class="mt-6" @click="openCreateModal">
         Create Your First Project
       </UButton>
     </div>
@@ -91,10 +91,17 @@
 
           <div class="grid grid-cols-2 gap-4">
             <UFormGroup label="Country">
-              <UInput v-model="form.country" placeholder="Philippines" />
+              <select
+                v-model="form.country"
+                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              >
+                <option v-for="region in regionOptions" :key="region.code" :value="region.code">
+                  {{ region.name }} ({{ region.code }})
+                </option>
+              </select>
             </UFormGroup>
             <UFormGroup label="City">
-              <UInput v-model="form.city" placeholder="Cebu City" />
+              <UInput v-model="form.city" :placeholder="selectedRegion?.defaultCity || 'Belgrade'" />
             </UFormGroup>
           </div>
 
@@ -152,6 +159,12 @@ const creating = ref(false)
 const showCreate = ref(false)
 const projects = ref<any[]>([])
 
+type RegionOption = {
+  code: string
+  name: string
+  defaultCity?: string
+}
+
 const projectTypes = [
   { label: '🏠 General', value: 'GENERAL' },
   { label: '🏗️ Construction', value: 'CONSTRUCTION' },
@@ -169,7 +182,7 @@ const qualityOptions = [
 const form = reactive({
   title: '',
   project_type: 'GENERAL',
-  country: 'Philippines',
+  country: '',
   city: '',
   area_value: null as number | null,
   area_unit: 'sqm',
@@ -178,6 +191,40 @@ const form = reactive({
   quality_preference: 'NOT_SURE',
   description: '',
 })
+
+const fallbackRegions: RegionOption[] = [
+  { code: 'RS', name: 'Serbia', defaultCity: 'Belgrade' },
+]
+
+const regionOptions = computed<RegionOption[]>(() => {
+  const regions = (authStore.systemMode as any)?.regions
+  if (Array.isArray(regions) && regions.length) {
+    return regions
+      .map((region: any) => ({
+        code: String(region.code || '').toUpperCase(),
+        name: String(region.name || region.label || region.code || '').trim(),
+        defaultCity: region.default_city || region.city || undefined,
+      }))
+      .filter((region: RegionOption) => region.code && region.name)
+  }
+  return fallbackRegions
+})
+
+const selectedRegion = computed(() => regionOptions.value.find(region => region.code === form.country))
+
+function ensureDefaultRegion() {
+  if (!form.country && regionOptions.value.length) {
+    form.country = regionOptions.value[0].code
+  }
+}
+
+async function openCreateModal() {
+  showCreate.value = true
+  if (!authStore.systemMode) {
+    await authStore.fetchSystemMode()
+  }
+  ensureDefaultRegion()
+}
 
 function projectTypeIcon(type: string) {
   const map: Record<string, string> = {
@@ -253,5 +300,13 @@ async function createProject() {
   }
 }
 
-onMounted(loadProjects)
+watch(regionOptions, ensureDefaultRegion, { immediate: true })
+
+onMounted(async () => {
+  if (!authStore.systemMode) {
+    await authStore.fetchSystemMode()
+  }
+  ensureDefaultRegion()
+  await loadProjects()
+})
 </script>
