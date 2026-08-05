@@ -11,10 +11,13 @@
       :nodes="brainHeroNodes"
       primary-to="/submit-requirement"
       :primary-label="$t('brain.startAssessment')"
-      secondary-to="/ai-building-brain#immersive-demo"
-      :secondary-label="$t('brain.open3d')"
       :core-label="$t('home.hubCore')"
-    />
+      :show-orbit="false"
+    >
+      <template #aside>
+        <BuildingBrainHeroVisual />
+      </template>
+    </AinerwiseImmersiveHero>
 
     <KnxBrainNav />
 
@@ -110,7 +113,7 @@
       </div>
     </KnxSectionBlock>
 
-    <section id="immersive-demo" class="immersive-demo knx-on-dark">
+    <section id="brain-visual-layer" class="immersive-demo knx-on-dark">
       <div class="container-main immersive-demo-shell px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div class="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-stretch">
           <div class="immersive-demo-scene">
@@ -184,13 +187,16 @@ const { t } = useI18n()
 const { scenarios, capabilityBlocks } = useBuildingBrain()
 
 const activeKey = ref(scenarios[0].key)
-const selectedLevel = ref<'L3' | 'L4' | 'L5'>('L4')
+const selectedLevel = ref<'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'L6'>('L4')
 const active = computed(() => scenarios.find((s) => s.key === activeKey.value) || scenarios[0])
 
 const demoLevelOptions = computed(() => [
+  { key: 'L1' as const, label: t('brain.demoLevelL1') },
+  { key: 'L2' as const, label: t('brain.demoLevelL2') },
   { key: 'L3' as const, label: t('brain.demoLevelL3') },
   { key: 'L4' as const, label: t('brain.demoLevelL4') },
   { key: 'L5' as const, label: t('brain.demoLevelL5') },
+  { key: 'L6' as const, label: t('brain.demoLevelL6') },
 ])
 
 const busItems = computed(() => [

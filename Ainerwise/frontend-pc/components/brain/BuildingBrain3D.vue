@@ -1,7 +1,7 @@
 <template>
-  <div ref="host" class="brain3d">
+  <div ref="host" class="brain3d" :class="`brain3d--${props.variant}`">
     <canvas ref="canvas" class="brain3d-canvas" aria-label="AinerWise 3D AI building brain scene"></canvas>
-    <div class="brain3d-readout">
+    <div v-if="props.showReadout" class="brain3d-readout">
       <p>{{ levelConfig.kicker }}</p>
       <h3>{{ levelConfig.name }}</h3>
       <span>{{ scenarioLabel }}</span>
@@ -15,10 +15,17 @@
 <script setup lang="ts">
 import * as THREE from 'three'
 
-const props = defineProps<{
-  level: 'L3' | 'L4' | 'L5'
+type BrainLevel = 'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'L6'
+
+const props = withDefaults(defineProps<{
+  level: BrainLevel
   scenarioKey: string
-}>()
+  variant?: 'full' | 'hero'
+  showReadout?: boolean
+}>(), {
+  variant: 'full',
+  showReadout: true,
+})
 
 const host = ref<HTMLElement | null>(null)
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -29,9 +36,38 @@ let camera: THREE.PerspectiveCamera | null = null
 let root: THREE.Group | null = null
 let animationId = 0
 let resizeObserver: ResizeObserver | null = null
-let animated: Array<{ object: THREE.Object3D; mode: 'spin' | 'pulse' | 'float' | 'walk' | 'drive' | 'convey' | 'scan'; speed: number; offset: number }> = []
+let animated: Array<{
+  object: THREE.Object3D
+  mode: 'spin' | 'pulse' | 'float' | 'walk' | 'drive' | 'convey' | 'scan' | 'data'
+  speed: number
+  offset: number
+  from?: THREE.Vector3
+  to?: THREE.Vector3
+}> = []
 
 const levelConfigs = {
+  L1: {
+    kicker: 'L1 Connected Control',
+    name: 'Connected Building',
+    color: 0x86efac,
+    secondary: 0x38bdf8,
+    atmosphere: 0x14532d,
+    nodeCount: 5,
+    beamCount: 5,
+    orbitSpeed: 0.001,
+    cityScale: 0.78,
+  },
+  L2: {
+    kicker: 'L2 Sensor Automation',
+    name: 'Sensor Automated Building',
+    color: 0x34d399,
+    secondary: 0x7dd3fc,
+    atmosphere: 0x047857,
+    nodeCount: 7,
+    beamCount: 9,
+    orbitSpeed: 0.00135,
+    cityScale: 0.86,
+  },
   L3: {
     kicker: 'L3 Energy Optimized',
     name: 'Energy Optimized Building',
@@ -64,6 +100,17 @@ const levelConfigs = {
     beamCount: 32,
     orbitSpeed: 0.0034,
     cityScale: 1.12,
+  },
+  L6: {
+    kicker: 'L6 Future Autonomous',
+    name: 'Autonomous Facility Brain',
+    color: 0x93c5fd,
+    secondary: 0xf0abfc,
+    atmosphere: 0x312e81,
+    nodeCount: 24,
+    beamCount: 46,
+    orbitSpeed: 0.0042,
+    cityScale: 1.18,
   },
 }
 
@@ -99,21 +146,70 @@ function addLine(group: THREE.Group, from: THREE.Vector3, to: THREE.Vector3, col
   group.add(new THREE.Line(geometry, material))
 }
 
+function addMeshEdges(group: THREE.Group, mesh: THREE.Mesh, color: number, opacity = 0.18) {
+  const edges = new THREE.LineSegments(
+    new THREE.EdgesGeometry(mesh.geometry),
+    new THREE.LineBasicMaterial({ color, transparent: true, opacity }),
+  )
+  edges.position.copy(mesh.position)
+  edges.rotation.copy(mesh.rotation)
+  edges.scale.copy(mesh.scale)
+  group.add(edges)
+}
+
 function addGround(group: THREE.Group, color: number) {
   const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(11, 7),
-    new THREE.MeshBasicMaterial({ color: 0x020617, transparent: true, opacity: 0.55 }),
+    new THREE.PlaneGeometry(12.5, 8.2),
+    new THREE.MeshBasicMaterial({ color: 0x020617, transparent: true, opacity: 0.62 }),
   )
   plane.rotation.x = -Math.PI / 2
   plane.position.y = -1.62
   group.add(plane)
 
-  const grid = new THREE.GridHelper(11, 22, color, 0x164e63)
+  const grid = new THREE.GridHelper(12.5, 25, color, 0x164e63)
   grid.position.y = -1.58
   const material = grid.material as THREE.Material
   material.transparent = true
-  material.opacity = 0.26
+  material.opacity = props.level === 'L1' ? 0.16 : 0.28
   group.add(grid)
+
+  const floorPlateMaterial = new THREE.MeshBasicMaterial({ color: 0x0f172a, transparent: true, opacity: 0.62 })
+  const floorPlate = new THREE.Mesh(new THREE.ShapeGeometry(new THREE.Shape([
+    new THREE.Vector2(-2.9, -1.95),
+    new THREE.Vector2(-1.95, -2.35),
+    new THREE.Vector2(-1.25, -2.08),
+    new THREE.Vector2(-0.48, -2.72),
+    new THREE.Vector2(0.42, -2.25),
+    new THREE.Vector2(1.16, -2.58),
+    new THREE.Vector2(2.18, -1.94),
+    new THREE.Vector2(1.78, -1.42),
+    new THREE.Vector2(-2.62, -1.32),
+  ])), floorPlateMaterial)
+  floorPlate.rotation.x = -Math.PI / 2
+  floorPlate.position.y = -1.555
+  group.add(floorPlate)
+
+  const roadMaterial = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.18 })
+  const paths = [
+    [new THREE.Vector3(-5.4, -1.54, 1.9), new THREE.Vector3(-2.9, -1.54, 0.88), new THREE.Vector3(0.2, -1.54, 0.54), new THREE.Vector3(4.8, -1.54, 1.8)],
+    [new THREE.Vector3(-4.5, -1.535, -2.25), new THREE.Vector3(-1.2, -1.535, -1.62), new THREE.Vector3(1.2, -1.535, -1.76), new THREE.Vector3(4.4, -1.535, -2.28)],
+  ]
+  for (const points of paths) {
+    const curve = new THREE.CatmullRomCurve3(points)
+    const road = new THREE.Mesh(new THREE.TubeGeometry(curve, 96, 0.012, 8, false), roadMaterial)
+    group.add(road)
+  }
+}
+
+function addSensorHalo(group: THREE.Group, x: number, z: number, color: number, radius = 0.34, offset = 0) {
+  const halo = new THREE.Mesh(
+    new THREE.TorusGeometry(radius, 0.008, 8, 72),
+    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.36 }),
+  )
+  halo.rotation.x = Math.PI / 2
+  halo.position.set(x, -1.515, z)
+  group.add(halo)
+  animated.push({ object: halo, mode: 'pulse', speed: 0.0028, offset })
 }
 
 function addPortal(group: THREE.Group, color: number, secondary: number) {
@@ -131,7 +227,7 @@ function addPortal(group: THREE.Group, color: number, secondary: number) {
   )
   const surface = new THREE.Mesh(
     new THREE.CircleGeometry(0.82, 72),
-    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: props.level === 'L5' ? 0.22 : 0.12 }),
+    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: ['L5', 'L6'].includes(props.level) ? 0.22 : 0.12 }),
   )
   portal.add(outer, inner, surface)
   animated.push({ object: outer, mode: 'spin', speed: 0.025, offset: 0 })
@@ -159,7 +255,7 @@ function addPortal(group: THREE.Group, color: number, secondary: number) {
   human.add(body, head, glow)
   human.position.set(-3.45, -1.1, 1.3)
   group.add(human)
-  animated.push({ object: human, mode: 'walk', speed: props.level === 'L5' ? 0.00032 : 0.00022, offset: 0 })
+  animated.push({ object: human, mode: 'walk', speed: ['L5', 'L6'].includes(props.level) ? 0.00032 : 0.00022, offset: 0 })
 }
 
 function addAICore(group: THREE.Group, color: number, secondary: number) {
@@ -171,7 +267,7 @@ function addAICore(group: THREE.Group, color: number, secondary: number) {
     new THREE.MeshStandardMaterial({
       color,
       emissive: color,
-      emissiveIntensity: props.level === 'L5' ? 1.85 : 1.25,
+      emissiveIntensity: ['L5', 'L6'].includes(props.level) ? 1.85 : props.level === 'L1' ? 0.85 : 1.25,
       roughness: 0.16,
       metalness: 0.5,
       transparent: true,
@@ -180,14 +276,14 @@ function addAICore(group: THREE.Group, color: number, secondary: number) {
   )
   core.name = 'AI'
   const brainWire = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(props.level === 'L5' ? 1.35 : 1.08, 2),
-    new THREE.MeshBasicMaterial({ color: secondary, wireframe: true, transparent: true, opacity: props.level === 'L5' ? 0.42 : 0.28 }),
+    new THREE.IcosahedronGeometry(['L5', 'L6'].includes(props.level) ? 1.35 : props.level === 'L1' ? 0.82 : 1.08, 2),
+    new THREE.MeshBasicMaterial({ color: secondary, wireframe: true, transparent: true, opacity: ['L5', 'L6'].includes(props.level) ? 0.42 : 0.28 }),
   )
   coreGroup.add(core, brainWire)
   animated.push({ object: core, mode: 'pulse', speed: 0.004, offset: 0 })
   animated.push({ object: brainWire, mode: 'spin', speed: 0.009, offset: 0 })
 
-  const ringCount = props.level === 'L3' ? 3 : props.level === 'L4' ? 5 : 7
+  const ringCount = props.level === 'L1' ? 1 : props.level === 'L2' ? 2 : props.level === 'L3' ? 3 : props.level === 'L4' ? 5 : props.level === 'L5' ? 7 : 9
   for (let i = 0; i < ringCount; i += 1) {
     const ring = new THREE.Mesh(
       new THREE.TorusGeometry(1.1 + i * 0.22, 0.008, 8, 144),
@@ -213,9 +309,9 @@ function addBuildings(group: THREE.Group, color: number, secondary: number) {
   }
   const tones = scenarioTones[props.scenarioKey] || scenarioTones.energy
   const bodyMaterial = mat(tones.base, color, 0.18)
-  const glassMaterial = mat(tones.glass, color, props.level === 'L5' ? 0.42 : 0.28)
+  const glassMaterial = mat(tones.glass, color, ['L5', 'L6'].includes(props.level) ? 0.46 : 0.28)
   const accentMaterial = new THREE.MeshBasicMaterial({ color: tones.accent, transparent: true, opacity: 0.74 })
-  const windowMaterial = new THREE.MeshBasicMaterial({ color: tones.window, transparent: true, opacity: props.level === 'L3' ? 0.5 : 0.78 })
+  const windowMaterial = new THREE.MeshBasicMaterial({ color: tones.window, transparent: true, opacity: ['L1', 'L2'].includes(props.level) ? 0.42 : props.level === 'L3' ? 0.5 : 0.78 })
   const doorMaterial = new THREE.MeshBasicMaterial({ color: secondary, transparent: true, opacity: 0.9 })
 
   const layouts: Record<string, BuildingSpec[]> = {
@@ -276,6 +372,7 @@ function addBuildings(group: THREE.Group, color: number, secondary: number) {
     const block = new THREE.Mesh(new THREE.BoxGeometry(spec.w, spec.h, spec.d), material)
     block.position.set(spec.x, -1.58 + spec.h / 2, spec.z)
     group.add(block)
+    addMeshEdges(group, block, color, props.level === 'L1' ? 0.14 : 0.24)
 
     if (spec.roof === 'gable') {
       const roof = new THREE.Mesh(new THREE.ConeGeometry(spec.w * 0.72, 0.34, 4), accentMaterial)
@@ -283,13 +380,15 @@ function addBuildings(group: THREE.Group, color: number, secondary: number) {
       roof.rotation.y = Math.PI / 4
       roof.scale.z = spec.d / spec.w
       group.add(roof)
+      addMeshEdges(group, roof, secondary, 0.24)
     } else {
       const roof = new THREE.Mesh(new THREE.BoxGeometry(spec.w * 0.82, 0.035, spec.d * 0.74), accentMaterial)
       roof.position.set(spec.x, -1.58 + spec.h + 0.045, spec.z)
       group.add(roof)
+      addMeshEdges(group, roof, secondary, 0.18)
     }
 
-    if (spec.roof === 'antenna' || (props.level === 'L5' && i === 0)) {
+    if (spec.roof === 'antenna' || (['L5', 'L6'].includes(props.level) && i === 0)) {
       const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.48, 8), new THREE.MeshBasicMaterial({ color: secondary }))
       mast.position.set(spec.x + spec.w * 0.28, -1.58 + spec.h + 0.28, spec.z)
       group.add(mast)
@@ -305,13 +404,24 @@ function addBuildings(group: THREE.Group, color: number, secondary: number) {
       group.add(stripe)
     }
 
+    if (activeScene.value.solar && i < 3 && spec.roof !== 'gable') {
+      const rooftopPanel = new THREE.Mesh(
+        new THREE.BoxGeometry(spec.w * 0.46, 0.012, spec.d * 0.38),
+        new THREE.MeshBasicMaterial({ color: 0x0f172a, transparent: true, opacity: 0.88 }),
+      )
+      rooftopPanel.position.set(spec.x - spec.w * 0.12, -1.58 + spec.h + 0.075, spec.z)
+      rooftopPanel.rotation.x = -0.18
+      group.add(rooftopPanel)
+      addMeshEdges(group, rooftopPanel, color, 0.34)
+    }
+
     const rows = Math.max(1, Math.floor(spec.h / (props.scenarioKey === 'apartment' || props.scenarioKey === 'office' ? 0.24 : 0.28)))
     const cols = Math.max(2, Math.floor(spec.w / 0.18))
     for (let row = 0; row < rows; row += 1) {
       for (let col = 0; col < cols; col += 1) {
-        if ((row + col + i) % 3 === 0 && props.level === 'L3') continue
+        if ((row + col + i) % 3 === 0 && ['L1', 'L2', 'L3'].includes(props.level)) continue
         const win = new THREE.Mesh(new THREE.PlaneGeometry(0.06, props.scenarioKey === 'hotel' ? 0.07 : 0.085), windowMaterial)
-        win.position.set(spec.x - spec.w / 2 + 0.14 + col * 0.16, -1.42 + row * 0.21, spec.z + spec.d / 2 + 0.006)
+        win.position.set(spec.x - spec.w / 2 + 0.14 + col * 0.16, -1.58 + 0.18 + row * 0.21, spec.z + spec.d / 2 + 0.006)
         group.add(win)
         animated.push({ object: win, mode: 'pulse', speed: 0.0025, offset: i + row + col })
       }
@@ -322,6 +432,10 @@ function addBuildings(group: THREE.Group, color: number, secondary: number) {
       door.position.set(spec.x, -1.42, spec.z + spec.d / 2 + 0.008)
       group.add(door)
       animated.push({ object: door, mode: 'pulse', speed: 0.004, offset: i })
+    }
+
+    if (!['L1', 'L2'].includes(props.level) && (i === 0 || i === specs.length - 1)) {
+      addSensorHalo(group, spec.x, spec.z + spec.d * 0.74, color, 0.26 + i * 0.02, i)
     }
   }
 
@@ -457,8 +571,8 @@ function addIndustrialMachines(group: THREE.Group, color: number, secondary: num
 }
 
 function addRobots(group: THREE.Group, color: number, secondary: number) {
-  if (!activeScene.value.robots && props.level !== 'L5') return
-  const robotCount = props.level === 'L5' ? 3 : 1
+  if (!activeScene.value.robots && !['L5', 'L6'].includes(props.level)) return
+  const robotCount = props.level === 'L6' ? 4 : props.level === 'L5' ? 3 : 1
   for (let i = 0; i < robotCount; i += 1) {
     const robot = new THREE.Group()
     robot.position.set(1.3 + i * 0.58, -1.36, -1.55 + i * 0.28)
@@ -476,6 +590,7 @@ function addRobots(group: THREE.Group, color: number, secondary: number) {
 }
 
 function addCCTVAndSensors(group: THREE.Group, color: number, secondary: number) {
+  if (['L1', 'L2'].includes(props.level)) return
   if (props.level === 'L3' && !['school', 'office', 'hotel', 'apartment', 'factory'].includes(props.scenarioKey)) return
   const positions = [
     new THREE.Vector3(-1.7, 0.4, 0.35),
@@ -488,7 +603,7 @@ function addCCTVAndSensors(group: THREE.Group, color: number, secondary: number)
     group.add(cameraBox)
     const cone = new THREE.Mesh(
       new THREE.ConeGeometry(0.48, 1.05, 28, 1, true),
-      new THREE.MeshBasicMaterial({ color: index % 2 ? secondary : color, transparent: true, opacity: props.level === 'L5' ? 0.16 : 0.09, side: THREE.DoubleSide }),
+      new THREE.MeshBasicMaterial({ color: index % 2 ? secondary : color, transparent: true, opacity: ['L5', 'L6'].includes(props.level) ? 0.16 : 0.09, side: THREE.DoubleSide }),
     )
     cone.position.set(position.x, position.y - 0.28, position.z + 0.38)
     cone.rotation.x = Math.PI / 2
@@ -502,7 +617,7 @@ function addDataNetwork(group: THREE.Group, color: number, secondary: number) {
   const endpoints: THREE.Vector3[] = []
   for (let i = 0; i < config.nodeCount; i += 1) {
     const angle = (i / config.nodeCount) * Math.PI * 2
-    const radius = 2.7 + (i % 3) * 0.36 + (props.level === 'L5' ? 0.28 : 0)
+    const radius = 2.7 + (i % 3) * 0.36 + (['L5', 'L6'].includes(props.level) ? 0.28 : 0)
     const y = -0.14 + ((i % 5) - 2) * 0.32
     const pos = new THREE.Vector3(Math.cos(angle) * radius, y, Math.sin(angle) * radius)
     endpoints.push(pos)
@@ -510,18 +625,27 @@ function addDataNetwork(group: THREE.Group, color: number, secondary: number) {
     node.position.copy(pos)
     group.add(node)
     animated.push({ object: node, mode: 'pulse', speed: 0.0032, offset: i })
-    addLine(group, new THREE.Vector3(0.25, -0.2, 0), pos, i % 2 ? secondary : color, props.level === 'L5' ? 0.48 : 0.31)
+    const core = new THREE.Vector3(0.25, -0.2, 0)
+    addLine(group, core, pos, i % 2 ? secondary : color, ['L5', 'L6'].includes(props.level) ? 0.48 : 0.31)
+    if (!['L1', 'L2'].includes(props.level) && i % 2 === 0) {
+      const packet = new THREE.Mesh(
+        new THREE.SphereGeometry(0.035, 12, 8),
+        new THREE.MeshBasicMaterial({ color: i % 3 ? color : secondary, transparent: true, opacity: 0.95 }),
+      )
+      group.add(packet)
+      animated.push({ object: packet, mode: 'data', speed: 0.00014 + i * 0.000006, offset: i / config.nodeCount, from: core.clone(), to: pos.clone() })
+    }
   }
 
   for (let i = 0; i < Math.min(config.beamCount, endpoints.length * 2); i += 1) {
     const from = endpoints[i % endpoints.length]
     const to = endpoints[(i * 3 + 2) % endpoints.length]
-    addLine(group, from, to, i % 2 ? color : secondary, props.level === 'L5' ? 0.16 : 0.08)
+    addLine(group, from, to, i % 2 ? color : secondary, ['L5', 'L6'].includes(props.level) ? 0.16 : 0.08)
   }
 }
 
 function addAtmosphere(group: THREE.Group, color: number) {
-  const count = props.level === 'L3' ? 480 : props.level === 'L4' ? 760 : 1100
+  const count = props.level === 'L1' ? 220 : props.level === 'L2' ? 340 : props.level === 'L3' ? 480 : props.level === 'L4' ? 760 : props.level === 'L5' ? 1100 : 1350
   const positions = new Float32Array(count * 3)
   for (let i = 0; i < count; i += 1) {
     const radius = 2.6 + Math.random() * 5.2
@@ -534,7 +658,7 @@ function addAtmosphere(group: THREE.Group, color: number) {
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
   const points = new THREE.Points(
     geometry,
-    new THREE.PointsMaterial({ color, size: props.level === 'L5' ? 0.028 : 0.022, transparent: true, opacity: props.level === 'L5' ? 0.72 : 0.52 }),
+    new THREE.PointsMaterial({ color, size: ['L5', 'L6'].includes(props.level) ? 0.028 : 0.022, transparent: true, opacity: ['L5', 'L6'].includes(props.level) ? 0.72 : 0.52 }),
   )
   group.add(points)
   animated.push({ object: points, mode: 'spin', speed: 0.0009, offset: 0 })
@@ -609,6 +733,11 @@ function animate() {
     if (item.mode === 'scan') {
       item.object.rotation.z = Math.sin(now * item.speed + item.offset) * 0.42
     }
+    if (item.mode === 'data' && item.from && item.to) {
+      const t = (now * item.speed + item.offset) % 1
+      item.object.position.lerpVectors(item.from, item.to, t)
+      item.object.scale.setScalar(0.72 + Math.sin(t * Math.PI) * 0.48)
+    }
   }
 
   renderer.render(scene, camera)
@@ -619,24 +748,28 @@ onMounted(() => {
   if (!canvas.value || !host.value) return
   scene = new THREE.Scene()
   scene.background = new THREE.Color(0x020617)
-  scene.fog = new THREE.Fog(0x020617, 6.5, 15)
+  scene.fog = new THREE.Fog(0x020617, props.variant === 'hero' ? 5.8 : 6.5, 15)
 
-  camera = new THREE.PerspectiveCamera(43, 1, 0.1, 100)
-  camera.position.set(0.25, 0.65, 7.4)
+  camera = new THREE.PerspectiveCamera(props.variant === 'hero' ? 39 : 43, 1, 0.1, 100)
+  camera.position.set(props.variant === 'hero' ? 0.5 : 0.25, props.variant === 'hero' ? 0.82 : 0.65, props.variant === 'hero' ? 7.05 : 7.4)
   camera.lookAt(0.1, -0.35, 0)
 
   renderer = new THREE.WebGLRenderer({ canvas: canvas.value, antialias: true, alpha: false })
   renderer.outputColorSpace = THREE.SRGBColorSpace
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.toneMappingExposure = props.variant === 'hero' ? 1.24 : 1.12
 
-  const ambient = new THREE.AmbientLight(0xffffff, 0.74)
+  const ambient = new THREE.AmbientLight(0xffffff, 0.64)
   scene.add(ambient)
+  const hemisphere = new THREE.HemisphereLight(0x7dd3fc, 0x042f2e, 1.55)
+  scene.add(hemisphere)
   const key = new THREE.PointLight(0x7dd3fc, 4.2, 13)
   key.position.set(2.8, 3.6, 3.2)
   scene.add(key)
   const warm = new THREE.PointLight(0xfbbf24, 1.8, 9)
   warm.position.set(-3.8, 1.8, -2.2)
   scene.add(warm)
-  const magenta = new THREE.PointLight(0xf0abfc, props.level === 'L5' ? 3.3 : 1.6, 10)
+  const magenta = new THREE.PointLight(0xf0abfc, ['L5', 'L6'].includes(props.level) ? 3.3 : 1.6, 10)
   magenta.position.set(-4, -0.5, 2.5)
   scene.add(magenta)
 
@@ -673,6 +806,15 @@ onBeforeUnmount(() => {
     linear-gradient(135deg, #020617 0%, #061428 50%, #041f1a 100%);
 }
 
+.brain3d--hero {
+  min-height: 520px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 58% 42%, rgba(20, 184, 166, 0.26), transparent 26%),
+    radial-gradient(circle at 36% 34%, rgba(96, 165, 250, 0.18), transparent 26%),
+    linear-gradient(135deg, #020617 0%, #061022 48%, #04251e 100%);
+}
+
 .brain3d::after {
   content: "";
   position: absolute;
@@ -682,6 +824,13 @@ onBeforeUnmount(() => {
     linear-gradient(to right, rgba(2, 6, 23, 0.92), rgba(2, 6, 23, 0.08) 38%, rgba(2, 6, 23, 0.78)),
     linear-gradient(to top, rgba(2, 6, 23, 0.9), transparent 36%),
     radial-gradient(circle at 56% 54%, transparent 0%, rgba(2, 6, 23, 0.16) 48%, rgba(2, 6, 23, 0.74) 100%);
+}
+
+.brain3d--hero::after {
+  background:
+    linear-gradient(to right, rgba(2, 6, 23, 0.86), rgba(2, 6, 23, 0.04) 48%, rgba(2, 6, 23, 0.34)),
+    linear-gradient(to top, rgba(2, 6, 23, 0.88), transparent 42%),
+    radial-gradient(circle at 50% 52%, transparent 0%, rgba(2, 6, 23, 0.12) 52%, rgba(2, 6, 23, 0.66) 100%);
 }
 
 .brain3d-canvas {
@@ -728,6 +877,10 @@ onBeforeUnmount(() => {
 @media (max-width: 768px) {
   .brain3d {
     min-height: 700px;
+  }
+
+  .brain3d--hero {
+    min-height: 500px;
   }
 
   .brain3d::after {

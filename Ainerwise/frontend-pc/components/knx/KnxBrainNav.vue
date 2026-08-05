@@ -22,7 +22,6 @@ const tabs = computed(() => [
   { to: '/ai-building-brain', label: t('brain.overviewNav') },
   { to: '/ai-building-brain/levels', label: t('brain.levelsNav') },
   { to: '/ai-building-brain/process', label: t('brain.processNav') },
-  { to: '/ai-building-brain#immersive-demo', label: t('brain.demoNav') },
 ])
 
 function isActive(to: string) {

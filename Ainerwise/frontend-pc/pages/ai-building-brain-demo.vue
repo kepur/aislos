@@ -8,8 +8,8 @@ import { getLocalePrefixFromPath, withLocalePrefix } from '~/utils/localeRoutes'
 const route = useRoute()
 const prefix = getLocalePrefixFromPath(route.path)
 const target = prefix
-  ? withLocalePrefix('/ai-building-brain#immersive-demo', prefix)
-  : '/ai-building-brain#immersive-demo'
+  ? withLocalePrefix('/ai-building-brain', prefix)
+  : '/ai-building-brain'
 
 await navigateTo(target, { replace: true })
 </script>

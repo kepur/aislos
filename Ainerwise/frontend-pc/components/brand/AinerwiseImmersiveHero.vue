@@ -46,7 +46,7 @@
         </div>
 
         <div class="relative">
-          <div class="aw-orbit" aria-hidden="true">
+          <div v-if="showOrbit" class="aw-orbit" aria-hidden="true">
             <span class="aw-orbit__ring aw-orbit__ring-a" />
             <span class="aw-orbit__ring aw-orbit__ring-b" />
             <span class="aw-orbit__core">
@@ -91,6 +91,7 @@ withDefaults(
     secondaryTo?: string
     secondaryLabel?: string
     coreLabel?: string
+    showOrbit?: boolean
     crumbs?: Crumb[]
     badges?: Badge[]
     stats?: Stat[]
@@ -104,6 +105,7 @@ withDefaults(
     secondaryTo: '',
     secondaryLabel: '',
     coreLabel: 'AinerWise AI',
+    showOrbit: true,
     crumbs: () => [],
     badges: () => [],
     stats: () => [],
