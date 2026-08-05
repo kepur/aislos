@@ -31,44 +31,69 @@
         <!-- Quick Request Panel -->
         <div class="bg-white rounded-2xl shadow-2xl p-6 lg:p-8 text-slate-900 max-w-md mx-auto w-full">
           <h3 class="text-2xl font-semibold mb-6">What are you looking for?</h3>
-          <form @submit.prevent class="hero-quick-search space-y-4">
+          <form @submit.prevent="handleHeroSearch" class="hero-quick-search space-y-4">
             <!-- Category -->
             <div class="space-y-1">
               <label class="block text-sm font-medium text-slate-700">Category</label>
               <select v-model="heroForm.category"
                 class="w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 appearance-none">
                 <option value="">Select category</option>
-                <option>Construction Materials</option>
-                <option>Marine Parts</option>
-                <option>Auto Parts</option>
-                <option>IT / Electronics</option>
-                <option>Office Supplies</option>
+                <option v-for="cat in categoryOptions" :key="cat.value" :value="cat.value">
+                  {{ cat.name }}{{ cat.item_count ? ` (${cat.item_count})` : '' }}
+                </option>
               </select>
             </div>
 
             <!-- Budget row -->
             <div class="grid grid-cols-2 gap-4">
               <div class="space-y-1">
-                <label class="block text-sm font-medium text-slate-700">Min Budget</label>
+                <label class="block text-sm font-medium text-slate-700">Min Budget ({{ appStore.currency }})</label>
                 <div class="relative">
-                  <span class="pointer-events-none absolute left-3 top-1/2 z-10 flex -translate-y-1/2 items-center text-sm text-slate-400">$</span>
+                  <span class="pointer-events-none absolute left-3 top-1/2 z-10 flex -translate-y-1/2 items-center text-sm text-slate-400">{{ budgetCurrencySymbol }}</span>
                   <input v-model="heroForm.budgetMin" type="number" placeholder="0" min="0"
                     class="w-full rounded-lg border border-slate-200 bg-white py-3 pl-8 pr-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
                 </div>
               </div>
               <div class="space-y-1">
-                <label class="block text-sm font-medium text-slate-700">Max Budget</label>
+                <label class="block text-sm font-medium text-slate-700">Max Budget ({{ appStore.currency }})</label>
                 <div class="relative">
-                  <span class="pointer-events-none absolute left-3 top-1/2 z-10 flex -translate-y-1/2 items-center text-sm text-slate-400">$</span>
+                  <span class="pointer-events-none absolute left-3 top-1/2 z-10 flex -translate-y-1/2 items-center text-sm text-slate-400">{{ budgetCurrencySymbol }}</span>
                   <input v-model="heroForm.budgetMax" type="number" placeholder="Max" min="0"
                     class="w-full rounded-lg border border-slate-200 bg-white py-3 pl-8 pr-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
                 </div>
               </div>
             </div>
 
+            <!-- Country -->
+            <div class="space-y-1">
+              <label class="block text-sm font-medium text-slate-700">Delivery Country</label>
+              <select
+                v-model="heroForm.country"
+                class="w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 appearance-none"
+              >
+                <option v-for="region in regionOptions" :key="region.code" :value="region.code">
+                  {{ region.label }} ({{ region.code }})
+                </option>
+              </select>
+              <p class="text-xs text-slate-500">
+                Budget uses {{ budgetCurrencyLabel }}. Local country rules are managed by Admin.
+              </p>
+            </div>
+
             <!-- Delivery Location -->
             <div class="space-y-1">
-              <label class="block text-sm font-medium text-slate-700">Delivery Location</label>
+              <div class="flex items-center justify-between gap-3">
+                <label class="block text-sm font-medium text-slate-700">Delivery Location</label>
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-1 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  :disabled="locationStatus === 'loading'"
+                  @click="detectBrowserLocation"
+                >
+                  <UIcon name="i-heroicons-map-pin" class="h-4 w-4" />
+                  {{ locationStatus === 'loading' ? 'Detecting...' : 'Use current location' }}
+                </button>
+              </div>
               <div class="relative">
                 <span class="pointer-events-none absolute left-3 top-1/2 z-10 flex -translate-y-1/2 items-center">
                   <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -79,6 +104,9 @@
                 <input v-model="heroForm.location" type="text" placeholder="Enter city or area"
                   class="w-full rounded-lg border border-slate-200 bg-white py-3 pl-10 pr-3 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
               </div>
+              <p v-if="locationMessage" class="text-xs" :class="locationStatus === 'error' ? 'text-amber-600' : 'text-slate-500'">
+                {{ locationMessage }}
+              </p>
             </div>
 
             <!-- Search Radius -->
@@ -95,7 +123,7 @@
               </div>
             </div>
 
-            <UButton type="submit" color="indigo" block size="xl" class="mt-6 text-white shadow-md" @click="handleHeroSearch">
+            <UButton type="submit" color="indigo" block size="xl" class="mt-6 text-white shadow-md">
               Find Suppliers
             </UButton>
           </form>
@@ -182,28 +210,180 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { currencyMeta, currencyOptionLabel } from '~/utils/currencyPolicy'
+import { inferLocationFromCoords, inferLocationFromTimezone, type LocationGuess } from '~/utils/geoPolicy'
 
 // Landing Page
 const router = useRouter()
+const config = useRuntimeConfig()
+const appStore = useAppStore()
+
+type QuickCategory = {
+  id?: string
+  name: string
+  value: string
+  item_count?: number
+}
+
+const fallbackCategories: QuickCategory[] = [
+  'Construction Materials',
+  'Marine Parts',
+  'Auto Parts',
+  'IT / Electronics',
+  'Office Supplies',
+].map((name) => ({ name, value: `name:${name}` }))
+
+const loadedCategories = ref<QuickCategory[]>([])
+const locationStatus = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
+const locationMessage = ref('')
 
 const heroForm = reactive({
   category: '',
   budgetMin: '',
   budgetMax: '',
   location: '',
+  country: 'RS',
   radius: 25,
+  latitude: null as number | null,
+  longitude: null as number | null,
 })
+
+const categoryOptions = computed(() => loadedCategories.value.length ? loadedCategories.value : fallbackCategories)
+const budgetCurrencySymbol = computed(() => currencyMeta(appStore.currency).symbol || appStore.currency)
+const budgetCurrencyLabel = computed(() => currencyOptionLabel(appStore.currency))
+const regionOptions = computed(() => appStore.regionOptions.map((region) => ({
+  code: String(region.code || '').toUpperCase().slice(0, 2),
+  label: region.label || region.code,
+})))
+const selectedCategory = computed(() => categoryOptions.value.find((cat) => cat.value === heroForm.category) || null)
+const selectedRegion = computed(() => regionOptions.value.find((region) => region.code === heroForm.country) || null)
+
+watch(regionOptions, (options) => {
+  if (!options.length) return
+  if (!options.some((region) => region.code === heroForm.country)) {
+    heroForm.country = options[0].code
+  }
+}, { immediate: true })
+
+watch(() => appStore.regionCountry, (country) => {
+  const normalized = String(country || '').toUpperCase().slice(0, 2)
+  if (normalized && normalized !== heroForm.country) heroForm.country = normalized
+}, { immediate: true })
+
+watch(() => heroForm.country, async (country) => {
+  const normalized = String(country || '').toUpperCase().slice(0, 2)
+  if (normalized && normalized !== appStore.regionCountry) {
+    await appStore.setRegionCountry(normalized)
+  }
+})
+
+onMounted(async () => {
+  await loadCategoryOptions()
+  applyTimezoneDefault()
+})
+
+async function loadCategoryOptions() {
+  try {
+    const filters = await $fetch<any>(`${config.public.apiBase}/marketplace/filters`)
+    const categories = Array.isArray(filters?.categories) ? filters.categories : []
+    loadedCategories.value = categories
+      .map((cat: any) => ({
+        id: cat.id ? String(cat.id) : '',
+        name: String(cat.name || cat.slug || '').trim(),
+        value: cat.id ? String(cat.id) : `name:${String(cat.name || cat.slug || '').trim()}`,
+        item_count: Number(cat.item_count || 0),
+      }))
+      .filter((cat: QuickCategory) => cat.name && cat.value)
+  } catch {
+    loadedCategories.value = []
+  }
+}
+
+function applyTimezoneDefault() {
+  if (!import.meta.client) return
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const guess = inferLocationFromTimezone(timeZone, regionOptions.value)
+  if (guess) {
+    applyLocationGuess(guess, false)
+  }
+}
+
+async function detectBrowserLocation() {
+  if (!import.meta.client || !navigator.geolocation) {
+    locationStatus.value = 'error'
+    locationMessage.value = 'Browser location is not available. Please choose country and city manually.'
+    return
+  }
+
+  locationStatus.value = 'loading'
+  locationMessage.value = ''
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const latitude = position.coords.latitude
+      const longitude = position.coords.longitude
+      heroForm.latitude = latitude
+      heroForm.longitude = longitude
+      const guess = inferLocationFromCoords(latitude, longitude, regionOptions.value)
+      if (guess) {
+        applyLocationGuess(guess, true)
+        locationStatus.value = 'success'
+        locationMessage.value = `Detected ${guess.city || guess.countryName}. You can still edit the city before searching.`
+        return
+      }
+
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const timeZoneGuess = inferLocationFromTimezone(timeZone, regionOptions.value)
+      if (timeZoneGuess) {
+        applyLocationGuess(timeZoneGuess, false)
+        locationStatus.value = 'success'
+        locationMessage.value = `Location permission worked, but country was inferred from your browser timezone. Please confirm the city.`
+        return
+      }
+
+      locationStatus.value = 'error'
+      locationMessage.value = 'Your coordinates are outside the currently open countries. Please select an operating country manually.'
+    },
+    () => {
+      locationStatus.value = 'error'
+      locationMessage.value = 'Location permission was denied or timed out. Manual country and city selection still works.'
+    },
+    { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
+  )
+}
+
+function applyLocationGuess(guess: LocationGuess, overwriteCity: boolean) {
+  if (guess.countryCode) heroForm.country = guess.countryCode
+  if (guess.city && (overwriteCity || !heroForm.location.trim())) {
+    heroForm.location = guess.city
+  }
+}
 
 function handleHeroSearch() {
   const q = new URLSearchParams()
-  if (heroForm.category) q.set('category', heroForm.category)
-  if (heroForm.budgetMin) q.set('budget_min', String(Number(heroForm.budgetMin) * 100))
-  if (heroForm.budgetMax) q.set('budget_max', String(Number(heroForm.budgetMax) * 100))
-  if (heroForm.location) q.set('location', heroForm.location)
-  if (heroForm.radius !== 25) q.set('radius', String(heroForm.radius))
-  router.push(`/marketplace?${q.toString()}`)
+  if (selectedCategory.value?.id) q.set('category_id', selectedCategory.value.id)
+  if (selectedCategory.value?.name) q.set('category_name', selectedCategory.value.name)
+  if (selectedCategory.value?.name && !selectedCategory.value?.id) q.set('keyword', selectedCategory.value.name)
+  if (heroForm.budgetMin) q.set('budget_min_minor', String(Math.round(Number(heroForm.budgetMin) * 100)))
+  if (heroForm.budgetMax) q.set('budget_max_minor', String(Math.round(Number(heroForm.budgetMax) * 100)))
+  if (heroForm.budgetMin || heroForm.budgetMax) q.set('budget_currency', appStore.currency)
+  if (heroForm.country) {
+    q.set('country', heroForm.country)
+    q.set('delivery_country', heroForm.country)
+    if (selectedRegion.value?.label) q.set('delivery_country_name', selectedRegion.value.label)
+  }
+  if (heroForm.location.trim()) {
+    q.set('city', heroForm.location.trim())
+    q.set('delivery_city', heroForm.location.trim())
+  }
+  if (heroForm.radius !== 25) q.set('radius_km', String(heroForm.radius))
+  if (heroForm.latitude != null && heroForm.longitude != null) {
+    q.set('lat', String(heroForm.latitude))
+    q.set('lng', String(heroForm.longitude))
+  }
+
+  const target = q.toString() ? `/marketplace?${q.toString()}` : '/marketplace'
+  router.push(appStore.localizedPath(target))
 }
 </script>
 

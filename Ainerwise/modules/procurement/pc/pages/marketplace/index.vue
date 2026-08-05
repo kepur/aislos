@@ -78,6 +78,16 @@
             </select>
           </div>
 
+          <div class="mt-4 pt-4 border-t border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-700 mb-3">Delivery Country</h3>
+            <select v-model="deliveryCountry" @change="loadFeed(true)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm">
+              <option value="">All open countries</option>
+              <option v-for="region in appStore.regionOptions" :key="region.code" :value="region.code">
+                {{ region.label }}
+              </option>
+            </select>
+          </div>
+
           <!-- Seller Type -->
           <div class="mt-4 pt-4 border-t border-slate-100">
             <h3 class="text-sm font-semibold text-slate-700 mb-3">{{ appStore.t('market.sellerType') }}</h3>
@@ -98,6 +108,25 @@
 
       <!-- Feed Grid -->
       <main class="flex-1 min-w-0">
+        <div v-if="searchContextChips.length" class="mb-5 rounded-2xl border border-indigo-100 bg-white p-4 shadow-sm">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-sm font-semibold text-slate-700">Active search</span>
+            <span
+              v-for="chip in searchContextChips"
+              :key="chip"
+              class="rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700"
+            >
+              {{ chip }}
+            </span>
+            <button class="ml-auto text-xs font-semibold text-slate-500 hover:text-indigo-600" @click="clearSearchContext">
+              Clear
+            </button>
+          </div>
+          <p v-if="budgetCurrency" class="mt-2 text-xs text-slate-500">
+            Budget is interpreted in {{ budgetCurrency }}. Product cards keep each supplier listing currency.
+          </p>
+        </div>
+
         <!-- Loading skeleton -->
         <div v-if="loading && items.length === 0" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
           <div v-for="i in 8" :key="i" class="bg-white rounded-2xl border border-slate-200 p-4 animate-pulse">
@@ -286,10 +315,21 @@ const page = ref(1)
 // Filters
 const categoryId = ref<string | null>((route.query.category_id as string) || null)
 const activeCategoryName = ref<string>((route.query.category_name as string) || '')
-const marketMode = ref<string>('')
-const keyword = ref<string>('')
-const sort = ref<string>('rank')
-const originCountry = ref<string>('')
+const marketMode = ref<string>((route.query.market_mode as string) || '')
+const keyword = ref<string>((route.query.keyword as string) || '')
+const sort = ref<string>((route.query.sort as string) || 'rank')
+const originCountry = ref<string>((route.query.origin_country as string) || '')
+const deliveryCountry = ref<string>(
+  ((route.query.delivery_country as string) || (route.query.country as string) || '').toUpperCase().slice(0, 2)
+)
+const deliveryCountryName = ref<string>((route.query.delivery_country_name as string) || '')
+const deliveryCity = ref<string>((route.query.delivery_city as string) || (route.query.city as string) || (route.query.location as string) || '')
+const radiusKm = ref<string>((route.query.radius_km as string) || (route.query.radius as string) || '')
+const budgetMinMinor = ref<string>((route.query.budget_min_minor as string) || (route.query.budget_min as string) || '')
+const budgetMaxMinor = ref<string>((route.query.budget_max_minor as string) || (route.query.budget_max as string) || '')
+const budgetCurrency = ref<string>((route.query.budget_currency as string) || '')
+const latitude = ref<string>((route.query.lat as string) || '')
+const longitude = ref<string>((route.query.lng as string) || '')
 
 const merchantType = ref<string>('')
 const verifiedOnly = ref<boolean>(false)
@@ -302,6 +342,20 @@ const recommendedItems = computed(() =>
 // Filter options from API
 const filterCategories = ref<FilterCat[]>([])
 const filterOriginCountries = ref<string[]>([])
+const searchContextChips = computed(() => {
+  const chips: string[] = []
+  if (activeCategoryName.value) chips.push(`Category: ${activeCategoryName.value}`)
+  if (deliveryCountry.value) chips.push(`Country: ${deliveryCountryName.value || countryName(deliveryCountry.value)}`)
+  if (deliveryCity.value) chips.push(`City: ${deliveryCity.value}`)
+  if (radiusKm.value) chips.push(`Radius: ${radiusKm.value} km`)
+  if (budgetMinMinor.value || budgetMaxMinor.value) {
+    const min = budgetMinMinor.value ? Number(budgetMinMinor.value) / 100 : null
+    const max = budgetMaxMinor.value ? Number(budgetMaxMinor.value) / 100 : null
+    chips.push(`Budget: ${min == null ? '0' : formatNumber(min)} - ${max == null ? 'Max' : formatNumber(max)} ${budgetCurrency.value || appStore.currency}`)
+  }
+  if (latitude.value && longitude.value) chips.push('Location detected')
+  return chips
+})
 
 // Load filter options
 onMounted(async () => {
@@ -309,6 +363,9 @@ onMounted(async () => {
     const f = await $fetch<any>(`${config.public.apiBase}/marketplace/filters`)
     filterCategories.value = f.categories ?? []
     filterOriginCountries.value = f.origin_countries ?? []
+    if (categoryId.value && !activeCategoryName.value) {
+      activeCategoryName.value = filterCategories.value.find((cat) => cat.id === categoryId.value)?.name || ''
+    }
   } catch {}
   await loadFeed(true)
 })
@@ -330,6 +387,16 @@ async function loadFeed(reset = false) {
     if (marketMode.value) params.market_mode = marketMode.value
     if (keyword.value.trim()) params.keyword = keyword.value.trim()
     if (originCountry.value) params.origin_country = originCountry.value
+    if (deliveryCountry.value) params.country = deliveryCountry.value
+    if (deliveryCity.value) params.city = deliveryCity.value
+    if (radiusKm.value) params.radius_km = radiusKm.value
+    if (budgetMinMinor.value) params.budget_min_minor = budgetMinMinor.value
+    if (budgetMaxMinor.value) params.budget_max_minor = budgetMaxMinor.value
+    if (budgetCurrency.value) params.budget_currency = budgetCurrency.value
+    if (latitude.value && longitude.value) {
+      params.lat = latitude.value
+      params.lng = longitude.value
+    }
     if (merchantType.value) params.account_type = merchantType.value
     if (verifiedOnly.value) params.verified_only = true
 
@@ -358,6 +425,24 @@ function setCategoryFilter(id: string | null, name?: string) {
   loadFeed(true)
 }
 
+function clearSearchContext() {
+  categoryId.value = null
+  activeCategoryName.value = ''
+  keyword.value = ''
+  originCountry.value = ''
+  deliveryCountry.value = ''
+  deliveryCountryName.value = ''
+  deliveryCity.value = ''
+  radiusKm.value = ''
+  budgetMinMinor.value = ''
+  budgetMaxMinor.value = ''
+  budgetCurrency.value = ''
+  latitude.value = ''
+  longitude.value = ''
+  router.replace(appStore.localizedPath('/marketplace'))
+  loadFeed(true)
+}
+
 async function loadMore() {
   page.value++
   await loadFeed(false)
@@ -366,6 +451,15 @@ async function loadMore() {
 function formatPrice(minor: number, currency: string): string {
   const amount = minor / 100
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(amount)
+}
+
+function formatNumber(value: number) {
+  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value)
+}
+
+function countryName(countryCode: string) {
+  const normalized = String(countryCode || '').toUpperCase().slice(0, 2)
+  return appStore.regionOptions.find((region) => region.code === normalized)?.label || normalized
 }
 
 function handleCta(item: FeedItem) {

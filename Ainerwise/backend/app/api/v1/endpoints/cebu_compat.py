@@ -2148,6 +2148,25 @@ def _category_as_legacy(row: TradeCategorySchema) -> dict:
     }
 
 
+_COUNTRY_ALIASES = {
+    "RS": {"RS", "SRB", "SERBIA", "SRBIJA"},
+    "PL": {"PL", "POL", "POLAND", "POLSKA"},
+    "PH": {"PH", "PHL", "PHILIPPINES"},
+    "BA": {"BA", "BIH", "BOSNIA", "BOSNIA AND HERZEGOVINA"},
+    "RO": {"RO", "ROU", "ROMANIA"},
+}
+
+
+def _country_alias_values(value: str | None) -> list[str]:
+    normalized = str(value or "").strip().upper()
+    if not normalized:
+        return []
+    for code, aliases in _COUNTRY_ALIASES.items():
+        if normalized == code or normalized in aliases:
+            return sorted(aliases | {code})
+    return [normalized]
+
+
 def _wallet_instruction_address(data: LegacyWalletDepositCreate, user: CurrentUser) -> str:
     provided = (data.deposit_address or "").strip()
     if provided:
@@ -3560,6 +3579,16 @@ async def legacy_marketplace_feed(
     page_size: int = Query(default=20, ge=1, le=100),
     category_id: uuid.UUID | None = None,
     keyword: str | None = None,
+    market_mode: str | None = None,
+    origin_country: str | None = None,
+    country: str | None = None,
+    city: str | None = None,
+    budget_min_minor: int | None = Query(default=None, ge=0),
+    budget_max_minor: int | None = Query(default=None, ge=0),
+    budget_currency: str | None = None,
+    account_type: str | None = None,
+    verified_only: bool = False,
+    sort: str = Query(default="rank"),
 ):
     stmt = select(SupplierListing, Company.name.label("company_name")).join(
         Company,
@@ -3569,14 +3598,89 @@ async def legacy_marketplace_feed(
     if category_id:
         stmt = stmt.where(SupplierListing.category_schema_id == category_id)
     if keyword:
-        stmt = stmt.where(SupplierListing.title.ilike(f"%{keyword.strip()}%"))
+        term = f"%{keyword.strip()}%"
+        stmt = stmt.where(
+            or_(
+                SupplierListing.title.ilike(term),
+                SupplierListing.attributes_json["description"].astext.ilike(term),
+                Company.name.ilike(term),
+            )
+        )
+    normalized_mode = (market_mode or "").strip().upper()
+    if normalized_mode in {"B2B", "B2C"}:
+        mode_expr = func.upper(func.coalesce(SupplierListing.attributes_json["market_mode"].astext, "B2B"))
+        stmt = stmt.where(mode_expr.in_([normalized_mode, "BOTH"]))
+    elif normalized_mode == "BOTH":
+        stmt = stmt.where(func.upper(SupplierListing.attributes_json["market_mode"].astext) == "BOTH")
+
+    origin_aliases = _country_alias_values(origin_country)
+    if origin_aliases:
+        listing_origin = func.upper(func.coalesce(SupplierListing.attributes_json["origin_country"].astext, ""))
+        stmt = stmt.where(listing_origin.in_(origin_aliases))
+
+    country_aliases = _country_alias_values(country)
+    if country_aliases:
+        company_country = func.upper(func.coalesce(Company.country, ""))
+        listing_origin = func.upper(func.coalesce(SupplierListing.attributes_json["origin_country"].astext, ""))
+        stmt = stmt.where(
+            or_(
+                company_country.in_(country_aliases),
+                listing_origin.in_(country_aliases),
+                company_country == "",
+                listing_origin == "",
+            )
+        )
+    if city:
+        company_city = func.coalesce(Company.city, "")
+        stmt = stmt.where(or_(company_city == "", Company.city.ilike(f"%{city.strip()}%")))
+    if budget_min_minor is not None:
+        stmt = stmt.where(SupplierListing.price_minor >= budget_min_minor)
+    if budget_max_minor is not None:
+        stmt = stmt.where(SupplierListing.price_minor <= budget_max_minor)
+    normalized_budget_currency = (budget_currency or "").strip().upper()[:3]
+    if normalized_budget_currency and (budget_min_minor is not None or budget_max_minor is not None):
+        stmt = stmt.where(func.upper(SupplierListing.currency) == normalized_budget_currency)
+    normalized_account_type = (account_type or "").strip().upper()
+    if normalized_account_type == "INDIVIDUAL":
+        stmt = stmt.where(func.lower(Company.type).in_(["individual", "freelancer"]))
+    elif normalized_account_type == "BUSINESS":
+        stmt = stmt.where(or_(Company.type.is_(None), ~func.lower(Company.type).in_(["individual", "freelancer"])))
+    if verified_only:
+        stmt = stmt.where(func.lower(Company.verification_status) == "verified")
+
     offset = (page - 1) * page_size
     # Official listings first (admin-curated via attributes_json.official),
     # then newest — ordering must happen before pagination.
     official_first = (SupplierListing.attributes_json["official"].astext == "true").desc().nullslast()
+    sort_key = (sort or "rank").strip().lower()
+    if sort_key == "price_asc":
+        order_by = [official_first, SupplierListing.price_minor.asc().nullslast(), SupplierListing.created_at.desc()]
+    elif sort_key == "price_desc":
+        order_by = [official_first, SupplierListing.price_minor.desc().nullslast(), SupplierListing.created_at.desc()]
+    elif sort_key == "newest":
+        order_by = [SupplierListing.created_at.desc()]
+    else:
+        order_by = [official_first, SupplierListing.created_at.desc()]
+    total = int(
+        (
+            await db.execute(
+                select(func.count()).select_from(stmt.with_only_columns(SupplierListing.id).order_by(None).subquery())
+            )
+        ).scalar()
+        or 0
+    )
     rows = list((await db.execute(
-        stmt.order_by(official_first, SupplierListing.created_at.desc()).offset(offset).limit(page_size)
+        stmt.order_by(*order_by).offset(offset).limit(page_size)
     )).all())
+    category_ids = {listing.category_schema_id for listing, _ in rows if listing.category_schema_id}
+    category_names = {}
+    if category_ids:
+        category_rows = list(
+            (
+                await db.execute(select(TradeCategorySchema).where(TradeCategorySchema.id.in_(category_ids)))
+            ).scalars()
+        )
+        category_names = {row.id: row.name for row in category_rows}
     items = []
     for listing, company_name in rows:
         # attributes_json is untrusted legacy data — some rows carry arrays.
@@ -3599,7 +3703,7 @@ async def legacy_marketplace_feed(
                 "order_count": attrs.get("order_count") or 0,
                 "status": "ACTIVE",
                 "category_id": listing.category_schema_id,
-                "category_name": None,
+                "category_name": category_names.get(listing.category_schema_id),
                 "company_id": listing.company_id,
                 "company_name": company_name,
                 "company_trust_score": None,
@@ -3610,10 +3714,10 @@ async def legacy_marketplace_feed(
         )
     return {
         "items": items,
-        "total": len(items),
+        "total": total,
         "page": page,
         "page_size": page_size,
-        "has_next": len(items) == page_size,
+        "has_next": (offset + len(items)) < total,
     }
 
 
@@ -3628,11 +3732,45 @@ async def legacy_marketplace_filters(db: DB):
             )
         ).scalars()
     )
+    count_rows = list(
+        (
+            await db.execute(
+                select(SupplierListing.category_schema_id, func.count(SupplierListing.id))
+                .where(SupplierListing.status == "active")
+                .group_by(SupplierListing.category_schema_id)
+            )
+        ).all()
+    )
+    category_counts = {category_id: int(count or 0) for category_id, count in count_rows if category_id}
+
+    country_rows = list(
+        (
+            await db.execute(
+                select(SupplierListing.attributes_json, Company.country)
+                .join(Company, Company.id == SupplierListing.company_id, isouter=True)
+                .where(SupplierListing.status == "active")
+            )
+        ).all()
+    )
+    origin_countries: set[str] = set()
+    for attrs, company_country in country_rows:
+        if isinstance(attrs, dict) and attrs.get("origin_country"):
+            origin_countries.add(str(attrs["origin_country"]).strip())
+        if company_country:
+            origin_countries.add(str(company_country).strip())
+
+    category_payload = []
+    for row in categories:
+        payload = _category_as_legacy(row)
+        payload["item_count"] = category_counts.get(row.id, 0)
+        category_payload.append(payload)
+
     return {
-        "categories": [_category_as_legacy(row) for row in categories],
+        "categories": category_payload,
         "market_modes": ["B2B", "B2C", "BOTH"],
         "sort_options": ["newest", "price_asc", "price_desc"],
         "currencies": ["EUR", "RSD", "PLN", "PHP", "USD"],
+        "origin_countries": sorted(country for country in origin_countries if country),
     }
 
 
