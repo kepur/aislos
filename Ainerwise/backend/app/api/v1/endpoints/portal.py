@@ -19,7 +19,7 @@ from app.models.lifecycle import (
     MaintenanceSchedule,
     MonitoringPoint,
 )
-from app.models.notification import NotificationPreference
+from app.models.notification import NotificationPreference, apply_notification_preference_defaults
 from app.models.commerce import TradeCategorySchema
 from app.models.project import Project
 from app.models.region import Region
@@ -40,10 +40,20 @@ async def get_notification_preferences(db: DB, user: CurrentUser):
     )
     pref = result.scalar_one_or_none()
     if pref is None:
-        pref = NotificationPreference(user_id=user.id, company_id=user.company_id, email=user.email)
+        pref = NotificationPreference(
+            user_id=user.id,
+            company_id=user.company_id,
+            email=user.email,
+            email_enabled=True,
+            telegram_enabled=True,
+        )
         db.add(pref)
         await db.commit()
         await db.refresh(pref)
+    else:
+        if apply_notification_preference_defaults(pref, email=user.email):
+            await db.commit()
+            await db.refresh(pref)
     return pref
 
 
@@ -54,8 +64,16 @@ async def update_notification_preferences(data: NotificationPreferenceUpdate, db
     )
     pref = result.scalar_one_or_none()
     if pref is None:
-        pref = NotificationPreference(user_id=user.id, company_id=user.company_id)
+        pref = NotificationPreference(
+            user_id=user.id,
+            company_id=user.company_id,
+            email=user.email,
+            email_enabled=True,
+            telegram_enabled=True,
+        )
         db.add(pref)
+    else:
+        apply_notification_preference_defaults(pref, email=user.email)
     values = data.model_dump(exclude_unset=True)
     category_ids = values.get("supplier_category_ids_json")
     if category_ids:

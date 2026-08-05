@@ -37,7 +37,11 @@ from app.models.commerce import (
     TrustScoreEvent,
     TradeCategorySchema,
 )
-from app.models.notification import NotificationPreference, PortalNotification
+from app.models.notification import (
+    NotificationPreference,
+    PortalNotification,
+    apply_notification_preference_defaults,
+)
 from app.models.region import Region
 from app.models.settings import IntegrationSetting
 from app.models.user import Company, User
@@ -2842,9 +2846,17 @@ async def _notification_preference(db: DB, user: CurrentUser) -> NotificationPre
         )
     ).scalar_one_or_none()
     if row is None:
-        row = NotificationPreference(user_id=user.id, company_id=user.company_id, email=user.email)
+        row = NotificationPreference(
+            user_id=user.id,
+            company_id=user.company_id,
+            email=user.email,
+            email_enabled=True,
+            telegram_enabled=True,
+        )
         db.add(row)
         await db.flush()
+    else:
+        apply_notification_preference_defaults(row, email=user.email)
     return row
 
 

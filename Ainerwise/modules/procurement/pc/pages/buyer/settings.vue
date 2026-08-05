@@ -31,7 +31,15 @@
                 <UInput v-model="profileForm.full_name" :placeholder="t('buyer.settings.fullNamePlaceholder')" />
               </UFormGroup>
               <UFormGroup :label="t('buyer.settings.mobile')">
-                <UInput v-model="profileForm.phone" placeholder="09xx xxx xxxx" />
+                <div class="grid grid-cols-[130px_1fr] gap-2">
+                  <USelect
+                    v-model="profileForm.phone_country"
+                    :options="dialOptions"
+                    option-attribute="label"
+                    value-attribute="countryCode"
+                  />
+                  <UInput v-model="profileForm.phone_local" :placeholder="contactPlaceholder(profileForm.phone_country)" />
+                </div>
               </UFormGroup>
             </div>
 
@@ -44,10 +52,26 @@
                 <UInput v-model="profileForm.telegram_chat_id" :placeholder="t('buyer.settings.telegramPlaceholder')" />
               </UFormGroup>
               <UFormGroup :label="t('buyer.settings.whatsapp')">
-                <UInput v-model="profileForm.whatsapp_number" :placeholder="t('buyer.settings.whatsappPlaceholder')" />
+                <div class="grid grid-cols-[130px_1fr] gap-2">
+                  <USelect
+                    v-model="profileForm.whatsapp_country"
+                    :options="dialOptions"
+                    option-attribute="label"
+                    value-attribute="countryCode"
+                  />
+                  <UInput v-model="profileForm.whatsapp_local" :placeholder="contactPlaceholder(profileForm.whatsapp_country)" />
+                </div>
               </UFormGroup>
               <UFormGroup :label="t('buyer.settings.viber')">
-                <UInput v-model="profileForm.viber_number" :placeholder="t('buyer.settings.viberPlaceholder')" />
+                <div class="grid grid-cols-[130px_1fr] gap-2">
+                  <USelect
+                    v-model="profileForm.viber_country"
+                    :options="dialOptions"
+                    option-attribute="label"
+                    value-attribute="countryCode"
+                  />
+                  <UInput v-model="profileForm.viber_local" :placeholder="contactPlaceholder(profileForm.viber_country)" />
+                </div>
               </UFormGroup>
             </div>
 
@@ -173,7 +197,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import {
+  CONTACT_DIAL_OPTIONS,
+  composeContactNumber,
+  contactPlaceholder,
+  dialOptionForCountry,
+  splitContactNumber,
+} from '~/utils/contactPolicy'
 
 definePageMeta({ layout: 'buyer' })
 
@@ -212,6 +243,7 @@ const authStore = useAuthStore()
 const appStore = useAppStore()
 const toast = useToast()
 const t = (key: string) => appStore.t(key)
+const dialOptions = CONTACT_DIAL_OPTIONS
 
 const buyerEventOptions = computed<Array<{ key: NotificationEventKey; label: string; description: string }>>(() => [
   { key: 'new_message', label: t('buyer.settings.event.newMessage'), description: t('buyer.settings.event.newMessageDesc') },
@@ -224,11 +256,14 @@ const buyerEventOptions = computed<Array<{ key: NotificationEventKey; label: str
 
 const profileForm = ref({
   full_name: '',
-  phone: '',
+  phone_country: 'RS',
+  phone_local: '',
   email: '',
   telegram_chat_id: '',
-  whatsapp_number: '',
-  viber_number: '',
+  whatsapp_country: 'RS',
+  whatsapp_local: '',
+  viber_country: 'RS',
+  viber_local: '',
 })
 
 const notificationForm = ref<NotificationPreferencesResponse>({
@@ -237,11 +272,11 @@ const notificationForm = ref<NotificationPreferencesResponse>({
   whatsapp_number: null,
   viber_number: null,
   telegram_connected: false,
-  channels: {
-    email: true,
-    telegram: false,
-    whatsapp: false,
-    viber: false,
+    channels: {
+      email: true,
+      telegram: true,
+      whatsapp: false,
+      viber: false,
   },
   events: {
     new_message: true,
@@ -280,7 +315,7 @@ function normalizePreferences(raw: any): NotificationPreferencesResponse {
     telegram_connected: Boolean(raw?.telegram_connected || raw?.telegram_chat_id),
     channels: {
       email: raw?.channels?.email ?? raw?.email_enabled ?? true,
-      telegram: raw?.channels?.telegram ?? raw?.telegram_enabled ?? false,
+      telegram: raw?.channels?.telegram ?? raw?.telegram_enabled ?? true,
       whatsapp: raw?.channels?.whatsapp ?? raw?.whatsapp_enabled ?? false,
       viber: raw?.channels?.viber ?? raw?.viber_enabled ?? false,
     },
@@ -302,14 +337,21 @@ async function loadProfileAndPreferences() {
   ])
 
   const normalizedPrefs = normalizePreferences(prefs)
+  const fallbackCountry = appStore.regionCountry || 'RS'
+  const phone = splitContactNumber(me.phone, fallbackCountry)
+  const whatsapp = splitContactNumber(normalizedPrefs.whatsapp_number, fallbackCountry)
+  const viber = splitContactNumber(normalizedPrefs.viber_number, fallbackCountry)
 
   profileForm.value = {
     full_name: me.full_name || '',
-    phone: me.phone || '',
+    phone_country: phone.countryCode,
+    phone_local: phone.localNumber,
     email: me.email || normalizedPrefs.email || '',
     telegram_chat_id: normalizedPrefs.telegram_chat_id || '',
-    whatsapp_number: normalizedPrefs.whatsapp_number || '',
-    viber_number: normalizedPrefs.viber_number || '',
+    whatsapp_country: whatsapp.countryCode,
+    whatsapp_local: whatsapp.localNumber,
+    viber_country: viber.countryCode,
+    viber_local: viber.localNumber,
   }
 
   notificationForm.value = normalizedPrefs
@@ -322,7 +364,7 @@ async function saveProfile() {
       method: 'PATCH',
       body: {
         full_name: profileForm.value.full_name,
-        phone: profileForm.value.phone,
+        phone: composeContactNumber(profileForm.value.phone_country, profileForm.value.phone_local) || null,
       },
     })
     await api('/users/me/telegram', {
@@ -336,8 +378,8 @@ async function saveProfile() {
       body: {
         email: profileForm.value.email || null,
         telegram_chat_id: profileForm.value.telegram_chat_id.trim() || null,
-        whatsapp_number: profileForm.value.whatsapp_number.trim() || null,
-        viber_number: profileForm.value.viber_number.trim() || null,
+        whatsapp_number: composeContactNumber(profileForm.value.whatsapp_country, profileForm.value.whatsapp_local) || null,
+        viber_number: composeContactNumber(profileForm.value.viber_country, profileForm.value.viber_local) || null,
       },
     })
     await authStore.fetchMe()
@@ -361,8 +403,8 @@ async function saveNotifications() {
         whatsapp_enabled: notificationForm.value.channels.whatsapp,
         viber_enabled: notificationForm.value.channels.viber,
         telegram_chat_id: profileForm.value.telegram_chat_id.trim() || null,
-        whatsapp_number: profileForm.value.whatsapp_number.trim() || null,
-        viber_number: profileForm.value.viber_number.trim() || null,
+        whatsapp_number: composeContactNumber(profileForm.value.whatsapp_country, profileForm.value.whatsapp_local) || null,
+        viber_number: composeContactNumber(profileForm.value.viber_country, profileForm.value.viber_local) || null,
         alerts_enabled: Boolean(
           notificationForm.value.events.new_message ||
           notificationForm.value.events.intent_match ||
@@ -396,13 +438,14 @@ async function loadAddresses() {
 }
 
 function resetAddressForm() {
+  const country = dialOptionForCountry(appStore.regionCountry || 'RS')
   editingAddressId.value = null
   addressForm.value = {
     label: '',
     contact_name: '',
     contact_phone: '',
-    country_code: 'PH',
-    country_name: 'Philippines',
+    country_code: country.countryCode,
+    country_name: country.countryName,
     city: '',
     address_line1: '',
     postal_code: '',
@@ -416,8 +459,8 @@ function startEditAddress(addr: AddressItem) {
     label: addr.label || '',
     contact_name: addr.contact_name || '',
     contact_phone: addr.contact_phone || '',
-    country_code: addr.country_code || 'PH',
-    country_name: addr.country_name || 'Philippines',
+    country_code: addr.country_code || appStore.regionCountry || 'RS',
+    country_name: addr.country_name || dialOptionForCountry(appStore.regionCountry || 'RS').countryName,
     city: addr.city || '',
     address_line1: addr.address_line1 || '',
     postal_code: addr.postal_code || '',

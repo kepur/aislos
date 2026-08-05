@@ -31,7 +31,47 @@
 
       <div>
         <label class="block text-sm font-medium text-slate-700 mb-1.5">Phone</label>
-        <input v-model="form.phone" type="tel" class="input-field" :placeholder="phonePlaceholder" />
+        <div class="grid grid-cols-[130px_1fr] gap-2">
+          <select v-model="form.phone_country" class="input-field bg-white">
+            <option v-for="option in dialOptions" :key="option.countryCode" :value="option.countryCode">
+              {{ option.dialCode }}
+            </option>
+          </select>
+          <input v-model="form.phone_local" type="tel" class="input-field" :placeholder="contactPlaceholder(form.phone_country)" />
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 bg-white p-4 space-y-3">
+        <div>
+          <h2 class="text-sm font-semibold text-slate-900">Reminder channels</h2>
+          <p class="mt-1 text-xs text-slate-500">Email and Telegram are enabled by default. WhatsApp and Viber can also pull you back into the platform.</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Telegram chat ID</label>
+          <input v-model="form.telegram_chat_id" type="text" class="input-field" placeholder="@username or chat ID" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">WhatsApp number</label>
+          <div class="grid grid-cols-[130px_1fr] gap-2">
+            <select v-model="form.whatsapp_country" class="input-field bg-white">
+              <option v-for="option in dialOptions" :key="option.countryCode" :value="option.countryCode">
+                {{ option.dialCode }}
+              </option>
+            </select>
+            <input v-model="form.whatsapp_local" type="tel" class="input-field" :placeholder="contactPlaceholder(form.whatsapp_country)" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Viber number</label>
+          <div class="grid grid-cols-[130px_1fr] gap-2">
+            <select v-model="form.viber_country" class="input-field bg-white">
+              <option v-for="option in dialOptions" :key="option.countryCode" :value="option.countryCode">
+                {{ option.dialCode }}
+              </option>
+            </select>
+            <input v-model="form.viber_local" type="tel" class="input-field" :placeholder="contactPlaceholder(form.viber_country)" />
+          </div>
+        </div>
       </div>
 
       <div class="pt-2">
@@ -94,6 +134,13 @@
 </template>
 
 <script setup lang="ts">
+import {
+  CONTACT_DIAL_OPTIONS,
+  composeContactNumber,
+  contactPlaceholder,
+  splitContactNumber,
+} from "~/utils/contactPolicy";
+
 definePageMeta({ layout: "default", middleware: ["auth"] });
 useHead({ title: "Edit Profile" });
 
@@ -109,19 +156,17 @@ const success = ref(false);
 const error = ref("");
 const api = useApiFetch();
 const addresses = ref<any[]>([]);
-const phonePlaceholder = computed(() => {
-  const code = String(appStore.regionCountry || "RS").toUpperCase().slice(0, 2);
-  if (code === "RS") return "+381 6X XXX XXXX";
-  if (code === "PL") return "+48 XXX XXX XXX";
-  if (code === "PH") return "+63 9XX XXX XXXX";
-  if (code === "BA") return "+387 6X XXX XXX";
-  if (code === "RO") return "+40 7XX XXX XXX";
-  return "Phone number";
-});
+const dialOptions = CONTACT_DIAL_OPTIONS;
 
 const form = reactive({
   full_name: authStore.user?.full_name || "",
-  phone: authStore.user?.phone || "",
+  phone_country: "RS",
+  phone_local: "",
+  telegram_chat_id: "",
+  whatsapp_country: "RS",
+  whatsapp_local: "",
+  viber_country: "RS",
+  viber_local: "",
 });
 
 const addressForm = reactive({
@@ -144,9 +189,26 @@ async function save() {
     await $fetch(`${config.public.apiBase}/users/me`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
-      body: { full_name: form.full_name, phone: form.phone || undefined },
+      body: {
+        full_name: form.full_name,
+        phone: composeContactNumber(form.phone_country, form.phone_local) || undefined,
+      },
+    });
+    await api("/users/me/telegram", {
+      method: "PATCH",
+      body: { telegram_chat_id: form.telegram_chat_id.trim() || null },
+    });
+    await api("/users/me/notification-preferences", {
+      method: "PATCH",
+      body: {
+        email: authStore.user?.email || null,
+        telegram_chat_id: form.telegram_chat_id.trim() || null,
+        whatsapp_number: composeContactNumber(form.whatsapp_country, form.whatsapp_local) || null,
+        viber_number: composeContactNumber(form.viber_country, form.viber_local) || null,
+      },
     });
     await authStore.fetchMe();
+    await loadContactPreferences();
     success.value = true;
   } catch (err: unknown) {
     const e = err as { data?: { detail?: string } };
@@ -233,6 +295,7 @@ async function deleteAddress(addressId: string) {
 
 onMounted(async () => {
   await appStore.fetchMarketLocalizationConfig();
+  await loadContactPreferences();
   resetAddressForm();
   await loadAddresses();
 });
@@ -240,5 +303,25 @@ onMounted(async () => {
 function currentCountryName() {
   const code = String(appStore.regionCountry || "RS").toUpperCase().slice(0, 2);
   return appStore.regionOptions.find((region) => region.code === code)?.label || code;
+}
+
+async function loadContactPreferences() {
+  const fallbackCountry = appStore.regionCountry || "RS";
+  const userPhone = splitContactNumber(authStore.user?.phone, fallbackCountry);
+  form.full_name = authStore.user?.full_name || "";
+  form.phone_country = userPhone.countryCode;
+  form.phone_local = userPhone.localNumber;
+  try {
+    const prefs = await api<any>("/users/me/notification-preferences");
+    const whatsapp = splitContactNumber(prefs?.whatsapp_number, fallbackCountry);
+    const viber = splitContactNumber(prefs?.viber_number, fallbackCountry);
+    form.telegram_chat_id = prefs?.telegram_chat_id || "";
+    form.whatsapp_country = whatsapp.countryCode;
+    form.whatsapp_local = whatsapp.localNumber;
+    form.viber_country = viber.countryCode;
+    form.viber_local = viber.localNumber;
+  } catch {
+    form.telegram_chat_id = "";
+  }
 }
 </script>

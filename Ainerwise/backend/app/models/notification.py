@@ -22,7 +22,7 @@ class NotificationPreference(Base, UUIDMixin, TimestampMixin):
         UUID(as_uuid=True), ForeignKey("companies.id"), nullable=True
     )
     # Channels
-    telegram_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    telegram_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     email_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     whatsapp_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     viber_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -37,6 +37,38 @@ class NotificationPreference(Base, UUIDMixin, TimestampMixin):
     renewal_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     supplier_category_ids_json: Mapped[list | None] = mapped_column(JSONB)
     supplier_region_ids_json: Mapped[list | None] = mapped_column(JSONB)
+
+
+def apply_notification_preference_defaults(
+    pref: NotificationPreference,
+    *,
+    email: str | None = None,
+) -> bool:
+    """Backfill safe defaults for older preference rows created before Telegram was default-on."""
+    changed = False
+    if email and not pref.email:
+        pref.email = email
+        changed = True
+
+    has_external_contact = any(
+        [
+            pref.telegram_chat_id,
+            pref.whatsapp_enabled,
+            pref.viber_enabled,
+            pref.whatsapp_number,
+            pref.viber_number,
+        ]
+    )
+    timestamps_look_untouched = True
+    if pref.created_at and pref.updated_at:
+        timestamps_look_untouched = (
+            abs((pref.updated_at - pref.created_at).total_seconds()) < 1
+        )
+    if pref.telegram_enabled is False and not has_external_contact and timestamps_look_untouched:
+        pref.telegram_enabled = True
+        changed = True
+
+    return changed
 
 
 class ReportJob(Base, UUIDMixin, TimestampMixin):
