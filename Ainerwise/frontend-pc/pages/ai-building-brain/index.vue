@@ -67,7 +67,7 @@
       />
     </KnxSectionBlock>
 
-    <!-- Scenario picker: same content as the 3D demo, readable without WebGL -->
+    <!-- Scenario picker: the same content stays readable without visual effects. -->
     <KnxSectionBlock
       :eyebrow="$t('brain.scenarioEyebrow')"
       :title="$t('brain.scenarioTitle')"
@@ -118,12 +118,7 @@
       <div class="container-main immersive-demo-shell px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div class="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-stretch">
           <div class="immersive-demo-scene">
-            <ClientOnly>
-              <BuildingBrain3D :level="selectedLevel" :scenario-key="activeKey" />
-              <template #fallback>
-                <div class="min-h-[460px] bg-slate-950"></div>
-              </template>
-            </ClientOnly>
+            <BuildingBrainTutorialDemo :selected-level="selectedLevel" :scenario="active" />
           </div>
 
           <aside class="immersive-demo-panel">
@@ -266,15 +261,7 @@ useHead({ title: () => `${t('brain.overviewTitle')} — AinerWise` })
 }
 .immersive-demo-scene {
   min-height: 520px;
-  overflow: hidden;
-  border: 1px solid rgba(125, 211, 252, 0.18);
-  border-radius: 30px;
-  background: #020617;
-  box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
-}
-.immersive-demo-scene :deep(.brain3d) {
-  min-height: 520px;
-  height: 520px;
+  overflow: visible;
 }
 .immersive-demo-panel {
   border: 1px solid rgba(125, 211, 252, 0.18);
@@ -325,9 +312,8 @@ useHead({ title: () => `${t('brain.overviewTitle')} — AinerWise` })
 }
 @media (max-width: 1024px) {
   .immersive-demo-scene,
-  .immersive-demo-scene :deep(.brain3d) {
+  .immersive-demo-scene :deep(.tutorial-demo) {
     min-height: 460px;
-    height: 460px;
   }
 }
 </style>
