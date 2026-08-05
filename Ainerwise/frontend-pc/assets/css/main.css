@@ -173,8 +173,12 @@
     @apply bg-white/10 text-slate-400;
   }
 
-  .pc-notice-amber {
-    @apply bg-amber-400/10 border border-amber-500/30 p-4 text-sm text-amber-200;
+  .pc-notice-amber,
+  .pc-notice-warning {
+    @apply rounded-xl border p-4 text-sm leading-relaxed;
+    background-color: rgba(251, 191, 36, 0.12);
+    border-color: rgba(245, 158, 11, 0.36);
+    color: #fcd34d;
   }
 
   .pc-kicker {
@@ -296,6 +300,27 @@ html.light .surface-dark .border-white\/5 { border-color: rgba(255, 255, 255, 0.
 html.light .surface-dark .border-white\/10 { border-color: rgba(255, 255, 255, 0.10); }
 html.light .surface-dark .border-white\/15,
 html.light .surface-dark .border-white\/20 { border-color: rgba(255, 255, 255, 0.18); }
+
+html.light .pc-notice-amber,
+html.light .pc-notice-warning,
+html.theme-knx .pc-notice-amber,
+html.theme-knx .pc-notice-warning {
+  background-color: #fff7ed;
+  border-color: rgba(217, 119, 6, 0.42);
+  color: #9a3412;
+}
+html.light .surface-dark .pc-notice-amber,
+html.light .surface-dark .pc-notice-warning,
+html.light .knx-on-dark .pc-notice-amber,
+html.light .knx-on-dark .pc-notice-warning,
+html.theme-knx .surface-dark .pc-notice-amber,
+html.theme-knx .surface-dark .pc-notice-warning,
+html.theme-knx .knx-on-dark .pc-notice-amber,
+html.theme-knx .knx-on-dark .pc-notice-warning {
+  background-color: rgba(251, 191, 36, 0.12);
+  border-color: rgba(245, 158, 11, 0.36);
+  color: #fcd34d;
+}
 
 /* Code / JSON blocks stay a dark "terminal" even in light mode (readable). */
 html.light pre[class*="bg-black"],

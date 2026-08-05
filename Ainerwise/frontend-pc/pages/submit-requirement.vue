@@ -18,7 +18,7 @@
           <p class="text-sm font-bold uppercase tracking-wider text-primary-300">Step 1</p>
           <h2 class="mt-2 text-2xl font-bold text-white">{{ $t('lead.step1Label') }}</h2>
           <p class="mt-3 text-slate-300">{{ $t('lead.step1Desc') }}</p>
-          <div class="mt-6 bg-amber-400/10 border border-amber-500/30 p-4 text-sm text-amber-200">
+          <div class="mt-6 pc-notice-warning">
             {{ $t('lead.estimateWarning') }}
           </div>
         </div>
@@ -149,7 +149,7 @@
               <p class="mt-2 text-sm text-slate-300">{{ targetLevelMeta.description }}</p>
             </div>
 
-            <div class="mt-6 bg-amber-400/10 border border-amber-500/30 p-4 text-sm text-amber-200">
+            <div class="mt-6 pc-notice-warning">
               {{ estimateNotice }}
             </div>
 

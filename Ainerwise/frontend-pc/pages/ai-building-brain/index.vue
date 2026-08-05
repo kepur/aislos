@@ -11,7 +11,7 @@
       :nodes="brainHeroNodes"
       primary-to="/submit-requirement"
       :primary-label="$t('brain.startAssessment')"
-      secondary-to="/ai-building-brain-demo"
+      secondary-to="/ai-building-brain#immersive-demo"
       :secondary-label="$t('brain.open3d')"
       :core-label="$t('home.hubCore')"
     />
@@ -110,6 +110,64 @@
       </div>
     </KnxSectionBlock>
 
+    <section id="immersive-demo" class="immersive-demo knx-on-dark">
+      <div class="container-main immersive-demo-shell px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-stretch">
+          <div class="immersive-demo-scene">
+            <ClientOnly>
+              <BuildingBrain3D :level="selectedLevel" :scenario-key="activeKey" />
+              <template #fallback>
+                <div class="min-h-[460px] bg-slate-950"></div>
+              </template>
+            </ClientOnly>
+          </div>
+
+          <aside class="immersive-demo-panel">
+            <p class="knx-eyebrow">{{ $t('brain.demoEyebrow') }}</p>
+            <h2 class="mt-3 text-3xl font-bold text-white">{{ $t('brain.demoTitle') }}</h2>
+            <p class="mt-4 leading-relaxed text-slate-300">{{ $t('brain.demoSubtitle') }}</p>
+
+            <div class="mt-8">
+              <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">{{ $t('brain.demoLevel') }}</p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button
+                  v-for="level in demoLevelOptions"
+                  :key="level.key"
+                  type="button"
+                  class="demo-control"
+                  :class="selectedLevel === level.key ? 'demo-control-active' : ''"
+                  @click="selectedLevel = level.key"
+                >
+                  {{ level.key }} · {{ level.label }}
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-8">
+              <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">{{ $t('brain.demoScenario') }}</p>
+              <div class="mt-3 grid gap-2">
+                <button
+                  v-for="scenario in scenarios"
+                  :key="scenario.key"
+                  type="button"
+                  class="demo-scenario"
+                  :class="activeKey === scenario.key ? 'demo-scenario-active' : ''"
+                  @click="activeKey = scenario.key"
+                >
+                  <span>{{ scenario.name }}</span>
+                  <small>{{ scenario.level }}</small>
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-8 pc-notice-warning">
+              {{ $t('brain.demoNotice') }}
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
     <KnxCtaBand
       :title="$t('brain.ctaTitle')"
       :subtitle="$t('brain.ctaSubtitle')"
@@ -126,7 +184,14 @@ const { t } = useI18n()
 const { scenarios, capabilityBlocks } = useBuildingBrain()
 
 const activeKey = ref(scenarios[0].key)
+const selectedLevel = ref<'L3' | 'L4' | 'L5'>('L4')
 const active = computed(() => scenarios.find((s) => s.key === activeKey.value) || scenarios[0])
+
+const demoLevelOptions = computed(() => [
+  { key: 'L3' as const, label: t('brain.demoLevelL3') },
+  { key: 'L4' as const, label: t('brain.demoLevelL4') },
+  { key: 'L5' as const, label: t('brain.demoLevelL5') },
+])
 
 const busItems = computed(() => [
   t('brain.bus1'), t('brain.bus2'), t('brain.bus3'), t('brain.bus4'),
@@ -166,5 +231,96 @@ useHead({ title: () => `${t('brain.overviewTitle')} — AinerWise` })
   background: var(--brand, #0ea5e9);
   border-color: var(--brand, #0ea5e9);
   color: #fff;
+}
+
+.immersive-demo {
+  position: relative;
+  scroll-margin-top: 92px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 72% 20%, rgba(20, 184, 166, 0.26), transparent 30%),
+    radial-gradient(circle at 26% 68%, rgba(59, 130, 246, 0.22), transparent 32%),
+    linear-gradient(135deg, #020617 0%, #071324 48%, #05231c 100%);
+}
+.immersive-demo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at 50% 45%, black, transparent 78%);
+}
+.immersive-demo-shell {
+  position: relative;
+  z-index: 1;
+}
+.immersive-demo-scene {
+  min-height: 520px;
+  overflow: hidden;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 30px;
+  background: #020617;
+  box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46);
+}
+.immersive-demo-scene :deep(.brain3d) {
+  min-height: 520px;
+  height: 520px;
+}
+.immersive-demo-panel {
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 30px;
+  background: rgba(2, 6, 23, 0.74);
+  padding: 28px;
+  color: #e2e8f0;
+  backdrop-filter: blur(18px);
+}
+.demo-control,
+.demo-scenario {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  transition: border-color .18s ease, background .18s ease, color .18s ease, transform .18s ease;
+}
+.demo-control {
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 800;
+}
+.demo-control:hover,
+.demo-scenario:hover {
+  border-color: rgba(52, 211, 153, 0.58);
+  background: rgba(16, 185, 129, 0.10);
+}
+.demo-control-active,
+.demo-scenario-active {
+  border-color: rgba(52, 211, 153, 0.9);
+  background: rgba(16, 185, 129, 0.18);
+  color: #d1fae5;
+}
+.demo-scenario {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-radius: 16px;
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+}
+.demo-scenario small {
+  color: rgba(190, 225, 212, 0.72);
+  font-size: 12px;
+  font-weight: 800;
+}
+@media (max-width: 1024px) {
+  .immersive-demo-scene,
+  .immersive-demo-scene :deep(.brain3d) {
+    min-height: 460px;
+    height: 460px;
+  }
 }
 </style>
