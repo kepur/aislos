@@ -94,8 +94,11 @@ const tabs = computed<Tab[]>(() => {
   const secondhandTab: Tab = {
     id: 'secondhand',
     label: t('nav.secondhand') || '2Hands',
-    to: '/secondhand',
-    active: normalizedPath.value === '/secondhand' || normalizedPath.value.startsWith('/secondhand/'),
+    to: '/marketplace?surface=personal_secondhand',
+    active:
+      normalizedPath.value === '/secondhand' ||
+      normalizedPath.value.startsWith('/secondhand/') ||
+      (normalizedPath.value.startsWith('/marketplace') && String(route.query.surface || '') === 'personal_secondhand'),
   }
 
   // Middle tab — role aware

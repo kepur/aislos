@@ -3609,6 +3609,7 @@ async def legacy_marketplace_feed(
     account_type: str | None = None,
     verified_only: bool = False,
     listing_origin: str | None = None,
+    surface: str | None = None,
     sort: str = Query(default="rank"),
 ):
     stmt = select(SupplierListing, Company.name.label("company_name")).join(
@@ -3636,19 +3637,19 @@ async def legacy_marketplace_feed(
 
     origin_aliases = _country_alias_values(origin_country)
     if origin_aliases:
-        listing_origin = func.upper(func.coalesce(SupplierListing.attributes_json["origin_country"].astext, ""))
-        stmt = stmt.where(listing_origin.in_(origin_aliases))
+        origin_country_expr = func.upper(func.coalesce(SupplierListing.attributes_json["origin_country"].astext, ""))
+        stmt = stmt.where(origin_country_expr.in_(origin_aliases))
 
     country_aliases = _country_alias_values(country)
     if country_aliases:
         company_country = func.upper(func.coalesce(Company.country, ""))
-        listing_origin = func.upper(func.coalesce(SupplierListing.attributes_json["origin_country"].astext, ""))
+        origin_country_expr = func.upper(func.coalesce(SupplierListing.attributes_json["origin_country"].astext, ""))
         stmt = stmt.where(
             or_(
                 company_country.in_(country_aliases),
-                listing_origin.in_(country_aliases),
+                origin_country_expr.in_(country_aliases),
                 company_country == "",
-                listing_origin == "",
+                origin_country_expr == "",
             )
         )
     if city:
@@ -3668,12 +3669,20 @@ async def legacy_marketplace_feed(
         stmt = stmt.where(or_(Company.type.is_(None), ~func.lower(Company.type).in_(["individual", "freelancer"])))
     if verified_only:
         stmt = stmt.where(func.lower(Company.verification_status) == "verified")
+    listing_origin_expr = func.lower(func.coalesce(SupplierListing.attributes_json["listing_origin"].astext, "new"))
+    official_flag_expr = func.lower(func.coalesce(SupplierListing.attributes_json["official"].astext, "false"))
+    normalized_surface = (surface or "").strip().lower()
+    if normalized_surface in {"official", "official_recommended", "recommended"}:
+        stmt = stmt.where(official_flag_expr.in_(["true", "1", "yes"]))
+    elif normalized_surface in {"market", "market_products", "supplier"}:
+        stmt = stmt.where(listing_origin_expr == "new", ~official_flag_expr.in_(["true", "1", "yes"]))
+    elif normalized_surface in {"recycled", "enterprise_recycled", "enterprise_refurbished"}:
+        stmt = stmt.where(listing_origin_expr.in_(["enterprise_recycled", "enterprise_refurbished"]))
+    elif normalized_surface in {"secondhand", "2hands", "used", "personal_secondhand"}:
+        stmt = stmt.where(listing_origin_expr == "personal_secondhand")
     normalized_listing_origin = (listing_origin or "").strip().lower()
     if normalized_listing_origin and normalized_listing_origin != "all":
-        stmt = stmt.where(
-            func.lower(func.coalesce(SupplierListing.attributes_json["listing_origin"].astext, "new"))
-            == normalized_listing_origin
-        )
+        stmt = stmt.where(listing_origin_expr == normalized_listing_origin)
 
     offset = (page - 1) * page_size
     # Official listings first (admin-curated via attributes_json.official),
@@ -3727,6 +3736,7 @@ async def legacy_marketplace_feed(
                 "min_order_qty": attrs.get("min_order_qty") or 1,
                 "origin_country": attrs.get("origin_country"),
                 "listing_origin": attrs.get("listing_origin") or "new",
+                "surface": normalized_surface or "all",
                 "item_condition": attrs.get("item_condition") or "new",
                 "warranty_left_months": attrs.get("warranty_left_months"),
                 "warranty_note": attrs.get("warranty_note"),
@@ -3802,6 +3812,7 @@ async def legacy_marketplace_filters(db: DB):
         "sort_options": ["newest", "price_asc", "price_desc"],
         "currencies": ["EUR", "RSD", "PLN", "PHP", "USD"],
         "origin_countries": sorted(country for country in origin_countries if country),
+        "surface_options": ["all", "official", "market", "enterprise_recycled", "personal_secondhand"],
     }
 
 

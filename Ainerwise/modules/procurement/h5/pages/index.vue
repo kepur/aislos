@@ -42,7 +42,7 @@
           <NuxtLink :to="localizedPath('/marketplace')" class="rounded-2xl border border-white/15 bg-white/15 px-3 py-3 text-center text-xs font-bold text-white backdrop-blur active:bg-white/25">
             {{ homeCopy.market }}
           </NuxtLink>
-          <NuxtLink :to="localizedPath('/secondhand')" class="rounded-2xl border border-emerald-200/30 bg-emerald-300/15 px-3 py-3 text-center text-xs font-bold text-emerald-50 backdrop-blur active:bg-emerald-300/25">
+          <NuxtLink :to="localizedPath('/marketplace?surface=personal_secondhand')" class="rounded-2xl border border-emerald-200/30 bg-emerald-300/15 px-3 py-3 text-center text-xs font-bold text-emerald-50 backdrop-blur active:bg-emerald-300/25">
             2Hands
           </NuxtLink>
           <NuxtLink :to="localizedPath('/buyer/post-request')" class="rounded-2xl border border-white/15 bg-white/10 px-3 py-3 text-center text-xs font-bold text-white/90 backdrop-blur active:bg-white/20">

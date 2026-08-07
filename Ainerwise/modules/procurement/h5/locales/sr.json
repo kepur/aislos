@@ -64,6 +64,8 @@
   "market": {
     "search_placeholder": "Pretrazi proizvode...",
     "near_me": "U blizini (sve lokacije)",
+    "all_countries": "Sve drzave",
+    "city_or_area": "Grad ili zona",
     "categories": "Kategorije",
     "seller_type": "Tip prodavca",
     "all": "Sve",
@@ -85,6 +87,9 @@
     "sort_popular": "Popularno",
     "sort_price_asc": "Cena ↑",
     "sort_price_desc": "Cena ↓",
+    "surface_all": "Sve",
+    "surface_official": "Preporuceno",
+    "surface_market": "Market proizvodi",
     "surface_new": "Novo",
     "surface_secondhand": "2Hands",
     "surface_recycled": "Reciklirano od firme"

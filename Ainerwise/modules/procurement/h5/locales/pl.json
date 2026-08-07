@@ -60,6 +60,8 @@
   "market": {
     "search_placeholder": "Szukaj produktów...",
     "near_me": "Blisko mnie",
+    "all_countries": "Wszystkie kraje",
+    "city_or_area": "Miasto lub obszar",
     "categories": "Kategorie",
     "seller_type": "Typ sprzedawcy",
     "all": "Wszystko",
@@ -81,6 +83,9 @@
     "sort_popular": "Popularne",
     "sort_price_asc": "Cena ↑",
     "sort_price_desc": "Cena ↓",
+    "surface_all": "Wszystko",
+    "surface_official": "Rekomendowane",
+    "surface_market": "Produkty marketu",
     "surface_new": "Nowe",
     "surface_secondhand": "2Hands",
     "surface_recycled": "Firmowe odnowione"

@@ -76,6 +76,8 @@
   "market": {
     "search_placeholder": "Search products...",
     "near_me": "Near me (all locations)",
+    "all_countries": "All countries",
+    "city_or_area": "City or area",
     "categories": "Categories",
     "seller_type": "Seller Type",
     "all": "All",
@@ -97,6 +99,9 @@
     "sort_popular": "Popular",
     "sort_price_asc": "Price ↑",
     "sort_price_desc": "Price ↓",
+    "surface_all": "All",
+    "surface_official": "Official recommended",
+    "surface_market": "Market products",
     "surface_new": "New",
     "surface_secondhand": "2Hands",
     "surface_recycled": "Enterprise recycled"

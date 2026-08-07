@@ -26,7 +26,7 @@
           class="min-w-0 rounded-xl bg-slate-100 px-3 py-3 text-sm font-semibold text-slate-700 outline-none"
           @change="handleDeliveryCountryChange"
         >
-          <option value="">All countries</option>
+          <option value="">{{ t('market.all_countries') }}</option>
           <option v-for="region in appStore.regionOptions" :key="region.code" :value="region.code">
             {{ region.label }}
           </option>
@@ -34,14 +34,28 @@
         <input
           v-model="deliveryCity"
           type="text"
-          placeholder="City or area"
+          :placeholder="t('market.city_or_area')"
           class="min-w-0 rounded-xl bg-slate-100 px-4 py-3 text-sm outline-none placeholder:text-slate-400"
           @keyup.enter="loadFeed(true)"
           @blur="loadFeed(true)"
         />
       </div>
 
-      <!-- Filter chips -->
+      <!-- Product surface chips: one AinerWise Market, multiple product sources. -->
+      <div class="flex items-center gap-2 mt-2 overflow-x-auto scrollbar-hide pb-1">
+        <button
+          v-for="surface in productSurfaceOptions"
+          :key="surface.value"
+          @click="setSurface(surface.value)"
+          :class="['flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-bold transition-colors', activeSurface === surface.value ? surface.activeClass : 'bg-slate-100 text-slate-600']"
+        >{{ surface.label }}</button>
+        <NuxtLink
+          :to="localizedPath('/secondhand/sell')"
+          class="flex-shrink-0 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700"
+        >{{ t('secondhand.sell') }}</NuxtLink>
+      </div>
+
+      <!-- Secondary filters -->
       <div class="flex items-center gap-2 mt-2 overflow-x-auto scrollbar-hide pb-1">
         <button
           v-for="m in ['All', 'B2B', 'B2C']"
@@ -49,16 +63,6 @@
           @click="marketMode = m === 'All' ? '' : m; loadFeed(true)"
           :class="['flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors', (m === 'All' && !marketMode) || marketMode === m ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600']"
         >{{ m }}</button>
-        <button
-          v-for="surface in listingOriginOptions"
-          :key="surface.value"
-          @click="listingOrigin = surface.value; loadFeed(true)"
-          :class="['flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors', listingOrigin === surface.value ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600']"
-        >{{ surface.label }}</button>
-        <NuxtLink
-          :to="localizedPath('/secondhand')"
-          class="flex-shrink-0 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700"
-        >2Hands</NuxtLink>
         <button
           v-for="s in sortOptions"
           :key="s.value"
@@ -180,8 +184,14 @@
       <div v-else-if="!loading && items.length === 0" class="text-center py-20">
         <div class="text-5xl mb-3">🔍</div>
         <p class="text-slate-500 text-sm">{{ t('market.no_products') }}</p>
-        <NuxtLink to="/buyer/post-request" class="mt-3 inline-block text-indigo-600 text-sm font-medium">
+        <NuxtLink :to="localizedPath('/buyer/post-request')" class="mt-3 inline-block text-indigo-600 text-sm font-medium">
           {{ t('market.post_request_instead') }} →
+        </NuxtLink>
+        <NuxtLink
+          :to="localizedPath('/secondhand/sell')"
+          class="ml-3 mt-3 inline-block text-emerald-600 text-sm font-medium"
+        >
+          {{ t('secondhand.sell') }} →
         </NuxtLink>
       </div>
 
@@ -215,14 +225,11 @@
           <!-- Info -->
           <div class="p-3">
             <div class="flex items-center gap-1 mb-1">
-              <span :class="['text-[9px] font-semibold px-1.5 py-0.5 rounded-full', item.market_mode === 'B2C' ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600']">
+              <span :class="marketModeBadgeClass(item)">
                 {{ item.market_mode }}
               </span>
-              <span v-if="item.listing_origin === 'enterprise_recycled'" class="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-600">
-                {{ t('market.surface_recycled') }}
-              </span>
-              <span v-else class="rounded-full bg-slate-50 px-1.5 py-0.5 text-[9px] font-semibold text-slate-500">
-                {{ t('market.surface_new') }}
+              <span :class="surfaceBadgeClass(item)">
+                {{ itemSurfaceLabel(item) }}
               </span>
             </div>
             <h3 class="text-xs font-semibold text-slate-900 leading-tight line-clamp-2">{{ item.title }}</h3>
@@ -233,9 +240,9 @@
             </div>
             <button
               @click.stop="handleCta(item)"
-              :class="['w-full mt-2 py-1.5 rounded-xl text-[11px] font-semibold transition-colors', item.market_mode === 'B2C' ? 'bg-green-600 text-white' : 'bg-indigo-600 text-white']"
+              :class="ctaButtonClass(item)"
             >
-              {{ item.market_mode === 'B2C' ? t('market.buy_now') : t('market.quote') }}
+              {{ itemCtaLabel(item) }}
             </button>
           </div>
         </div>
@@ -283,6 +290,8 @@ interface FeedItem {
   company_name: string | null
   company_trust_score: number | null
   is_sponsored: boolean
+  is_official?: boolean
+  surface?: string
   listing_origin?: string
   item_condition?: string
   warranty_left_months?: number | null
@@ -301,7 +310,8 @@ const showFilter = ref(false)
 const categoryId = ref<string | null>((route.query.category_id as string) || null)
 const activeCategoryName = ref<string>((route.query.category_name as string) || '')
 const marketMode = ref<string>((route.query.market_mode as string) || '')
-const listingOrigin = ref<string>((route.query.listing_origin as string) || 'all')
+const listingOrigin = ref<string>((route.query.listing_origin as string) || '')
+const activeSurface = ref<string>(normalizeSurface((route.query.surface as string) || surfaceFromListingOrigin(listingOrigin.value) || 'all'))
 const keyword = ref<string>((route.query.keyword as string) || '')
 const sort = ref<string>((route.query.sort as string) || 'rank')
 const originCountry = ref<string>((route.query.origin_country as string) || '')
@@ -337,10 +347,12 @@ const sellerTypeOptions = computed(() => [
   { label: t('market.business'), val: 'BUSINESS' },
 ])
 
-const listingOriginOptions = computed(() => [
-  { value: 'all', label: t('common.all') },
-  { value: 'new', label: t('market.surface_new') },
-  { value: 'enterprise_recycled', label: t('market.surface_recycled') },
+const productSurfaceOptions = computed(() => [
+  { value: 'all', label: t('market.surface_all') || t('common.all'), activeClass: 'bg-indigo-600 text-white' },
+  { value: 'official', label: t('market.surface_official') || 'Official', activeClass: 'bg-blue-600 text-white' },
+  { value: 'market', label: t('market.surface_market') || t('nav.market'), activeClass: 'bg-indigo-600 text-white' },
+  { value: 'enterprise_recycled', label: t('market.surface_recycled'), activeClass: 'bg-emerald-600 text-white' },
+  { value: 'personal_secondhand', label: t('market.surface_secondhand'), activeClass: 'bg-amber-600 text-white' },
 ])
 
 onMounted(async () => {
@@ -360,6 +372,9 @@ onMounted(async () => {
 const searchContextChips = computed(() => {
   const chips: string[] = []
   if (activeCategoryName.value) chips.push(`Category: ${activeCategoryName.value}`)
+  if (activeSurface.value !== 'all') {
+    chips.push(productSurfaceOptions.value.find((item) => item.value === activeSurface.value)?.label || activeSurface.value)
+  }
   if (deliveryCountry.value) chips.push(`Country: ${deliveryCountryName.value || countryName(deliveryCountry.value)}`)
   if (deliveryCity.value) chips.push(`City: ${deliveryCity.value}`)
   if (radiusKm.value) chips.push(`Radius: ${radiusKm.value} km`)
@@ -378,6 +393,7 @@ async function loadFeed(reset = false) {
     const params: Record<string, any> = { page: page.value, page_size: 20, sort: sort.value }
     if (categoryId.value) params.category_id = categoryId.value
     if (marketMode.value) params.market_mode = marketMode.value
+    if (activeSurface.value && activeSurface.value !== 'all') params.surface = activeSurface.value
     if (listingOrigin.value && listingOrigin.value !== 'all') params.listing_origin = listingOrigin.value
     if (keyword.value.trim()) params.keyword = keyword.value.trim()
     if (originCountry.value) params.origin_country = originCountry.value
@@ -412,6 +428,13 @@ async function loadFeed(reset = false) {
 function setCategoryFilter(id: string | null, name?: string) {
   categoryId.value = id
   activeCategoryName.value = name || ''
+  loadFeed(true)
+}
+
+function setSurface(value: string) {
+  activeSurface.value = normalizeSurface(value)
+  listingOrigin.value = ''
+  if (activeSurface.value === 'personal_secondhand') marketMode.value = ''
   loadFeed(true)
 }
 
@@ -454,7 +477,8 @@ function clearSearchContext() {
   budgetMinMinor.value = ''
   budgetMaxMinor.value = ''
   budgetCurrency.value = ''
-  listingOrigin.value = 'all'
+  listingOrigin.value = ''
+  activeSurface.value = 'all'
   budgetMinInput.value = ''
   budgetMaxInput.value = ''
   latitude.value = ''
@@ -469,23 +493,78 @@ function countryName(countryCode: string) {
 }
 
 function localizedPath(path: string) {
-  if (!import.meta.client) return path
-  const prefix = getLocalePrefixFromPath(route.path) || localStorage.getItem('h5_locale_prefix') || ''
+  const prefix = getLocalePrefixFromPath(route.path) || (import.meta.client ? localStorage.getItem('h5_locale_prefix') || '' : '')
   return prefix ? withLocalePrefix(path, prefix) : path
 }
 
 function handleCta(item: FeedItem) {
+  if (isSecondhandItem(item)) {
+    openItem(item)
+    return
+  }
   const authStore = useAuthStore()
   if (!authStore.isLoggedIn) {
-    router.push(`/auth/login?return_url=${encodeURIComponent(route.fullPath)}`)
+    router.push(localizedPath(`/auth/login?return_url=${encodeURIComponent(route.fullPath)}`))
     return
   }
   // Always go to item detail — RFQ/Buy Now bottom sheet is on the detail page
-  router.push(`/marketplace/${item.id}`)
+  router.push(localizedPath(`/marketplace/${item.id}`))
 }
 
 function openItem(item: FeedItem) {
-  router.push(`/marketplace/${item.id}`)
+  router.push(localizedPath(isSecondhandItem(item) ? `/secondhand/${item.id}` : `/marketplace/${item.id}`))
+}
+
+function surfaceFromListingOrigin(value: string) {
+  const normalized = String(value || '').trim().toLowerCase()
+  if (normalized === 'personal_secondhand') return 'personal_secondhand'
+  if (normalized === 'enterprise_recycled' || normalized === 'enterprise_refurbished') return 'enterprise_recycled'
+  if (normalized === 'new') return 'market'
+  return ''
+}
+
+function normalizeSurface(value: string) {
+  const normalized = String(value || '').trim().toLowerCase()
+  if (['official', 'market', 'enterprise_recycled', 'personal_secondhand'].includes(normalized)) return normalized
+  if (['secondhand', '2hands', 'used'].includes(normalized)) return 'personal_secondhand'
+  if (['recycled', 'enterprise_refurbished'].includes(normalized)) return 'enterprise_recycled'
+  return 'all'
+}
+
+function isSecondhandItem(item: FeedItem) {
+  return ['personal_secondhand', 'enterprise_recycled', 'enterprise_refurbished'].includes(String(item.listing_origin || '').toLowerCase())
+}
+
+function itemSurfaceLabel(item: FeedItem) {
+  const origin = String(item.listing_origin || 'new').toLowerCase()
+  if (origin === 'personal_secondhand') return t('market.surface_secondhand')
+  if (origin === 'enterprise_recycled' || origin === 'enterprise_refurbished') return t('market.surface_recycled')
+  if ((item as any).is_official) return t('market.surface_official') || 'Official'
+  return t('market.surface_new')
+}
+
+function surfaceBadgeClass(item: FeedItem) {
+  const origin = String(item.listing_origin || 'new').toLowerCase()
+  if (origin === 'personal_secondhand') return 'rounded-full bg-amber-50 px-1.5 py-0.5 text-[9px] font-semibold text-amber-700'
+  if (origin === 'enterprise_recycled' || origin === 'enterprise_refurbished') return 'rounded-full bg-emerald-50 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-600'
+  if ((item as any).is_official) return 'rounded-full bg-blue-50 px-1.5 py-0.5 text-[9px] font-semibold text-blue-600'
+  return 'rounded-full bg-slate-50 px-1.5 py-0.5 text-[9px] font-semibold text-slate-500'
+}
+
+function marketModeBadgeClass(item: FeedItem) {
+  if (item.market_mode === 'B2C') return 'text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-green-50 text-green-600'
+  if (item.market_mode === 'C2C') return 'text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700'
+  return 'text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600'
+}
+
+function itemCtaLabel(item: FeedItem) {
+  if (isSecondhandItem(item)) return t('common.view')
+  return item.market_mode === 'B2C' ? t('market.buy_now') : t('market.quote')
+}
+
+function ctaButtonClass(item: FeedItem) {
+  if (isSecondhandItem(item)) return 'w-full mt-2 py-1.5 rounded-xl text-[11px] font-semibold transition-colors bg-amber-600 text-white'
+  return ['w-full mt-2 py-1.5 rounded-xl text-[11px] font-semibold transition-colors', item.market_mode === 'B2C' ? 'bg-green-600 text-white' : 'bg-indigo-600 text-white']
 }
 </script>
 
