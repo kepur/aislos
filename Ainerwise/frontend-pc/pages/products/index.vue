@@ -60,8 +60,8 @@
             >
               <div class="aspect-video bg-black/20 flex items-center justify-center border-b border-white/10">
                 <img
-                  v-if="product.images_json?.[0]"
-                  :src="product.images_json[0]"
+                  v-if="firstProductImage(product)"
+                  :src="firstProductImage(product)"
                   :alt="product.name"
                   class="w-full h-full object-cover"
                 />
@@ -109,13 +109,37 @@
 </template>
 
 <script setup lang="ts">
+import {
+  absoluteSeoUrl,
+  firstProductImage,
+  productItemListJsonLd,
+} from '~/utils/productSeo'
+
 const { apiFetch } = useApi()
-const products = ref<any[]>([])
-const categories = ref<any[]>([])
 const search = ref('')
 const selectedCategory = ref<string | null>(null)
-const loading = ref(true)
-const error = ref('')
+const requestUrl = useRequestURL()
+
+const { data, pending: loading, error: loadError, refresh: refreshProducts } = await useAsyncData(
+  'official-products-index',
+  async () => {
+    const [prodRes, catRes] = await Promise.all([
+      apiFetch<any>('/products?limit=100'),
+      apiFetch<any>('/product-categories'),
+    ])
+    return {
+      products: prodRes.items || prodRes || [],
+      categories: catRes.items || catRes || [],
+    }
+  },
+  { default: () => ({ products: [], categories: [] }) },
+)
+
+const products = computed<any[]>(() => data.value?.products || [])
+const categories = computed<any[]>(() => data.value?.categories || [])
+const error = computed(() => loadError.value
+  ? (loadError.value as any)?.data?.detail || (loadError.value as any)?.message || 'Please try again.'
+  : '')
 
 const filteredProducts = computed(() => {
   const term = search.value.trim().toLowerCase()
@@ -128,23 +152,31 @@ const filteredProducts = computed(() => {
 })
 
 async function loadProducts() {
-  loading.value = true
-  error.value = ''
-  try {
-    const [prodRes, catRes] = await Promise.all([
-      apiFetch<any>('/products'),
-      apiFetch<any>('/product-categories'),
-    ])
-    products.value = prodRes.items || prodRes || []
-    categories.value = catRes.items || catRes || []
-  } catch (cause: any) {
-    products.value = []
-    categories.value = []
-    error.value = cause?.data?.detail || cause?.message || 'Please try again.'
-  } finally {
-    loading.value = false
-  }
+  await refreshProducts()
 }
 
-onMounted(loadProducts)
+const canonicalUrl = computed(() => absoluteSeoUrl('/products', requestUrl.origin))
+const pageDescription = 'Explore AinerWise verified smart building products, China tier-1 supply chains, AI procurement, local installation and lifecycle service support.'
+
+useSeoMeta({
+  title: 'Verified Smart Building Product Catalog | AinerWise',
+  description: pageDescription,
+  ogTitle: 'Verified Smart Building Product Catalog | AinerWise',
+  ogDescription: pageDescription,
+  ogType: 'website',
+  ogUrl: () => canonicalUrl.value,
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Verified Smart Building Product Catalog | AinerWise',
+  twitterDescription: pageDescription,
+})
+
+useHead(() => ({
+  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify(productItemListJsonLd(products.value, canonicalUrl.value, requestUrl.origin)),
+    },
+  ],
+}))
 </script>

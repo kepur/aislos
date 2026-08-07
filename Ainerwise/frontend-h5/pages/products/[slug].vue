@@ -23,7 +23,7 @@
       <!-- Image -->
       <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
         <div class="h-48 bg-slate-50 flex items-center justify-center">
-          <img v-if="product.image_url" :src="product.image_url" :alt="product.name" class="w-full h-full object-cover" />
+          <img v-if="firstProductImage(product)" :src="firstProductImage(product)" :alt="product.name" class="w-full h-full object-cover" />
           <svg v-else class="w-16 h-16 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1">
             <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 0 0 1.5-1.5V5.25a1.5 1.5 0 0 0-1.5-1.5H3.75a1.5 1.5 0 0 0-1.5 1.5v14.25c0 .828.672 1.5 1.5 1.5Z" />
           </svg>
@@ -92,11 +92,29 @@
 </template>
 
 <script setup lang="ts">
+import {
+  absoluteSeoUrl,
+  firstProductImage,
+  productDisplayName,
+  productJsonLd,
+  productSeoDescription,
+  productSeoTitle,
+} from '~/utils/productSeo'
+
 const route = useRoute()
 const { apiFetch } = useApi()
-const product = ref<any>(null)
-const loading = ref(true)
-const error = ref('')
+const requestUrl = useRequestURL()
+const slug = computed(() => String(route.params.slug || ''))
+
+const { data: product, pending: loading, error: loadError, refresh: refreshProduct } = await useAsyncData(
+  () => `h5-official-product-${slug.value}`,
+  () => apiFetch<any>(`/products/${slug.value}`),
+  { watch: [slug] },
+)
+
+const error = computed(() => loadError.value
+  ? (loadError.value as any)?.data?.detail || (loadError.value as any)?.message || 'Please try again.'
+  : '')
 
 function protocolsFor(product: any) {
   if (Array.isArray(product?.protocols_json)) return product.protocols_json
@@ -105,18 +123,52 @@ function protocolsFor(product: any) {
 }
 
 async function loadProduct() {
-  loading.value = true
-  error.value = ''
-  try {
-    const res = await apiFetch<any>(`/products/${route.params.slug}`)
-    product.value = res
-  } catch (cause: any) {
-    product.value = null
-    error.value = cause?.data?.detail || cause?.message || 'Please try again.'
-  } finally {
-    loading.value = false
-  }
+  await refreshProduct()
 }
 
-onMounted(loadProduct)
+const canonicalUrl = computed(() => absoluteSeoUrl(`/products/${slug.value}`, requestUrl.origin))
+const seoTitle = computed(() => productSeoTitle(product.value))
+const seoDescription = computed(() => productSeoDescription(product.value))
+const seoImage = computed(() => {
+  const image = firstProductImage(product.value)
+  return image ? absoluteSeoUrl(image, requestUrl.origin) : ''
+})
+
+useSeoMeta({
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
+  ogTitle: () => seoTitle.value,
+  ogDescription: () => seoDescription.value,
+  ogType: 'product',
+  ogUrl: () => canonicalUrl.value,
+  ogImage: () => seoImage.value || undefined,
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => seoTitle.value,
+  twitterDescription: () => seoDescription.value,
+  twitterImage: () => seoImage.value || undefined,
+})
+
+useHead(() => ({
+  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+  script: product.value
+    ? [
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify(productJsonLd(product.value, canonicalUrl.value, requestUrl.origin)),
+        },
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'AinerWise', item: requestUrl.origin },
+              { '@type': 'ListItem', position: 2, name: 'Products', item: absoluteSeoUrl('/products', requestUrl.origin) },
+              { '@type': 'ListItem', position: 3, name: productDisplayName(product.value), item: canonicalUrl.value },
+            ],
+          }),
+        },
+      ]
+    : [],
+}))
 </script>

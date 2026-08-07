@@ -39,7 +39,7 @@
         class="bg-white rounded-xl overflow-hidden border border-slate-100 shadow-sm active:shadow-none transition"
       >
         <div class="h-28 bg-slate-50 flex items-center justify-center">
-          <img v-if="product.image_url" :src="product.image_url" :alt="product.name" class="w-full h-full object-cover" />
+          <img v-if="firstProductImage(product)" :src="firstProductImage(product)" :alt="product.name" class="w-full h-full object-cover" />
           <svg v-else class="w-10 h-10 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1">
             <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 0 0 1.5-1.5V5.25a1.5 1.5 0 0 0-1.5-1.5H3.75a1.5 1.5 0 0 0-1.5 1.5v14.25c0 .828.672 1.5 1.5 1.5Z" />
           </svg>
@@ -71,11 +71,29 @@
 </template>
 
 <script setup lang="ts">
+import {
+  absoluteSeoUrl,
+  firstProductImage,
+  productItemListJsonLd,
+} from '~/utils/productSeo'
+
 const { apiFetch } = useApi()
-const products = ref<any[]>([])
 const search = ref('')
-const loading = ref(true)
-const error = ref('')
+const requestUrl = useRequestURL()
+
+const { data, pending: loading, error: loadError, refresh: refreshProducts } = await useAsyncData(
+  'h5-official-products-index',
+  async () => {
+    const res = await apiFetch<any>('/products?limit=100')
+    return { products: res.items || res || [] }
+  },
+  { default: () => ({ products: [] }) },
+)
+
+const products = computed<any[]>(() => data.value?.products || [])
+const error = computed(() => loadError.value
+  ? (loadError.value as any)?.data?.detail || (loadError.value as any)?.message || 'Please try again.'
+  : '')
 
 const filteredProducts = computed(() => {
   if (!search.value) return products.value
@@ -92,18 +110,31 @@ function protocolsFor(product: any) {
 }
 
 async function loadProducts() {
-  loading.value = true
-  error.value = ''
-  try {
-    const res = await apiFetch<any>('/products?limit=50')
-    products.value = res.items || res || []
-  } catch (cause: any) {
-    products.value = []
-    error.value = cause?.data?.detail || cause?.message || 'Please try again.'
-  } finally {
-    loading.value = false
-  }
+  await refreshProducts()
 }
 
-onMounted(loadProducts)
+const canonicalUrl = computed(() => absoluteSeoUrl('/products', requestUrl.origin))
+const pageDescription = 'Browse AinerWise mobile product catalog for smart buildings, AI procurement, verified hardware, installation and lifecycle support.'
+
+useSeoMeta({
+  title: 'Mobile Smart Building Product Catalog | AinerWise',
+  description: pageDescription,
+  ogTitle: 'Mobile Smart Building Product Catalog | AinerWise',
+  ogDescription: pageDescription,
+  ogType: 'website',
+  ogUrl: () => canonicalUrl.value,
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Mobile Smart Building Product Catalog | AinerWise',
+  twitterDescription: pageDescription,
+})
+
+useHead(() => ({
+  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify(productItemListJsonLd(products.value, canonicalUrl.value, requestUrl.origin)),
+    },
+  ],
+}))
 </script>

@@ -151,15 +151,33 @@
 </template>
 
 <script setup lang="ts">
+import {
+  absoluteSeoUrl,
+  firstProductImage,
+  productDisplayName,
+  productJsonLd,
+  productSeoDescription,
+  productSeoTitle,
+} from '~/utils/productSeo'
+
 const route = useRoute()
 const { apiFetch } = useApi()
 const { isLoggedIn } = useAuth()
+const requestUrl = useRequestURL()
 
-const product = ref<any>(null)
-const loading = ref(true)
-const error = ref('')
 const showInquiryModal = ref(false)
 const inquirySuccess = ref(false)
+
+const slug = computed(() => String(route.params.slug || ''))
+const { data: product, pending: loading, error: loadError, refresh: refreshProduct } = await useAsyncData(
+  () => `official-product-${slug.value}`,
+  () => apiFetch<any>(`/products/${slug.value}`),
+  { watch: [slug] },
+)
+
+const error = computed(() => loadError.value
+  ? (loadError.value as any)?.data?.detail || (loadError.value as any)?.message || 'Please try again.'
+  : '')
 
 const inquiryForm = ref({
   product_id: '',
@@ -171,26 +189,62 @@ const inquiryForm = ref({
 })
 
 async function loadProduct() {
-  loading.value = true
-  error.value = ''
-  try {
-    product.value = await apiFetch<any>(`/products/${route.params.slug}`)
-  } catch (cause: any) {
-    product.value = null
-    error.value = cause?.data?.detail || cause?.message || 'Please try again.'
-  } finally {
-    loading.value = false
-  }
-
-  if (product.value) {
-    inquiryForm.value.product_id = product.value.id
-    if (product.value.moq) {
-      inquiryForm.value.quantity = product.value.moq
-    }
-  }
+  await refreshProduct()
 }
 
-onMounted(loadProduct)
+watch(product, (value) => {
+  if (!value) return
+  inquiryForm.value.product_id = value.id
+  if (value.moq) {
+    inquiryForm.value.quantity = value.moq
+  }
+}, { immediate: true })
+
+const canonicalUrl = computed(() => absoluteSeoUrl(`/products/${slug.value}`, requestUrl.origin))
+const seoTitle = computed(() => productSeoTitle(product.value))
+const seoDescription = computed(() => productSeoDescription(product.value))
+const seoImage = computed(() => {
+  const image = firstProductImage(product.value)
+  return image ? absoluteSeoUrl(image, requestUrl.origin) : ''
+})
+
+useSeoMeta({
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
+  ogTitle: () => seoTitle.value,
+  ogDescription: () => seoDescription.value,
+  ogType: 'product',
+  ogUrl: () => canonicalUrl.value,
+  ogImage: () => seoImage.value || undefined,
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => seoTitle.value,
+  twitterDescription: () => seoDescription.value,
+  twitterImage: () => seoImage.value || undefined,
+})
+
+useHead(() => ({
+  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+  script: product.value
+    ? [
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify(productJsonLd(product.value, canonicalUrl.value, requestUrl.origin)),
+        },
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'AinerWise', item: requestUrl.origin },
+              { '@type': 'ListItem', position: 2, name: 'Products', item: absoluteSeoUrl('/products', requestUrl.origin) },
+              { '@type': 'ListItem', position: 3, name: productDisplayName(product.value), item: canonicalUrl.value },
+            ],
+          }),
+        },
+      ]
+    : [],
+}))
 
 async function submitInquiry() {
   try {
