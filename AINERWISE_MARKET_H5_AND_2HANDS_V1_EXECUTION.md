@@ -73,6 +73,7 @@
 | 2Hands mobile browse | 二手移动频道 | `modules/procurement/h5/pages/secondhand` | READY_FOR_VERIFY | `npm run build`; `curl http://127.0.0.1:4107/cn/secondhand` -> 200 |
 | 2Hands listing origin | personal vs enterprise recycled | `backend/app/api/v1/endpoints/secondhand.py` | READY_FOR_VERIFY | `curl http://127.0.0.1:8000/api/v1/secondhand/listings?page_size=1` -> 200, `listing_origin=personal_secondhand`; warranty validation implemented for enterprise origins |
 | Supplier catalog item type | New / recycled / market metadata | `modules/procurement/h5/pages/supplier/catalog.vue` | READY_FOR_VERIFY | `npm run build`; authenticated create/edit payload requires independent verifier login test |
+| Official H5 product-first UX | 官网 H5 首页、工作台和底栏优先露出产品目录 | `Ainerwise/frontend-h5` | READY_FOR_VERIFY | Product catalog promoted to hero CTA and center bottom tab; Market H5 jump remains standalone |
 | Backend product governance | Admin 控制国家、商品 surface、SEO batch | `frontend-admin` + backend | TODO | admin test evidence |
 
 ## Status Rules

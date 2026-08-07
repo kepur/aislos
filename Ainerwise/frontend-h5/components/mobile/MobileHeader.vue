@@ -1,10 +1,10 @@
 <template>
   <header class="mobile-header">
-    <NuxtLink :key="`${activePortalKey}:${homePath}`" :to="homePath" class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+    <NuxtLink :key="`${activePortalKey}:${homePath}`" :to="homePath" class="flex min-w-0 flex-1 items-center gap-2">
+      <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600">
         <span class="text-white font-black text-xs">A</span>
       </div>
-      <span class="text-base font-bold text-slate-800">{{ portalName }}</span>
+      <span class="truncate text-base font-bold text-slate-800">{{ portalName }}</span>
     </NuxtLink>
 
     <div class="flex items-center gap-2">
@@ -33,7 +33,29 @@ const { user, isLoggedIn } = useAuth()
 const { portal } = usePortalMode()
 const { manifest } = usePortalManifest()
 const activePortalKey = computed(() => manifest.value?.portal_key || portal.shortName)
-const portalName = computed(() => manifest.value?.display_name || portal.shortName)
+const headerNames: Record<string, string> = {
+  consumer_h5: 'AinerWise',
+  customer_h5: 'AinerWise',
+  customer: 'AinerWise',
+  cebu_buyer_h5: 'Market',
+  cebu_buyer: 'Market',
+  supplier_h5: 'Supplier',
+  supplier: 'Supplier',
+  partner_company_h5: 'Partner',
+  partner_company: 'Partner',
+  marketing_h5: 'Marketing',
+  field_worker_h5: 'Field',
+  crew_lead_h5: 'Crew',
+  kiosk_h5: 'Kiosk',
+}
+const portalName = computed(() => {
+  const key = activePortalKey.value
+  if (headerNames[key]) return headerNames[key]
+  const raw = manifest.value?.display_name || portal.shortName || 'AinerWise'
+  return raw
+    .replace(/\s+(Consumer Mobile|Workspace H5|Buyer H5|PWA)$/i, '')
+    .replace(/^Customer\s+/i, '')
+})
 const homePath = computed(() => manifest.value?.home_route || portal.home)
 
 const userInitial = computed(() => {

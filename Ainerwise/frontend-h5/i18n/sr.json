@@ -16,7 +16,8 @@
     "supplierApplication": "Postani dobavljač",
     "aiBrain": "AI Mozak",
     "projects": "Projekti",
-    "profile": "Profil"
+    "profile": "Profil",
+    "market": "Market"
   },
   "home": {
     "heroKicker": "Platforma za inteligenciju objekata (AI)",
@@ -25,6 +26,18 @@
     "heroCta1": "Započni AI Procenu",
     "heroCta2": "Pogledaj AI Zgrada Demo",
     "heroCta3": "Demo Kupac Prijava",
+    "heroCtaProducts": "Pregled proizvoda",
+    "heroCtaMarket": "Otvori Market",
+    "heroCtaAssessment": "Složen projekat? Pokreni AI procenu",
+    "shopKicker": "Prvo proizvodi",
+    "shopTitle": "Zvanične preporuke, Market proizvodi i 2Hands na jednom mestu.",
+    "shopSubtitle": "Kupci prvo gledaju proizvode, cenu i garanciju. Ako treba kompletno rešenje, slede AI procena i isporuka.",
+    "shopOfficial": "Zvanično",
+    "shopOfficialDesc": "Proverene preporuke",
+    "shopMarket": "Market",
+    "shopMarketDesc": "Roba dobavljača",
+    "shopSecondhand": "2Hands",
+    "shopSecondhandDesc": "Ušteda",
     "solutionsTitle": "Matrica rešenja",
     "solutionsSubtitle": "Linije inteligencije objekata koje se prodaju kao praćenje, usklađenost i dugoročna vrednost usluge — ne jednokratni uređaji.",
     "productsTitle": "Provereni proizvodi i lanac nabavke",
@@ -110,7 +123,11 @@
     "verified": "Proveren dobavljač",
     "allCategories": "Sve kategorije",
     "filter": "Filter",
-    "noProducts": "Nema proizvoda"
+    "noProducts": "Nema proizvoda",
+    "searchPlaceholder": "Pretraga proizvoda...",
+    "officialPicks": "Zvanične preporuke",
+    "marketH5": "Market H5",
+    "secondhand": "2Hands"
   },
   "services": {
     "title": "Servisni paketi",
@@ -513,6 +530,9 @@
     "viewAll": "Prikaži sve",
     "none": "Još nema ničega.",
     "loginRequired": "Prijavite se da vidite radnu površinu",
-    "total": "ukupno"
+    "total": "ukupno",
+    "shopKicker": "Prvo proizvodi",
+    "shopTitle": "Prvo pogledajte proizvode i tržišne cene",
+    "shopSubtitle": "Kupite direktno kada može. Pokrenite AI procenu kada projekat traži dizajn, instalaciju i podršku."
   }
 }

@@ -147,11 +147,11 @@ _H5_CUSTOMER = _m(
     layout="customer",
     home_route="/",
     theme_key="ainerwise-customer",
-    menu_keys=["projects", "approvals", "assets", "tickets", "profile"],
-    route_allowlist=["/", "/projects/**", "/portal/**", "/profile", "/access-denied", "/login"],
+    menu_keys=["products", "projects", "approvals", "assets", "tickets", "profile"],
+    route_allowlist=["/", "/products/**", "/projects/**", "/portal/**", "/profile", "/access-denied", "/login"],
     required_grants=["portal.h5.customer"],
     pwa_manifest_key="customer",
-    display_name="Customer Project Portal",
+    display_name="Customer Portal",
     legacy_portal_mode="customer",
 )
 
@@ -255,7 +255,7 @@ _TARGET_EXPERIENCE_PORTALS: list[dict[str, Any]] = [
         route_allowlist=["/", "/solutions/**", "/products/**", "/marketplace/**", "/services", "/submit-requirement", "/ai-brain", "/about", "/contact", "/login", "/register", "/auth/**"],
         required_grants=[],
         pwa_manifest_key="consumer",
-        display_name="AinerWise Consumer Mobile",
+        display_name="AinerWise",
     ),
     _m(
         portal_key="customer_pc",
@@ -274,11 +274,11 @@ _TARGET_EXPERIENCE_PORTALS: list[dict[str, Any]] = [
         layout="customer-mobile",
         home_route="/projects",
         theme_key="ainerwise-customer",
-        menu_keys=["projects", "approvals", "installations", "assets", "tickets", "profile"],
-        route_allowlist=["/dashboard", "/projects", "/projects/**", "/customer/**", "/profile", "/access-denied", "/login"],
+        menu_keys=["products", "projects", "approvals", "installations", "assets", "tickets", "profile"],
+        route_allowlist=["/dashboard", "/products", "/products/**", "/projects", "/projects/**", "/customer/**", "/profile", "/access-denied", "/login"],
         required_grants=["portal.h5.customer"],
         pwa_manifest_key="customer",
-        display_name="Customer Workspace H5",
+        display_name="Workspace",
     ),
     _m(
         portal_key="cebu_buyer_pc",

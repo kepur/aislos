@@ -18,7 +18,10 @@
     "store": "Product Catalog",
     "marketplace": "Agent Store",
     "developers": "Developers",
-    "procurementMarket": "Market"
+    "procurementMarket": "Market",
+    "projects": "Projekty",
+    "profile": "Profil",
+    "market": "Market"
   },
   "home": {
     "heroKicker": "AISLOS — The Enterprise AI Operating System",
@@ -27,6 +30,18 @@
     "heroCta1": "Start AI Assessment",
     "heroCta2": "Enter AI Brain",
     "heroCta3": "Login as Demo Customer",
+    "heroCtaProducts": "Przegladaj produkty",
+    "heroCtaMarket": "Otworz Market",
+    "heroCtaAssessment": "Zlozony projekt? Zacznij ocene AI",
+    "shopKicker": "Najpierw produkt",
+    "shopTitle": "Rekomendacje, produkty Market i 2Hands w jednym miejscu.",
+    "shopSubtitle": "Klient najpierw sprawdza produkty, ceny i gwarancje. Pelny projekt, montaz i serwis zaczynaja sie od oceny AI.",
+    "shopOfficial": "Oficjalne",
+    "shopOfficialDesc": "Sprawdzone",
+    "shopMarket": "Market",
+    "shopMarketDesc": "Dostawcy",
+    "shopSecondhand": "2Hands",
+    "shopSecondhandDesc": "Oszczednosc",
     "solutionsTitle": "Solution Matrix",
     "solutionsSubtitle": "Eight facility-intelligence lines — each sold as continuous monitoring, compliance and long-term service value, not one-time devices.",
     "productsTitle": "Verified Products & Supply Chain",
@@ -127,7 +142,11 @@
     "verified": "Verified Supplier",
     "allCategories": "All Categories",
     "filter": "Filter",
-    "noProducts": "No products found"
+    "noProducts": "No products found",
+    "searchPlaceholder": "Szukaj produktow...",
+    "officialPicks": "Rekomendowane",
+    "marketH5": "Market H5",
+    "secondhand": "2Hands"
   },
   "services": {
     "title": "Service Packages",
@@ -534,6 +553,26 @@
       "packages": "Manage packages",
       "done": "RFQ published"
     }
+  },
+  "dash": {
+    "title": "Moje miejsce pracy",
+    "subtitle": "Leady, projekty, oferty i zgloszenia w jednym widoku.",
+    "leads": "Leady",
+    "projects": "Projekty",
+    "quotes": "Oferty",
+    "tickets": "Zgloszenia",
+    "newAssessment": "+ Nowa ocena AI",
+    "recentProjects": "Ostatnie projekty",
+    "recentLeads": "Ostatnie leady",
+    "myQuotes": "Moje oferty",
+    "myTickets": "Moje zgloszenia",
+    "viewAll": "Zobacz wszystkie",
+    "none": "Brak danych.",
+    "loginRequired": "Zaloguj sie, aby zobaczyc miejsce pracy",
+    "total": "razem",
+    "shopKicker": "Najpierw produkt",
+    "shopTitle": "Najpierw sprawdz produkty i ceny rynkowe",
+    "shopSubtitle": "Kup bezposrednio, gdy to mozliwe. Ocene AI uruchom, gdy potrzebny jest projekt, montaz i serwis."
   },
   "sign": {
     "done": "Document signed",

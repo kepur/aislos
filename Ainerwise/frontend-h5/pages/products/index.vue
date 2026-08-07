@@ -12,13 +12,13 @@
 
     <div class="mb-4 grid grid-cols-3 gap-2">
       <span class="rounded-2xl border border-blue-100 bg-white px-3 py-2 text-center text-[10px] font-bold text-blue-600">
-        Official picks
+        {{ $t('products.officialPicks') }}
       </span>
       <a :href="marketH5Url" class="rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-center text-[10px] font-bold text-emerald-700">
-        Market H5
+        {{ $t('products.marketH5') }}
       </a>
       <a :href="`${marketH5Url}/secondhand`" class="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-center text-[10px] font-bold text-slate-600">
-        2Hands
+        {{ $t('products.secondhand') }}
       </a>
     </div>
 

@@ -16,7 +16,8 @@
     "supplierApplication": "Become a Supplier",
     "aiBrain": "AI Brain",
     "projects": "Projects",
-    "profile": "Profile"
+    "profile": "Profile",
+    "market": "Market"
   },
   "home": {
     "heroKicker": "AI Facility Intelligence Platform",
@@ -25,6 +26,18 @@
     "heroCta1": "Start AI Assessment",
     "heroCta2": "View AI Building Demo",
     "heroCta3": "Login as Demo Customer",
+    "heroCtaProducts": "Browse Products",
+    "heroCtaMarket": "Open Market",
+    "heroCtaAssessment": "Complex project? Start AI assessment",
+    "shopKicker": "Product first",
+    "shopTitle": "Official picks, market products and 2Hands in one place.",
+    "shopSubtitle": "Customers browse products, prices and warranty first. If they need a full package, AI assessment and delivery come next.",
+    "shopOfficial": "Official",
+    "shopOfficialDesc": "Verified picks",
+    "shopMarket": "Market",
+    "shopMarketDesc": "Supplier goods",
+    "shopSecondhand": "2Hands",
+    "shopSecondhandDesc": "Save cost",
     "solutionsTitle": "Solution Matrix",
     "solutionsSubtitle": "Facility-intelligence lines sold as monitoring, compliance and long-term service value — not one-time devices.",
     "productsTitle": "Verified Products & Supply Chain",
@@ -111,7 +124,10 @@
     "allCategories": "All Categories",
     "filter": "Filter",
     "noProducts": "No products found",
-    "searchPlaceholder": "Search products..."
+    "searchPlaceholder": "Search products...",
+    "officialPicks": "Official picks",
+    "marketH5": "Market H5",
+    "secondhand": "2Hands"
   },
   "services": {
     "title": "Service Packages",
@@ -515,6 +531,9 @@
     "viewAll": "View all",
     "none": "Nothing here yet.",
     "loginRequired": "Login to view your workspace",
-    "total": "total"
+    "total": "total",
+    "shopKicker": "Product first",
+    "shopTitle": "Browse products and market prices first",
+    "shopSubtitle": "Buy directly when possible. Start AI assessment when the project needs design, installation and after-sales service."
   }
 }

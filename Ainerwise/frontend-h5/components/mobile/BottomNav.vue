@@ -8,15 +8,13 @@
       :active-class="tab.center ? '' : 'active'"
     >
       <div v-if="tab.center" class="center-btn" :class="{ 'active': isActive(tab.to) }">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
-        </svg>
+        <component :is="tab.icon || IconProducts" class="h-6 w-6" />
       </div>
       <template v-else>
         <component :is="tab.icon" class="w-5 h-5" />
         <span class="text-[10px] mt-0.5">{{ tab.label }}</span>
       </template>
-      <span v-if="tab.center" class="text-[10px] mt-1">AI</span>
+      <span v-if="tab.center" class="mt-1 text-[10px]">{{ tab.centerLabel || tab.label }}</span>
     </NuxtLink>
   </nav>
 </template>
@@ -28,7 +26,9 @@ const route = useRoute()
 const { t } = useI18n({ useScope: 'global' })
 const { mode } = usePortalMode()
 const { manifest } = usePortalManifest()
+const publicConfig = useRuntimeConfig().public
 const activePortalKey = computed(() => manifest.value?.portal_key || (mode === 'partner' ? 'partner_company' : mode))
+const marketH5Url = computed(() => String(publicConfig.marketH5Url || 'http://localhost:4107'))
 
 function isActive(path: string) {
   return route.path === path || route.path.startsWith(path + '/')
@@ -45,6 +45,14 @@ const IconSolutions = () => h('svg', { class: 'w-5 h-5', viewBox: '0 0 24 24', f
 
 const IconProjects = () => h('svg', { class: 'w-5 h-5', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.5' }, [
   h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z' })
+])
+
+const IconProducts = () => h('svg', { class: 'w-5 h-5', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.5' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 10.104A2.25 2.25 0 0 1 18.637 21H5.363a2.25 2.25 0 0 1-2.232-2.389L4.394 8.507A2.25 2.25 0 0 1 6.626 6.5h10.748a2.25 2.25 0 0 1 2.232 2.007Z' })
+])
+
+const IconSecondhand = () => h('svg', { class: 'w-5 h-5', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.5' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'M16.5 9.75h1.875A2.625 2.625 0 0 1 21 12.375v0A2.625 2.625 0 0 1 18.375 15H7.5m0 0 3-3m-3 3 3 3M7.5 14.25H5.625A2.625 2.625 0 0 1 3 11.625v0A2.625 2.625 0 0 1 5.625 9H16.5m0 0-3-3m3 3-3 3' })
 ])
 
 const IconProfile = () => h('svg', { class: 'w-5 h-5', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.5' }, [
@@ -93,11 +101,11 @@ const tabs = computed(() => {
   }
   if (['cebu_buyer', 'cebu_buyer_h5'].includes(activePortalKey.value)) {
     return [
-      { to: '/buyer', label: 'Home', icon: IconDashboard },
-      { to: '/buyer/requests', label: 'Requests', icon: IconProjects },
-      { to: '/buyer/post-request', label: 'Post', center: true },
+      { to: '/marketplace', label: t('nav.market'), icon: IconProducts },
+      { to: '/secondhand', label: '2Hands', icon: IconSecondhand },
+      { to: '/buyer/post-request', label: t('nav.submitRequirement'), centerLabel: 'Post', center: true },
       { to: '/buyer/orders', label: 'Orders', icon: IconSolutions },
-      { to: '/buyer/messages', label: 'Messages', icon: IconProfile },
+      { to: '/buyer', label: 'Me', icon: IconProfile },
     ]
   }
   if (activePortalKey.value === 'marketing_h5') {
@@ -113,7 +121,7 @@ const tabs = computed(() => {
     return [
       { to: '/dashboard', label: 'Overview', icon: IconDashboard },
       { to: '/projects', label: 'Projects', icon: IconProjects },
-      { to: '/customer/approvals', label: 'Approvals', icon: IconSolutions },
+      { to: '/products', label: t('nav.products'), centerLabel: t('nav.products'), center: true, icon: IconProducts },
       { to: '/customer/installations', label: 'Install', icon: IconCalendar },
       { to: '/customer/assets', label: 'Assets', icon: IconProfile },
     ]
@@ -121,8 +129,8 @@ const tabs = computed(() => {
   return [
     { to: '/', label: t('nav.home'), icon: IconHome },
     { to: '/solutions', label: t('nav.solutions'), icon: IconSolutions },
-    { to: '/ai-brain', label: 'AI', center: true },
-    { to: '/dashboard', label: t('nav.dashboard'), icon: IconDashboard },
+    { to: '/products', label: t('nav.products'), centerLabel: t('nav.products'), center: true, icon: IconProducts },
+    { to: marketH5Url.value, label: t('nav.market'), icon: IconProducts },
     { to: '/profile', label: t('nav.profile'), icon: IconProfile },
   ]
 })

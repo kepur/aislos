@@ -16,7 +16,8 @@
     "supplierApplication": "成为供应商",
     "aiBrain": "AI 大脑",
     "projects": "项目",
-    "profile": "我的"
+    "profile": "我的",
+    "market": "Market"
   },
   "home": {
     "heroKicker": "AI 设施智能化平台",
@@ -25,6 +26,18 @@
     "heroCta1": "开始 AI 评估",
     "heroCta2": "查看 AI 建筑演示",
     "heroCta3": "体验客户账号",
+    "heroCtaProducts": "浏览产品",
+    "heroCtaMarket": "进入 Market",
+    "heroCtaAssessment": "复杂项目？提交 AI 评估",
+    "shopKicker": "先买产品",
+    "shopTitle": "官方推荐、市场商品和 2Hands 都在这里。",
+    "shopSubtitle": "客户先看产品、比价格和保修；需要组合方案时，再进入 AI 评估和整体交付。",
+    "shopOfficial": "官网产品",
+    "shopOfficialDesc": "认证推荐",
+    "shopMarket": "Market",
+    "shopMarketDesc": "供应商商品",
+    "shopSecondhand": "2Hands",
+    "shopSecondhandDesc": "二手省钱",
     "solutionsTitle": "解决方案矩阵",
     "solutionsSubtitle": "按持续监测、合规与长期服务价值交付的设施智能化产品线，而非一次性设备。",
     "productsTitle": "认证产品与供应链",
@@ -110,7 +123,11 @@
     "verified": "认证供应商",
     "allCategories": "全部分类",
     "filter": "筛选",
-    "noProducts": "暂无产品"
+    "noProducts": "暂无产品",
+    "searchPlaceholder": "搜索产品...",
+    "officialPicks": "官网推荐",
+    "marketH5": "Market H5",
+    "secondhand": "2Hands"
   },
   "services": {
     "title": "服务套餐",
@@ -513,6 +530,9 @@
     "viewAll": "查看全部",
     "none": "暂无内容。",
     "loginRequired": "登录查看你的工作台",
-    "total": "总计"
+    "total": "总计",
+    "shopKicker": "产品优先",
+    "shopTitle": "先浏览产品和市场价",
+    "shopSubtitle": "能直接买就先买；需要组合设计、安装和售后时，再提交 AI 评估。"
   }
 }
