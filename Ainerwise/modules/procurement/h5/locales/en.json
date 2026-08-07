@@ -1,5 +1,5 @@
 {
-  "app_name": "AinerWise Procurement",
+  "app_name": "AinerWise Market",
   "tagline": "Tell suppliers what you need.",
   "common": {
     "submit": "Submit",
@@ -68,6 +68,7 @@
     "catalog": "Catalog",
     "wallet": "Wallet",
     "me": "Me",
+    "secondhand": "2Hands",
     "pings": "Pings",
     "adCampaigns": "Ad Campaigns"
   },
@@ -94,7 +95,23 @@
     "sort_new": "New",
     "sort_popular": "Popular",
     "sort_price_asc": "Price ↑",
-    "sort_price_desc": "Price ↓"
+    "sort_price_desc": "Price ↓",
+    "surface_new": "New",
+    "surface_secondhand": "2Hands",
+    "surface_recycled": "Enterprise recycled"
+  },
+  "secondhand": {
+    "title": "2Hands",
+    "subtitle": "Cost-saving second-hand, recycled and refurbished equipment with clear condition and warranty rules.",
+    "personal": "Personal second-hand",
+    "enterprise": "Enterprise recycled",
+    "all": "All 2Hands",
+    "warranty": "Warranty",
+    "no_warranty": "No warranty",
+    "condition": "Condition",
+    "pickup": "Pickup",
+    "empty": "No active 2Hands listings yet.",
+    "sell": "List item"
   },
   "project": {
     "title": "AI Projects",

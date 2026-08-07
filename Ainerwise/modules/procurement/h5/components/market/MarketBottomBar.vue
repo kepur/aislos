@@ -22,6 +22,11 @@
           <svg v-else-if="tab.id === 'market'" :fill="tab.active ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
+          <svg v-else-if="tab.id === 'secondhand'" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h10a3 3 0 013 3v0a3 3 0 01-3 3H8" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 17h8a3 3 0 003-3v0a3 3 0 00-3-3h-2" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 13l-4-3 4-3M16 11l4 3-4 3" />
+          </svg>
           <svg v-else-if="tab.id === 'requests'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
@@ -50,11 +55,14 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { getLocalePrefixFromPath, stripLocalePrefix, withLocalePrefix } from '~/utils/localeRoutes'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 const { t } = useI18n({ useScope: 'global' })
+const normalizedPath = computed(() => stripLocalePrefix(route.path))
+const currentPrefix = computed(() => getLocalePrefixFromPath(route.path) || (import.meta.client ? localStorage.getItem('h5_locale_prefix') || '' : ''))
 
 interface Tab {
   id: string
@@ -80,19 +88,26 @@ const tabs = computed<Tab[]>(() => {
     id: 'market',
     label: t('nav.market'),
     to: '/marketplace',
-    active: route.path === '/marketplace' || route.path.startsWith('/marketplace/'),
+    active: normalizedPath.value === '/marketplace' || normalizedPath.value.startsWith('/marketplace/'),
+  }
+
+  const secondhandTab: Tab = {
+    id: 'secondhand',
+    label: t('nav.secondhand') || '2Hands',
+    to: '/secondhand',
+    active: normalizedPath.value === '/secondhand' || normalizedPath.value.startsWith('/secondhand/'),
   }
 
   // Middle tab — role aware
   const middleTab: Tab = isSupplier
-    ? { id: 'catalog', label: t('nav.catalog'), to: '/supplier/catalog', active: route.path.startsWith('/supplier/catalog') }
-    : { id: 'requests', label: t('nav.requests'), to: isLoggedIn ? '/buyer/requests' : `/auth/login?return_url=${encodeURIComponent('/buyer/requests')}`, active: route.path.startsWith('/buyer/requests') }
+    ? { id: 'catalog', label: t('nav.catalog'), to: '/supplier/catalog', active: normalizedPath.value.startsWith('/supplier/catalog') }
+    : { id: 'requests', label: t('nav.requests'), to: isLoggedIn ? '/buyer/requests' : `/auth/login?return_url=${encodeURIComponent('/buyer/requests')}`, active: normalizedPath.value.startsWith('/buyer/requests') }
 
   const walletTab: Tab = {
     id: 'wallet',
     label: t('nav.wallet'),
     to: isLoggedIn ? (isSupplier ? '/supplier/wallet' : '/buyer/wallet') : `/auth/login?return_url=${encodeURIComponent('/buyer/wallet')}`,
-    active: route.path === '/buyer/wallet' || route.path === '/supplier/wallet',
+    active: normalizedPath.value === '/buyer/wallet' || normalizedPath.value === '/supplier/wallet',
   }
 
   // Account / Login
@@ -105,10 +120,10 @@ const tabs = computed<Tab[]>(() => {
       }
     : { id: 'login', label: t('auth.sign_in'), to: `/auth/login?return_url=${encodeURIComponent(route.fullPath)}`, active: false }
 
-  return [homeTab, marketTab, middleTab, walletTab, accountTab]
+  return [homeTab, marketTab, secondhandTab, middleTab, walletTab, accountTab]
 })
 
 function navigate(tab: Tab) {
-  router.push(tab.to)
+  router.push(withLocalePrefix(tab.to, currentPrefix.value))
 }
 </script>

@@ -13,7 +13,7 @@
       <div class="rounded-2xl border border-amber-100 bg-amber-50 p-4">
         <p class="text-sm font-semibold text-amber-900">Email and Telegram are enabled by default.</p>
         <p class="mt-1 text-xs leading-relaxed text-amber-700">
-          WhatsApp and Viber are optional reminders. Order evidence, commitments, and dispute records still stay inside AinerWise Procurement.
+          WhatsApp and Viber are optional reminders. Order evidence, commitments, and dispute records still stay inside AinerWise Market.
         </p>
       </div>
 

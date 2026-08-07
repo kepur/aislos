@@ -6,7 +6,7 @@ services:
     environment:
       NUXT_PUBLIC_API_BASE: /api
       NUXT_CORE_API_INTERNAL: http://backend:8000
-      NUXT_PUBLIC_APP_NAME: AinerWise Procurement
+      NUXT_PUBLIC_APP_NAME: AinerWise Market
       NUXT_PUBLIC_APP_DOMAIN: market.localhost
     volumes:
       - ./modules/procurement/pc:/app
@@ -26,7 +26,7 @@ services:
     environment:
       NUXT_PUBLIC_API_BASE: /api
       NUXT_CORE_API_INTERNAL: http://backend:8000
-      NUXT_PUBLIC_APP_NAME: AinerWise Procurement
+      NUXT_PUBLIC_APP_NAME: AinerWise Market
       NUXT_PUBLIC_APP_DOMAIN: m.market.localhost
     volumes:
       - ./modules/procurement/h5:/app

@@ -5,7 +5,7 @@
       :key="tab.to"
       :to="tab.to"
       class="tab-item"
-      :class="{ active: isActive(tab.to) }"
+      :class="{ active: isActive(tab.match) }"
     >
       <div class="relative">
         <component :is="tab.icon" class="w-6 h-6" />
@@ -28,21 +28,27 @@ import IconRequests from "~/components/icons/IconRequests.vue";
 import IconOrders from "~/components/icons/IconOrders.vue";
 import IconWallet from "~/components/icons/IconWallet.vue";
 import IconProfile from "~/components/icons/IconProfile.vue";
+import { getLocalePrefixFromPath, stripLocalePrefix, withLocalePrefix } from "~/utils/localeRoutes";
 
 const route = useRoute();
 const notifStore = useNotificationStore();
 const { t } = useI18n({ useScope: "global" });
+const normalizedPath = computed(() => stripLocalePrefix(route.path));
+const currentPrefix = computed(() =>
+  getLocalePrefixFromPath(route.path) || (import.meta.client ? localStorage.getItem("h5_locale_prefix") || "" : "")
+);
 
 const tabs = computed(() => [
-  { to: "/buyer/home", label: t("nav.home"), icon: IconHome },
-  { to: "/marketplace", label: "Market", icon: IconRequests },
-  { to: "/buyer/requests", label: t("nav.requests"), icon: IconOrders },
-  { to: "/buyer/wallet", label: t("nav.wallet"), icon: IconWallet },
-  { to: "/buyer/profile", label: t("nav.me"), icon: IconProfile, badge: true },
+  { to: withLocalePrefix("/buyer/home", currentPrefix.value), match: "/buyer/home", label: t("nav.home"), icon: IconHome },
+  { to: withLocalePrefix("/marketplace", currentPrefix.value), match: "/marketplace", label: "Market", icon: IconRequests },
+  { to: withLocalePrefix("/secondhand", currentPrefix.value), match: "/secondhand", label: t("nav.secondhand") || "2Hands", icon: IconRequests },
+  { to: withLocalePrefix("/buyer/requests", currentPrefix.value), match: "/buyer/requests", label: t("nav.requests"), icon: IconOrders },
+  { to: withLocalePrefix("/buyer/wallet", currentPrefix.value), match: "/buyer/wallet", label: t("nav.wallet"), icon: IconWallet },
+  { to: withLocalePrefix("/buyer/profile", currentPrefix.value), match: "/buyer/profile", label: t("nav.me"), icon: IconProfile, badge: true },
 ]);
 
 function isActive(path: string) {
-  return route.path.startsWith(path);
+  return normalizedPath.value.startsWith(path);
 }
 
 onMounted(() => notifStore.fetchNotifications());

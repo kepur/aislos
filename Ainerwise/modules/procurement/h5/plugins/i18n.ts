@@ -10,6 +10,7 @@ import vi from "~/locales/vi.json";
 import id from "~/locales/id.json";
 import ar from "~/locales/ar.json";
 import sr from "~/locales/sr.json";
+import pl from "~/locales/pl.json";
 import {
   H5_LOCALE_TO_URI_PREFIX,
   getLocalePrefixFromPath,
@@ -21,14 +22,7 @@ export const SUPPORTED_LOCALES = [
   { code: "en", name: "English" },
   { code: "zh", name: "中文" },
   { code: "sr", name: "Srpski" },
-  { code: "tl", name: "Tagalog" },
-  { code: "ja", name: "日本語" },
-  { code: "ko", name: "한국어" },
-  { code: "es", name: "Español" },
-  { code: "th", name: "ไทย" },
-  { code: "vi", name: "Tiếng Việt" },
-  { code: "id", name: "Bahasa Indonesia" },
-  { code: "ar", name: "العربية" },
+  { code: "pl", name: "Polski" },
 ];
 
 const RTL_LOCALES = ["ar"];
@@ -37,6 +31,7 @@ const PC_TO_H5_LOCALE: Record<string, string> = {
   EN: "en",
   ZH: "zh",
   SR: "sr",
+  PL: "pl",
   TL: "tl",
   JA: "ja",
   KO: "ko",
@@ -107,7 +102,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     globalInjection: true,
     locale: savedLocale,
     fallbackLocale: "en",
-    messages: { en, zh, sr, tl, ja, ko, es, th, vi, id, ar },
+    messages: { en, zh, sr, pl, tl, ja, ko, es, th, vi, id, ar },
   });
   globalLocaleRef = i18n.global.locale as unknown as { value: string };
 

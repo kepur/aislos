@@ -9,6 +9,24 @@
           Xiaomi ecosystem, leading CCTV/access vendors, and verified OEM/ODM partners. These are solution-ready building
           blocks, not cheap commodity products.
         </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <button
+            v-for="surface in surfaceOptions"
+            :key="surface.value"
+            type="button"
+            class="rounded-full border px-4 py-2 text-sm font-semibold transition"
+            :class="selectedSurface === surface.value ? 'border-primary-400 bg-primary-500/15 text-primary-200' : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'"
+            @click="selectedSurface = surface.value"
+          >
+            {{ surface.label }}
+          </button>
+          <a :href="marketUrl" class="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200 hover:bg-emerald-500/15">
+            AinerWise Market
+          </a>
+          <a :href="`${marketUrl}/secondhand`" class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-white/10">
+            2Hands
+          </a>
+        </div>
       </div>
 
       <div class="flex flex-col lg:flex-row gap-8">
@@ -119,13 +137,21 @@ const { apiFetch } = useApi()
 const route = useRoute()
 const search = ref('')
 const selectedCategory = ref<string | null>(null)
+const selectedSurface = ref<'official' | 'market' | 'recycled'>('official')
 const requestUrl = useRequestURL()
+const publicConfig = useRuntimeConfig().public
+const marketUrl = computed(() => String(publicConfig.marketUrl || 'http://market.localhost'))
+const surfaceOptions = [
+  { value: 'official', label: 'Official recommended' },
+  { value: 'market', label: 'Market products' },
+  { value: 'recycled', label: 'Enterprise recycled' },
+] as const
 
 const { data, pending: loading, error: loadError, refresh: refreshProducts } = await useAsyncData(
   'official-products-index',
   async () => {
     const [prodRes, catRes] = await Promise.all([
-      apiFetch<any>('/products?limit=100'),
+      apiFetch<any>(`/products?limit=100&surface=${selectedSurface.value}`),
       apiFetch<any>('/product-categories'),
     ])
     return {
@@ -133,7 +159,7 @@ const { data, pending: loading, error: loadError, refresh: refreshProducts } = a
       categories: catRes.items || catRes || [],
     }
   },
-  { default: () => ({ products: [], categories: [] }) },
+  { default: () => ({ products: [], categories: [] }), watch: [selectedSurface] },
 )
 
 const products = computed<any[]>(() => data.value?.products || [])

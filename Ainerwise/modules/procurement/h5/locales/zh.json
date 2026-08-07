@@ -1,5 +1,5 @@
 {
-  "app_name": "AinerWise Procurement",
+  "app_name": "AinerWise Market",
   "tagline": "告诉供应商您的需求。",
   "common": {
     "submit": "提交",
@@ -66,6 +66,7 @@
     "catalog": "目录",
     "wallet": "钱包",
     "me": "我的",
+    "secondhand": "2Hands",
     "pings": "需求池"
   },
   "market": {
@@ -91,7 +92,23 @@
     "sort_new": "最新",
     "sort_popular": "热门",
     "sort_price_asc": "价格 ↑",
-    "sort_price_desc": "价格 ↓"
+    "sort_price_desc": "价格 ↓",
+    "surface_new": "全新",
+    "surface_secondhand": "2Hands",
+    "surface_recycled": "企业回收再售"
+  },
+  "secondhand": {
+    "title": "2Hands",
+    "subtitle": "节省成本的个人二手、企业回收和翻新设备，清楚展示成色、取货方式和保修规则。",
+    "personal": "个人二手",
+    "enterprise": "企业回收再售",
+    "all": "全部 2Hands",
+    "warranty": "保修",
+    "no_warranty": "无保修",
+    "condition": "成色",
+    "pickup": "取货",
+    "empty": "暂无上架中的 2Hands 商品。",
+    "sell": "发布商品"
   },
   "project": {
     "title": "AI 项目",

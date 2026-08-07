@@ -111,6 +111,8 @@
                 <div class="flex gap-1 mb-1.5">
                   <span v-if="item.market_mode === 'B2B' || item.market_mode === 'BOTH'" class="text-[9px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-bold">B2B</span>
                   <span v-if="item.market_mode === 'B2C' || item.market_mode === 'BOTH'" class="text-[9px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded-full font-bold">B2C</span>
+                  <span v-if="item.listing_origin === 'enterprise_recycled'" class="text-[9px] bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded-full font-bold">Recycled</span>
+                  <span v-else class="text-[9px] bg-slate-50 text-slate-500 px-1.5 py-0.5 rounded-full font-bold">New</span>
                 </div>
 
                 <div class="flex items-center justify-between">
@@ -193,7 +195,7 @@
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">Price (₱) *</label>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Price ({{ form.currency }}) *</label>
             <input v-model.number="priceInput" type="number" min="0" step="0.01" placeholder="0.00" class="input-field" />
           </div>
           <div>
@@ -221,6 +223,30 @@
                 form.market_mode === m ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500']">
               {{ m }}
             </button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">Item Type</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" @click="form.listing_origin = 'new'; form.item_condition = 'new'"
+              :class="['rounded-xl border-2 py-2 text-sm font-bold', form.listing_origin === 'new' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500']">
+              New
+            </button>
+            <button type="button" @click="form.listing_origin = 'enterprise_recycled'; form.item_condition = 'refurbished'"
+              :class="['rounded-xl border-2 py-2 text-sm font-bold', form.listing_origin === 'enterprise_recycled' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 text-slate-500']">
+              Enterprise recycled
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-slate-400">Personal second-hand is published from the 2Hands sell page. Supplier catalog is for new or enterprise recycled stock.</p>
+        </div>
+        <div v-if="form.listing_origin === 'enterprise_recycled'" class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Warranty months *</label>
+            <input v-model.number="form.warranty_left_months" type="number" min="1" class="input-field" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Warranty note</label>
+            <input v-model="form.warranty_note" type="text" placeholder="Store warranty" class="input-field" />
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
@@ -292,6 +318,7 @@ const form = reactive({
   currency: 'EUR', price_minor: 0, category_id: '', tags: [] as string[],
   images: [] as string[],
   market_mode: 'B2B', origin_country: '', weight_kg: null as number | null, status: 'ACTIVE',
+  listing_origin: 'new', item_condition: 'new', warranty_left_months: null as number | null, warranty_note: '',
 });
 
 watch(priceInput, (v) => { form.price_minor = Math.round(v * 100); });
@@ -363,13 +390,13 @@ async function loadCompany() {
 
 function openCreate() {
   editing.value = null; priceInput.value = 0; tagsInput.value = ''; imageUrlInput.value = '';
-  Object.assign(form, { title: '', description: '', unit: 'pc', stock_qty: 0, min_order_qty: 1, currency: appStore.currency || 'EUR', price_minor: 0, category_id: '', tags: [], images: [], market_mode: 'B2B', origin_country: appStore.regionCountry || '', weight_kg: null, status: 'ACTIVE' });
+  Object.assign(form, { title: '', description: '', unit: 'pc', stock_qty: 0, min_order_qty: 1, currency: appStore.currency || 'EUR', price_minor: 0, category_id: '', tags: [], images: [], market_mode: 'B2B', origin_country: appStore.regionCountry || '', weight_kg: null, status: 'ACTIVE', listing_origin: 'new', item_condition: 'new', warranty_left_months: null, warranty_note: '' });
   showSheet.value = true;
 }
 
 function editItem(item: any) {
   editing.value = item; priceInput.value = item.price_minor / 100; tagsInput.value = (item.tags ?? []).join(', '); imageUrlInput.value = '';
-  Object.assign(form, { title: item.title, description: item.description ?? '', unit: item.unit, stock_qty: item.stock_qty, min_order_qty: item.min_order_qty ?? 1, currency: item.currency ?? appStore.currency ?? 'EUR', price_minor: item.price_minor, category_id: item.category_id ?? '', tags: item.tags ?? [], images: [...(item.images ?? [])].slice(0, maxImages), market_mode: item.market_mode ?? 'B2B', origin_country: item.origin_country ?? appStore.regionCountry ?? '', weight_kg: item.weight_kg ?? null, status: item.status });
+  Object.assign(form, { title: item.title, description: item.description ?? '', unit: item.unit, stock_qty: item.stock_qty, min_order_qty: item.min_order_qty ?? 1, currency: item.currency ?? appStore.currency ?? 'EUR', price_minor: item.price_minor, category_id: item.category_id ?? '', tags: item.tags ?? [], images: [...(item.images ?? [])].slice(0, maxImages), market_mode: item.market_mode ?? 'B2B', origin_country: item.origin_country ?? appStore.regionCountry ?? '', weight_kg: item.weight_kg ?? null, status: item.status, listing_origin: item.listing_origin ?? 'new', item_condition: item.item_condition ?? 'new', warranty_left_months: item.warranty_left_months ?? null, warranty_note: item.warranty_note ?? '' });
   showSheet.value = true;
 }
 
@@ -422,6 +449,10 @@ async function saveItem() {
   if (!form.weight_kg) form.weight_kg = null;
   if (!form.category_id) {
     showToast({ type: 'fail', message: 'Please select a category' });
+    return;
+  }
+  if (form.listing_origin === 'enterprise_recycled' && !form.warranty_left_months) {
+    showToast({ type: 'fail', message: 'Enterprise recycled items need warranty months' });
     return;
   }
   saveLoading.value = true;

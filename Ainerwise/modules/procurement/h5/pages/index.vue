@@ -6,7 +6,7 @@
           <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600">
             <span class="text-sm font-bold text-white">AW</span>
           </div>
-          <span class="truncate text-lg font-bold text-primary-900">AinerWise Procurement</span>
+          <span class="truncate text-lg font-bold text-primary-900">{{ appName }}</span>
         </div>
         <div class="flex items-center gap-2">
           <button type="button" class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">
@@ -29,14 +29,26 @@
 
       <div class="relative">
         <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white/90">
-          AI sourcing assistant
+          {{ homeCopy.badge }}
         </div>
         <h1 class="mb-3 text-3xl font-extrabold leading-tight">
-          Tell AI what you need.
+          {{ homeCopy.title }}
         </h1>
         <p class="mb-6 text-sm leading-6 text-primary-100">
-          Find verified suppliers by category, country, budget and delivery area. Start simple, then publish a detailed request when you are ready.
+          {{ homeCopy.subtitle }}
         </p>
+
+        <div class="mb-4 grid grid-cols-3 gap-2">
+          <NuxtLink :to="localizedPath('/marketplace')" class="rounded-2xl border border-white/15 bg-white/15 px-3 py-3 text-center text-xs font-bold text-white backdrop-blur active:bg-white/25">
+            {{ homeCopy.market }}
+          </NuxtLink>
+          <NuxtLink :to="localizedPath('/secondhand')" class="rounded-2xl border border-emerald-200/30 bg-emerald-300/15 px-3 py-3 text-center text-xs font-bold text-emerald-50 backdrop-blur active:bg-emerald-300/25">
+            2Hands
+          </NuxtLink>
+          <NuxtLink :to="localizedPath('/buyer/post-request')" class="rounded-2xl border border-white/15 bg-white/10 px-3 py-3 text-center text-xs font-bold text-white/90 backdrop-blur active:bg-white/20">
+            {{ homeCopy.request }}
+          </NuxtLink>
+        </div>
 
         <form class="space-y-4 rounded-3xl bg-white p-4 text-slate-900 shadow-2xl" @submit.prevent="handleSearch">
           <div>
@@ -119,8 +131,8 @@
     </section>
 
     <section class="px-4 py-8">
-      <h2 class="mb-1 text-xl font-bold text-slate-900">How AinerWise Procurement works</h2>
-      <p class="mb-6 text-sm text-slate-500">From quick search to supplier comparison and detailed requests.</p>
+      <h2 class="mb-1 text-xl font-bold text-slate-900">{{ homeCopy.worksTitle }}</h2>
+      <p class="mb-6 text-sm text-slate-500">{{ homeCopy.worksSubtitle }}</p>
 
       <div class="space-y-4">
         <div v-for="stepItem in steps" :key="stepItem.num" class="flex gap-4 rounded-2xl bg-white p-4 shadow-card">
@@ -136,9 +148,9 @@
     </section>
 
     <section class="mx-4 mb-8 rounded-2xl border border-green-100 bg-gradient-to-br from-green-50 to-emerald-50 p-5">
-      <h3 class="mb-2 text-sm font-bold text-green-900">Safer procurement</h3>
+      <h3 class="mb-2 text-sm font-bold text-green-900">{{ homeCopy.safeTitle }}</h3>
       <p class="text-xs leading-relaxed text-green-700">
-        AinerWise helps you keep location, budget, supplier matching and offer comparison in one clear flow.
+        {{ homeCopy.safeText }}
       </p>
     </section>
   </div>
@@ -148,10 +160,11 @@
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { currencyMeta, currencyOptionLabel } from "~/utils/currencyPolicy";
 import { inferLocationFromCoords, inferLocationFromTimezone, type LocationGuess } from "~/utils/geoPolicy";
+import { useI18n } from "vue-i18n";
 import { getLocalePrefixFromPath, withLocalePrefix } from "~/utils/localeRoutes";
 
 definePageMeta({ layout: "default", middleware: [] });
-useHead({ title: "Mobile Procurement" });
+useHead({ title: "AinerWise Market H5" });
 
 type QuickCategory = {
   id?: string;
@@ -164,6 +177,57 @@ const router = useRouter();
 const route = useRoute();
 const config = useRuntimeConfig();
 const appStore = useAppStore();
+const { locale } = useI18n({ useScope: "global" });
+const appName = computed(() => String(config.public.appName || "AinerWise Market"));
+
+const copyByLocale: Record<string, Record<string, string>> = {
+  en: {
+    badge: "AI market assistant",
+    title: "AinerWise Market: buy new, source smart, save with 2Hands.",
+    subtitle: "Browse official recommendations, market products, enterprise recycled stock and personal second-hand offers. Complex needs can still become AI procurement requests.",
+    market: "Market",
+    request: "AI Request",
+    worksTitle: "How AinerWise Market works",
+    worksSubtitle: "Shop, compare, ask suppliers, or publish a structured request when the job is bigger.",
+    safeTitle: "One market, shared Core data",
+    safeText: "Official products, supplier listings, 2Hands offers, quotes and orders all feed the same AinerWise Core for analytics and follow-up.",
+  },
+  zh: {
+    badge: "AI 市场助手",
+    title: "AinerWise Market：全新采购、AI 找货、2Hands 省钱。",
+    subtitle: "浏览官网推荐、市场商品、企业回收再售和个人二手。复杂需求仍可一键进入 AI 采购需求流程。",
+    market: "市场商品",
+    request: "AI 需求",
+    worksTitle: "AinerWise Market 如何工作",
+    worksSubtitle: "可直接逛商品、比较供应商、询价；复杂项目发布结构化需求。",
+    safeTitle: "独立市场，共用 Core 数据",
+    safeText: "官网商品、供应商上架、2Hands、报价和订单都进入同一个 AinerWise Core，便于后台分析和后续服务。",
+  },
+  sr: {
+    badge: "AI market asistent",
+    title: "AinerWise Market: novo, pametna nabavka i 2Hands ušteda.",
+    subtitle: "Pregledajte preporučene proizvode, tržišne ponude, obnovljenu opremu i polovne artikle. Složen zahtev može postati AI nabavka.",
+    market: "Market",
+    request: "AI zahtev",
+    worksTitle: "Kako radi AinerWise Market",
+    worksSubtitle: "Kupujte, poredite, tražite ponude ili objavite strukturisan zahtev.",
+    safeTitle: "Jedan market, zajednički Core",
+    safeText: "Proizvodi, 2Hands ponude, upiti i narudžbine ostaju u istom AinerWise Core sistemu.",
+  },
+  pl: {
+    badge: "Asystent AI marketu",
+    title: "AinerWise Market: nowe produkty, inteligentne zakupy i oszczędności 2Hands.",
+    subtitle: "Przeglądaj rekomendacje, oferty rynku, sprzęt odnowiony i prywatne używane przedmioty. Większe potrzeby zamienisz w zapytanie AI.",
+    market: "Market",
+    request: "Zapytanie AI",
+    worksTitle: "Jak działa AinerWise Market",
+    worksSubtitle: "Kupuj, porównuj, pytaj dostawców albo opublikuj uporządkowane zapytanie.",
+    safeTitle: "Jeden market, wspólne dane Core",
+    safeText: "Produkty, oferty 2Hands, zapytania i zamówienia trafiają do wspólnego AinerWise Core.",
+  },
+};
+
+const homeCopy = computed(() => copyByLocale[locale.value] || copyByLocale.en);
 
 const fallbackCategories: QuickCategory[] = [
   "Construction Materials",

@@ -1,5 +1,5 @@
 {
-  "app_name": "AinerWise Procurement",
+  "app_name": "AinerWise Market",
   "tagline": "Recite dobavljacima sta vam treba.",
   "common": {
     "submit": "Posalji",
@@ -57,6 +57,7 @@
     "catalog": "Katalog",
     "wallet": "Novcanik",
     "me": "Ja",
+    "secondhand": "2Hands",
     "pings": "Upiti"
   },
   "market": {
@@ -82,7 +83,23 @@
     "sort_new": "Novo",
     "sort_popular": "Popularno",
     "sort_price_asc": "Cena ↑",
-    "sort_price_desc": "Cena ↓"
+    "sort_price_desc": "Cena ↓",
+    "surface_new": "Novo",
+    "surface_secondhand": "2Hands",
+    "surface_recycled": "Reciklirano od firme"
+  },
+  "secondhand": {
+    "title": "2Hands",
+    "subtitle": "Polovna, obnovljena i reciklirana oprema za ustedu, sa jasnim stanjem i pravilima garancije.",
+    "personal": "Licno polovno",
+    "enterprise": "Firmno obnovljeno",
+    "all": "Sve 2Hands",
+    "warranty": "Garancija",
+    "no_warranty": "Bez garancije",
+    "condition": "Stanje",
+    "pickup": "Preuzimanje",
+    "empty": "Nema aktivnih 2Hands oglasa.",
+    "sell": "Dodaj oglas"
   },
   "profile": {
     "language": "Jezik",

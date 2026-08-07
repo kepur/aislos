@@ -241,7 +241,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "/api",
-      appName: process.env.NUXT_PUBLIC_APP_NAME || "AISLOS Market",
+      appName: process.env.NUXT_PUBLIC_APP_NAME || "AinerWise Market",
       appDomain: process.env.NUXT_PUBLIC_APP_DOMAIN || "procurement.localhost",
       // Link back to the AinerWise official site (lead-gen / solutions).
       aislosSiteUrl: process.env.NUXT_PUBLIC_AISLOS_SITE_URL || "http://localhost:4099",

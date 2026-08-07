@@ -50,6 +50,16 @@
           :class="['flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors', (m === 'All' && !marketMode) || marketMode === m ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600']"
         >{{ m }}</button>
         <button
+          v-for="surface in listingOriginOptions"
+          :key="surface.value"
+          @click="listingOrigin = surface.value; loadFeed(true)"
+          :class="['flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors', listingOrigin === surface.value ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600']"
+        >{{ surface.label }}</button>
+        <NuxtLink
+          :to="localizedPath('/secondhand')"
+          class="flex-shrink-0 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700"
+        >2Hands</NuxtLink>
+        <button
           v-for="s in sortOptions"
           :key="s.value"
           @click="sort = s.value; loadFeed(true)"
@@ -208,6 +218,12 @@
               <span :class="['text-[9px] font-semibold px-1.5 py-0.5 rounded-full', item.market_mode === 'B2C' ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600']">
                 {{ item.market_mode }}
               </span>
+              <span v-if="item.listing_origin === 'enterprise_recycled'" class="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-600">
+                {{ t('market.surface_recycled') }}
+              </span>
+              <span v-else class="rounded-full bg-slate-50 px-1.5 py-0.5 text-[9px] font-semibold text-slate-500">
+                {{ t('market.surface_new') }}
+              </span>
             </div>
             <h3 class="text-xs font-semibold text-slate-900 leading-tight line-clamp-2">{{ item.title }}</h3>
             <p class="text-[10px] text-slate-400 mt-0.5 truncate">{{ item.company_name }}</p>
@@ -267,6 +283,9 @@ interface FeedItem {
   company_name: string | null
   company_trust_score: number | null
   is_sponsored: boolean
+  listing_origin?: string
+  item_condition?: string
+  warranty_left_months?: number | null
 }
 
 interface FilterCat { id: string; name: string; item_count: number }
@@ -282,6 +301,7 @@ const showFilter = ref(false)
 const categoryId = ref<string | null>((route.query.category_id as string) || null)
 const activeCategoryName = ref<string>((route.query.category_name as string) || '')
 const marketMode = ref<string>((route.query.market_mode as string) || '')
+const listingOrigin = ref<string>((route.query.listing_origin as string) || 'all')
 const keyword = ref<string>((route.query.keyword as string) || '')
 const sort = ref<string>((route.query.sort as string) || 'rank')
 const originCountry = ref<string>((route.query.origin_country as string) || '')
@@ -315,6 +335,12 @@ const sellerTypeOptions = computed(() => [
   { label: t('market.all'), val: '' },
   { label: t('market.individual'), val: 'INDIVIDUAL' },
   { label: t('market.business'), val: 'BUSINESS' },
+])
+
+const listingOriginOptions = computed(() => [
+  { value: 'all', label: t('common.all') },
+  { value: 'new', label: t('market.surface_new') },
+  { value: 'enterprise_recycled', label: t('market.surface_recycled') },
 ])
 
 onMounted(async () => {
@@ -352,6 +378,7 @@ async function loadFeed(reset = false) {
     const params: Record<string, any> = { page: page.value, page_size: 20, sort: sort.value }
     if (categoryId.value) params.category_id = categoryId.value
     if (marketMode.value) params.market_mode = marketMode.value
+    if (listingOrigin.value && listingOrigin.value !== 'all') params.listing_origin = listingOrigin.value
     if (keyword.value.trim()) params.keyword = keyword.value.trim()
     if (originCountry.value) params.origin_country = originCountry.value
     if (deliveryCountry.value) params.country = deliveryCountry.value
@@ -427,6 +454,7 @@ function clearSearchContext() {
   budgetMinMinor.value = ''
   budgetMaxMinor.value = ''
   budgetCurrency.value = ''
+  listingOrigin.value = 'all'
   budgetMinInput.value = ''
   budgetMaxInput.value = ''
   latitude.value = ''

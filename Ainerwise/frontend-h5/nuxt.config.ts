@@ -59,6 +59,7 @@ export default defineNuxtConfig({
       customerUrl: process.env.NUXT_PUBLIC_CUSTOMER_URL || 'http://localhost:4098',
       partnerUrl: process.env.NUXT_PUBLIC_PARTNER_URL || 'http://localhost:4091',
       kioskUrl: process.env.NUXT_PUBLIC_KIOSK_URL || 'http://localhost:4090',
+      marketH5Url: process.env.NUXT_PUBLIC_MARKET_H5_URL || 'http://localhost:4107',
     },
   },
 

@@ -21,12 +21,15 @@ class CRUDProduct(CRUDBase[Product]):
         limit: int = 20,
         category_id: uuid.UUID | None = None,
         search: str | None = None,
+        source_types: list[str] | None = None,
     ) -> tuple[list[Product], int]:
         filters = [self.model.status.in_(PUBLIC_PRODUCT_STATUSES)]
         if category_id:
             filters.append(self.model.category_id == category_id)
         if search:
             filters.append(self.model.name.ilike(f"%{search}%"))
+        if source_types:
+            filters.append(self.model.source_type.in_(source_types))
         return await self.get_multi(db, skip=skip, limit=limit, filters=filters)
 
 

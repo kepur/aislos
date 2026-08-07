@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 useHead({
-  titleTemplate: (title) => title ? `${title} — AinerWise Procurement` : "AinerWise Procurement",
+  titleTemplate: (title) => title ? `${title} — AinerWise Market` : "AinerWise Market",
   meta: [
     { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
     { name: "theme-color", content: "#3730a3" },

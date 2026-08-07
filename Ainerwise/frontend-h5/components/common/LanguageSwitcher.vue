@@ -2,9 +2,9 @@
   <select
     :value="currentLocale"
     @change="switchLang(($event.target as HTMLSelectElement).value)"
-    class="text-xs border border-white/20 rounded px-2 py-1 bg-white/5 text-white cursor-pointer hover:bg-white/10 transition outline-none focus:ring-1 focus:ring-primary-500"
+    class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-700 shadow-sm outline-none transition hover:bg-slate-50 focus:ring-1 focus:ring-primary-500"
   >
-    <option v-for="loc in localeOptions" :key="codeOfLocale(loc)" :value="codeOfLocale(loc)" class="bg-slate-900 text-white">
+    <option v-for="loc in localeOptions" :key="codeOfLocale(loc)" :value="codeOfLocale(loc)" class="bg-white text-slate-900">
       {{ labelForLocale(codeOfLocale(loc)) }}
     </option>
   </select>
@@ -23,6 +23,7 @@ const localeNames: Record<string, string> = {
   en: 'EN',
   zh: '中文',
   sr: 'SR',
+  pl: 'PL',
 }
 
 onMounted(() => {

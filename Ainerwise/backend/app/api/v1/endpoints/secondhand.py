@@ -42,6 +42,11 @@ router = APIRouter(prefix="/secondhand", tags=["secondhand"])
 
 SECONDHAND_CATEGORY_SLUG = "2hands"
 RESTRICTED_FIELDS = ("address", "phone", "note")
+LISTING_ORIGINS = {
+    "personal_secondhand",
+    "enterprise_recycled",
+    "enterprise_refurbished",
+}
 
 
 def _now() -> datetime:
@@ -71,6 +76,7 @@ class ListingCreate(BaseModel):
     serial_type: str = "NONE"
     serial_no: str | None = None
     warranty_left_months: int | None = None
+    listing_origin: str = Field(default="personal_secondhand")
     original_packaging: bool = False
     defects: list[DefectIn] = Field(default_factory=list)
 
@@ -92,6 +98,7 @@ class ListingUpdate(BaseModel):
     condition_grade: str | None = None
     usage_note: str | None = None
     warranty_left_months: int | None = None
+    listing_origin: str | None = None
     original_packaging: bool | None = None
     defects: list[DefectIn] | None = None
     fulfillment_mode: str | None = None
@@ -130,6 +137,7 @@ class PickupConfirm(BaseModel):
 def _public_listing(listing: SupplierListing, detail: SecondhandListing, company_name: str | None) -> dict:
     """PUBLIC shape. Never includes pickup_address / pickup_note / contact_phone."""
     attrs = listing.attributes_json if isinstance(listing.attributes_json, dict) else {}
+    listing_origin = attrs.get("listing_origin") or "personal_secondhand"
     return {
         "id": listing.id,
         "detail_id": detail.id,
@@ -148,6 +156,9 @@ def _public_listing(listing: SupplierListing, detail: SecondhandListing, company
         "serial_type": detail.serial_type,
         "has_serial": bool(detail.serial_no),
         "warranty_left_months": detail.warranty_left_months,
+        "listing_origin": listing_origin,
+        "seller_type": attrs.get("seller_type") or ("business" if str(listing_origin).startswith("enterprise_") else "personal"),
+        "warranty_required": str(listing_origin).startswith("enterprise_"),
         "original_packaging": detail.original_packaging,
         "defects": detail.defects_json or [],
         "fulfillment_mode": detail.fulfillment_mode,
@@ -230,6 +241,7 @@ async def browse_listings(
     keyword: str | None = None,
     category_id: uuid.UUID | None = None,
     condition: str | None = None,
+    listing_origin: str | None = None,
     city: str | None = None,
     country: str | None = None,
     price_min_minor: int | None = None,
@@ -249,6 +261,18 @@ async def browse_listings(
         stmt = stmt.where(SupplierListing.category_schema_id == category_id)
     if condition:
         stmt = stmt.where(SecondhandListing.condition_grade == condition.upper()[:2])
+    normalized_origin = (listing_origin or "").strip().lower()
+    if normalized_origin:
+        if normalized_origin not in LISTING_ORIGINS:
+            raise HTTPException(
+                status_code=422,
+                detail=f"listing_origin must be one of {sorted(LISTING_ORIGINS)}",
+            )
+        origin_expr = func.coalesce(
+            SupplierListing.attributes_json["listing_origin"].astext,
+            "personal_secondhand",
+        )
+        stmt = stmt.where(origin_expr == normalized_origin)
     if city:
         stmt = stmt.where(SecondhandListing.pickup_city.ilike(city.strip()))
     if country:
@@ -329,6 +353,14 @@ async def create_listing(data: ListingCreate, db: DB, user: CurrentUser):
         raise HTTPException(status_code=422, detail=f"fulfillment_mode must be one of {FULFILLMENT_MODES}")
     if data.serial_type not in SERIAL_TYPES:
         raise HTTPException(status_code=422, detail=f"serial_type must be one of {SERIAL_TYPES}")
+    listing_origin = data.listing_origin.strip().lower()
+    if listing_origin not in LISTING_ORIGINS:
+        raise HTTPException(status_code=422, detail=f"listing_origin must be one of {sorted(LISTING_ORIGINS)}")
+    if listing_origin.startswith("enterprise_") and not data.warranty_left_months:
+        raise HTTPException(
+            status_code=422,
+            detail="enterprise recycled/refurbished listings must include warranty_left_months",
+        )
 
     # Anti-theft / anti-duplicate: the same serial must not be live twice.
     if data.serial_no:
@@ -361,6 +393,8 @@ async def create_listing(data: ListingCreate, db: DB, user: CurrentUser):
             "images": data.images,
             "market_mode": "C2C",
             "secondhand": True,
+            "listing_origin": listing_origin,
+            "seller_type": "business" if listing_origin.startswith("enterprise_") else "personal",
         },
     )
     db.add(listing)
@@ -419,6 +453,19 @@ async def update_listing(listing_id: uuid.UUID, data: ListingUpdate, db: DB, use
         attrs["description"] = data.description
     if data.images is not None:
         attrs["images"] = data.images
+    if data.listing_origin is not None:
+        listing_origin = data.listing_origin.strip().lower()
+        if listing_origin not in LISTING_ORIGINS:
+            raise HTTPException(status_code=422, detail=f"listing_origin must be one of {sorted(LISTING_ORIGINS)}")
+        if listing_origin.startswith("enterprise_") and not (
+            data.warranty_left_months or detail.warranty_left_months
+        ):
+            raise HTTPException(
+                status_code=422,
+                detail="enterprise recycled/refurbished listings must include warranty_left_months",
+            )
+        attrs["listing_origin"] = listing_origin
+        attrs["seller_type"] = "business" if listing_origin.startswith("enterprise_") else "personal"
     listing.attributes_json = attrs
 
     for field in (

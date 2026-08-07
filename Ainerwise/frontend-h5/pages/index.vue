@@ -84,6 +84,17 @@
       </NuxtLink>
     </div>
 
+    <div class="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-slate-50 p-4 shadow-sm">
+      <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">AinerWise Market H5</p>
+      <h2 class="mt-1 text-base font-extrabold text-slate-900">Standalone mobile market</h2>
+      <p class="mt-1 text-xs leading-relaxed text-slate-500">
+        Browse market products, supplier offers, AI requests and 2Hands cost-saving listings in the dedicated mobile market.
+      </p>
+      <a :href="marketH5Url" class="mt-3 inline-flex rounded-full bg-emerald-600 px-4 py-2 text-[11px] font-bold text-white">
+        Open AinerWise Market
+      </a>
+    </div>
+
     <!-- Intelligence Levels -->
     <div>
       <h2 class="text-base font-bold text-slate-800 mb-3">{{ $t('home.intelligenceKicker') }}</h2>
@@ -138,6 +149,8 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const { apiFetch } = useApi()
+const publicConfig = useRuntimeConfig().public
+const marketH5Url = computed(() => String(publicConfig.marketH5Url || 'http://localhost:4107'))
 
 const solutions = ref<any[]>([])
 const solutionsLoading = ref(true)

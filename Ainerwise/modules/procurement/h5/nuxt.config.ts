@@ -2,7 +2,7 @@ import autoprefixer from "autoprefixer";
 import tailwindcss from "tailwindcss";
 
 const coreApiInternal = process.env.NUXT_CORE_API_INTERNAL || "http://localhost:8000";
-const localeRoutePrefixes = ["/en", "/cn", "/rs"];
+const localeRoutePrefixes = ["/en", "/cn", "/rs", "/pl"];
 
 function addLocaleAliases(pages: any[]) {
   for (const page of pages) {
@@ -68,6 +68,7 @@ export default defineNuxtConfig({
     "/api/auth/system-mode": { proxy: `${coreApiInternal}/api/v1/cebu-compat/system-mode` },
     "/api/auth/**": { proxy: `${coreApiInternal}/api/v1/auth/**` },
     "/api/localization/**": { proxy: `${coreApiInternal}/api/v1/localization/**` },
+    "/api/secondhand/**": { proxy: `${coreApiInternal}/api/v1/secondhand/**` },
     "/api/users/**": { proxy: `${coreApiInternal}/api/v1/cebu-compat/users/**` },
     "/api/addresses": { proxy: `${coreApiInternal}/api/v1/cebu-compat/addresses` },
     "/api/addresses/**": { proxy: `${coreApiInternal}/api/v1/cebu-compat/addresses/**` },
@@ -148,8 +149,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "/api",
-      appName: process.env.NUXT_PUBLIC_APP_NAME || "AinerWise Procurement",
-      appDomain: process.env.NUXT_PUBLIC_APP_DOMAIN || "procurement-h5.localhost",
+      appName: process.env.NUXT_PUBLIC_APP_NAME || "AinerWise Market",
+      appDomain: process.env.NUXT_PUBLIC_APP_DOMAIN || "m.market.localhost",
     },
   },
 

@@ -2,12 +2,14 @@ export const URI_LOCALE_PREFIX_TO_H5_LOCALE: Record<string, string> = {
   en: 'en',
   cn: 'zh',
   rs: 'sr',
+  pl: 'pl',
 }
 
 export const H5_LOCALE_TO_URI_PREFIX: Record<string, string> = {
   en: 'en',
   zh: 'cn',
   sr: 'rs',
+  pl: 'pl',
 }
 
 export function normalizeH5Locale(value?: string | null) {
@@ -15,9 +17,11 @@ export function normalizeH5Locale(value?: string | null) {
   const upper = raw.toUpperCase()
   if (upper === 'ZH' || upper === 'CN' || upper === 'ZH-CN') return 'zh'
   if (upper === 'SR' || upper === 'RS' || upper === 'SR-RS') return 'sr'
+  if (upper === 'PL' || upper === 'PL-PL') return 'pl'
   const primary = raw.split(/[-_]/)[0]?.toLowerCase()
   if (primary === 'zh') return 'zh'
   if (primary === 'sr') return 'sr'
+  if (primary === 'pl') return 'pl'
   if (primary === 'en') return 'en'
   return raw.toLowerCase()
 }

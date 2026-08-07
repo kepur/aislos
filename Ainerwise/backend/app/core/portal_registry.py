@@ -205,10 +205,10 @@ _H5_CEBU_BUYER = _m(
     layout="buyer",
     home_route="/buyer",
     theme_key="cebu-buyer",
-    menu_keys=["requests", "orders", "messages", "notifications"],
-    route_allowlist=["/buyer/**", "/messages/**", "/commerce/**", "/profile", "/access-denied", "/login"],
+    menu_keys=["marketplace", "secondhand", "requests", "orders", "messages", "notifications"],
+    route_allowlist=["/buyer/**", "/marketplace/**", "/secondhand/**", "/messages/**", "/commerce/**", "/profile", "/access-denied", "/login"],
     required_grants=["portal.h5.cebu_buyer"],
-    display_name="Cebu Buyer H5",
+    display_name="AinerWise Market Buyer H5",
     migration_note="Phase 3 buyer commerce on Core",
 )
 
@@ -289,7 +289,7 @@ _TARGET_EXPERIENCE_PORTALS: list[dict[str, Any]] = [
         menu_keys=["marketplace", "requests", "offers", "orders", "messages", "wallet", "disputes"],
         route_allowlist=["/market/buyer/dashboard", "/market", "/market/**", "/cebu/buyer/dashboard", "/cebu", "/cebu/**", "/buyer/**", "/commerce/**", "/login", "/register", "/demo-login"],
         required_grants=["portal.pc.cebu_buyer"],
-        display_name="Cebu Procurement Buyer PC",
+        display_name="AinerWise Market Buyer PC",
     ),
     _m(
         portal_key="cebu_buyer_h5",
@@ -297,11 +297,12 @@ _TARGET_EXPERIENCE_PORTALS: list[dict[str, Any]] = [
         layout="cebu-buyer-mobile",
         home_route="/buyer",
         theme_key="cebu-buyer",
-        menu_keys=["marketplace", "requests", "orders", "messages", "wallet", "notifications"],
-        route_allowlist=["/buyer", "/buyer/**", "/messages/**", "/commerce/**", "/profile", "/profile/**", "/settings/**", "/access-denied", "/login", "/auth/**"],
+        menu_keys=["marketplace", "secondhand", "requests", "orders", "messages", "wallet", "notifications"],
+        route_allowlist=["/buyer", "/buyer/**", "/marketplace", "/marketplace/**", "/secondhand", "/secondhand/**", "/messages/**", "/commerce/**", "/profile", "/profile/**", "/settings/**", "/access-denied", "/login", "/auth/**"],
         required_grants=["portal.h5.cebu_buyer"],
         pwa_manifest_key="cebu-buyer",
-        display_name="Cebu Procurement Buyer H5",
+        display_name="AinerWise Market H5",
+        migration_note="Former Cebu Procurement Buyer H5; now the standalone AinerWise Market mobile product",
     ),
     _m(
         portal_key="supplier_pc",

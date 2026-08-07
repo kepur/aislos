@@ -12,6 +12,12 @@ from app.services.event_bus import emit_event
 
 router = APIRouter(prefix="/products", tags=["products"])
 
+PRODUCT_SURFACE_SOURCE_TYPES = {
+    "official": ["official", "official_recommended", "featured", "recycled_official"],
+    "market": ["market", "marketplace", "supplier", "vendor", "official_recommended"],
+    "recycled": ["enterprise_recycled", "official_recycled", "recycled_official", "refurbished"],
+}
+
 
 @router.get("")
 async def list_products(
@@ -20,11 +26,27 @@ async def list_products(
     limit: int = Query(20, ge=1, le=100),
     category_id: uuid.UUID | None = None,
     search: str | None = None,
+    surface: str | None = Query(
+        default=None,
+        description="Product surface: official, market, recycled, or all. Defaults to all public products.",
+    ),
 ):
+    normalized_surface = (surface or "all").strip().lower()
+    if normalized_surface not in {"all", *PRODUCT_SURFACE_SOURCE_TYPES.keys()}:
+        raise HTTPException(status_code=422, detail="surface must be official, market, recycled, or all")
     items, total = await crud_product.get_public(
-        db, skip=skip, limit=limit, category_id=category_id, search=search
+        db,
+        skip=skip,
+        limit=limit,
+        category_id=category_id,
+        search=search,
+        source_types=PRODUCT_SURFACE_SOURCE_TYPES.get(normalized_surface),
     )
-    return {"items": [ProductRead.model_validate(i) for i in items], "total": total}
+    return {
+        "items": [ProductRead.model_validate(i) for i in items],
+        "total": total,
+        "surface": normalized_surface,
+    }
 
 
 @router.get("/admin/all")

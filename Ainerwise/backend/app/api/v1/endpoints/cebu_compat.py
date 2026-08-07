@@ -900,6 +900,10 @@ def _catalog_attrs_from_payload(data: dict, existing: dict | None = None) -> dic
         "market_mode",
         "min_order_qty",
         "origin_country",
+        "listing_origin",
+        "item_condition",
+        "warranty_left_months",
+        "warranty_note",
         "view_count",
         "order_count",
     ):
@@ -930,6 +934,10 @@ def _catalog_item_as_legacy(row: SupplierListing, *, company_name: str | None = 
         "market_mode": attrs.get("market_mode") or "B2B",
         "min_order_qty": attrs.get("min_order_qty") or 1,
         "origin_country": attrs.get("origin_country"),
+        "listing_origin": attrs.get("listing_origin") or "new",
+        "item_condition": attrs.get("item_condition") or "new",
+        "warranty_left_months": attrs.get("warranty_left_months"),
+        "warranty_note": attrs.get("warranty_note"),
         "view_count": attrs.get("view_count") or 0,
         "order_count": attrs.get("order_count") or 0,
         "status": _catalog_status_as_legacy(row.status),
@@ -3600,6 +3608,7 @@ async def legacy_marketplace_feed(
     budget_currency: str | None = None,
     account_type: str | None = None,
     verified_only: bool = False,
+    listing_origin: str | None = None,
     sort: str = Query(default="rank"),
 ):
     stmt = select(SupplierListing, Company.name.label("company_name")).join(
@@ -3659,6 +3668,12 @@ async def legacy_marketplace_feed(
         stmt = stmt.where(or_(Company.type.is_(None), ~func.lower(Company.type).in_(["individual", "freelancer"])))
     if verified_only:
         stmt = stmt.where(func.lower(Company.verification_status) == "verified")
+    normalized_listing_origin = (listing_origin or "").strip().lower()
+    if normalized_listing_origin and normalized_listing_origin != "all":
+        stmt = stmt.where(
+            func.lower(func.coalesce(SupplierListing.attributes_json["listing_origin"].astext, "new"))
+            == normalized_listing_origin
+        )
 
     offset = (page - 1) * page_size
     # Official listings first (admin-curated via attributes_json.official),
@@ -3711,6 +3726,10 @@ async def legacy_marketplace_feed(
                 "market_mode": attrs.get("market_mode") or "B2B",
                 "min_order_qty": attrs.get("min_order_qty") or 1,
                 "origin_country": attrs.get("origin_country"),
+                "listing_origin": attrs.get("listing_origin") or "new",
+                "item_condition": attrs.get("item_condition") or "new",
+                "warranty_left_months": attrs.get("warranty_left_months"),
+                "warranty_note": attrs.get("warranty_note"),
                 "view_count": attrs.get("view_count") or 0,
                 "order_count": attrs.get("order_count") or 0,
                 "status": "ACTIVE",

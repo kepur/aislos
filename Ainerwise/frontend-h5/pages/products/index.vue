@@ -10,6 +10,18 @@
       </p>
     </div>
 
+    <div class="mb-4 grid grid-cols-3 gap-2">
+      <span class="rounded-2xl border border-blue-100 bg-white px-3 py-2 text-center text-[10px] font-bold text-blue-600">
+        Official picks
+      </span>
+      <a :href="marketH5Url" class="rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-center text-[10px] font-bold text-emerald-700">
+        Market H5
+      </a>
+      <a :href="`${marketH5Url}/secondhand`" class="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-center text-[10px] font-bold text-slate-600">
+        2Hands
+      </a>
+    </div>
+
     <!-- Search -->
     <div class="relative mb-4">
       <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -81,11 +93,13 @@ const { apiFetch } = useApi()
 const route = useRoute()
 const search = ref('')
 const requestUrl = useRequestURL()
+const publicConfig = useRuntimeConfig().public
+const marketH5Url = computed(() => String(publicConfig.marketH5Url || 'http://localhost:4107'))
 
 const { data, pending: loading, error: loadError, refresh: refreshProducts } = await useAsyncData(
   'h5-official-products-index',
   async () => {
-    const res = await apiFetch<any>('/products?limit=100')
+    const res = await apiFetch<any>('/products?limit=100&surface=official')
     return { products: res.items || res || [] }
   },
   { default: () => ({ products: [] }) },
