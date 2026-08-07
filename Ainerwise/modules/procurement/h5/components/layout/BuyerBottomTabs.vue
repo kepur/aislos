@@ -42,9 +42,9 @@ const tabs = computed(() => {
   // Keep labels reactive when language is changed without a full page reload.
   locale.value;
   return [
-    { to: withLocalePrefix("/buyer/home", currentPrefix.value), match: "/buyer/home", label: t("nav.home"), icon: IconHome },
     { to: withLocalePrefix("/marketplace", currentPrefix.value), match: "/marketplace", label: t("nav.market"), icon: IconRequests },
-    { to: withLocalePrefix("/buyer/requests", currentPrefix.value), match: "/buyer/requests", label: t("nav.requests"), icon: IconOrders },
+    { to: withLocalePrefix("/buyer/post-request?mode=market", currentPrefix.value), match: "/buyer/post-request", label: t("nav.ai_project"), icon: IconOrders },
+    { to: withLocalePrefix("/buyer/home", currentPrefix.value), match: "/buyer/home", label: t("nav.home"), icon: IconHome },
     { to: withLocalePrefix("/buyer/wallet", currentPrefix.value), match: "/buyer/wallet", label: t("nav.wallet"), icon: IconWallet },
     { to: withLocalePrefix("/buyer/profile", currentPrefix.value), match: "/buyer/profile", label: t("nav.me"), icon: IconProfile, badge: true },
   ];

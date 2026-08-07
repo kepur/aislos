@@ -14,7 +14,7 @@
           </button>
           <NuxtLink :to="localizedPath('/auth/login')">
             <button type="button" class="rounded-lg border border-primary-200 px-3 py-1.5 text-sm font-semibold text-primary-600 active:bg-primary-50">
-              Sign in
+              {{ homeCopy.signIn }}
             </button>
           </NuxtLink>
         </div>
@@ -38,36 +38,50 @@
           {{ homeCopy.subtitle }}
         </p>
 
-        <div class="mb-4 grid grid-cols-2 gap-2">
-          <NuxtLink :to="localizedPath('/marketplace')" class="rounded-2xl border border-white/15 bg-white/15 px-3 py-3 text-center text-xs font-bold text-white backdrop-blur active:bg-white/25">
-            {{ homeCopy.market }}
+        <div class="mb-4 grid grid-cols-[1.25fr_1fr] gap-2">
+          <NuxtLink :to="marketPath" class="rounded-2xl bg-white px-3 py-3 text-center text-sm font-extrabold text-primary-800 shadow-lg shadow-black/10 active:bg-primary-50">
+            {{ homeCopy.marketPrimary }}
           </NuxtLink>
-          <NuxtLink :to="localizedPath('/buyer/post-request')" class="rounded-2xl border border-white/15 bg-white/10 px-3 py-3 text-center text-xs font-bold text-white/90 backdrop-blur active:bg-white/20">
-            {{ homeCopy.request }}
+          <NuxtLink :to="smartBuildingRequestPath" class="rounded-2xl border border-white/15 bg-white/10 px-3 py-3 text-center text-xs font-bold text-white/90 backdrop-blur active:bg-white/20">
+            {{ homeCopy.smartBuilding }}
           </NuxtLink>
         </div>
 
         <NuxtLink
-          :to="localizedPath('/buyer/post-request')"
-          class="mb-4 block rounded-3xl border border-cyan-200/30 bg-cyan-300/15 p-4 text-white shadow-lg shadow-black/10 backdrop-blur active:bg-cyan-300/25"
+          :to="smartBuildingRequestPath"
+          class="mb-4 block overflow-hidden rounded-3xl border border-cyan-200/30 bg-slate-950/55 p-4 text-white shadow-lg shadow-black/10 backdrop-blur active:bg-slate-950/70"
         >
           <div class="flex items-center justify-between gap-4">
             <div>
               <p class="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100">
-                {{ homeCopy.aiKicker }}
+                {{ homeCopy.smartKicker }}
               </p>
               <h2 class="mt-1 text-lg font-extrabold leading-tight">
-                {{ homeCopy.aiTitle }}
+                {{ homeCopy.smartTitle }}
               </h2>
               <p class="mt-1 text-xs leading-5 text-primary-100">
-                {{ homeCopy.aiSubtitle }}
+                {{ homeCopy.smartSubtitle }}
               </p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <span
+                  v-for="feature in smartBuildingFeatures"
+                  :key="feature"
+                  class="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[10px] font-bold text-cyan-50"
+                >
+                  {{ feature }}
+                </span>
+              </div>
             </div>
             <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white text-xl font-black text-primary-700">→</span>
           </div>
         </NuxtLink>
 
         <form class="space-y-4 rounded-3xl bg-white p-4 text-slate-900 shadow-2xl" @submit.prevent="handleSearch">
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[0.18em] text-primary-500">{{ homeCopy.marketSearchKicker }}</p>
+            <h2 class="mt-1 text-lg font-extrabold text-slate-900">{{ homeCopy.marketSearchTitle }}</h2>
+            <p class="mt-1 text-xs leading-5 text-slate-500">{{ homeCopy.marketSearchSubtitle }}</p>
+          </div>
           <div>
             <label class="mb-1.5 block text-sm font-semibold text-slate-700">{{ homeCopy.categoryLabel }}</label>
             <select v-model="heroForm.category" class="input-field bg-white">
@@ -140,7 +154,7 @@
           <button type="submit" class="btn-primary py-3.5 text-sm">
             {{ homeCopy.findSuppliers }}
           </button>
-          <NuxtLink :to="localizedPath('/buyer/post-request')" class="block rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 active:bg-slate-50">
+          <NuxtLink :to="marketRequestPath" class="block rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 active:bg-slate-50">
             {{ homeCopy.postDetailed }}
           </NuxtLink>
         </form>
@@ -183,7 +197,7 @@ import { useI18n } from "vue-i18n";
 import { getLocalePrefixFromPath, withLocalePrefix } from "~/utils/localeRoutes";
 
 definePageMeta({ layout: "default", middleware: [] });
-useHead({ title: "AinerWise Market H5" });
+useHead({ title: "AinerWise Mobile" });
 
 type QuickCategory = {
   id?: string;
@@ -197,15 +211,25 @@ const route = useRoute();
 const config = useRuntimeConfig();
 const appStore = useAppStore();
 const { locale } = useI18n({ useScope: "global" });
-const appName = computed(() => String(config.public.appName || "AinerWise Market"));
+const appName = computed(() => String(config.public.appName || "AinerWise").replace(/\s+Market$/i, ""));
 
 const copyByLocale: Record<string, Record<string, string>> = {
   en: {
-    badge: "AI market assistant",
-    title: "AinerWise Market: buy products, source smart, save with new or used options.",
-    subtitle: "Browse official recommendations, market products, enterprise recycled stock and personal second-hand offers in one place. Complex needs can still become AI procurement requests.",
+    signIn: "Sign in",
+    badge: "Products first · AI when the job is bigger",
+    title: "Search products first. Let AI handle the building when it gets complex.",
+    subtitle: "AinerWise Mobile starts from products, prices and suppliers. When the need becomes KNX + AI smart building, the same request flow turns it into a structured AI project.",
     market: "Market",
+    marketPrimary: "Shop products",
     request: "AI Request",
+    smartBuilding: "AI Building",
+    smartKicker: "Official smart building flow",
+    smartTitle: "KNX + AI building brain for villas, hotels and facilities.",
+    smartSubtitle: "A focused AI request path with fewer categories: lighting, HVAC, energy, security, network, rooms and service.",
+    smartFeatures: "KNX + AI|Smart building|Villa / hotel",
+    marketSearchKicker: "AinerWise Market",
+    marketSearchTitle: "Find products, suppliers and cost-saving used options",
+    marketSearchSubtitle: "Use broad marketplace categories here. New, enterprise recycled and personal used items are all one market.",
     aiKicker: "AI project analysis",
     aiTitle: "Describe one project. AI turns it into categories, products and supplier RFQs.",
     aiSubtitle: "For villas, hotels, energy, security and smart building work that cannot be solved by one product.",
@@ -232,11 +256,21 @@ const copyByLocale: Record<string, Record<string, string>> = {
     safeText: "Official products, supplier listings, used offers, quotes and orders all feed the same AinerWise Core for analytics and follow-up.",
   },
   zh: {
-    badge: "AI 市场助手",
-    title: "AinerWise Market：买产品、AI 找货，新旧都能省。",
-    subtitle: "官网推荐、市场商品、企业回收再售和个人二手都在同一个市场里。复杂需求仍可一键进入 AI 采购需求流程。",
+    signIn: "登录",
+    badge: "先搜商品 · 复杂需求再交给 AI",
+    title: "先找产品，复杂项目交给 AI 建筑大脑。",
+    subtitle: "AinerWise 手机端先服务商品搜索、比价和找供应商。遇到 KNX + AI 智能建筑、酒店升级、别墅系统，再用同一个 AI 需求流程拆成项目。",
     market: "市场商品",
+    marketPrimary: "逛产品市场",
     request: "AI 需求",
+    smartBuilding: "AI 智能建筑",
+    smartKicker: "官网智能建筑流程",
+    smartTitle: "KNX + AI 建筑大脑，适合别墅、小酒店和设施升级。",
+    smartSubtitle: "官网入口只开放更聚焦的类别：灯光、HVAC、能源、安防、网络、房间和服务。",
+    smartFeatures: "KNX + AI|智能建筑|别墅 / 酒店",
+    marketSearchKicker: "AinerWise Market",
+    marketSearchTitle: "搜索商品、供应商和省钱的二手/回收选择",
+    marketSearchSubtitle: "这里用更宽的市场分类。全新、企业回收再售、个人二手都在同一个市场里筛选。",
     aiKicker: "AI 项目分析",
     aiTitle: "一句话描述项目，AI 帮你拆分类、商品和供应商询价。",
     aiSubtitle: "别墅、酒店、能源、安防、智能建筑等复杂需求，不再只靠搜索单个商品。",
@@ -263,11 +297,21 @@ const copyByLocale: Record<string, Record<string, string>> = {
     safeText: "官网商品、供应商上架、二手商品、报价和订单都进入同一个 AinerWise Core，便于后台分析和后续服务。",
   },
   sr: {
-    badge: "AI market asistent",
-    title: "AinerWise Market: novi i polovni proizvodi uz AI nabavku.",
-    subtitle: "Pregledajte preporučene proizvode, tržišne ponude, obnovljenu opremu i polovne artikle. Složen zahtev može postati AI nabavka.",
+    signIn: "Prijava",
+    badge: "Prvo proizvodi · AI za slozene projekte",
+    title: "Prvo pronadjite proizvod. Za zgradu neka AI napravi plan.",
+    subtitle: "AinerWise Mobile pocinje od proizvoda, cena i dobavljaca. Za KNX + AI pametne zgrade isti tok zahteva pravi strukturisan projekat.",
     market: "Market",
+    marketPrimary: "Market proizvodi",
     request: "AI zahtev",
+    smartBuilding: "AI zgrada",
+    smartKicker: "Fokusiran smart building tok",
+    smartTitle: "KNX + AI mozak zgrade za vile, hotele i objekte.",
+    smartSubtitle: "Uzi AI tok sa manje kategorija: rasveta, HVAC, energija, bezbednost, mreza, sobe i servis.",
+    smartFeatures: "KNX + AI|Pametna zgrada|Vila / hotel",
+    marketSearchKicker: "AinerWise Market",
+    marketSearchTitle: "Pronadjite proizvode, dobavljace i jeftinije polovne opcije",
+    marketSearchSubtitle: "Ovde koristite sire market kategorije. Novo, firmno obnovljeno i licno polovno je u jednom marketu.",
     aiKicker: "AI analiza projekta",
     aiTitle: "Opisite projekat. AI ga pretvara u kategorije, proizvode i RFQ.",
     aiSubtitle: "Za vile, hotele, energiju, bezbednost i pametne zgrade kada jedan proizvod nije dovoljan.",
@@ -294,11 +338,21 @@ const copyByLocale: Record<string, Record<string, string>> = {
     safeText: "Novi i polovni proizvodi, upiti i narudžbine ostaju u istom AinerWise Core sistemu.",
   },
   pl: {
-    badge: "Asystent AI marketu",
-    title: "AinerWise Market: nowe i używane produkty z zakupami AI.",
-    subtitle: "Przeglądaj rekomendacje, oferty rynku, sprzęt odnowiony i prywatne używane przedmioty. Większe potrzeby zamienisz w zapytanie AI.",
+    signIn: "Zaloguj",
+    badge: "Najpierw produkty · AI dla większych projektów",
+    title: "Najpierw znajdź produkt. Gdy projekt rośnie, oddaj go AI.",
+    subtitle: "AinerWise Mobile zaczyna od produktów, cen i dostawców. Dla KNX + AI smart building ten sam formularz staje się uporządkowanym projektem.",
     market: "Market",
+    marketPrimary: "Przeglądaj produkty",
     request: "Zapytanie AI",
+    smartBuilding: "AI Building",
+    smartKicker: "Oficjalny smart building",
+    smartTitle: "KNX + AI mózg budynku dla willi, hoteli i obiektów.",
+    smartSubtitle: "Węższa ścieżka AI: oświetlenie, HVAC, energia, bezpieczeństwo, sieć, pokoje i serwis.",
+    smartFeatures: "KNX + AI|Smart building|Willa / hotel",
+    marketSearchKicker: "AinerWise Market",
+    marketSearchTitle: "Znajdź produkty, dostawców i tańsze używane opcje",
+    marketSearchSubtitle: "Tutaj działają szerokie kategorie rynku. Nowe, firmowe odnowione i prywatne używane są w jednym markecie.",
     aiKicker: "Analiza projektu AI",
     aiTitle: "Opisz projekt. AI zamieni go w kategorie, produkty i zapytania RFQ.",
     aiSubtitle: "Dla willi, hoteli, energii, bezpieczeństwa i smart building, gdy jeden produkt nie wystarcza.",
@@ -327,6 +381,10 @@ const copyByLocale: Record<string, Record<string, string>> = {
 };
 
 const homeCopy = computed(() => copyByLocale[locale.value] || copyByLocale.en);
+const marketPath = computed(() => localizedPath("/marketplace"));
+const marketRequestPath = computed(() => localizedPath("/buyer/post-request?mode=market"));
+const smartBuildingRequestPath = computed(() => localizedPath("/buyer/post-request?mode=smart_building"));
+const smartBuildingFeatures = computed(() => String(homeCopy.value.smartFeatures || "").split("|").filter(Boolean));
 
 const fallbackCategoriesByLocale: Record<string, string[]> = {
   en: ["Construction Materials", "IT / Electronics", "Energy / Solar", "Security", "Smart Living"],

@@ -8,7 +8,7 @@
         </svg>
       </button>
       <div class="flex-1">
-        <p class="font-semibold text-slate-900 text-sm">Post Request</p>
+        <p class="font-semibold text-slate-900 text-sm">{{ flowCopy.header }}</p>
         <p class="text-xs text-slate-500">Step {{ step }} of {{ totalSteps }}</p>
       </div>
       <button type="button" class="text-slate-400 text-xs" @click="saveDraft">Save draft</button>
@@ -35,12 +35,12 @@
                 </svg>
               </span>
               <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-cyan-100">
-                AI matching
+                {{ flowCopy.badge }}
               </span>
             </div>
-            <h2 class="text-2xl font-extrabold leading-tight">What are you looking for?</h2>
+            <h2 class="text-2xl font-extrabold leading-tight">{{ flowCopy.title }}</h2>
             <p class="mt-2 text-sm leading-6 text-indigo-100">
-              Choose the closest category. AinerWise will use it to route your request to the right suppliers, products and installation partners.
+              {{ flowCopy.subtitle }}
             </p>
             <div class="mt-4 grid grid-cols-3 gap-2 text-center">
               <div class="rounded-2xl border border-white/10 bg-white/10 px-2 py-2">
@@ -455,16 +455,80 @@
 <script setup lang="ts">
 import { currencyMeta, currencyOptionLabel, localCurrencyLabel } from "~/utils/currencyPolicy";
 import { inferLocationFromCoords, inferLocationFromTimezone, type LocationGuess } from "~/utils/geoPolicy";
+import { useI18n } from "vue-i18n";
 
 definePageMeta({ layout: "default", middleware: ["buyer"] });
 useHead({ title: "Post Request" });
 
 const router = useRouter();
+const route = useRoute();
 const intentStore = useIntentStore();
 const authStore = useAuthStore();
 const appStore = useAppStore();
 const config = useRuntimeConfig();
 const { formatPrice } = useApiUtils();
+const { locale } = useI18n({ useScope: "global" });
+
+const requestMode = computed(() => String(route.query.mode || route.query.flow || "market"));
+const isSmartBuildingMode = computed(() => ["smart_building", "official", "building"].includes(requestMode.value));
+const flowCopyByLocale: Record<string, Record<string, Record<string, string>>> = {
+  market: {
+    en: {
+      header: "AI Market Request",
+      badge: "AI matching",
+      title: "What are you looking for?",
+      subtitle: "Choose the closest category. AinerWise will route your request to the right suppliers, products and installation partners.",
+    },
+    zh: {
+      header: "AI 市场需求",
+      badge: "AI 匹配",
+      title: "你想采购或找什么？",
+      subtitle: "选择最接近的类别。AinerWise 会把需求路由给合适的供应商、商品和本地服务伙伴。",
+    },
+    sr: {
+      header: "AI market zahtev",
+      badge: "AI uparivanje",
+      title: "Sta trazite?",
+      subtitle: "Izaberite najblizu kategoriju. AinerWise ce povezati zahtev sa dobavljacima, proizvodima i lokalnim partnerima.",
+    },
+    pl: {
+      header: "Zapytanie AI Market",
+      badge: "Dopasowanie AI",
+      title: "Czego szukasz?",
+      subtitle: "Wybierz najbliższą kategorię. AinerWise skieruje zapytanie do dostawców, produktów i lokalnych partnerów.",
+    },
+  },
+  smart_building: {
+    en: {
+      header: "AI Smart Building Request",
+      badge: "KNX + AI building",
+      title: "Which smart building system do you need?",
+      subtitle: "This official flow keeps the category list focused on KNX, lighting, HVAC, energy, security, network, rooms and service.",
+    },
+    zh: {
+      header: "AI 智能建筑需求",
+      badge: "KNX + AI 建筑",
+      title: "你要做哪类智能建筑系统？",
+      subtitle: "官网入口只保留智能建筑相关类别：KNX、灯光、HVAC、能源、安防、网络、房间和服务。",
+    },
+    sr: {
+      header: "AI smart building zahtev",
+      badge: "KNX + AI zgrada",
+      title: "Koji sistem pametne zgrade vam treba?",
+      subtitle: "Ovaj zvanicni tok prikazuje samo KNX, rasvetu, HVAC, energiju, bezbednost, mrezu, sobe i servis.",
+    },
+    pl: {
+      header: "Zapytanie AI Smart Building",
+      badge: "KNX + AI budynek",
+      title: "Jakiego systemu smart building potrzebujesz?",
+      subtitle: "Oficjalna ścieżka pokazuje tylko KNX, oświetlenie, HVAC, energię, bezpieczeństwo, sieć, pokoje i serwis.",
+    },
+  },
+};
+const flowCopy = computed(() => {
+  const group = isSmartBuildingMode.value ? flowCopyByLocale.smart_building : flowCopyByLocale.market;
+  return group[locale.value] || group.en;
+});
 
 const step = ref(1);
 const totalSteps = 5;
@@ -501,6 +565,7 @@ interface Category { id: string; name: string; slug: string }
 const categories = ref<Category[]>([]);
 
 const secondhandCategoryPattern = /(2\s*hands|second[\s-]*hand|used\s+goods|pre[\s-]*owned|personal\s+secondhand|enterprise\s+recycled)/i;
+const smartBuildingCategoryPattern = /(knx|building\s*automation|smart\s*(home|living|building|panel)|lighting|light|hvac|climate|thermostat|energy|solar|meter|battery|security|cctv|camera|access|lock|network|gateway|sensor|room|hotel|villa|curtain|shading|audio|video|service|maintenance)/i;
 const conditionPreferenceOptions = [
   {
     value: "new",
@@ -759,6 +824,17 @@ function isSecondhandPseudoCategory(cat: Category) {
   return secondhandCategoryPattern.test(`${cat.slug || ""} ${cat.name || ""}`);
 }
 
+function isSmartBuildingCategory(cat: Category) {
+  return smartBuildingCategoryPattern.test(`${cat.slug || ""} ${cat.name || ""}`);
+}
+
+function filterRequestCategories(data: Category[]) {
+  const base = data.filter((cat) => !isSecondhandPseudoCategory(cat));
+  if (!isSmartBuildingMode.value) return base;
+  const focused = base.filter(isSmartBuildingCategory);
+  return focused.length >= 4 ? focused : base;
+}
+
 onMounted(async () => {
   if (!authStore.systemMode) {
     await authStore.fetchSystemMode();
@@ -769,7 +845,7 @@ onMounted(async () => {
   applyTimezoneDefault();
   try {
     const data = await $fetch<Category[]>(`${config.public.apiBase}/categories`);
-    categories.value = Array.isArray(data) ? data.filter((cat) => !isSecondhandPseudoCategory(cat)) : [];
+    categories.value = Array.isArray(data) ? filterRequestCategories(data) : [];
   } catch {
     categories.value = [];
   } finally {
@@ -935,6 +1011,9 @@ async function submitRequest() {
     lng: form.lng || undefined,
     attachments: form.attachments,
     requirements_json: {
+      request_surface: isSmartBuildingMode.value ? "smart_building_h5" : "market_h5",
+      request_mode: isSmartBuildingMode.value ? "smart_building" : "market",
+      solution_focus: isSmartBuildingMode.value ? "knx_ai_smart_building" : "general_market_procurement",
       product_condition_preference: form.product_condition_preference,
       product_condition_label: selectedConditionPreference.value.label,
     },

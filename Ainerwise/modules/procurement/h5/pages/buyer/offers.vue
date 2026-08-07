@@ -23,7 +23,7 @@
         </svg>
         <p class="text-slate-500 font-medium">{{ $t("pages.no_offers_yet") }}</p>
         <p class="text-slate-400 text-xs mt-1">{{ $t("pages.post_request_to_receive_offers") }}</p>
-        <NuxtLink to="/buyer/post-request">
+        <NuxtLink to="/buyer/post-request?mode=market">
           <button type="button" class="mt-4 btn-primary py-2.5 px-6 w-auto text-sm">{{ $t("buyer.post_request") }}</button>
         </NuxtLink>
       </div>

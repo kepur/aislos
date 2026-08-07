@@ -11,7 +11,7 @@
           <option value="deadline">{{ $t('buyer.deadline') }}</option>
           <option value="rank">{{ $t('buyer.rank') }}</option>
         </select>
-        <NuxtLink to="/buyer/post-request">
+        <NuxtLink to="/buyer/post-request?mode=market">
           <button type="button" class="bg-primary-600 text-white text-sm font-semibold px-3 py-1.5 rounded-lg">+ New</button>
         </NuxtLink>
       </div>
@@ -50,7 +50,7 @@
           <path d="M9 7h6M9 11h6M9 15h4" />
         </svg>
         <p class="text-slate-500 font-medium">{{ $t("pages.no_requests_for_filter") }}</p>
-        <NuxtLink to="/buyer/post-request">
+        <NuxtLink to="/buyer/post-request?mode=market">
           <button type="button" class="mt-4 btn-primary py-2.5 px-6 w-auto text-sm">{{ $t("buyer.post_request") }}</button>
         </NuxtLink>
       </div>

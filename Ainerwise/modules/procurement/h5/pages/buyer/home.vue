@@ -36,7 +36,7 @@
             <h2 class="text-xl font-bold leading-tight">{{ $t("buyer.post_request") }}</h2>
             <p class="text-primary-100 text-sm leading-relaxed">{{ $t("pages.post_request_subtitle") }}</p>
           </div>
-          <NuxtLink to="/buyer/post-request" class="block mt-4">
+          <NuxtLink to="/buyer/post-request?mode=market" class="block mt-4">
             <button type="button" class="w-full bg-white text-primary-700 font-semibold px-5 py-3 rounded-xl text-sm active:bg-primary-50 transition-colors">
               + Post Request
             </button>

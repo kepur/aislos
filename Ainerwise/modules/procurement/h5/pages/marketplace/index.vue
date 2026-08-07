@@ -218,7 +218,7 @@
       <div v-else-if="!loading && items.length === 0" class="text-center py-20">
         <div class="text-5xl mb-3">🔍</div>
         <p class="text-slate-500 text-sm">{{ t('market.no_products') }}</p>
-        <NuxtLink :to="localizedPath('/buyer/post-request')" class="mt-3 inline-block text-indigo-600 text-sm font-medium">
+        <NuxtLink :to="localizedPath('/buyer/post-request?mode=market')" class="mt-3 inline-block text-indigo-600 text-sm font-medium">
           {{ t('market.post_request_instead') }} →
         </NuxtLink>
         <NuxtLink

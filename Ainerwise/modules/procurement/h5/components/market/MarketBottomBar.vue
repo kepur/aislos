@@ -77,7 +77,7 @@ const tabs = computed<Tab[]>(() => {
     id: 'home',
     label: t('nav.home'),
     to: isLoggedIn ? (isSupplier ? '/supplier/dashboard' : '/buyer/home') : '/',
-    active: false,
+    active: normalizedPath.value === '/' || normalizedPath.value === '/buyer/home' || normalizedPath.value === '/supplier/dashboard',
   }
 
   // Market tab (always active on this page)
@@ -98,7 +98,7 @@ const tabs = computed<Tab[]>(() => {
     : {
         id: 'requests',
         label: t('nav.ai_project') || 'AI',
-        to: isLoggedIn ? '/buyer/post-request' : `/auth/login?return_url=${encodeURIComponent('/buyer/post-request')}`,
+        to: isLoggedIn ? '/buyer/post-request?mode=market' : `/auth/login?return_url=${encodeURIComponent('/buyer/post-request?mode=market')}`,
         active: normalizedPath.value.startsWith('/buyer/post-request') || normalizedPath.value.startsWith('/buyer/requests'),
       }
 
@@ -119,7 +119,7 @@ const tabs = computed<Tab[]>(() => {
       }
     : { id: 'login', label: t('auth.sign_in'), to: `/auth/login?return_url=${encodeURIComponent(route.fullPath)}`, active: false }
 
-  return [homeTab, marketTab, middleTab, walletTab, accountTab]
+  return [marketTab, middleTab, homeTab, walletTab, accountTab]
 })
 
 function navigate(tab: Tab) {
