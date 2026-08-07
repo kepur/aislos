@@ -2,6 +2,28 @@
   <div class="bg-slate-50 min-h-screen pb-32">
     <!-- Top bar -->
     <header class="bg-white sticky top-0 z-30 border-b border-slate-100 px-4 py-3">
+      <div class="mb-3 flex items-center justify-between gap-3">
+        <NuxtLink :to="localizedPath('/')" class="flex min-w-0 items-center gap-2">
+          <div class="flex h-9 w-9 flex-none items-center justify-center rounded-2xl bg-slate-950 text-xs font-black text-white">
+            AW
+          </div>
+          <div class="min-w-0">
+            <h1 class="truncate text-base font-black leading-tight text-slate-950">AinerWise Market</h1>
+            <p class="truncate text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+              {{ marketShellCopy.subtitle }}
+            </p>
+          </div>
+        </NuxtLink>
+        <div class="flex flex-none items-center gap-2">
+          <NuxtLink :to="localizedPath('/')" class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">
+            {{ marketShellCopy.official }}
+          </NuxtLink>
+          <NuxtLink :to="localizedPath('/buyer/post-request?mode=market')" class="rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white">
+            {{ marketShellCopy.aiRequest }}
+          </NuxtLink>
+        </div>
+      </div>
+
       <div class="flex items-center gap-2">
         <div class="flex-1 relative">
           <input
@@ -306,7 +328,7 @@ definePageMeta({ layout: 'default' })
 const config = useRuntimeConfig()
 const route = useRoute()
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const appStore = useAppStore()
 
 interface FeedItem {
@@ -366,6 +388,30 @@ const merchantType = ref('')
 const verifiedOnly = ref(false)
 const filterCategories = ref<FilterCat[]>([])
 const filterOriginCountries = ref<string[]>([])
+
+const marketShellCopyByLocale: Record<string, { subtitle: string; official: string; aiRequest: string }> = {
+  en: {
+    subtitle: 'products · used · RFQ',
+    official: 'Official',
+    aiRequest: 'AI Request',
+  },
+  zh: {
+    subtitle: '商品 · 二手 · 询价',
+    official: '官网',
+    aiRequest: 'AI 需求',
+  },
+  sr: {
+    subtitle: 'proizvodi · polovno · RFQ',
+    official: 'Official',
+    aiRequest: 'AI zahtev',
+  },
+  pl: {
+    subtitle: 'produkty · używane · RFQ',
+    official: 'Official',
+    aiRequest: 'Zapytanie AI',
+  },
+}
+const marketShellCopy = computed(() => marketShellCopyByLocale[locale.value] || marketShellCopyByLocale.en)
 
 const sortOptions = computed(() => [
   { value: 'rank', label: t('market.sort_best') },
