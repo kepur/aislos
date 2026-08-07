@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
 
-const localeRoutePrefixes = ['/en', '/cn', '/rs']
+const localeRoutePrefixes = ['/en', '/cn', '/rs', '/pl']
 
 function addLocaleAliases(pages: any[]) {
   for (const page of pages) {
@@ -75,6 +75,7 @@ export default defineNuxtConfig({
       { code: 'en', name: 'English', file: 'en.json' },
       { code: 'zh', name: '中文', file: 'zh.json' },
       { code: 'sr', name: 'Srpski', file: 'sr.json' },
+      { code: 'pl', name: 'Polski', file: 'pl.json' },
     ],
     defaultLocale: 'en',
     lazy: true,

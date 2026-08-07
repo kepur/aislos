@@ -78,6 +78,7 @@ import {
 } from '~/utils/productSeo'
 
 const { apiFetch } = useApi()
+const route = useRoute()
 const search = ref('')
 const requestUrl = useRequestURL()
 
@@ -113,23 +114,10 @@ async function loadProducts() {
   await refreshProducts()
 }
 
-const canonicalUrl = computed(() => absoluteSeoUrl('/products', requestUrl.origin))
-const pageDescription = 'Browse AinerWise mobile product catalog for smart buildings, AI procurement, verified hardware, installation and lifecycle support.'
-
-useSeoMeta({
-  title: 'Mobile Smart Building Product Catalog | AinerWise',
-  description: pageDescription,
-  ogTitle: 'Mobile Smart Building Product Catalog | AinerWise',
-  ogDescription: pageDescription,
-  ogType: 'website',
-  ogUrl: () => canonicalUrl.value,
-  twitterCard: 'summary_large_image',
-  twitterTitle: 'Mobile Smart Building Product Catalog | AinerWise',
-  twitterDescription: pageDescription,
-})
+const canonicalUrl = computed(() => absoluteSeoUrl(route.path, requestUrl.origin))
 
 useHead(() => ({
-  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+  link: [{ key: 'canonical', rel: 'canonical', href: canonicalUrl.value }],
   script: [
     {
       type: 'application/ld+json',

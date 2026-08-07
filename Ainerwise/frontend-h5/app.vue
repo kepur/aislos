@@ -11,6 +11,7 @@ const route = useRoute()
 const { initAuth, user } = useAuth()
 const { loadAccess } = usePortalManifest()
 const { mode } = usePortalMode()
+await useAinerwiseSeo()
 
 const partnerRoles = ['service_partner', 'partner_worker', 'maintenance_worker']
 const customerRoles = ['buyer', 'customer_user']

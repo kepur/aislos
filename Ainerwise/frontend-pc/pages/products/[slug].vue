@@ -200,7 +200,7 @@ watch(product, (value) => {
   }
 }, { immediate: true })
 
-const canonicalUrl = computed(() => absoluteSeoUrl(`/products/${slug.value}`, requestUrl.origin))
+const canonicalUrl = computed(() => absoluteSeoUrl(route.path, requestUrl.origin))
 const seoTitle = computed(() => productSeoTitle(product.value))
 const seoDescription = computed(() => productSeoDescription(product.value))
 const seoImage = computed(() => {
@@ -223,7 +223,7 @@ useSeoMeta({
 })
 
 useHead(() => ({
-  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+  link: [{ key: 'canonical', rel: 'canonical', href: canonicalUrl.value }],
   script: product.value
     ? [
         {

@@ -18,6 +18,7 @@ const OWNERS: Array<[string, AdminPortalMode]> = [
   ['/compatibility', 'store'],
   ['/warranty-policies', 'store'],
   ['/supplier-warranties', 'store'],
+  ['/seo', 'marketing'],
   ['/marketing-studio', 'marketing'],
   ['/marketing', 'marketing'],
   ['/leads', 'marketing'],

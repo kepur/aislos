@@ -149,6 +149,7 @@ const allMenuSections = computed(() => [
       { to: '/marketing/briefs', label: t('admin.creativeBriefs'), icon: IconProposal },
       { to: '/marketing/clients', label: t('admin.integrationClients'), icon: IconShield },
       { to: '/marketing/imported-assets', label: t('admin.importedAssets'), icon: IconPkg },
+      { to: '/seo', label: t('admin.seoCenter'), icon: IconGlobe },
     ],
   },
   {

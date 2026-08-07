@@ -29,7 +29,7 @@ LOCALE_BY_PREFIX = {item["uri_prefix"]: item for item in LOCALE_OPTIONS}
 
 LOCALIZATION_DEFAULTS: dict[str, dict[str, Any]] = {
     "enabled_locale_prefixes": {
-        "value": ["en", "cn", "rs"],
+        "value": ["en", "cn", "rs", "pl"],
         "description": "Enabled URI language prefixes for every public/admin portal. Example: /cn, /rs.",
     },
     "default_locale_prefix": {
@@ -37,7 +37,7 @@ LOCALIZATION_DEFAULTS: dict[str, dict[str, Any]] = {
         "description": "Default URI language prefix used when no user preference exists.",
     },
     "enabled_region_codes": {
-        "value": ["RS", "PL", "RO", "CN"],
+        "value": ["RS", "PL", "RO", "CN", "PH", "NZ", "AU"],
         "description": "Regions that can be selected by frontends and admin localization controls.",
     },
     "machine_translation_enabled": {

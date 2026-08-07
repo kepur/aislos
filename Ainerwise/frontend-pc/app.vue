@@ -13,6 +13,7 @@
 const { initAuth } = useAuth()
 const { loadAccess } = usePortalManifest()
 const { theme, isDark } = useTheme()
+await useAinerwiseSeo()
 // Two classes: `dark`/`light` drives the shared surface baseline, while the
 // theme key lets the KNX palette override on top without touching the other
 // two themes' rules.

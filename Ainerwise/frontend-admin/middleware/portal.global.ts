@@ -27,7 +27,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
                   : ['/lifecycle-dashboard', '/assets', '/sites', '/amc-contracts', '/monitoring-points', '/maintenance', '/calibration', '/customer-warranties', '/renewal-queue'].some(prefix => path === prefix || path.startsWith(`${prefix}/`)) ? 'admin_asset'
                     : path.startsWith('/project-finance') || path.startsWith('/finance') || path.startsWith('/platform-fee-rules') || path.startsWith('/commerce/reconciliation') ? 'admin_finance'
                       : ['/payments', '/payment-plans', '/store-orders', '/commerce'].some(prefix => path === prefix || path.startsWith(`${prefix}/`)) ? 'admin_commerce'
-                      : ['/marketing', '/marketing-studio'].some(prefix => path === prefix || path.startsWith(`${prefix}/`)) ? 'marketing_pc'
+                      : ['/marketing', '/marketing-studio', '/seo'].some(prefix => path === prefix || path.startsWith(`${prefix}/`)) ? 'marketing_pc'
                         : ['/agents', '/agent-missions', '/business-brain', '/ai-runs', '/ai-reviews', '/marketplace'].some(prefix => path === prefix || path.startsWith(`${prefix}/`)) ? 'admin_ai_supervisor'
                           : path.startsWith('/knowledge') || path.startsWith('/case-library') ? 'admin_knowledge'
                             : 'admin_audit'

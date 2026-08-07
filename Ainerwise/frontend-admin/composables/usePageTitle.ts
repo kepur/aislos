@@ -34,6 +34,7 @@ const PAGE_KEY_BY_SLUG: Record<string, string> = {
   'integration-events': 'admin.events',
   certifications: 'admin.certifications',
   regions: 'admin.regions',
+  seo: 'admin.seoCenter',
   'audit-logs': 'admin.auditLogs',
   settings: 'admin.settings',
 }
