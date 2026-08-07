@@ -78,6 +78,7 @@
     "could_not_load": "Nije moguce ucitati proizvode",
     "no_products": "Nema pronadjenih proizvoda",
     "post_request_instead": "Objavite zahtev umesto toga",
+    "list_item": "Dodaj proizvod",
     "ad": "Oglas",
     "buy_now": "Kupi sada",
     "quote": "Ponuda",
@@ -91,7 +92,7 @@
     "surface_official": "Preporuceno",
     "surface_market": "Market proizvodi",
     "surface_new": "Novo",
-    "surface_secondhand": "2Hands",
+    "surface_secondhand": "Polovno",
     "surface_recycled": "Reciklirano od firme"
   },
   "secondhand": {

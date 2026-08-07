@@ -237,7 +237,7 @@
               Enterprise recycled
             </button>
           </div>
-          <p class="mt-1 text-xs text-slate-400">Personal second-hand is published from the 2Hands sell page. Supplier catalog is for new or enterprise recycled stock.</p>
+          <p class="mt-1 text-xs text-slate-400">Choose whether this company product is new or enterprise recycled. Personal used items are published from AinerWise Market as private used listings.</p>
         </div>
         <div v-if="form.listing_origin === 'enterprise_recycled'" class="grid grid-cols-2 gap-3">
           <div>
@@ -285,6 +285,7 @@ definePageMeta({ layout: "supplier", middleware: ["supplier"] });
 useHead({ title: "Catalog" });
 
 const config = useRuntimeConfig();
+const route = useRoute();
 const authStore = useAuthStore();
 const appStore = useAppStore();
 const { formatPrice } = useApiUtils();
@@ -388,9 +389,11 @@ async function loadCompany() {
   }
 }
 
-function openCreate() {
+function openCreate(defaultOrigin = 'new') {
+  const normalizedOrigin = defaultOrigin === 'enterprise_recycled' ? 'enterprise_recycled' : 'new';
+  const defaultCondition = normalizedOrigin === 'enterprise_recycled' ? 'refurbished' : 'new';
   editing.value = null; priceInput.value = 0; tagsInput.value = ''; imageUrlInput.value = '';
-  Object.assign(form, { title: '', description: '', unit: 'pc', stock_qty: 0, min_order_qty: 1, currency: appStore.currency || 'EUR', price_minor: 0, category_id: '', tags: [], images: [], market_mode: 'B2B', origin_country: appStore.regionCountry || '', weight_kg: null, status: 'ACTIVE', listing_origin: 'new', item_condition: 'new', warranty_left_months: null, warranty_note: '' });
+  Object.assign(form, { title: '', description: '', unit: 'pc', stock_qty: 0, min_order_qty: 1, currency: appStore.currency || 'EUR', price_minor: 0, category_id: '', tags: [], images: [], market_mode: 'B2B', origin_country: appStore.regionCountry || '', weight_kg: null, status: 'ACTIVE', listing_origin: normalizedOrigin, item_condition: defaultCondition, warranty_left_months: null, warranty_note: '' });
   showSheet.value = true;
 }
 
@@ -508,7 +511,10 @@ function statusClass(s: string) {
 }
 
 function onRefresh() { loadItems(); }
-onMounted(() => { loadCompany(); loadCategories(); loadItems(); });
+onMounted(async () => {
+  await Promise.all([loadCompany(), loadCategories(), loadItems()]);
+  if (route.query.action === 'create') openCreate(String(route.query.listing_origin || 'new'));
+});
 </script>
 
 <style scoped>

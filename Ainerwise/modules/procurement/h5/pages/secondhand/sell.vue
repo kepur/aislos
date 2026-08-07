@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-slate-50 pb-10">
     <header class="sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-slate-100 bg-white/95 px-4 pt-safe backdrop-blur">
-      <NuxtLink :to="localizedPath('/secondhand')" class="text-sm font-bold text-emerald-700">
+      <NuxtLink :to="localizedPath('/marketplace/sell')" class="text-sm font-bold text-emerald-700">
         {{ t("common.back") }}
       </NuxtLink>
       <h1 class="truncate text-base font-extrabold text-slate-900">{{ t("secondhand.sell") }}</h1>
@@ -9,10 +9,10 @@
 
     <form class="space-y-4 px-4 py-4" @submit.prevent="submit">
       <section class="rounded-3xl bg-white p-4 shadow-card">
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600">2Hands</p>
-        <h2 class="mt-1 text-xl font-extrabold text-slate-900">List a cost-saving item</h2>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600">{{ t("market.surface_secondhand") }}</p>
+        <h2 class="mt-1 text-xl font-extrabold text-slate-900">{{ t("market.list_item") }}</h2>
         <p class="mt-2 text-xs leading-5 text-slate-500">
-          Personal second-hand can be sold without warranty. Enterprise recycled or refurbished items must include warranty information.
+          Personal used items can be sold without warranty. Enterprise recycled or refurbished items must include warranty information.
         </p>
       </section>
 
@@ -112,7 +112,7 @@ import { useI18n } from "vue-i18n";
 import { getLocalePrefixFromPath, withLocalePrefix } from "~/utils/localeRoutes";
 
 definePageMeta({ layout: "default" });
-useHead({ title: "Sell on 2Hands" });
+useHead({ title: "List used item" });
 
 const route = useRoute();
 const router = useRouter();
@@ -184,6 +184,8 @@ onMounted(async () => {
   appStore.hydrate();
   await appStore.fetchMarketLocalizationConfig();
   await appStore.fetchPaymentRegionConfig(appStore.regionCountry || "RS");
+  const requestedOrigin = String(route.query.listing_origin || "");
+  if (["personal_secondhand", "enterprise_recycled"].includes(requestedOrigin)) form.listing_origin = requestedOrigin;
   form.currency = appStore.currency;
   form.pickup_country = appStore.regionCountry;
 });

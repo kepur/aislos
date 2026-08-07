@@ -90,6 +90,7 @@
     "could_not_load": "Could not load marketplace products",
     "no_products": "No products found",
     "post_request_instead": "Post a request instead",
+    "list_item": "List item",
     "ad": "Ad",
     "buy_now": "Buy Now",
     "quote": "Quote",
@@ -103,7 +104,7 @@
     "surface_official": "Official recommended",
     "surface_market": "Market products",
     "surface_new": "New",
-    "surface_secondhand": "2Hands",
+    "surface_secondhand": "Used",
     "surface_recycled": "Enterprise recycled"
   },
   "secondhand": {

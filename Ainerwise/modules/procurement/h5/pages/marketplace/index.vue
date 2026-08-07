@@ -41,6 +41,40 @@
         />
       </div>
 
+      <!-- Category chips belong to the Market surface, not the landing hero. -->
+      <div class="mt-2">
+        <div class="mb-1 flex items-center justify-between">
+          <p class="text-[11px] font-black uppercase tracking-[0.14em] text-slate-400">
+            {{ t('market.categories') }}
+          </p>
+          <button
+            type="button"
+            class="text-[11px] font-bold text-indigo-600"
+            @click="showFilter = true"
+          >
+            {{ t('market.categories') }}
+          </button>
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
+          <button
+            type="button"
+            @click="setCategoryFilter(null)"
+            :class="['flex-shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition-colors', !categoryId ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600']"
+          >
+            {{ t('market.all') }}
+          </button>
+          <button
+            v-for="cat in visibleCategoryChips"
+            :key="cat.id"
+            type="button"
+            @click="setCategoryFilter(cat.id, cat.name)"
+            :class="['flex-shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition-colors', categoryId === cat.id ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600']"
+          >
+            {{ cat.name }}
+          </button>
+        </div>
+      </div>
+
       <!-- Product surface chips: one AinerWise Market, multiple product sources. -->
       <div class="flex items-center gap-2 mt-2 overflow-x-auto scrollbar-hide pb-1">
         <button
@@ -50,9 +84,9 @@
           :class="['flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-bold transition-colors', activeSurface === surface.value ? surface.activeClass : 'bg-slate-100 text-slate-600']"
         >{{ surface.label }}</button>
         <NuxtLink
-          :to="localizedPath('/secondhand/sell')"
+          :to="localizedPath('/marketplace/sell')"
           class="flex-shrink-0 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700"
-        >{{ t('secondhand.sell') }}</NuxtLink>
+        >{{ t('market.list_item') }}</NuxtLink>
       </div>
 
       <!-- Secondary filters -->
@@ -188,10 +222,10 @@
           {{ t('market.post_request_instead') }} →
         </NuxtLink>
         <NuxtLink
-          :to="localizedPath('/secondhand/sell')"
+          :to="localizedPath('/marketplace/sell')"
           class="ml-3 mt-3 inline-block text-emerald-600 text-sm font-medium"
         >
-          {{ t('secondhand.sell') }} →
+          {{ t('market.list_item') }} →
         </NuxtLink>
       </div>
 
@@ -354,6 +388,7 @@ const productSurfaceOptions = computed(() => [
   { value: 'enterprise_recycled', label: t('market.surface_recycled'), activeClass: 'bg-emerald-600 text-white' },
   { value: 'personal_secondhand', label: t('market.surface_secondhand'), activeClass: 'bg-amber-600 text-white' },
 ])
+const visibleCategoryChips = computed(() => filterCategories.value.slice(0, 14))
 
 onMounted(async () => {
   await appStore.fetchMarketLocalizationConfig()

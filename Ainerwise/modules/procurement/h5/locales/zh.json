@@ -87,6 +87,7 @@
     "could_not_load": "商品列表加载失败",
     "no_products": "没有找到商品",
     "post_request_instead": "改为发布需求",
+    "list_item": "发布商品",
     "ad": "广告",
     "buy_now": "立即购买",
     "quote": "报价",
@@ -100,7 +101,7 @@
     "surface_official": "官方推荐",
     "surface_market": "市场商品",
     "surface_new": "全新",
-    "surface_secondhand": "2Hands",
+    "surface_secondhand": "二手",
     "surface_recycled": "企业回收再售"
   },
   "secondhand": {

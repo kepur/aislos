@@ -22,11 +22,6 @@
           <svg v-else-if="tab.id === 'market'" :fill="tab.active ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
-          <svg v-else-if="tab.id === 'secondhand'" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h10a3 3 0 013 3v0a3 3 0 01-3 3H8" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 17h8a3 3 0 003-3v0a3 3 0 00-3-3h-2" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 13l-4-3 4-3M16 11l4 3-4 3" />
-          </svg>
           <svg v-else-if="tab.id === 'requests'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
@@ -60,7 +55,7 @@ import { getLocalePrefixFromPath, stripLocalePrefix, withLocalePrefix } from '~/
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
-const { t } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 const normalizedPath = computed(() => stripLocalePrefix(route.path))
 const currentPrefix = computed(() => getLocalePrefixFromPath(route.path) || (import.meta.client ? localStorage.getItem('h5_locale_prefix') || '' : ''))
 
@@ -74,6 +69,8 @@ interface Tab {
 const tabs = computed<Tab[]>(() => {
   const isLoggedIn = authStore.isLoggedIn
   const isSupplier = authStore.isSupplier
+  // Make the tab labels recalculate immediately after language switches.
+  locale.value
 
   // Home destination
   const homeTab: Tab = {
@@ -88,17 +85,11 @@ const tabs = computed<Tab[]>(() => {
     id: 'market',
     label: t('nav.market'),
     to: '/marketplace',
-    active: normalizedPath.value === '/marketplace' || normalizedPath.value.startsWith('/marketplace/'),
-  }
-
-  const secondhandTab: Tab = {
-    id: 'secondhand',
-    label: t('nav.secondhand') || '2Hands',
-    to: '/marketplace?surface=personal_secondhand',
     active:
       normalizedPath.value === '/secondhand' ||
       normalizedPath.value.startsWith('/secondhand/') ||
-      (normalizedPath.value.startsWith('/marketplace') && String(route.query.surface || '') === 'personal_secondhand'),
+      normalizedPath.value === '/marketplace' ||
+      normalizedPath.value.startsWith('/marketplace/'),
   }
 
   // Middle tab — role aware
@@ -128,7 +119,7 @@ const tabs = computed<Tab[]>(() => {
       }
     : { id: 'login', label: t('auth.sign_in'), to: `/auth/login?return_url=${encodeURIComponent(route.fullPath)}`, active: false }
 
-  return [homeTab, marketTab, secondhandTab, middleTab, walletTab, accountTab]
+  return [homeTab, marketTab, middleTab, walletTab, accountTab]
 })
 
 function navigate(tab: Tab) {

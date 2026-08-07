@@ -38,12 +38,9 @@
           {{ homeCopy.subtitle }}
         </p>
 
-        <div class="mb-4 grid grid-cols-3 gap-2">
+        <div class="mb-4 grid grid-cols-2 gap-2">
           <NuxtLink :to="localizedPath('/marketplace')" class="rounded-2xl border border-white/15 bg-white/15 px-3 py-3 text-center text-xs font-bold text-white backdrop-blur active:bg-white/25">
             {{ homeCopy.market }}
-          </NuxtLink>
-          <NuxtLink :to="localizedPath('/marketplace?surface=personal_secondhand')" class="rounded-2xl border border-emerald-200/30 bg-emerald-300/15 px-3 py-3 text-center text-xs font-bold text-emerald-50 backdrop-blur active:bg-emerald-300/25">
-            2Hands
           </NuxtLink>
           <NuxtLink :to="localizedPath('/buyer/post-request')" class="rounded-2xl border border-white/15 bg-white/10 px-3 py-3 text-center text-xs font-bold text-white/90 backdrop-blur active:bg-white/20">
             {{ homeCopy.request }}
@@ -69,27 +66,6 @@
             <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white text-xl font-black text-primary-700">→</span>
           </div>
         </NuxtLink>
-
-        <div class="mb-4">
-          <div class="mb-2 flex items-center justify-between">
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-white/80">
-              {{ homeCopy.categoriesTitle }}
-            </p>
-            <NuxtLink :to="localizedPath('/marketplace')" class="text-[11px] font-bold text-cyan-100">
-              {{ homeCopy.allCategories }}
-            </NuxtLink>
-          </div>
-          <div class="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-            <NuxtLink
-              v-for="cat in quickCategoryChips"
-              :key="cat.value"
-              :to="categoryTarget(cat)"
-              class="flex-shrink-0 rounded-full border border-white/15 bg-white/15 px-3 py-2 text-xs font-bold text-white backdrop-blur active:bg-white/25"
-            >
-              {{ cat.name }}{{ cat.item_count ? ` · ${cat.item_count}` : "" }}
-            </NuxtLink>
-          </div>
-        </div>
 
         <form class="space-y-4 rounded-3xl bg-white p-4 text-slate-900 shadow-2xl" @submit.prevent="handleSearch">
           <div>
@@ -226,8 +202,8 @@ const appName = computed(() => String(config.public.appName || "AinerWise Market
 const copyByLocale: Record<string, Record<string, string>> = {
   en: {
     badge: "AI market assistant",
-    title: "AinerWise Market: buy new, source smart, save with 2Hands.",
-    subtitle: "Browse official recommendations, market products, enterprise recycled stock and personal second-hand offers. Complex needs can still become AI procurement requests.",
+    title: "AinerWise Market: buy products, source smart, save with new or used options.",
+    subtitle: "Browse official recommendations, market products, enterprise recycled stock and personal second-hand offers in one place. Complex needs can still become AI procurement requests.",
     market: "Market",
     request: "AI Request",
     aiKicker: "AI project analysis",
@@ -253,12 +229,12 @@ const copyByLocale: Record<string, Record<string, string>> = {
     worksTitle: "How AinerWise Market works",
     worksSubtitle: "Shop, compare, ask suppliers, or publish a structured request when the job is bigger.",
     safeTitle: "One market, shared Core data",
-    safeText: "Official products, supplier listings, 2Hands offers, quotes and orders all feed the same AinerWise Core for analytics and follow-up.",
+    safeText: "Official products, supplier listings, used offers, quotes and orders all feed the same AinerWise Core for analytics and follow-up.",
   },
   zh: {
     badge: "AI 市场助手",
-    title: "AinerWise Market：全新采购、AI 找货、2Hands 省钱。",
-    subtitle: "浏览官网推荐、市场商品、企业回收再售和个人二手。复杂需求仍可一键进入 AI 采购需求流程。",
+    title: "AinerWise Market：买产品、AI 找货，新旧都能省。",
+    subtitle: "官网推荐、市场商品、企业回收再售和个人二手都在同一个市场里。复杂需求仍可一键进入 AI 采购需求流程。",
     market: "市场商品",
     request: "AI 需求",
     aiKicker: "AI 项目分析",
@@ -284,11 +260,11 @@ const copyByLocale: Record<string, Record<string, string>> = {
     worksTitle: "AinerWise Market 如何工作",
     worksSubtitle: "可直接逛商品、比较供应商、询价；复杂项目发布结构化需求。",
     safeTitle: "独立市场，共用 Core 数据",
-    safeText: "官网商品、供应商上架、2Hands、报价和订单都进入同一个 AinerWise Core，便于后台分析和后续服务。",
+    safeText: "官网商品、供应商上架、二手商品、报价和订单都进入同一个 AinerWise Core，便于后台分析和后续服务。",
   },
   sr: {
     badge: "AI market asistent",
-    title: "AinerWise Market: novo, pametna nabavka i 2Hands ušteda.",
+    title: "AinerWise Market: novi i polovni proizvodi uz AI nabavku.",
     subtitle: "Pregledajte preporučene proizvode, tržišne ponude, obnovljenu opremu i polovne artikle. Složen zahtev može postati AI nabavka.",
     market: "Market",
     request: "AI zahtev",
@@ -315,11 +291,11 @@ const copyByLocale: Record<string, Record<string, string>> = {
     worksTitle: "Kako radi AinerWise Market",
     worksSubtitle: "Kupujte, poredite, tražite ponude ili objavite strukturisan zahtev.",
     safeTitle: "Jedan market, zajednički Core",
-    safeText: "Proizvodi, 2Hands ponude, upiti i narudžbine ostaju u istom AinerWise Core sistemu.",
+    safeText: "Novi i polovni proizvodi, upiti i narudžbine ostaju u istom AinerWise Core sistemu.",
   },
   pl: {
     badge: "Asystent AI marketu",
-    title: "AinerWise Market: nowe produkty, inteligentne zakupy i oszczędności 2Hands.",
+    title: "AinerWise Market: nowe i używane produkty z zakupami AI.",
     subtitle: "Przeglądaj rekomendacje, oferty rynku, sprzęt odnowiony i prywatne używane przedmioty. Większe potrzeby zamienisz w zapytanie AI.",
     market: "Market",
     request: "Zapytanie AI",
@@ -346,7 +322,7 @@ const copyByLocale: Record<string, Record<string, string>> = {
     worksTitle: "Jak działa AinerWise Market",
     worksSubtitle: "Kupuj, porównuj, pytaj dostawców albo opublikuj uporządkowane zapytanie.",
     safeTitle: "Jeden market, wspólne dane Core",
-    safeText: "Produkty, oferty 2Hands, zapytania i zamówienia trafiają do wspólnego AinerWise Core.",
+    safeText: "Nowe i używane produkty, zapytania i zamówienia trafiają do wspólnego AinerWise Core.",
   },
 };
 
@@ -379,7 +355,6 @@ const fallbackCategories = computed<QuickCategory[]>(() => {
   return names.map((name) => ({ name, value: `name:${name}` }));
 });
 const categoryOptions = computed(() => loadedCategories.value.length ? loadedCategories.value : fallbackCategories.value);
-const quickCategoryChips = computed(() => categoryOptions.value.slice(0, 8));
 const regionOptions = computed(() => appStore.regionOptions.map((region) => ({
   code: String(region.code || "").toUpperCase().slice(0, 2),
   label: region.label || region.code,
@@ -437,16 +412,6 @@ async function loadCategoryOptions() {
 function localizedPath(path: string) {
   const prefix = getLocalePrefixFromPath(route.path) || (import.meta.client ? localStorage.getItem("h5_locale_prefix") || "" : "");
   return prefix ? withLocalePrefix(path, prefix) : path;
-}
-
-function categoryTarget(cat: QuickCategory) {
-  const q = new URLSearchParams();
-  if (cat.id) q.set("category_id", cat.id);
-  if (cat.name) q.set("category_name", cat.name);
-  if (cat.name && !cat.id) q.set("keyword", cat.name);
-  if (heroForm.country) q.set("country", heroForm.country);
-  const target = q.toString() ? `/marketplace?${q.toString()}` : "/marketplace";
-  return localizedPath(target);
 }
 
 function applyTimezoneDefault() {

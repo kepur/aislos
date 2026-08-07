@@ -74,6 +74,7 @@
     "could_not_load": "Nie udało się załadować produktów",
     "no_products": "Nie znaleziono produktów",
     "post_request_instead": "Opublikuj zapytanie",
+    "list_item": "Dodaj produkt",
     "ad": "Reklama",
     "buy_now": "Kup teraz",
     "quote": "Zapytaj o ofertę",
@@ -87,7 +88,7 @@
     "surface_official": "Rekomendowane",
     "surface_market": "Produkty marketu",
     "surface_new": "Nowe",
-    "surface_secondhand": "2Hands",
+    "surface_secondhand": "Używane",
     "surface_recycled": "Firmowe odnowione"
   },
   "secondhand": {
