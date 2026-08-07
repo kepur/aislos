@@ -28,6 +28,10 @@
               <dt class="font-medium text-slate-500">Buyer Budget</dt>
               <dd class="font-bold text-slate-900 mt-0.5">{{ budgetLabel }}</dd>
             </div>
+            <div v-if="conditionPreferenceLabel">
+              <dt class="font-medium text-slate-500">Condition Preference</dt>
+              <dd class="font-bold text-slate-900 mt-0.5">{{ conditionPreferenceLabel }}</dd>
+            </div>
             <div>
               <dt class="font-medium text-slate-500">Delivery Location</dt>
               <dd class="font-medium text-slate-900 mt-0.5">{{ deliveryLocationLabel }}</dd>
@@ -210,6 +214,13 @@ const budgetLabel = computed(() => {
   }
   if (row.budget_max_minor) return `Up to ${formatMinor(row.budget_max_minor, row.currency)}`
   return 'Open'
+})
+const conditionPreferenceLabel = computed(() => {
+  const raw = String(intent.value?.attrs_jsonb?.product_condition_preference || '')
+  if (raw === 'new') return 'New only'
+  if (raw === 'used') return 'Used / recycled preferred'
+  if (raw === 'either') return 'New or used are both OK'
+  return ''
 })
 const deliveryLocationLabel = computed(() => {
   const row = intent.value

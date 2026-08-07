@@ -75,6 +75,9 @@ export const useIntentStore = defineStore("intent", {
           currency: String(payload.currency || appStore.currency || "EUR"),
           city: String(payload.city || ""),
           radius_km: Number(payload.radius_km || 25),
+          attrs_jsonb: {
+            ...(typeof payload.requirements_json === "object" && payload.requirements_json !== null ? (payload.requirements_json as Record<string, unknown>) : {}),
+          },
           status: "ACTIVE",
           created_at: new Date().toISOString(),
           offer_count: 0,

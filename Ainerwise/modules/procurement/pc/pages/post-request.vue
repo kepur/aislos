@@ -57,6 +57,38 @@
           Category: {{ form.category }} <UButton variant="link" size="xs" @click="step = 0" class="ml-2">Change</UButton>
         </div>
 
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <div class="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Product condition preference</h3>
+              <p class="mt-1 text-sm text-slate-500">
+                2Hands is not a category. Choose whether suppliers may quote second-hand, recycled or refurbished options.
+              </p>
+            </div>
+            <UBadge color="emerald" variant="subtle">Requirement</UBadge>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <button
+              v-for="option in conditionPreferenceOptions"
+              :key="option.value"
+              type="button"
+              class="rounded-xl border px-4 py-3 text-left transition-all"
+              :class="form.productConditionPreference === option.value ? 'border-emerald-400 bg-white shadow-sm ring-2 ring-emerald-100' : 'border-slate-200 bg-white hover:border-slate-300'"
+              @click="form.productConditionPreference = option.value"
+            >
+              <div class="mb-2 flex items-center justify-between gap-3">
+                <span class="text-sm font-bold text-slate-900">{{ option.label }}</span>
+                <UIcon
+                  :name="form.productConditionPreference === option.value ? 'i-heroicons-check-circle' : option.icon"
+                  class="h-5 w-5"
+                  :class="form.productConditionPreference === option.value ? 'text-emerald-600' : 'text-slate-400'"
+                />
+              </div>
+              <p class="text-xs leading-5 text-slate-500">{{ option.description }}</p>
+            </button>
+          </div>
+        </div>
+
         <UFormGroup label="Request Title" required>
           <UInput v-model="form.title" placeholder="e.g. 500 bags of Portland Cement" size="lg" />
         </UFormGroup>
@@ -248,6 +280,10 @@
               <div class="font-medium text-slate-900">{{ form.quantity }} {{ form.quantity > 1 ? form.unit : form.unit.replace(/s$/, '') }}</div>
             </div>
             <div>
+              <div class="text-xs text-slate-500 uppercase font-semibold tracking-wider">Condition</div>
+              <div class="font-medium text-slate-900">{{ selectedConditionPreference.label }}</div>
+            </div>
+            <div>
               <div class="text-xs text-slate-500 uppercase font-semibold tracking-wider">Location</div>
               <div class="font-medium text-slate-900">{{ form.location || '—' }}<span v-if="form.country" class="text-slate-400">, {{ form.country }}</span></div>
             </div>
@@ -344,10 +380,35 @@ const categories = ref<string[]>([
   'Office Supplies', 'Home & Furniture', 'Services', 'Custom Request'
 ])
 const categoryIdMap = ref<Record<string, string>>({})
+const secondhandCategoryPattern = /(2\s*hands|second[\s-]*hand|used\s+goods|pre[\s-]*owned|personal\s+secondhand|enterprise\s+recycled)/i
+const conditionPreferenceOptions = [
+  {
+    value: 'new',
+    label: 'New only',
+    description: 'Quote factory-new products with normal supplier warranty.',
+    icon: 'i-heroicons-sparkles',
+  },
+  {
+    value: 'used',
+    label: 'Used / recycled preferred',
+    description: 'Second-hand, enterprise recycled or refurbished options are welcome if they save cost.',
+    icon: 'i-heroicons-arrow-path-rounded-square',
+  },
+  {
+    value: 'either',
+    label: 'New or used are both OK',
+    description: 'Let suppliers quote both and clearly label condition, warranty and risk.',
+    icon: 'i-heroicons-scale',
+  },
+] as const
+const selectedConditionPreference = computed(() =>
+  conditionPreferenceOptions.find((option) => option.value === form.value.productConditionPreference) ?? conditionPreferenceOptions[2]
+)
 
 const form = ref({
   category: '',
   category_id: '',
+  productConditionPreference: 'either',
   title: '',
   quantity: 1,
   unit: 'piece',
@@ -388,10 +449,11 @@ onMounted(async () => {
     form.value.country = regionOptions.value[0].code
   }
   try {
-    const data = await $fetch<Array<{ id: string; name: string }>>(`${config.public.apiBase}/categories`)
+    const data = await $fetch<Array<{ id: string; name: string; slug?: string }>>(`${config.public.apiBase}/categories`)
     if (Array.isArray(data) && data.length) {
-      categories.value = data.map((c) => c.name)
-      categoryIdMap.value = data.reduce<Record<string, string>>((acc, c) => {
+      const visibleCategories = data.filter((c) => !secondhandCategoryPattern.test(`${c.slug || ''} ${c.name || ''}`))
+      categories.value = visibleCategories.map((c) => c.name)
+      categoryIdMap.value = visibleCategories.reduce<Record<string, string>>((acc, c) => {
         acc[c.name] = c.id
         return acc
       }, {})
@@ -468,6 +530,10 @@ const submit = async () => {
       country: form.value.country || 'RS',
       radius_km: Number(form.value.radius || 25),
       attachments: form.value.attachments,
+      requirements_json: {
+        product_condition_preference: form.value.productConditionPreference,
+        product_condition_label: selectedConditionPreference.value.label,
+      },
       expires_at: expiresAt.toISOString(),
     }
 

@@ -37,6 +37,10 @@
             <dt class="text-sm font-medium text-slate-500">Quantity Required</dt>
             <dd class="mt-1 text-sm text-slate-900">{{ intent.qty }} {{ intent.unit }}</dd>
           </div>
+          <div v-if="conditionPreferenceLabel">
+            <dt class="text-sm font-medium text-slate-500">Condition Preference</dt>
+            <dd class="mt-1 text-sm text-slate-900">{{ conditionPreferenceLabel }}</dd>
+          </div>
           <div>
             <dt class="text-sm font-medium text-slate-500">Delivery Window</dt>
             <dd class="mt-1 text-sm text-slate-900">
@@ -321,6 +325,13 @@ const intentBudgetLabel = computed(() => {
   if (max) return `Up to ${formatCandidatePrice(max, currency)}`
   if (min) return `From ${formatCandidatePrice(min, currency)}`
   return 'Open'
+})
+const conditionPreferenceLabel = computed(() => {
+  const raw = String(intent.value?.attrs_jsonb?.product_condition_preference || '')
+  if (raw === 'new') return 'New only'
+  if (raw === 'used') return 'Used / recycled preferred'
+  if (raw === 'either') return 'New or used are both OK'
+  return ''
 })
 
 const fetchIntent = async () => {

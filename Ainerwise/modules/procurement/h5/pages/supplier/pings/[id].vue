@@ -28,6 +28,10 @@
             <p class="text-xs text-slate-400 font-medium uppercase tracking-wide">Quantity</p>
             <p class="font-semibold text-slate-800 mt-0.5">{{ intent.qty }} {{ intent.unit }}</p>
           </div>
+          <div v-if="conditionPreferenceLabel">
+            <p class="text-xs text-slate-400 font-medium uppercase tracking-wide">Condition</p>
+            <p class="font-semibold text-slate-800 mt-0.5">{{ conditionPreferenceLabel }}</p>
+          </div>
           <div v-if="intent.budget_max_minor">
             <p class="text-xs text-slate-400 font-medium uppercase tracking-wide">Budget</p>
             <p class="font-semibold text-slate-800 mt-0.5">{{ formatPrice(intent.budget_max_minor, intent.currency) }}</p>
@@ -44,10 +48,10 @@
       </div>
 
       <!-- Attributes -->
-      <div v-if="intent.attrs_jsonb && Object.keys(intent.attrs_jsonb).length" class="mx-4 mt-3 card">
+      <div v-if="displayAttrs.length" class="mx-4 mt-3 card">
         <p class="text-xs text-slate-400 font-medium uppercase tracking-wide mb-3">Specifications</p>
         <div class="space-y-2">
-          <div v-for="(val, key) in intent.attrs_jsonb" :key="key" class="flex justify-between">
+          <div v-for="[key, val] in displayAttrs" :key="key" class="flex justify-between">
             <span class="text-sm text-slate-500 capitalize">{{ key }}</span>
             <span class="text-sm font-medium text-slate-800">{{ val }}</span>
           </div>
@@ -83,6 +87,17 @@ const { formatPrice, formatDate, formatRelativeTime } = useApiUtils();
 const id = route.params.id as string;
 const loading = ref(true);
 const intent = computed(() => intentStore.currentIntent);
+const conditionPreferenceLabel = computed(() => {
+  const raw = String(intent.value?.attrs_jsonb?.product_condition_preference || "");
+  if (raw === "new") return "New only";
+  if (raw === "used") return "Used / recycled preferred";
+  if (raw === "either") return "New or used are both OK";
+  return "";
+});
+const displayAttrs = computed(() => {
+  const attrs = intent.value?.attrs_jsonb || {};
+  return Object.entries(attrs).filter(([key]) => !["product_condition_preference", "product_condition_label"].includes(key));
+});
 
 onMounted(async () => {
   await intentStore.fetchIntent(id);

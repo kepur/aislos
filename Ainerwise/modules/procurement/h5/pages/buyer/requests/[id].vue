@@ -45,6 +45,10 @@
             <p class="text-xs text-slate-400 font-medium">Quantity</p>
             <p class="font-semibold text-slate-800">{{ intent.qty }} {{ intent.unit }}</p>
           </div>
+          <div v-if="conditionPreferenceLabel">
+            <p class="text-xs text-slate-400 font-medium">Condition</p>
+            <p class="font-semibold text-slate-800">{{ conditionPreferenceLabel }}</p>
+          </div>
           <div v-if="intent.budget_max_minor">
             <p class="text-xs text-slate-400 font-medium">Budget</p>
             <p class="font-semibold text-slate-800">{{ formatPrice(intent.budget_max_minor, intent.currency) }}</p>
@@ -316,6 +320,13 @@ const selectedCandidate = ref<any | null>(null);
 
 const intent = computed(() => intentStore.currentIntent);
 const offers = computed(() => intentStore.offers);
+const conditionPreferenceLabel = computed(() => {
+  const raw = String(intent.value?.attrs_jsonb?.product_condition_preference || "");
+  if (raw === "new") return "New only";
+  if (raw === "used") return "Used / recycled preferred";
+  if (raw === "either") return "New or used are both OK";
+  return "";
+});
 
 const displayOffers = computed(() => offers.value)
 

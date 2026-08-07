@@ -120,6 +120,53 @@
         <h2 class="text-lg font-bold text-slate-900 mb-1">Request Details</h2>
         <p class="text-sm text-slate-500 mb-5">Describe what you need clearly so suppliers can give accurate offers.</p>
 
+        <section class="rounded-3xl border border-slate-200 bg-white p-4 shadow-card">
+          <div class="mb-3 flex items-start gap-3">
+            <span class="inline-flex h-10 w-10 flex-none items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 7h14M7 7v10a2 2 0 002 2h6a2 2 0 002-2V7" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 11h6M9 15h4" />
+              </svg>
+            </span>
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-900">Product condition preference</h3>
+              <p class="mt-1 text-xs leading-5 text-slate-500">
+                2Hands is not a category. Tell suppliers whether used, recycled or refurbished options are acceptable.
+              </p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 gap-2">
+            <button
+              v-for="option in conditionPreferenceOptions"
+              :key="option.value"
+              type="button"
+              class="rounded-2xl border px-4 py-3 text-left transition-all active:scale-[0.99]"
+              :class="form.product_condition_preference === option.value ? 'border-emerald-400 bg-emerald-50 shadow-sm' : 'border-slate-200 bg-slate-50'"
+              @click="form.product_condition_preference = option.value"
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="inline-flex h-9 w-9 flex-none items-center justify-center rounded-xl"
+                  :class="form.product_condition_preference === option.value ? 'bg-emerald-600 text-white' : 'bg-white text-slate-500'"
+                >
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                    <path v-for="path in option.iconPaths" :key="path" stroke-linecap="round" stroke-linejoin="round" :d="path" />
+                  </svg>
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="block text-sm font-bold text-slate-900">{{ option.label }}</span>
+                  <span class="mt-0.5 block text-xs leading-5 text-slate-500">{{ option.description }}</span>
+                </span>
+                <span v-if="form.product_condition_preference === option.value" class="inline-flex h-6 w-6 flex-none items-center justify-center rounded-full bg-emerald-600 text-white">
+                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+              </div>
+            </button>
+          </div>
+        </section>
+
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Request Title *</label>
           <input v-model="form.title" type="text" placeholder="e.g. 500 bags Holcim Portland Cement" class="input-field" maxlength="200" />
@@ -315,6 +362,12 @@
           </div>
           <div class="divider -mx-4"></div>
           <div>
+            <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Condition Preference</p>
+            <p class="font-semibold text-slate-800 mt-0.5">{{ selectedConditionPreference.label }}</p>
+            <p class="text-xs text-slate-500 mt-1">{{ selectedConditionPreference.description }}</p>
+          </div>
+          <div class="divider -mx-4"></div>
+          <div>
             <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Request</p>
             <p class="font-semibold text-slate-800 mt-0.5">{{ form.title }}</p>
             <p v-if="form.notes" class="text-sm text-slate-500 mt-1">{{ form.notes }}</p>
@@ -426,6 +479,7 @@ const locationMessage = ref("");
 
 const form = reactive({
   category_id: "",
+  product_condition_preference: "either",
   title: "",
   notes: "",
   qty: 1,
@@ -445,6 +499,28 @@ const maxAttachments = computed(() => Math.max(0, Number(authStore.systemMode?.i
 
 interface Category { id: string; name: string; slug: string }
 const categories = ref<Category[]>([]);
+
+const secondhandCategoryPattern = /(2\s*hands|second[\s-]*hand|used\s+goods|pre[\s-]*owned|personal\s+secondhand|enterprise\s+recycled)/i;
+const conditionPreferenceOptions = [
+  {
+    value: "new",
+    label: "New only",
+    description: "Suppliers should quote factory-new products with normal warranty.",
+    iconPaths: ["M20 7l-8-4-8 4 8 4 8-4z", "M4 7v10l8 4 8-4V7", "M12 11v10"],
+  },
+  {
+    value: "used",
+    label: "Used / recycled preferred",
+    description: "Second-hand, enterprise recycled or refurbished options are welcome if they save cost.",
+    iconPaths: ["M7 7l2-4 2 4", "M9 3a8 8 0 016 3", "M17 17l-2 4-2-4", "M15 21a8 8 0 01-6-3"],
+  },
+  {
+    value: "either",
+    label: "New or used are both OK",
+    description: "Let suppliers quote both options and clearly label condition, warranty and risk.",
+    iconPaths: ["M7 12h10", "M12 7l5 5-5 5", "M17 12H7", "M12 17l-5-5 5-5"],
+  },
+] as const;
 
 const regionOptions = computed(() => appStore.regionOptions.map((region) => ({
   code: String(region.code || "").toUpperCase().slice(0, 2),
@@ -560,13 +636,6 @@ const ICON_PATHS: Record<string, string[]> = {
 };
 
 const CATEGORY_VISUAL_PRESETS = [
-  {
-    match: ["2hands", "second", "used", "recycle", "refurb"],
-    icon: "recycle",
-    kicker: "Cost saver",
-    description: "Used, recycled or refurbished options to reduce project cost.",
-    accent: "#f59e0b",
-  },
   {
     match: ["access", "lock", "door", "gate"],
     icon: "access",
@@ -686,6 +755,10 @@ function categoryIconPaths(icon: string) {
   return ICON_PATHS[icon] || ICON_PATHS.box;
 }
 
+function isSecondhandPseudoCategory(cat: Category) {
+  return secondhandCategoryPattern.test(`${cat.slug || ""} ${cat.name || ""}`);
+}
+
 onMounted(async () => {
   if (!authStore.systemMode) {
     await authStore.fetchSystemMode();
@@ -695,7 +768,8 @@ onMounted(async () => {
   ensureDefaultRegionAndCurrency();
   applyTimezoneDefault();
   try {
-    categories.value = await $fetch<Category[]>(`${config.public.apiBase}/categories`);
+    const data = await $fetch<Category[]>(`${config.public.apiBase}/categories`);
+    categories.value = Array.isArray(data) ? data.filter((cat) => !isSecondhandPseudoCategory(cat)) : [];
   } catch {
     categories.value = [];
   } finally {
@@ -705,6 +779,9 @@ onMounted(async () => {
 
 const selectedCategoryName = computed(
   () => categories.value.find((c) => c.id === form.category_id)?.name || "—"
+);
+const selectedConditionPreference = computed(
+  () => conditionPreferenceOptions.find((option) => option.value === form.product_condition_preference) ?? conditionPreferenceOptions[2]
 );
 
 const minDate = computed(() => new Date().toISOString().slice(0, 10));
@@ -857,6 +934,10 @@ async function submitRequest() {
     lat: form.lat || undefined,
     lng: form.lng || undefined,
     attachments: form.attachments,
+    requirements_json: {
+      product_condition_preference: form.product_condition_preference,
+      product_condition_label: selectedConditionPreference.value.label,
+    },
     expires_at: expiresAt.toISOString(),
   };
 
