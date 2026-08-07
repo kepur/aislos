@@ -23,23 +23,94 @@
     <div class="flex-1 overflow-y-auto">
       <!-- Step 1: Category -->
       <div v-if="step === 1" class="px-4 py-6">
-        <h2 class="text-lg font-bold text-slate-900 mb-1">What are you looking for?</h2>
-        <p class="text-sm text-slate-500 mb-5">Select a category to help suppliers match your request.</p>
+        <section class="relative mb-5 overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-primary-700 p-5 text-white shadow-xl shadow-indigo-950/20">
+          <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10"></div>
+          <div class="absolute -bottom-14 left-10 h-36 w-36 rounded-full bg-cyan-300/10"></div>
+          <div class="relative">
+            <div class="mb-4 flex items-center gap-2">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-white/15">
+                <svg class="h-4 w-4 text-cyan-100" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3m9-9h-3M6 12H3m14.95-5.95-2.12 2.12M8.17 15.83l-2.12 2.12m11.9 0-2.12-2.12M8.17 8.17 6.05 6.05" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </span>
+              <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-cyan-100">
+                AI matching
+              </span>
+            </div>
+            <h2 class="text-2xl font-extrabold leading-tight">What are you looking for?</h2>
+            <p class="mt-2 text-sm leading-6 text-indigo-100">
+              Choose the closest category. AinerWise will use it to route your request to the right suppliers, products and installation partners.
+            </p>
+            <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+              <div class="rounded-2xl border border-white/10 bg-white/10 px-2 py-2">
+                <p class="text-base font-black">1</p>
+                <p class="text-[10px] text-indigo-100">Category</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/10 px-2 py-2">
+                <p class="text-base font-black">AI</p>
+                <p class="text-[10px] text-indigo-100">Analyze</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/10 px-2 py-2">
+                <p class="text-base font-black">RFQ</p>
+                <p class="text-[10px] text-indigo-100">Match</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <div v-if="categoriesLoading" class="grid grid-cols-2 gap-3">
-          <div v-for="i in 6" :key="i" class="shimmer h-24 rounded-2xl"></div>
+          <div v-for="i in 6" :key="i" class="shimmer h-36 rounded-3xl"></div>
         </div>
 
         <div v-else class="grid grid-cols-2 gap-3">
           <button type="button"
             v-for="cat in categories"
             :key="cat.id"
-            class="bg-white rounded-2xl p-4 text-left border-2 transition-all active:scale-95"
-            :class="form.category_id === cat.id ? 'border-primary-500 bg-primary-50' : 'border-transparent shadow-card'"
+            class="group relative min-h-[152px] overflow-hidden rounded-3xl border p-4 text-left transition-all active:scale-95"
+            :class="form.category_id === cat.id ? 'border-primary-400 bg-white shadow-xl shadow-primary-900/10' : 'border-slate-100 bg-white shadow-card'"
             @click="form.category_id = cat.id"
           >
-            <div class="text-3xl mb-2">{{ categoryEmoji(cat.slug) }}</div>
-            <div class="font-semibold text-slate-800 text-sm">{{ cat.name }}</div>
+            <div class="absolute inset-x-0 top-0 h-1.5" :style="{ background: categoryVisual(cat).gradient }"></div>
+            <div
+              class="absolute -right-8 -top-10 h-28 w-28 rounded-full opacity-10 transition-opacity group-active:opacity-20"
+              :style="{ background: categoryVisual(cat).accent }"
+            ></div>
+            <div class="relative flex h-full flex-col">
+              <div class="mb-4 flex items-start justify-between gap-2">
+                <span
+                  class="inline-flex h-12 w-12 items-center justify-center rounded-2xl border"
+                  :style="{ background: categoryVisual(cat).softBg, borderColor: categoryVisual(cat).border }"
+                >
+                  <svg class="h-6 w-6" :style="{ color: categoryVisual(cat).accent }" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path
+                      v-for="path in categoryIconPaths(categoryVisual(cat).icon)"
+                      :key="path"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      :d="path"
+                    />
+                  </svg>
+                </span>
+                <span
+                  v-if="form.category_id === cat.id"
+                  class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-600 text-white"
+                >
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+              </div>
+              <div class="flex-1">
+                <p class="text-[10px] font-black uppercase tracking-[0.14em]" :style="{ color: categoryVisual(cat).accent }">
+                  {{ categoryVisual(cat).kicker }}
+                </p>
+                <div class="mt-1 text-sm font-extrabold leading-snug text-slate-900">{{ cat.name }}</div>
+                <p class="mt-2 line-clamp-2 text-[11px] leading-5 text-slate-500">
+                  {{ categoryVisual(cat).description }}
+                </p>
+              </div>
+            </div>
           </button>
         </div>
       </div>
@@ -391,43 +462,228 @@ const cityPlaceholder = computed(() => {
   return "Enter city or area";
 });
 
-// Full 25-category map — synced with PC categories.vue
-const EMOJI_MAP: Record<string, string> = {
-  'construction-materials': '🏗️',
-  'it-office-equipment': '💻',
-  'automotive-parts': '🚗',
-  'electronics-components': '⚡',
-  'machinery-industrial': '⚙️',
-  'raw-materials-chemicals': '🧪',
-  'textiles-garments': '👕',
-  'food-beverages': '🍜',
-  'agriculture-farming': '🌾',
-  'medical-healthcare': '🏥',
-  'packaging-printing': '🗂️',
-  'furniture-home': '🪑',
-  'lighting-electrical': '💡',
-  'plumbing-hvac': '🔧',
-  'safety-security': '🛡️',
-  'sports-outdoor': '⛺',
-  'beauty-personal-care': '💄',
-  'toys-baby-products': '🧸',
-  'pet-supplies': '🐾',
-  'jewelry-accessories': '💍',
-  'energy-solar': '☀️',
-  'marine-shipping': '⚓',
-  'mining-minerals': '⛏️',
-  'telecom-networking': '📡',
-  'tools-hardware': '🔨',
+type CategoryVisual = {
+  icon: string;
+  kicker: string;
+  description: string;
+  accent: string;
+  softBg: string;
+  border: string;
+  gradient: string;
+};
+
+const ICON_PATHS: Record<string, string[]> = {
+  access: [
+    "M8 11V7a4 4 0 118 0v4",
+    "M6 11h12v9H6z",
+    "M12 15v2",
+  ],
+  audio: [
+    "M5 9h4l5-4v14l-5-4H5z",
+    "M17 9.5a4 4 0 010 5",
+    "M19.5 7a8 8 0 010 10",
+  ],
+  blinds: [
+    "M4 5h16",
+    "M6 8h12M6 11h12M6 14h12",
+    "M18 5v14",
+    "M15 19h6",
+  ],
+  battery: [
+    "M4 8h15v8H4z",
+    "M19 10h2v4h-2",
+    "M7 11v2M10 11v2M13 11v2",
+  ],
+  bolt: [
+    "M13 2L5 14h6l-1 8 8-12h-6z",
+  ],
+  building: [
+    "M4 20h16",
+    "M6 20V6l6-3 6 3v14",
+    "M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1",
+  ],
+  charging: [
+    "M7 3v6M11 3v6",
+    "M6 9h6v4a3 3 0 01-3 3v5",
+    "M16 7l-3 5h4l-3 5",
+  ],
+  climate: [
+    "M12 3v18",
+    "M5 6l14 12",
+    "M19 6L5 18",
+    "M12 12m-2 0a2 2 0 104 0a2 2 0 10-4 0",
+  ],
+  construction: [
+    "M3 20h18",
+    "M5 20V9l7-5 7 5v11",
+    "M9 20v-6h6v6",
+  ],
+  fire: [
+    "M12 21a7 7 0 007-7c0-4-3-6-5-10 0 4-4 5-4 9",
+    "M10 21a5 5 0 01-3-5c0-2 1-4 3-6 0 3 4 4 4 7",
+  ],
+  hvac: [
+    "M12 12m-3 0a3 3 0 106 0a3 3 0 10-6 0",
+    "M12 3c2 3 2 6 0 9",
+    "M21 12c-3 2-6 2-9 0",
+    "M12 21c-2-3-2-6 0-9",
+    "M3 12c3-2 6-2 9 0",
+  ],
+  network: [
+    "M12 5v4",
+    "M6 14h12",
+    "M6 14v5M18 14v5M12 14v5",
+    "M10 3h4v4h-4zM4 19h4v2H4zM10 19h4v2h-4zM16 19h4v2h-4z",
+  ],
+  recycle: [
+    "M7 7l2-4 2 4",
+    "M9 3a8 8 0 016 3",
+    "M17 17l-2 4-2-4",
+    "M15 21a8 8 0 01-6-3",
+    "M4 13l-2-4 4 1",
+    "M2 9a8 8 0 013-5",
+  ],
+  security: [
+    "M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z",
+    "M9 12l2 2 4-5",
+  ],
+  solar: [
+    "M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4",
+    "M9 12a3 3 0 106 0 3 3 0 10-6 0",
+    "M4 20h16l-2-5H6z",
+  ],
+  box: [
+    "M21 8l-9-5-9 5 9 5 9-5z",
+    "M3 8v8l9 5 9-5V8",
+    "M12 13v8",
+  ],
+};
+
+const CATEGORY_VISUAL_PRESETS = [
+  {
+    match: ["2hands", "second", "used", "recycle", "refurb"],
+    icon: "recycle",
+    kicker: "Cost saver",
+    description: "Used, recycled or refurbished options to reduce project cost.",
+    accent: "#f59e0b",
+  },
+  {
+    match: ["access", "lock", "door", "gate"],
+    icon: "access",
+    kicker: "Entry",
+    description: "Locks, access control, identity and entry devices.",
+    accent: "#2563eb",
+  },
+  {
+    match: ["audio", "video", "multiroom", "speaker"],
+    icon: "audio",
+    kicker: "Experience",
+    description: "Audio, display, scene and room entertainment systems.",
+    accent: "#8b5cf6",
+  },
+  {
+    match: ["blind", "shading", "curtain", "window"],
+    icon: "blinds",
+    kicker: "Comfort",
+    description: "Shading, curtains and window automation for buildings.",
+    accent: "#0ea5e9",
+  },
+  {
+    match: ["battery", "storage", "ups"],
+    icon: "battery",
+    kicker: "Backup",
+    description: "Storage, batteries, backup power and energy resilience.",
+    accent: "#16a34a",
+  },
+  {
+    match: ["energy management", "meter", "monitor"],
+    icon: "bolt",
+    kicker: "Energy",
+    description: "Metering, monitoring and optimization for energy use.",
+    accent: "#059669",
+  },
+  {
+    match: ["ev", "charging", "charger"],
+    icon: "charging",
+    kicker: "Mobility",
+    description: "EV chargers, parking power and installation support.",
+    accent: "#7c3aed",
+  },
+  {
+    match: ["fire", "safety", "alarm"],
+    icon: "fire",
+    kicker: "Safety",
+    description: "Fire, alarm and safety equipment for compliance.",
+    accent: "#dc2626",
+  },
+  {
+    match: ["hvac", "climate", "air"],
+    icon: "hvac",
+    kicker: "Climate",
+    description: "HVAC, ventilation and comfort control equipment.",
+    accent: "#0891b2",
+  },
+  {
+    match: ["knx", "automation", "building automation", "smart panel"],
+    icon: "network",
+    kicker: "Automation",
+    description: "KNX, smart panels, gateways and building control.",
+    accent: "#4f46e5",
+  },
+  {
+    match: ["security", "cctv", "camera"],
+    icon: "security",
+    kicker: "Security",
+    description: "CCTV, sensors, alarms and site protection devices.",
+    accent: "#0f766e",
+  },
+  {
+    match: ["solar", "photovoltaic"],
+    icon: "solar",
+    kicker: "Solar",
+    description: "Solar equipment, monitoring and renewable energy systems.",
+    accent: "#d97706",
+  },
+  {
+    match: ["construction", "material", "building material"],
+    icon: "construction",
+    kicker: "Build",
+    description: "Materials, site supplies and construction procurement.",
+    accent: "#475569",
+  },
+  {
+    match: ["network", "telecom", "router", "wifi", "it"],
+    icon: "network",
+    kicker: "Network",
+    description: "Network devices, telecom, IT and connectivity hardware.",
+    accent: "#2563eb",
+  },
+];
+
+const DEFAULT_CATEGORY_VISUAL = {
+  icon: "box",
+  kicker: "Product",
+  description: "Products, suppliers and quotes matched through AinerWise.",
+  accent: "#6366f1",
+};
+
+function categoryVisual(cat: Category): CategoryVisual {
+  const text = `${cat.slug || ""} ${cat.name || ""}`.toLowerCase();
+  const found = CATEGORY_VISUAL_PRESETS.find((preset) => preset.match.some((keyword) => text.includes(keyword)));
+  const preset = found || DEFAULT_CATEGORY_VISUAL;
+  return {
+    icon: preset.icon,
+    kicker: preset.kicker,
+    description: preset.description,
+    accent: preset.accent,
+    softBg: `${preset.accent}12`,
+    border: `${preset.accent}22`,
+    gradient: `linear-gradient(90deg, ${preset.accent}, ${preset.accent}66)`,
+  };
 }
 
-function categoryEmoji(slug: string): string {
-  // Exact match first
-  if (EMOJI_MAP[slug]) return EMOJI_MAP[slug]
-  // Partial match fallback
-  for (const key of Object.keys(EMOJI_MAP)) {
-    if (slug?.includes(key)) return EMOJI_MAP[key]
-  }
-  return '📦'
+function categoryIconPaths(icon: string) {
+  return ICON_PATHS[icon] || ICON_PATHS.box;
 }
 
 onMounted(async () => {
