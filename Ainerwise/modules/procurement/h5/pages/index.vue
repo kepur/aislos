@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="min-h-screen bg-slate-50 pb-20">
     <header class="sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur">
       <div class="flex h-14 items-center justify-between px-4 pt-safe">
         <div class="flex min-w-0 items-center gap-2">
@@ -50,11 +50,52 @@
           </NuxtLink>
         </div>
 
+        <NuxtLink
+          :to="localizedPath('/buyer/post-request')"
+          class="mb-4 block rounded-3xl border border-cyan-200/30 bg-cyan-300/15 p-4 text-white shadow-lg shadow-black/10 backdrop-blur active:bg-cyan-300/25"
+        >
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100">
+                {{ homeCopy.aiKicker }}
+              </p>
+              <h2 class="mt-1 text-lg font-extrabold leading-tight">
+                {{ homeCopy.aiTitle }}
+              </h2>
+              <p class="mt-1 text-xs leading-5 text-primary-100">
+                {{ homeCopy.aiSubtitle }}
+              </p>
+            </div>
+            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white text-xl font-black text-primary-700">→</span>
+          </div>
+        </NuxtLink>
+
+        <div class="mb-4">
+          <div class="mb-2 flex items-center justify-between">
+            <p class="text-xs font-black uppercase tracking-[0.16em] text-white/80">
+              {{ homeCopy.categoriesTitle }}
+            </p>
+            <NuxtLink :to="localizedPath('/marketplace')" class="text-[11px] font-bold text-cyan-100">
+              {{ homeCopy.allCategories }}
+            </NuxtLink>
+          </div>
+          <div class="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+            <NuxtLink
+              v-for="cat in quickCategoryChips"
+              :key="cat.value"
+              :to="categoryTarget(cat)"
+              class="flex-shrink-0 rounded-full border border-white/15 bg-white/15 px-3 py-2 text-xs font-bold text-white backdrop-blur active:bg-white/25"
+            >
+              {{ cat.name }}{{ cat.item_count ? ` · ${cat.item_count}` : "" }}
+            </NuxtLink>
+          </div>
+        </div>
+
         <form class="space-y-4 rounded-3xl bg-white p-4 text-slate-900 shadow-2xl" @submit.prevent="handleSearch">
           <div>
-            <label class="mb-1.5 block text-sm font-semibold text-slate-700">Category</label>
+            <label class="mb-1.5 block text-sm font-semibold text-slate-700">{{ homeCopy.categoryLabel }}</label>
             <select v-model="heroForm.category" class="input-field bg-white">
-              <option value="">Select category</option>
+              <option value="">{{ homeCopy.selectCategory }}</option>
               <option v-for="cat in categoryOptions" :key="cat.value" :value="cat.value">
                 {{ cat.name }}{{ cat.item_count ? ` (${cat.item_count})` : "" }}
               </option>
@@ -63,46 +104,46 @@
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="mb-1.5 block text-sm font-semibold text-slate-700">Min Budget</label>
+              <label class="mb-1.5 block text-sm font-semibold text-slate-700">{{ homeCopy.minBudget }}</label>
               <div class="relative">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">{{ budgetCurrencySymbol }}</span>
                 <input v-model="heroForm.budgetMin" type="number" min="0" placeholder="0" class="input-field pl-8" />
               </div>
             </div>
             <div>
-              <label class="mb-1.5 block text-sm font-semibold text-slate-700">Max Budget</label>
+              <label class="mb-1.5 block text-sm font-semibold text-slate-700">{{ homeCopy.maxBudget }}</label>
               <div class="relative">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">{{ budgetCurrencySymbol }}</span>
-                <input v-model="heroForm.budgetMax" type="number" min="0" placeholder="Max" class="input-field pl-8" />
+                <input v-model="heroForm.budgetMax" type="number" min="0" :placeholder="homeCopy.maxPlaceholder" class="input-field pl-8" />
               </div>
             </div>
           </div>
 
           <div>
-            <label class="mb-1.5 block text-sm font-semibold text-slate-700">Delivery Country</label>
+            <label class="mb-1.5 block text-sm font-semibold text-slate-700">{{ homeCopy.deliveryCountry }}</label>
             <select v-model="heroForm.country" class="input-field bg-white">
               <option v-for="region in regionOptions" :key="region.code" :value="region.code">
                 {{ region.label }} ({{ region.code }})
               </option>
             </select>
             <p class="mt-1 text-xs text-slate-500">
-              Settlement: {{ budgetCurrencyLabel }}. Local reference: {{ appStore.localCurrency }}.
+              {{ homeCopy.settlement }}: {{ budgetCurrencyLabel }}. {{ homeCopy.localReference }}: {{ appStore.localCurrency }}.
             </p>
           </div>
 
           <div>
             <div class="mb-1.5 flex items-center justify-between gap-3">
-              <label class="block text-sm font-semibold text-slate-700">Delivery Location</label>
+              <label class="block text-sm font-semibold text-slate-700">{{ homeCopy.deliveryLocation }}</label>
               <button
                 type="button"
                 class="rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700 disabled:opacity-60"
                 :disabled="locationStatus === 'loading'"
                 @click="detectBrowserLocation"
               >
-                {{ locationStatus === "loading" ? "Detecting..." : "Use current" }}
+                {{ locationStatus === "loading" ? homeCopy.detecting : homeCopy.useCurrent }}
               </button>
             </div>
-            <input v-model="heroForm.location" type="text" placeholder="Enter city or area" class="input-field" />
+            <input v-model="heroForm.location" type="text" :placeholder="homeCopy.locationPlaceholder" class="input-field" />
             <p v-if="locationMessage" class="mt-1 text-xs" :class="locationStatus === 'error' ? 'text-amber-600' : 'text-slate-500'">
               {{ locationMessage }}
             </p>
@@ -110,7 +151,7 @@
 
           <div>
             <div class="mb-1.5 flex items-center justify-between">
-              <label class="block text-sm font-semibold text-slate-700">Search Radius</label>
+              <label class="block text-sm font-semibold text-slate-700">{{ homeCopy.searchRadius }}</label>
               <span class="text-sm font-bold text-primary-600">{{ heroForm.radius }} km</span>
             </div>
             <input v-model="heroForm.radius" type="range" min="1" max="200" step="1" class="w-full accent-primary-600" />
@@ -121,10 +162,10 @@
           </div>
 
           <button type="submit" class="btn-primary py-3.5 text-sm">
-            Find Suppliers
+            {{ homeCopy.findSuppliers }}
           </button>
           <NuxtLink :to="localizedPath('/buyer/post-request')" class="block rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 active:bg-slate-50">
-            Post a detailed request
+            {{ homeCopy.postDetailed }}
           </NuxtLink>
         </form>
       </div>
@@ -153,6 +194,8 @@
         {{ homeCopy.safeText }}
       </p>
     </section>
+
+    <MarketBottomBar />
   </div>
 </template>
 
@@ -187,6 +230,26 @@ const copyByLocale: Record<string, Record<string, string>> = {
     subtitle: "Browse official recommendations, market products, enterprise recycled stock and personal second-hand offers. Complex needs can still become AI procurement requests.",
     market: "Market",
     request: "AI Request",
+    aiKicker: "AI project analysis",
+    aiTitle: "Describe one project. AI turns it into categories, products and supplier RFQs.",
+    aiSubtitle: "For villas, hotels, energy, security and smart building work that cannot be solved by one product.",
+    categoriesTitle: "Popular categories",
+    allCategories: "All",
+    categoryLabel: "Category",
+    selectCategory: "Select category",
+    minBudget: "Min Budget",
+    maxBudget: "Max Budget",
+    maxPlaceholder: "Max",
+    deliveryCountry: "Delivery Country",
+    settlement: "Settlement",
+    localReference: "Local reference",
+    deliveryLocation: "Delivery Location",
+    locationPlaceholder: "Enter city or area",
+    useCurrent: "Use current",
+    detecting: "Detecting...",
+    searchRadius: "Search Radius",
+    findSuppliers: "Find Suppliers",
+    postDetailed: "Post a detailed request",
     worksTitle: "How AinerWise Market works",
     worksSubtitle: "Shop, compare, ask suppliers, or publish a structured request when the job is bigger.",
     safeTitle: "One market, shared Core data",
@@ -198,6 +261,26 @@ const copyByLocale: Record<string, Record<string, string>> = {
     subtitle: "浏览官网推荐、市场商品、企业回收再售和个人二手。复杂需求仍可一键进入 AI 采购需求流程。",
     market: "市场商品",
     request: "AI 需求",
+    aiKicker: "AI 项目分析",
+    aiTitle: "一句话描述项目，AI 帮你拆分类、商品和供应商询价。",
+    aiSubtitle: "别墅、酒店、能源、安防、智能建筑等复杂需求，不再只靠搜索单个商品。",
+    categoriesTitle: "热门分类",
+    allCategories: "全部分类",
+    categoryLabel: "分类",
+    selectCategory: "选择分类",
+    minBudget: "最低预算",
+    maxBudget: "最高预算",
+    maxPlaceholder: "最高",
+    deliveryCountry: "交付国家",
+    settlement: "结算货币",
+    localReference: "本地参考",
+    deliveryLocation: "交付位置",
+    locationPlaceholder: "输入城市或区域",
+    useCurrent: "使用当前位置",
+    detecting: "定位中...",
+    searchRadius: "搜索半径",
+    findSuppliers: "查找供应商",
+    postDetailed: "发布 AI 项目需求",
     worksTitle: "AinerWise Market 如何工作",
     worksSubtitle: "可直接逛商品、比较供应商、询价；复杂项目发布结构化需求。",
     safeTitle: "独立市场，共用 Core 数据",
@@ -209,6 +292,26 @@ const copyByLocale: Record<string, Record<string, string>> = {
     subtitle: "Pregledajte preporučene proizvode, tržišne ponude, obnovljenu opremu i polovne artikle. Složen zahtev može postati AI nabavka.",
     market: "Market",
     request: "AI zahtev",
+    aiKicker: "AI analiza projekta",
+    aiTitle: "Opisite projekat. AI ga pretvara u kategorije, proizvode i RFQ.",
+    aiSubtitle: "Za vile, hotele, energiju, bezbednost i pametne zgrade kada jedan proizvod nije dovoljan.",
+    categoriesTitle: "Popularne kategorije",
+    allCategories: "Sve",
+    categoryLabel: "Kategorija",
+    selectCategory: "Izaberite kategoriju",
+    minBudget: "Min budzet",
+    maxBudget: "Max budzet",
+    maxPlaceholder: "Max",
+    deliveryCountry: "Drzava isporuke",
+    settlement: "Obracun",
+    localReference: "Lokalna referenca",
+    deliveryLocation: "Lokacija isporuke",
+    locationPlaceholder: "Unesite grad ili zonu",
+    useCurrent: "Trenutna",
+    detecting: "Lociranje...",
+    searchRadius: "Radius pretrage",
+    findSuppliers: "Pronadji dobavljace",
+    postDetailed: "Objavi AI zahtev",
     worksTitle: "Kako radi AinerWise Market",
     worksSubtitle: "Kupujte, poredite, tražite ponude ili objavite strukturisan zahtev.",
     safeTitle: "Jedan market, zajednički Core",
@@ -220,6 +323,26 @@ const copyByLocale: Record<string, Record<string, string>> = {
     subtitle: "Przeglądaj rekomendacje, oferty rynku, sprzęt odnowiony i prywatne używane przedmioty. Większe potrzeby zamienisz w zapytanie AI.",
     market: "Market",
     request: "Zapytanie AI",
+    aiKicker: "Analiza projektu AI",
+    aiTitle: "Opisz projekt. AI zamieni go w kategorie, produkty i zapytania RFQ.",
+    aiSubtitle: "Dla willi, hoteli, energii, bezpieczeństwa i smart building, gdy jeden produkt nie wystarcza.",
+    categoriesTitle: "Popularne kategorie",
+    allCategories: "Wszystkie",
+    categoryLabel: "Kategoria",
+    selectCategory: "Wybierz kategorię",
+    minBudget: "Budżet min.",
+    maxBudget: "Budżet max.",
+    maxPlaceholder: "Max",
+    deliveryCountry: "Kraj dostawy",
+    settlement: "Rozliczenie",
+    localReference: "Lokalnie",
+    deliveryLocation: "Miejsce dostawy",
+    locationPlaceholder: "Wpisz miasto lub obszar",
+    useCurrent: "Użyj lokalizacji",
+    detecting: "Wykrywanie...",
+    searchRadius: "Promień",
+    findSuppliers: "Znajdź dostawców",
+    postDetailed: "Opublikuj zapytanie AI",
     worksTitle: "Jak działa AinerWise Market",
     worksSubtitle: "Kupuj, porównuj, pytaj dostawców albo opublikuj uporządkowane zapytanie.",
     safeTitle: "Jeden market, wspólne dane Core",
@@ -229,13 +352,12 @@ const copyByLocale: Record<string, Record<string, string>> = {
 
 const homeCopy = computed(() => copyByLocale[locale.value] || copyByLocale.en);
 
-const fallbackCategories: QuickCategory[] = [
-  "Construction Materials",
-  "IT / Electronics",
-  "Energy / Solar",
-  "Security",
-  "Smart Living",
-].map((name) => ({ name, value: `name:${name}` }));
+const fallbackCategoriesByLocale: Record<string, string[]> = {
+  en: ["Construction Materials", "IT / Electronics", "Energy / Solar", "Security", "Smart Living"],
+  zh: ["建材施工", "IT / 电子", "能源 / 光伏", "安防监控", "智能家居"],
+  sr: ["Gradjevinski materijal", "IT / Elektronika", "Energija / Solar", "Bezbednost", "Pametan dom"],
+  pl: ["Materiały budowlane", "IT / Elektronika", "Energia / Solar", "Bezpieczeństwo", "Smart Living"],
+};
 
 const loadedCategories = ref<QuickCategory[]>([]);
 const locationStatus = ref<"idle" | "loading" | "success" | "error">("idle");
@@ -252,7 +374,12 @@ const heroForm = reactive({
   longitude: null as number | null,
 });
 
-const categoryOptions = computed(() => loadedCategories.value.length ? loadedCategories.value : fallbackCategories);
+const fallbackCategories = computed<QuickCategory[]>(() => {
+  const names = fallbackCategoriesByLocale[locale.value] || fallbackCategoriesByLocale.en;
+  return names.map((name) => ({ name, value: `name:${name}` }));
+});
+const categoryOptions = computed(() => loadedCategories.value.length ? loadedCategories.value : fallbackCategories.value);
+const quickCategoryChips = computed(() => categoryOptions.value.slice(0, 8));
 const regionOptions = computed(() => appStore.regionOptions.map((region) => ({
   code: String(region.code || "").toUpperCase().slice(0, 2),
   label: region.label || region.code,
@@ -262,11 +389,11 @@ const selectedRegion = computed(() => regionOptions.value.find((region) => regio
 const budgetCurrencySymbol = computed(() => currencyMeta(appStore.currency).symbol || appStore.currency);
 const budgetCurrencyLabel = computed(() => currencyOptionLabel(appStore.currency));
 
-const steps = [
-  { num: 1, title: "Set your search", desc: "Choose what you need, where it should be delivered, and the budget range you prefer.", color: "bg-primary-100 text-primary-700" },
-  { num: 2, title: "Compare suppliers", desc: "Review matching products and suppliers, then request a quote or open the item details.", color: "bg-amber-100 text-amber-700" },
-  { num: 3, title: "Post detailed request", desc: "For complex needs, publish a request so suppliers can respond with precise offers.", color: "bg-green-100 text-green-700" },
-];
+const steps = computed(() => [
+  { num: 1, title: homeCopy.value.categoryLabel, desc: homeCopy.value.worksSubtitle, color: "bg-primary-100 text-primary-700" },
+  { num: 2, title: homeCopy.value.findSuppliers, desc: homeCopy.value.aiSubtitle, color: "bg-amber-100 text-amber-700" },
+  { num: 3, title: homeCopy.value.postDetailed, desc: homeCopy.value.safeText, color: "bg-green-100 text-green-700" },
+]);
 
 watch(regionOptions, (options) => {
   if (!options.length) return;
@@ -308,9 +435,18 @@ async function loadCategoryOptions() {
 }
 
 function localizedPath(path: string) {
-  if (!import.meta.client) return path;
-  const prefix = getLocalePrefixFromPath(route.path) || localStorage.getItem("h5_locale_prefix") || "";
+  const prefix = getLocalePrefixFromPath(route.path) || (import.meta.client ? localStorage.getItem("h5_locale_prefix") || "" : "");
   return prefix ? withLocalePrefix(path, prefix) : path;
+}
+
+function categoryTarget(cat: QuickCategory) {
+  const q = new URLSearchParams();
+  if (cat.id) q.set("category_id", cat.id);
+  if (cat.name) q.set("category_name", cat.name);
+  if (cat.name && !cat.id) q.set("keyword", cat.name);
+  if (heroForm.country) q.set("country", heroForm.country);
+  const target = q.toString() ? `/marketplace?${q.toString()}` : "/marketplace";
+  return localizedPath(target);
 }
 
 function applyTimezoneDefault() {

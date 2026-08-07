@@ -101,7 +101,12 @@ const tabs = computed<Tab[]>(() => {
   // Middle tab — role aware
   const middleTab: Tab = isSupplier
     ? { id: 'catalog', label: t('nav.catalog'), to: '/supplier/catalog', active: normalizedPath.value.startsWith('/supplier/catalog') }
-    : { id: 'requests', label: t('nav.requests'), to: isLoggedIn ? '/buyer/requests' : `/auth/login?return_url=${encodeURIComponent('/buyer/requests')}`, active: normalizedPath.value.startsWith('/buyer/requests') }
+    : {
+        id: 'requests',
+        label: t('nav.ai_project') || 'AI',
+        to: isLoggedIn ? '/buyer/post-request' : `/auth/login?return_url=${encodeURIComponent('/buyer/post-request')}`,
+        active: normalizedPath.value.startsWith('/buyer/post-request') || normalizedPath.value.startsWith('/buyer/requests'),
+      }
 
   const walletTab: Tab = {
     id: 'wallet',
