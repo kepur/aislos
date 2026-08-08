@@ -126,7 +126,6 @@ type TopNavItem = {
 const topNav = computed(() => [
   { to: '/marketplace', label: appStore.t('nav.marketplace') },
   { to: '/how-it-works', label: appStore.t('nav.how') },
-  { to: '/categories', label: appStore.t('nav.categories') },
   { to: '/buyer/projects', label: appStore.t('nav.aiProjects') },
 ])
 

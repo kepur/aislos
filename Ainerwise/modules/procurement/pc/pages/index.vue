@@ -7,24 +7,25 @@
       <div class="container mx-auto px-4 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <h1 class="text-4xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight">
-            Post what you need. <br />
-            <span class="text-indigo-300">Verified suppliers compete with offers.</span>
+            Shop first. <br />
+            <span class="text-indigo-300">Use AI when the product path is not enough.</span>
           </h1>
           <p class="text-lg lg:text-xl text-indigo-100 mb-8 max-w-2xl leading-relaxed">
-            A safer reverse marketplace with verified suppliers, milestone payment records, and side-by-side offer comparison. Designed for global procurement and fast sourcing.
+            AinerWise Market is the shopping front for official products, market listings, enterprise recycled stock and supplier quotes. Browse products first; turn complex needs into RFQ when shopping is not enough.
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
-            <UButton size="xl" color="white" variant="solid" to="/post-request" class="justify-center px-8 text-indigo-900 font-semibold shadow-lg hover:shadow-xl transition-shadow">
-              Post a Request
+            <UButton size="xl" color="white" variant="solid" :to="localizedPath('/marketplace')" class="justify-center px-8 text-indigo-900 font-semibold shadow-lg hover:shadow-xl transition-shadow">
+              Browse Market
             </UButton>
-            <UButton size="xl" color="indigo" variant="outline" class="justify-center px-8 border-indigo-400 text-white hover:bg-indigo-800" to="/supplier-onboarding">
-              Become a Supplier
+            <UButton size="xl" color="indigo" variant="outline" class="justify-center px-8 border-indigo-400 text-white hover:bg-indigo-800" :to="localizedPath('/post-request')">
+              AI / RFQ Request
             </UButton>
           </div>
 
           <div class="mt-10 flex items-center space-x-6 text-sm text-indigo-200">
-            <div class="flex items-center"><UIcon name="i-heroicons-shield-check" class="w-5 h-5 mr-2 text-green-400" /> Milestone Records</div>
-            <div class="flex items-center"><UIcon name="i-heroicons-check-badge" class="w-5 h-5 mr-2 text-blue-400" /> Verified Suppliers</div>
+            <div class="flex items-center"><UIcon name="i-heroicons-shopping-bag" class="w-5 h-5 mr-2 text-green-400" /> Products first</div>
+            <div class="flex items-center"><UIcon name="i-heroicons-sparkles" class="w-5 h-5 mr-2 text-blue-400" /> AI RFQ when needed</div>
+            <div class="hidden lg:flex items-center"><UIcon name="i-heroicons-arrow-path-rounded-square" class="w-5 h-5 mr-2 text-amber-300" /> New + reused stock</div>
           </div>
         </div>
 
@@ -131,6 +132,66 @@
       </div>
     </section>
 
+    <!-- Market preview -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-indigo-600">AinerWise Market</p>
+            <h2 class="mt-2 text-3xl font-bold text-slate-900">Browse products before posting a request</h2>
+            <p class="mt-2 text-slate-600 max-w-2xl">Official products, supplier market listings and recycled inventory share the same Core data. Product condition is a filter, not a separate second-hand portal.</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <UButton :to="localizedPath('/marketplace')" color="indigo" size="lg">Open Marketplace</UButton>
+            <UButton :to="localizedPath('/post-request')" color="gray" variant="outline" size="lg">Post AI Request</UButton>
+          </div>
+        </div>
+
+        <div v-if="marketPreviewLoading" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div v-for="idx in 4" :key="idx" class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div class="aspect-[4/3] animate-pulse rounded-xl bg-slate-200"></div>
+            <div class="mt-4 h-4 w-3/4 animate-pulse rounded bg-slate-200"></div>
+            <div class="mt-2 h-3 w-1/2 animate-pulse rounded bg-slate-100"></div>
+          </div>
+        </div>
+        <div v-else-if="marketPreviewError" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-center text-red-700">
+          <p class="font-semibold">Marketplace preview could not load.</p>
+          <p class="mt-1 text-sm">{{ marketPreviewError }}</p>
+          <button class="mt-4 rounded-xl bg-red-600 px-5 py-2 text-sm font-semibold text-white" @click="loadMarketPreview">Retry</button>
+        </div>
+        <div v-else-if="featuredProducts.length" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <NuxtLink
+            v-for="item in featuredProducts"
+            :key="item.id"
+            :to="localizedPath(`/marketplace/${item.id}`)"
+            class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-lg"
+          >
+            <div class="aspect-[4/3] overflow-hidden bg-slate-100">
+              <img
+                v-if="item.images && item.images[0]"
+                :src="item.images[0]"
+                :alt="item.title"
+                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <MarketItemVisual v-else :title="item.title" :category-name="item.category_name" />
+            </div>
+            <div class="p-4">
+              <div class="mb-2 flex flex-wrap items-center gap-1.5">
+                <span v-if="item.is_official" class="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700">Official</span>
+                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600">{{ item.market_mode }}</span>
+                <span v-if="item.condition_label" class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">{{ item.condition_label }}</span>
+              </div>
+              <h3 class="line-clamp-2 text-sm font-bold leading-snug text-slate-900 group-hover:text-indigo-700">{{ item.title }}</h3>
+              <p class="mt-2 text-base font-extrabold text-slate-950">{{ formatPrice(item.price_minor, item.currency) }}</p>
+            </div>
+          </NuxtLink>
+        </div>
+        <div v-else class="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center text-slate-500">
+          No marketplace products are published yet.
+        </div>
+      </div>
+    </section>
+
     <!-- How it works -->
     <section class="py-20 bg-white">
       <div class="container mx-auto px-4">
@@ -193,16 +254,22 @@
             <h2 class="text-3xl font-bold text-slate-900 mb-2">Popular Categories</h2>
             <p class="text-slate-600">Find exactly what you need from specialized suppliers.</p>
           </div>
-          <UButton variant="ghost" color="indigo" trailing-icon="i-heroicons-arrow-right">View All</UButton>
+          <UButton :to="localizedPath('/marketplace')" variant="ghost" color="indigo" trailing-icon="i-heroicons-arrow-right">View all in Market</UButton>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div v-for="cat in ['Construction', 'Marine', 'Auto Parts', 'IT & Electronics', 'Home & Office', 'Industrial', 'Services', 'Custom Requests']" :key="cat" class="bg-white rounded-xl p-6 border border-slate-200 hover:border-indigo-300 hover:shadow-lg transition-all cursor-pointer group">
+          <NuxtLink
+            v-for="cat in homepageCategories"
+            :key="cat.value"
+            :to="categoryMarketplacePath(cat)"
+            class="bg-white rounded-xl p-6 border border-slate-200 hover:border-indigo-300 hover:shadow-lg transition-all cursor-pointer group"
+          >
             <div class="w-12 h-12 bg-slate-100 rounded-lg mb-4 flex items-center justify-center group-hover:bg-indigo-50 group-hover:text-indigo-600 text-slate-500 transition-colors">
               <UIcon name="i-heroicons-cube" class="w-6 h-6" />
             </div>
-            <h4 class="font-semibold text-slate-900">{{ cat }}</h4>
-          </div>
+            <h4 class="font-semibold text-slate-900">{{ cat.name }}</h4>
+            <p v-if="cat.item_count" class="mt-2 text-xs text-slate-400">{{ cat.item_count }} products</p>
+          </NuxtLink>
         </div>
       </div>
     </section>
@@ -226,15 +293,33 @@ type QuickCategory = {
   item_count?: number
 }
 
+type FeedItem = {
+  id: string
+  title: string
+  price_minor: number
+  currency: string
+  images: string[] | null
+  market_mode: string
+  category_name: string | null
+  is_official?: boolean
+  condition_label?: string | null
+}
+
 const fallbackCategories: QuickCategory[] = [
-  'Construction Materials',
-  'Marine Parts',
-  'Auto Parts',
-  'IT / Electronics',
-  'Office Supplies',
+  'KNX & Building Automation',
+  'Energy Storage & Batteries',
+  'CCTV',
+  'Access Control',
+  'Smart Panels',
+  'Service Packages',
+  'Enterprise Recycled',
+  'Custom Requests',
 ].map((name) => ({ name, value: `name:${name}` }))
 
 const loadedCategories = ref<QuickCategory[]>([])
+const featuredProducts = ref<FeedItem[]>([])
+const marketPreviewLoading = ref(false)
+const marketPreviewError = ref('')
 const locationStatus = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
 const locationMessage = ref('')
 
@@ -250,6 +335,7 @@ const heroForm = reactive({
 })
 
 const categoryOptions = computed(() => loadedCategories.value.length ? loadedCategories.value : fallbackCategories)
+const homepageCategories = computed(() => categoryOptions.value.slice(0, 8))
 const budgetCurrencySymbol = computed(() => currencyMeta(appStore.currency).symbol || appStore.currency)
 const budgetCurrencyLabel = computed(() => currencyOptionLabel(appStore.currency))
 const regionOptions = computed(() => appStore.regionOptions.map((region) => ({
@@ -279,7 +365,7 @@ watch(() => heroForm.country, async (country) => {
 })
 
 onMounted(async () => {
-  await loadCategoryOptions()
+  await Promise.all([loadCategoryOptions(), loadMarketPreview()])
   applyTimezoneDefault()
 })
 
@@ -297,6 +383,26 @@ async function loadCategoryOptions() {
       .filter((cat: QuickCategory) => cat.name && cat.value)
   } catch {
     loadedCategories.value = []
+  }
+}
+
+async function loadMarketPreview() {
+  marketPreviewLoading.value = true
+  marketPreviewError.value = ''
+  try {
+    const data = await $fetch<any>(`${config.public.apiBase}/marketplace/feed`, {
+      params: {
+        page: 1,
+        page_size: 8,
+        sort: 'rank',
+      },
+    })
+    featuredProducts.value = Array.isArray(data?.items) ? data.items.slice(0, 8) : []
+  } catch (e: any) {
+    featuredProducts.value = []
+    marketPreviewError.value = e?.data?.detail || e?.message || 'Marketplace feed request failed.'
+  } finally {
+    marketPreviewLoading.value = false
   }
 }
 
@@ -359,6 +465,10 @@ function applyLocationGuess(guess: LocationGuess, overwriteCity: boolean) {
   }
 }
 
+function localizedPath(path: string) {
+  return appStore.localizedPath(path)
+}
+
 function handleHeroSearch() {
   const q = new URLSearchParams()
   if (selectedCategory.value?.id) q.set('category_id', selectedCategory.value.id)
@@ -384,6 +494,24 @@ function handleHeroSearch() {
 
   const target = q.toString() ? `/marketplace?${q.toString()}` : '/marketplace'
   router.push(appStore.localizedPath(target))
+}
+
+function categoryMarketplacePath(cat: QuickCategory) {
+  const q = new URLSearchParams()
+  if (cat.id) q.set('category_id', cat.id)
+  if (cat.name) q.set('category_name', cat.name)
+  if (!cat.id && cat.name) q.set('keyword', cat.name)
+  const suffix = q.toString()
+  return appStore.localizedPath(suffix ? `/marketplace?${suffix}` : '/marketplace')
+}
+
+function formatPrice(minor: number, currency: string): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency || 'EUR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format((Number(minor) || 0) / 100)
 }
 </script>
 

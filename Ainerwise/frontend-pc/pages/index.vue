@@ -31,6 +31,40 @@
       </template>
     </AinerwiseImmersiveHero>
 
+    <section class="bg-slate-950 px-4 py-12 sm:px-6 lg:px-8">
+      <div class="container-main">
+        <div class="grid gap-6 rounded-[2rem] border border-emerald-300/20 bg-gradient-to-br from-emerald-400/12 via-slate-900 to-slate-950 p-6 shadow-2xl shadow-black/30 lg:grid-cols-[1.05fr_.95fr] lg:p-8">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.24em] text-emerald-300">{{ marketHomeCopy.kicker }}</p>
+            <h2 class="mt-3 text-2xl font-black leading-tight text-white sm:text-4xl">{{ marketHomeCopy.title }}</h2>
+            <p class="mt-4 max-w-3xl text-sm leading-7 text-slate-300 sm:text-base">{{ marketHomeCopy.text }}</p>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a :href="marketUrl" class="rounded-full bg-emerald-400 px-5 py-3 text-sm font-black text-slate-950 shadow-lg shadow-emerald-950/40 transition hover:bg-emerald-300">
+                {{ marketHomeCopy.primary }}
+              </a>
+              <NuxtLink to="/products" class="rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-black text-white transition hover:bg-white/10">
+                {{ marketHomeCopy.secondary }}
+              </NuxtLink>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <a
+              v-for="chip in marketEntryChips"
+              :key="chip.label"
+              :href="chip.href"
+              class="group rounded-3xl border border-white/10 bg-white/[0.06] p-4 transition hover:border-emerald-300/45 hover:bg-white/[0.09]"
+            >
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-300/12 text-emerald-200">
+                <UIcon :name="chip.icon" class="h-5 w-5" />
+              </span>
+              <p class="mt-4 text-sm font-black text-white">{{ chip.label }}</p>
+              <p class="mt-1 text-xs leading-5 text-slate-400">{{ chip.desc }}</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="aw-home-flow knx-on-dark">
       <div class="container-main px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <div class="grid gap-5 lg:grid-cols-4">
@@ -235,7 +269,7 @@
 </template>
 
 <script setup lang="ts">
-const { t, te } = useI18n()
+const { t, te, locale } = useI18n()
 const { apiFetch } = useApi()
 const publicConfig = useRuntimeConfig().public
 
@@ -275,6 +309,71 @@ const heroSignals = [
   'Partner Delivery',
   'AMC + Support',
 ]
+
+const marketHomeByLocale = {
+  en: {
+    kicker: 'Shopping first',
+    title: 'AinerWise starts from products, then upgrades into AI procurement when needed.',
+    text: 'Customers can search official products, supplier listings and recycled inventory first. If a simple product order cannot solve the job, they can turn it into an AI request, RFQ and delivery workflow.',
+    primary: 'Open AinerWise Market',
+    secondary: 'Official Product Catalog',
+    chips: [
+      ['i-heroicons-shopping-bag', 'Market products', 'Live B2B/B2C listings from verified suppliers.'],
+      ['i-heroicons-check-badge', 'Official picks', 'Curated products for smart building projects.'],
+      ['i-heroicons-arrow-path-rounded-square', 'Reused stock', 'Enterprise recycled and second-hand options.'],
+      ['i-heroicons-sparkles', 'AI request', 'Let AI structure broad or unclear needs.'],
+    ],
+  },
+  zh: {
+    kicker: '先选购',
+    title: 'AinerWise 先让客户找产品,不够再进入 AI 采购。',
+    text: '客户可以先搜官方推荐、市场商品、企业回收再售和二手库存。普通商品解决不了,再一键进入 AI 需求、RFQ、合作伙伴交付流程。',
+    primary: '进入 AinerWise Market',
+    secondary: '官方产品目录',
+    chips: [
+      ['i-heroicons-shopping-bag', '市场商品', '认证供应商的 B2B/B2C 实时商品。'],
+      ['i-heroicons-check-badge', '官方推荐', '适合智能建筑项目的精选产品。'],
+      ['i-heroicons-arrow-path-rounded-square', '回收/二手', '企业回收再售和个人二手都作为商品条件。'],
+      ['i-heroicons-sparkles', 'AI 需求', '复杂或不清楚的需求交给 AI 结构化。'],
+    ],
+  },
+  sr: {
+    kicker: 'Kupovina prvo',
+    title: 'AinerWise prvo vodi kupca ka proizvodima, zatim ka AI nabavci.',
+    text: 'Kupci prvo pretrazuju zvanicne proizvode, market ponude i polovnu/recikliranu opremu. Ako proizvod nije dovoljan, zahtev ide u AI, RFQ i isporuku.',
+    primary: 'Otvori AinerWise Market',
+    secondary: 'Zvanicni katalog',
+    chips: [
+      ['i-heroicons-shopping-bag', 'Market proizvodi', 'B2B/B2C ponude proverenih dobavljaca.'],
+      ['i-heroicons-check-badge', 'Zvanicni izbor', 'Preporuceni proizvodi za smart building.'],
+      ['i-heroicons-arrow-path-rounded-square', 'Polovno', 'Reciklirana i polovna oprema kao stanje proizvoda.'],
+      ['i-heroicons-sparkles', 'AI zahtev', 'AI strukturira kompleksne potrebe.'],
+    ],
+  },
+  pl: {
+    kicker: 'Najpierw zakupy',
+    title: 'AinerWise zaczyna od produktów, a potem przechodzi do AI procurement.',
+    text: 'Klienci najpierw szukają oficjalnych produktów, ofert marketu i używanego sprzętu. Gdy produkt nie wystarcza, potrzeba trafia do AI, RFQ i dostawy.',
+    primary: 'Otwórz AinerWise Market',
+    secondary: 'Oficjalny katalog',
+    chips: [
+      ['i-heroicons-shopping-bag', 'Market products', 'B2B/B2C listings from verified suppliers.'],
+      ['i-heroicons-check-badge', 'Official picks', 'Curated smart building products.'],
+      ['i-heroicons-arrow-path-rounded-square', 'Used stock', 'Enterprise recycled and second-hand condition.'],
+      ['i-heroicons-sparkles', 'AI request', 'AI structures broad needs.'],
+    ],
+  },
+}
+
+const marketHomeCopy = computed(() => marketHomeByLocale[String(locale.value) as keyof typeof marketHomeByLocale] || marketHomeByLocale.en)
+const marketEntryChips = computed(() =>
+  marketHomeCopy.value.chips.map(([icon, label, desc], index) => ({
+    icon,
+    label,
+    desc,
+    href: index === 1 ? '/products' : marketUrl,
+  }))
+)
 
 const stageBadges = computed(() => [
   { label: t('home.stageBadge1') },
