@@ -15,9 +15,6 @@
         </NuxtLink>
 
         <div class="flex items-center gap-1.5">
-          <NuxtLink :to="marketPath" class="rounded-full bg-white px-3 py-1.5 text-xs font-extrabold text-slate-950 shadow-lg shadow-black/20">
-            {{ homeCopy.market }}
-          </NuxtLink>
           <NuxtLink :to="localizedPath('/auth/login')" class="rounded-full border border-white/15 px-3 py-1.5 text-xs font-bold text-white/80">
             {{ homeCopy.signIn }}
           </NuxtLink>
