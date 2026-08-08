@@ -29,29 +29,8 @@
     </header>
 
     <div class="space-y-5 pb-4">
-      <!-- Official AI Building Entry -->
-      <section class="mx-4 mt-4">
-        <NuxtLink
-          :to="localizedPath('/')"
-          class="flex items-center justify-between gap-3 rounded-2xl border border-emerald-100 bg-white p-4 shadow-card active:bg-emerald-50/60"
-        >
-          <div class="min-w-0">
-            <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-emerald-600">
-              {{ homeCopy.officialKicker }}
-            </p>
-            <p class="mt-1 truncate text-sm font-bold text-slate-900">
-              {{ homeCopy.officialTitle }}
-            </p>
-            <p class="mt-0.5 text-xs text-slate-500">
-              {{ homeCopy.officialSubtitle }}
-            </p>
-          </div>
-          <span class="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-slate-950 text-white">→</span>
-        </NuxtLink>
-      </section>
-
       <!-- Quick Action -->
-      <div class="mx-4">
+      <div class="mx-4 mt-4">
         <div class="rounded-2xl bg-primary-600 p-5 text-white shadow-card">
           <div class="space-y-2">
             <h2 class="text-xl font-bold leading-tight">{{ $t("buyer.post_request") }}</h2>
@@ -63,6 +42,22 @@
             </button>
           </NuxtLink>
         </div>
+      </div>
+
+      <!-- Lightweight Entrypoint Row: keep Home as workspace, not a promo page. -->
+      <div class="grid grid-cols-3 gap-2 px-4">
+        <NuxtLink
+          v-for="link in quickLinks"
+          :key="link.to"
+          :to="link.to"
+          class="rounded-2xl border border-slate-100 bg-white p-3 shadow-card active:bg-slate-50"
+        >
+          <span class="flex h-8 w-8 items-center justify-center rounded-xl text-xs font-black" :class="link.iconClass">
+            {{ link.icon }}
+          </span>
+          <p class="mt-2 truncate text-xs font-extrabold text-slate-900">{{ link.title }}</p>
+          <p class="mt-0.5 truncate text-[10px] text-slate-500">{{ link.subtitle }}</p>
+        </NuxtLink>
       </div>
 
       <!-- AI Project Forge Entry -->
@@ -221,9 +216,12 @@ const copyByLocale: Record<string, Record<string, string>> = {
     goodMorning: "Good morning",
     goodAfternoon: "Good afternoon",
     goodEvening: "Good evening",
-    officialKicker: "Official AI smart building",
-    officialTitle: "KNX + AI building brain, solutions and product paths",
-    officialSubtitle: "Open the official mobile site",
+    marketTitle: "Market",
+    marketSubtitle: "Products",
+    officialTitle: "Official",
+    officialSubtitle: "AI building",
+    smartTitle: "AI Building",
+    smartSubtitle: "Solutions",
     postButton: "+ Post Request",
     forgeKicker: "AI Project Forge",
     forgeTitle: "Let AI build your procurement list",
@@ -238,9 +236,12 @@ const copyByLocale: Record<string, Record<string, string>> = {
     goodMorning: "早上好",
     goodAfternoon: "下午好",
     goodEvening: "晚上好",
-    officialKicker: "官方 AI 智能建筑",
-    officialTitle: "KNX + AI 建筑大脑、解决方案和产品路径",
-    officialSubtitle: "打开手机官网",
+    marketTitle: "市场",
+    marketSubtitle: "商品与二手",
+    officialTitle: "官网",
+    officialSubtitle: "AI 智能建筑",
+    smartTitle: "AI 建筑",
+    smartSubtitle: "解决方案",
     postButton: "+ 发布需求",
     forgeKicker: "AI 项目工坊",
     forgeTitle: "让 AI 生成采购清单",
@@ -255,9 +256,12 @@ const copyByLocale: Record<string, Record<string, string>> = {
     goodMorning: "Dobro jutro",
     goodAfternoon: "Dobar dan",
     goodEvening: "Dobro vece",
-    officialKicker: "Zvanicni AI smart building",
-    officialTitle: "KNX + AI mozak zgrade, resenja i proizvodi",
-    officialSubtitle: "Otvori mobilni zvanicni sajt",
+    marketTitle: "Market",
+    marketSubtitle: "Proizvodi",
+    officialTitle: "Zvanicno",
+    officialSubtitle: "AI zgrada",
+    smartTitle: "AI zgrada",
+    smartSubtitle: "Resenja",
     postButton: "+ Objavi zahtev",
     forgeKicker: "AI Project Forge",
     forgeTitle: "Neka AI napravi listu nabavke",
@@ -272,9 +276,12 @@ const copyByLocale: Record<string, Record<string, string>> = {
     goodMorning: "Dzien dobry",
     goodAfternoon: "Dzien dobry",
     goodEvening: "Dobry wieczor",
-    officialKicker: "Oficjalny AI smart building",
-    officialTitle: "KNX + AI brain, rozwiazania i produkty",
-    officialSubtitle: "Otworz mobilna strone",
+    marketTitle: "Market",
+    marketSubtitle: "Produkty",
+    officialTitle: "Oficjalna",
+    officialSubtitle: "AI building",
+    smartTitle: "AI Building",
+    smartSubtitle: "Rozwiazania",
     postButton: "+ Dodaj zapytanie",
     forgeKicker: "AI Project Forge",
     forgeTitle: "Niech AI zbuduje liste zakupowa",
@@ -314,6 +321,30 @@ const stats = computed(() => [
   { label: homeCopy.value.requests, value: intentStore.intents.length },
   { label: homeCopy.value.active, value: activeIntents.value.length },
   { label: homeCopy.value.orders, value: orderStore.orders.length },
+]);
+
+const quickLinks = computed(() => [
+  {
+    to: localizedPath("/marketplace"),
+    icon: "M",
+    title: homeCopy.value.marketTitle,
+    subtitle: homeCopy.value.marketSubtitle,
+    iconClass: "bg-primary-50 text-primary-700",
+  },
+  {
+    to: localizedPath("/"),
+    icon: "AW",
+    title: homeCopy.value.officialTitle,
+    subtitle: homeCopy.value.officialSubtitle,
+    iconClass: "bg-emerald-50 text-emerald-700",
+  },
+  {
+    to: localizedPath("/buyer/post-request?mode=smart_building"),
+    icon: "AI",
+    title: homeCopy.value.smartTitle,
+    subtitle: homeCopy.value.smartSubtitle,
+    iconClass: "bg-purple-50 text-purple-700",
+  },
 ]);
 
 function getIntentBadgeClass(status: string) {
