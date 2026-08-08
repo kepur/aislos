@@ -1,7 +1,73 @@
 <template>
   <div class="bg-slate-50 min-h-screen">
+    <section class="mx-auto max-w-7xl px-6 pt-6">
+      <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <a
+          :href="officialSiteLocaleUrl"
+          class="group relative block h-[260px] overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-950 shadow-xl shadow-slate-200/70 lg:h-[300px]"
+        >
+          <img
+            v-for="(slide, index) in marketHeroSlides"
+            :key="slide.image"
+            :src="slide.image"
+            :alt="slide.title"
+            :class="[
+              'absolute inset-0 h-full w-full object-cover transition-all duration-700',
+              activeHeroIndex === index ? 'scale-100 opacity-100' : 'scale-105 opacity-0'
+            ]"
+          />
+          <div class="absolute inset-0 bg-gradient-to-r from-slate-950/20 via-slate-950/0 to-slate-950/10"></div>
+          <div class="absolute bottom-6 left-6 right-6 flex items-end justify-between gap-4">
+            <div class="max-w-2xl">
+              <p class="text-xs font-black uppercase tracking-[0.24em] text-emerald-200">{{ activeHero.kicker }}</p>
+              <h2 class="mt-2 text-3xl font-black leading-tight text-white drop-shadow-sm lg:text-5xl">{{ activeHero.title }}</h2>
+              <p class="mt-2 max-w-xl text-sm font-semibold text-slate-200 lg:text-base">{{ activeHero.subtitle }}</p>
+            </div>
+            <span class="hidden rounded-full bg-white px-5 py-3 text-sm font-black text-slate-950 shadow-lg transition-transform group-hover:-translate-y-0.5 lg:inline-flex">
+              {{ appStore.t('market.bannerOfficialCta') }}
+            </span>
+          </div>
+        </a>
+
+        <div class="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/60">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-500">{{ appStore.t('market.bannerDeckKicker') }}</p>
+              <h2 class="mt-1 text-xl font-black text-slate-950">{{ appStore.t('market.bannerDeckTitle') }}</h2>
+            </div>
+            <a :href="officialSiteLocaleUrl" class="rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100">
+              {{ appStore.t('market.bannerDeckLink') }}
+            </a>
+          </div>
+
+          <div class="mt-4 space-y-3">
+            <button
+              v-for="(slide, index) in marketHeroSlides"
+              :key="slide.title"
+              type="button"
+              :class="[
+                'flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all',
+                activeHeroIndex === index
+                  ? 'border-indigo-300 bg-indigo-50 shadow-sm'
+                  : 'border-slate-100 bg-slate-50 hover:border-indigo-200 hover:bg-white'
+              ]"
+              @click="setHeroBanner(index)"
+            >
+              <span :class="['flex h-11 w-11 items-center justify-center rounded-2xl text-white shadow-sm', slide.iconClass]">
+                <UIcon :name="slide.icon" class="h-5 w-5" />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-sm font-black text-slate-950">{{ slide.cardTitle }}</span>
+                <span class="mt-0.5 block truncate text-xs font-medium text-slate-500">{{ slide.cardText }}</span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Top filter bar -->
-    <div class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+    <div class="mt-6 bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
       <div class="mx-auto max-w-7xl px-6 py-3 flex flex-wrap items-center gap-3">
         <!-- Breadcrumb / Title -->
         <div class="flex-shrink-0 min-w-0 max-w-[220px]">
@@ -277,6 +343,8 @@ const config = useRuntimeConfig()
 const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
+const activeHeroIndex = ref(0)
+let heroTimer: ReturnType<typeof setInterval> | null = null
 
 interface FeedItem {
   id: string
@@ -357,8 +425,49 @@ const searchContextChips = computed(() => {
   return chips
 })
 
+const marketHeroSlides = computed(() => [
+  {
+    image: '/market-banners/ai-knx-smart-building.svg',
+    icon: 'i-heroicons-cpu-chip',
+    iconClass: 'bg-emerald-500',
+    kicker: appStore.t('market.banner1Kicker'),
+    title: appStore.t('market.banner1Title'),
+    subtitle: appStore.t('market.banner1Subtitle'),
+    cardTitle: appStore.t('market.banner1CardTitle'),
+    cardText: appStore.t('market.banner1CardText'),
+  },
+  {
+    image: '/market-banners/villa-smart-home.svg',
+    icon: 'i-heroicons-home-modern',
+    iconClass: 'bg-violet-500',
+    kicker: appStore.t('market.banner2Kicker'),
+    title: appStore.t('market.banner2Title'),
+    subtitle: appStore.t('market.banner2Subtitle'),
+    cardTitle: appStore.t('market.banner2CardTitle'),
+    cardText: appStore.t('market.banner2CardText'),
+  },
+  {
+    image: '/market-banners/hotel-ai-upgrade.svg',
+    icon: 'i-heroicons-building-office-2',
+    iconClass: 'bg-amber-500',
+    kicker: appStore.t('market.banner3Kicker'),
+    title: appStore.t('market.banner3Title'),
+    subtitle: appStore.t('market.banner3Subtitle'),
+    cardTitle: appStore.t('market.banner3CardTitle'),
+    cardText: appStore.t('market.banner3CardText'),
+  },
+])
+const activeHero = computed(() => marketHeroSlides.value[activeHeroIndex.value] || marketHeroSlides.value[0])
+const officialSiteLocaleUrl = computed(() => {
+  const prefix = appStore.routeLocalePrefix || appStore.prefixForLanguage(appStore.language) || 'en'
+  return `${String(config.public.aislosSiteUrl || 'http://localhost:4099').replace(/\/+$/, '')}/${prefix}`
+})
+
 // Load filter options
 onMounted(async () => {
+  heroTimer = setInterval(() => {
+    activeHeroIndex.value = (activeHeroIndex.value + 1) % marketHeroSlides.value.length
+  }, 5200)
   try {
     const f = await $fetch<any>(`${config.public.apiBase}/marketplace/filters`)
     filterCategories.value = f.categories ?? []
@@ -368,6 +477,10 @@ onMounted(async () => {
     }
   } catch {}
   await loadFeed(true)
+})
+
+onBeforeUnmount(() => {
+  if (heroTimer) clearInterval(heroTimer)
 })
 
 async function loadFeed(reset = false) {
@@ -441,6 +554,10 @@ function clearSearchContext() {
   longitude.value = ''
   router.replace(appStore.localizedPath('/marketplace'))
   loadFeed(true)
+}
+
+function setHeroBanner(index: number) {
+  activeHeroIndex.value = index
 }
 
 async function loadMore() {

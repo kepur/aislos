@@ -281,6 +281,8 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { currencyMeta, currencyOptionLabel } from '~/utils/currencyPolicy'
 import { inferLocationFromCoords, inferLocationFromTimezone, type LocationGuess } from '~/utils/geoPolicy'
 
+definePageMeta({ middleware: 'market-home-redirect' })
+
 // Landing Page
 const router = useRouter()
 const config = useRuntimeConfig()

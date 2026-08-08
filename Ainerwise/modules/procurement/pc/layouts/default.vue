@@ -3,7 +3,7 @@
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div class="flex items-center space-x-8">
-          <NuxtLink :to="localizedPath('/')" class="text-2xl font-bold text-indigo-600 tracking-tight">
+          <NuxtLink :to="localizedPath('/marketplace')" class="text-2xl font-bold text-indigo-600 tracking-tight">
             {{ $config.public.appName }}
           </NuxtLink>
           <nav :key="topNavRenderKey" class="hidden md:flex space-x-8 text-sm font-medium">
