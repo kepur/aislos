@@ -17,12 +17,12 @@
           <span class="text-white font-extrabold text-2xl">AW</span>
         </div>
         <h1 class="text-2xl font-bold text-slate-900">{{ $t("auth.welcome_back") }}</h1>
-        <p class="text-slate-500 text-sm mt-1">Sign in to your AinerWise Market account</p>
+        <p class="text-slate-500 text-sm mt-1">{{ authCopy.subtitle }}</p>
       </div>
 
       <!-- Demo Mode Banner -->
       <div class="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4">
-        <p class="text-amber-800 text-xs font-semibold mb-2">🧪 Demo quick access accounts</p>
+        <p class="text-amber-800 text-xs font-semibold mb-2">{{ authCopy.demoTitle }}</p>
         <div class="space-y-1.5">
           <button type="button"
             v-for="acc in demoAccounts"
@@ -36,7 +36,7 @@
         </div>
         <p class="text-amber-600 text-xs mt-2">
           {{ $t("auth.demo_tip") }}
-          <span v-if="!authStore.isDemoMode"> Demo account login may be disabled by system mode.</span>
+          <span v-if="!authStore.isDemoMode"> {{ authCopy.demoDisabled }}</span>
         </p>
       </div>
 
@@ -59,7 +59,7 @@
         <div>
           <div class="flex justify-between mb-1.5">
             <label class="text-sm font-medium text-slate-700">{{ $t("auth.password") }}</label>
-            <NuxtLink to="/auth/reset-password" class="text-xs text-primary-600 font-medium">{{ $t("auth.forgot_password") }}</NuxtLink>
+            <NuxtLink :to="localizedPath('/auth/reset-password')" class="text-xs text-primary-600 font-medium">{{ $t("auth.forgot_password") }}</NuxtLink>
           </div>
           <div class="relative">
             <input
@@ -95,7 +95,7 @@
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            Signing in…
+            {{ authCopy.signingIn }}
           </span>
         </button>
       </form>
@@ -103,39 +103,93 @@
       <!-- Divider -->
       <div class="flex items-center gap-3 my-6">
         <div class="flex-1 h-px bg-slate-200"></div>
-        <span class="text-xs text-slate-400 font-medium">OR</span>
+        <span class="text-xs text-slate-400 font-medium">{{ authCopy.or }}</span>
         <div class="flex-1 h-px bg-slate-200"></div>
       </div>
 
       <!-- Register Links -->
       <div v-if="authStore.isRegistrationEnabled" class="space-y-3">
-        <NuxtLink to="/auth/register?role=BUYER">
+        <NuxtLink :to="localizedPath('/auth/register?role=BUYER')">
           <button type="button" class="btn-secondary text-sm py-3">{{ $t("auth.register_buyer") }}</button>
         </NuxtLink>
-        <NuxtLink to="/auth/register?role=SUPPLIER_ADMIN">
+        <NuxtLink :to="localizedPath('/auth/register?role=SUPPLIER_ADMIN')">
           <button type="button" class="btn-ghost text-sm py-3">{{ $t("auth.register_supplier") }}</button>
         </NuxtLink>
       </div>
       <div v-else class="text-center text-xs text-slate-400 px-4">
-        Registration is currently by invitation only. Contact an admin to get access.
+        {{ authCopy.inviteOnly }}
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+import { getLocalePrefixFromPath, withLocalePrefix } from "~/utils/localeRoutes";
+
 definePageMeta({ layout: "default", middleware: ["guest"] });
-useHead({ title: "Sign In" });
 
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
+const { t, locale } = useI18n({ useScope: "global" });
 
 const email = ref("");
 const password = ref("");
 const showPw = ref(false);
 const loading = ref(false);
 const errors = ref<Record<string, string>>({});
+
+const copyByLocale: Record<string, Record<string, string>> = {
+  en: {
+    subtitle: "Sign in to your AinerWise Market account",
+    demoTitle: "Demo quick access accounts",
+    demoDisabled: "Demo account login may be disabled by system mode.",
+    signingIn: "Signing in...",
+    or: "OR",
+    inviteOnly: "Registration is currently by invitation only. Contact an admin to get access.",
+    invalid: "Invalid email or password",
+    emailRequired: "Email is required",
+    passwordRequired: "Password is required",
+  },
+  zh: {
+    subtitle: "登录您的 AinerWise Market 账户",
+    demoTitle: "Demo 快速体验账号",
+    demoDisabled: "系统模式可能已关闭 demo 登录。",
+    signingIn: "登录中...",
+    or: "或者",
+    inviteOnly: "当前仅支持邀请注册，请联系管理员开通。",
+    invalid: "邮箱或密码不正确",
+    emailRequired: "请输入邮箱",
+    passwordRequired: "请输入密码",
+  },
+  sr: {
+    subtitle: "Prijavite se na AinerWise Market nalog",
+    demoTitle: "Demo nalozi za brz pristup",
+    demoDisabled: "Demo prijava moze biti iskljucena u sistemu.",
+    signingIn: "Prijava...",
+    or: "ILI",
+    inviteOnly: "Registracija je trenutno samo uz poziv. Kontaktirajte administratora.",
+    invalid: "Email ili lozinka nisu ispravni",
+    emailRequired: "Email je obavezan",
+    passwordRequired: "Lozinka je obavezna",
+  },
+  pl: {
+    subtitle: "Zaloguj sie do konta AinerWise Market",
+    demoTitle: "Konta demo do szybkiego dostepu",
+    demoDisabled: "Logowanie demo moze byc wylaczone w systemie.",
+    signingIn: "Logowanie...",
+    or: "LUB",
+    inviteOnly: "Rejestracja jest teraz tylko na zaproszenie. Skontaktuj sie z administratorem.",
+    invalid: "Nieprawidlowy email lub haslo",
+    emailRequired: "Email jest wymagany",
+    passwordRequired: "Haslo jest wymagane",
+  },
+};
+
+const authCopy = computed(() => copyByLocale[locale.value] || copyByLocale.en);
+
+useHead(() => ({ title: t("auth.sign_in") }));
 
 const demoAccounts = [
   { label: "Demo Buyer", email: "buyer@demo.ainerwise.com", password: "123" },
@@ -147,14 +201,25 @@ function fillDemo(acc: { email: string; password: string }) {
   password.value = acc.password;
 }
 
+function localizedPath(path: string) {
+  const prefix =
+    getLocalePrefixFromPath(route.path) ||
+    (import.meta.client ? localStorage.getItem("h5_locale_prefix") || "" : "");
+  return prefix ? withLocalePrefix(path, prefix) : path;
+}
+
+function pushPath(path: string) {
+  router.push(path.startsWith("/") ? localizedPath(path) : path);
+}
+
 onMounted(async () => {
   await authStore.fetchSystemMode();
 });
 
 async function handleLogin() {
   errors.value = {};
-  if (!email.value) { errors.value.email = "Email is required"; return; }
-  if (!password.value) { errors.value.password = "Password is required"; return; }
+  if (!email.value) { errors.value.email = authCopy.value.emailRequired; return; }
+  if (!password.value) { errors.value.password = authCopy.value.passwordRequired; return; }
 
   loading.value = true;
   try {
@@ -163,19 +228,19 @@ async function handleLogin() {
     const returnUrl = route.query.return_url as string;
     const redirect = route.query.redirect as string;
     if (returnUrl) {
-      router.push(returnUrl);
+      pushPath(returnUrl);
     } else if (redirect) {
-      router.push(redirect);
+      pushPath(redirect);
     } else if (authStore.isBuyer) {
-      router.push("/buyer/home");
+      pushPath("/buyer/home");
     } else if (authStore.isSupplier) {
-      router.push("/supplier/pings");
+      pushPath("/supplier/pings");
     } else {
-      router.push("/admin/dashboard");
+      pushPath("/admin/dashboard");
     }
   } catch (err: unknown) {
     const e = err as { data?: { detail?: string } };
-    errors.value.general = e?.data?.detail || "Invalid email or password";
+    errors.value.general = e?.data?.detail || authCopy.value.invalid;
   } finally {
     loading.value = false;
   }

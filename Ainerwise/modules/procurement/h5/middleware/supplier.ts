@@ -1,4 +1,6 @@
-export default defineNuxtRouteMiddleware(async () => {
+import { getLocalePrefixFromPath, withLocalePrefix } from "~/utils/localeRoutes";
+
+export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server) return;
 
   const authStore = useAuthStore();
@@ -11,6 +13,13 @@ export default defineNuxtRouteMiddleware(async () => {
     await authStore.fetchMe();
   }
 
-  if (!authStore.isLoggedIn) return navigateTo("/auth/login");
-  if (!authStore.isSupplier) return navigateTo("/");
+  const pathTo = (path: string) => {
+    const prefix =
+      getLocalePrefixFromPath(to.path) ||
+      (import.meta.client ? localStorage.getItem("h5_locale_prefix") || "" : "");
+    return prefix ? withLocalePrefix(path, prefix) : path;
+  };
+
+  if (!authStore.isLoggedIn) return navigateTo(pathTo("/auth/login"));
+  if (!authStore.isSupplier) return navigateTo(pathTo("/"));
 });

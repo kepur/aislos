@@ -55,7 +55,7 @@ export const useAuthStore = defineStore("auth", {
     userRole: (state): UserRole | null => state.user?.role ?? null,
     displayName: (state) => state.user?.full_name || state.user?.email || "User",
     isDemoMode: (state) => state.systemMode?.demo_mode ?? false,
-    isRegistrationEnabled: (state) => state.systemMode?.registration_enabled ?? false,
+    isRegistrationEnabled: (state) => state.systemMode?.registration_enabled ?? true,
     intentMaxAttachments: (state) => state.systemMode?.intent_max_attachments ?? 10,
   },
 

@@ -1,3 +1,5 @@
+import { getLocalePrefixFromPath, withLocalePrefix } from "~/utils/localeRoutes";
+
 export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server) return;
 
@@ -12,6 +14,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   if (!authStore.isLoggedIn) {
-    return navigateTo(`/auth/login?redirect=${encodeURIComponent(to.path)}`);
+    const prefix =
+      getLocalePrefixFromPath(to.path) ||
+      (import.meta.client ? localStorage.getItem("h5_locale_prefix") || "" : "");
+    const loginPath = `/auth/login?redirect=${encodeURIComponent(to.fullPath)}`;
+    return navigateTo(prefix ? withLocalePrefix(loginPath, prefix) : loginPath);
   }
 });

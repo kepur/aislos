@@ -33,10 +33,10 @@
       <div class="mb-5 p-3.5 rounded-xl" :class="role === 'BUYER' ? 'bg-primary-50 border border-primary-100' : 'bg-amber-50 border border-amber-100'">
         <p class="text-sm" :class="role === 'BUYER' ? 'text-primary-700' : 'text-amber-700'">
           <template v-if="role === 'BUYER'">
-            🛒 Post what you need and receive competitive offers from verified suppliers.
+            {{ registerCopy.buyerDescription }}
           </template>
           <template v-else>
-            🏭 Get pinged when buyers need what you supply. Submit offers and grow your business.
+            {{ registerCopy.supplierDescription }}
           </template>
         </p>
       </div>
@@ -44,7 +44,7 @@
       <form class="space-y-4" @submit.prevent="handleRegister">
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ $t("auth.full_name") }}</label>
-          <input v-model="form.full_name" type="text" placeholder="Your full name" class="input-field" required />
+          <input v-model="form.full_name" type="text" :placeholder="registerCopy.fullNamePlaceholder" class="input-field" required />
         </div>
 
         <div>
@@ -63,7 +63,7 @@
             <input
               v-model="form.password"
               :type="showPw ? 'text' : 'password'"
-              placeholder="Min 8 characters"
+              :placeholder="registerCopy.passwordPlaceholder"
               class="input-field pr-12"
               required
               minlength="8"
@@ -79,11 +79,11 @@
         <!-- Supplier extra fields -->
         <template v-if="role === 'SUPPLIER_ADMIN'">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">Company Name</label>
-            <input v-model="form.company_name" type="text" placeholder="Your company name" class="input-field" />
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ registerCopy.companyName }}</label>
+            <input v-model="form.company_name" type="text" :placeholder="registerCopy.companyNamePlaceholder" class="input-field" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">City</label>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">{{ registerCopy.city }}</label>
             <input v-model="form.city" type="text" :placeholder="defaultCityPlaceholder" class="input-field" />
           </div>
         </template>
@@ -94,7 +94,7 @@
 
         <div class="pt-2">
           <p class="text-xs text-slate-500 mb-4 leading-relaxed">
-            By creating an account, you agree to our Terms of Service and Privacy Policy.
+            {{ registerCopy.terms }}
           </p>
           <button type="submit" class="btn-primary" :disabled="loading">
             <span v-if="!loading">{{ $t("auth.create_account") }}</span>
@@ -103,7 +103,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              Creating…
+              {{ registerCopy.creating }}
             </span>
           </button>
         </div>
@@ -111,7 +111,7 @@
 
       <div class="text-center mt-5">
         <span class="text-sm text-slate-500">{{ $t("auth.have_account") }} </span>
-        <NuxtLink to="/auth/login" class="text-sm text-primary-600 font-semibold">{{ $t("auth.sign_in") }}</NuxtLink>
+        <NuxtLink :to="localizedPath('/auth/login')" class="text-sm text-primary-600 font-semibold">{{ $t("auth.sign_in") }}</NuxtLink>
       </div>
     </div>
   </div>
@@ -120,20 +120,72 @@
 <script setup lang="ts">
 import type { UserRole } from "~/types";
 import { useI18n } from "vue-i18n";
+import { getLocalePrefixFromPath, withLocalePrefix } from "~/utils/localeRoutes";
 
 definePageMeta({ layout: "default", middleware: ["guest"] });
-useHead({ title: "Create Account" });
 
 const authStore = useAuthStore();
 const appStore = useAppStore();
 const router = useRouter();
 const route = useRoute();
-const { t } = useI18n({ useScope: "global" });
+const { t, locale } = useI18n({ useScope: "global" });
 
 const role = ref<UserRole>((route.query.role as UserRole) || "BUYER");
 const showPw = ref(false);
 const loading = ref(false);
 const errors = ref<Record<string, string>>({});
+const copyByLocale: Record<string, Record<string, string>> = {
+  en: {
+    buyerDescription: "Post what you need and receive competitive offers from verified suppliers.",
+    supplierDescription: "Get pinged when buyers need what you supply. Submit offers and grow your business.",
+    fullNamePlaceholder: "Your full name",
+    passwordPlaceholder: "Min 8 characters",
+    companyName: "Company Name",
+    companyNamePlaceholder: "Your company name",
+    city: "City",
+    terms: "By creating an account, you agree to our Terms of Service and Privacy Policy.",
+    creating: "Creating...",
+    registrationFailed: "Registration failed",
+  },
+  zh: {
+    buyerDescription: "发布你的需求，接收认证供应商的竞争报价。",
+    supplierDescription: "当买家需要你的产品或服务时收到匹配提醒，并提交报价。",
+    fullNamePlaceholder: "你的姓名",
+    passwordPlaceholder: "至少 8 位字符",
+    companyName: "公司名称",
+    companyNamePlaceholder: "你的公司名称",
+    city: "城市",
+    terms: "创建账号即表示你同意服务条款和隐私政策。",
+    creating: "创建中...",
+    registrationFailed: "注册失败",
+  },
+  sr: {
+    buyerDescription: "Objavite sta vam treba i dobijte ponude proverenih dobavljaca.",
+    supplierDescription: "Dobijajte upite kada kupcima treba ono sto nudite. Saljite ponude i razvijajte posao.",
+    fullNamePlaceholder: "Ime i prezime",
+    passwordPlaceholder: "Najmanje 8 karaktera",
+    companyName: "Naziv firme",
+    companyNamePlaceholder: "Naziv vase firme",
+    city: "Grad",
+    terms: "Kreiranjem naloga prihvatate Uslove koriscenja i Politiku privatnosti.",
+    creating: "Kreiranje...",
+    registrationFailed: "Registracija nije uspela",
+  },
+  pl: {
+    buyerDescription: "Opublikuj, czego potrzebujesz, i otrzymaj oferty od zweryfikowanych dostawcow.",
+    supplierDescription: "Otrzymuj zapytania, gdy kupujacy potrzebuja Twojej oferty. Skladaj oferty i rozwijaj biznes.",
+    fullNamePlaceholder: "Imie i nazwisko",
+    passwordPlaceholder: "Minimum 8 znakow",
+    companyName: "Nazwa firmy",
+    companyNamePlaceholder: "Nazwa Twojej firmy",
+    city: "Miasto",
+    terms: "Tworzac konto, akceptujesz Warunki korzystania i Polityke prywatnosci.",
+    creating: "Tworzenie...",
+    registrationFailed: "Rejestracja nie powiodla sie",
+  },
+};
+const registerCopy = computed(() => copyByLocale[locale.value] || copyByLocale.en);
+useHead(() => ({ title: t("auth.create_account") }));
 const defaultCityPlaceholder = computed(() => {
   if (appStore.regionCountry === "RS") return "Belgrade";
   if (appStore.regionCountry === "PL") return "Warsaw";
@@ -160,6 +212,13 @@ const form = reactive({
   city: "",
 });
 
+function localizedPath(path: string) {
+  const prefix =
+    getLocalePrefixFromPath(route.path) ||
+    (import.meta.client ? localStorage.getItem("h5_locale_prefix") || "" : "");
+  return prefix ? withLocalePrefix(path, prefix) : path;
+}
+
 async function handleRegister() {
   errors.value = {};
   if (!form.full_name.trim()) {
@@ -184,14 +243,14 @@ async function handleRegister() {
       phone: form.phone || undefined,
     });
     if (authStore.isBuyer) {
-      router.push("/buyer/home");
+      router.push(localizedPath("/buyer/home"));
     } else {
-      router.push("/supplier/pings");
+      router.push(localizedPath("/supplier/pings"));
     }
   } catch (err: unknown) {
     const e = err as { data?: { detail?: string | Array<{ msg: string }> } };
     const detail = e?.data?.detail;
-    errors.value.general = Array.isArray(detail) ? detail[0]?.msg : (detail || "Registration failed");
+    errors.value.general = Array.isArray(detail) ? detail[0]?.msg : (detail || registerCopy.value.registrationFailed);
   } finally {
     loading.value = false;
   }

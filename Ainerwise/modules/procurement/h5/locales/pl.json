@@ -36,9 +36,22 @@
     "full_name": "Imię i nazwisko",
     "phone": "Telefon",
     "forgot_password": "Nie pamiętasz hasła?",
+    "change_password": "Zmień hasło",
+    "old_password": "Stare hasło",
+    "new_password": "Nowe hasło",
+    "confirm_password": "Potwierdź hasło",
+    "no_account": "Nie masz konta?",
+    "have_account": "Masz już konto?",
     "welcome_back": "Witaj ponownie",
     "register_buyer": "Kupujący",
-    "register_supplier": "Dostawca"
+    "register_supplier": "Dostawca",
+    "create_account": "Utwórz konto",
+    "i_am_buyer": "Jestem kupującym",
+    "i_am_supplier": "Jestem dostawcą",
+    "phone_optional": "Telefon (opcjonalnie)",
+    "full_name_required": "Imię i nazwisko jest wymagane",
+    "email_required": "Email jest wymagany",
+    "password_min": "Hasło musi mieć co najmniej 8 znaków"
   },
   "nav": {
     "home": "Start",

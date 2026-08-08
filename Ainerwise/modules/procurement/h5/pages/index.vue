@@ -14,17 +14,23 @@
           </div>
         </NuxtLink>
 
-        <div class="flex items-center gap-2">
-          <NuxtLink :to="marketPath" class="rounded-full bg-white px-3 py-1.5 text-xs font-extrabold text-slate-950">
+        <div class="flex items-center gap-1.5">
+          <NuxtLink :to="marketPath" class="rounded-full bg-white px-3 py-1.5 text-xs font-extrabold text-slate-950 shadow-lg shadow-black/20">
             {{ homeCopy.market }}
           </NuxtLink>
           <NuxtLink :to="localizedPath('/auth/login')" class="rounded-full border border-white/15 px-3 py-1.5 text-xs font-bold text-white/80">
             {{ homeCopy.signIn }}
           </NuxtLink>
+          <NuxtLink :to="localizedPath('/auth/register?role=BUYER')" class="rounded-full bg-emerald-400 px-3 py-1.5 text-xs font-extrabold text-slate-950">
+            {{ homeCopy.register }}
+          </NuxtLink>
         </div>
       </div>
 
       <nav class="flex gap-2 overflow-x-auto px-4 pb-3 scrollbar-hide">
+        <NuxtLink :to="marketPath" class="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1.5 text-xs font-bold text-emerald-100">
+          {{ homeCopy.navMarket }}
+        </NuxtLink>
         <a href="#brain" class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-white/80">
           {{ homeCopy.navBrain }}
         </a>
@@ -34,9 +40,6 @@
         <a href="#products" class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-white/80">
           {{ homeCopy.navProducts }}
         </a>
-        <NuxtLink :to="marketPath" class="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1.5 text-xs font-bold text-emerald-100">
-          {{ homeCopy.navMarket }}
-        </NuxtLink>
       </nav>
     </header>
 
@@ -203,6 +206,7 @@ const copyByLocale: Record<string, Record<string, string>> = {
   en: {
     mobileSite: "mobile official site",
     signIn: "Sign in",
+    register: "Register",
     market: "Market",
     navBrain: "AI Brain",
     navSolutions: "Solutions",
@@ -232,6 +236,7 @@ const copyByLocale: Record<string, Record<string, string>> = {
   zh: {
     mobileSite: "手机官网",
     signIn: "登录",
+    register: "注册",
     market: "市场",
     navBrain: "AI 大脑",
     navSolutions: "解决方案",
@@ -261,6 +266,7 @@ const copyByLocale: Record<string, Record<string, string>> = {
   sr: {
     mobileSite: "mobilni zvanicni sajt",
     signIn: "Prijava",
+    register: "Registracija",
     market: "Market",
     navBrain: "AI mozak",
     navSolutions: "Resenja",
@@ -290,6 +296,7 @@ const copyByLocale: Record<string, Record<string, string>> = {
   pl: {
     mobileSite: "mobilna strona",
     signIn: "Zaloguj",
+    register: "Rejestracja",
     market: "Market",
     navBrain: "AI Brain",
     navSolutions: "Rozwiązania",
