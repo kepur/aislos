@@ -1,54 +1,41 @@
 <template>
-  <div class="min-h-screen bg-slate-50">
-    <section class="mx-auto max-w-7xl px-6 py-12">
-      <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-950 shadow-2xl shadow-slate-200/70">
-        <div class="relative px-8 py-12 text-white lg:px-12">
-          <div class="absolute inset-0 opacity-70">
-            <div class="absolute right-[-120px] top-[-160px] h-[360px] w-[360px] rounded-full bg-indigo-500/30 blur-3xl"></div>
-            <div class="absolute bottom-[-160px] left-[25%] h-[300px] w-[300px] rounded-full bg-emerald-400/20 blur-3xl"></div>
-          </div>
-          <div class="relative max-w-3xl">
-            <p class="text-sm font-black uppercase tracking-[0.24em] text-emerald-300">{{ appStore.t('about.kicker') }}</p>
-            <h1 class="mt-4 text-4xl font-black leading-tight lg:text-6xl">{{ appStore.t('about.title') }}</h1>
-            <p class="mt-5 text-lg leading-8 text-slate-300">{{ appStore.t('about.subtitle') }}</p>
-            <div class="mt-8 flex flex-wrap gap-3">
-              <UButton :to="localizedPath('/marketplace')" color="emerald" size="lg">{{ appStore.t('about.openMarket') }}</UButton>
-              <UButton :to="localizedPath('/post-request')" color="white" variant="outline" size="lg">{{ appStore.t('action.postRequest') }}</UButton>
-            </div>
-          </div>
-        </div>
+  <div class="min-h-screen bg-slate-950 text-white">
+    <section class="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:96px_96px]"></div>
+        <div class="absolute -left-32 top-20 h-96 w-96 rounded-full bg-cyan-500/15 blur-3xl"></div>
+        <div class="absolute -right-24 bottom-10 h-[28rem] w-[28rem] rounded-full bg-emerald-500/10 blur-3xl"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/90 to-slate-950"></div>
       </div>
 
-      <div class="mt-8 grid gap-4 md:grid-cols-3">
-        <div
-          v-for="pillar in pillars"
-          :key="pillar.title"
-          class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
-        >
-          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
-            <UIcon :name="pillar.icon" class="h-6 w-6" />
-          </div>
-          <h2 class="mt-5 text-xl font-black text-slate-950">{{ pillar.title }}</h2>
-          <p class="mt-3 text-sm leading-6 text-slate-600">{{ pillar.body }}</p>
-        </div>
-      </div>
+      <div class="relative mx-auto max-w-4xl">
+        <h1 class="text-center text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+          {{ appStore.t('about.title') }}
+        </h1>
 
-      <div class="mt-8 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-        <div class="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <p class="text-sm font-black uppercase tracking-[0.2em] text-indigo-500">{{ appStore.t('about.flowKicker') }}</p>
-            <h2 class="mt-3 text-3xl font-black text-slate-950">{{ appStore.t('about.flowTitle') }}</h2>
-            <p class="mt-4 leading-7 text-slate-600">{{ appStore.t('about.flowBody') }}</p>
-          </div>
-          <div class="grid gap-3 sm:grid-cols-2">
-            <div
-              v-for="step in flowSteps"
-              :key="step"
-              class="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 text-sm font-bold text-slate-700"
-            >
-              {{ step }}
-            </div>
-          </div>
+        <div class="mt-10 space-y-6 rounded-[1.75rem] border border-cyan-400/25 bg-white/[0.06] p-8 leading-relaxed text-slate-300 shadow-[0_0_30px_rgba(14,165,233,0.1)] backdrop-blur-xl">
+          <p>{{ appStore.t('about.p1') }}</p>
+          <p>{{ appStore.t('about.p2') }}</p>
+
+          <h2 class="mt-8 border-b border-white/10 pb-2 text-xl font-bold text-white">
+            {{ appStore.t('about.approachTitle') }}
+          </h2>
+          <p>{{ appStore.t('about.approachText') }}</p>
+
+          <h2 class="mt-8 border-b border-white/10 pb-2 text-xl font-bold text-white">
+            {{ appStore.t('about.techTitle') }}
+          </h2>
+          <ul class="list-disc space-y-2 pl-6 text-cyan-200">
+            <li>{{ appStore.t('about.tech1') }}</li>
+            <li>{{ appStore.t('about.tech2') }}</li>
+            <li>{{ appStore.t('about.tech3') }}</li>
+            <li>{{ appStore.t('about.tech4') }}</li>
+          </ul>
+
+          <h2 class="mt-8 border-b border-white/10 pb-2 text-xl font-bold text-white">
+            {{ appStore.t('about.regionsTitle') }}
+          </h2>
+          <p>{{ appStore.t('about.regionsText') }}</p>
         </div>
       </div>
     </section>
@@ -56,39 +43,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useAppStore } from '~/stores/app'
 
 definePageMeta({ layout: 'default' })
 
 const appStore = useAppStore()
-
-const pillars = computed(() => [
-  {
-    icon: 'i-heroicons-shopping-bag',
-    title: appStore.t('about.pillar1Title'),
-    body: appStore.t('about.pillar1Body'),
-  },
-  {
-    icon: 'i-heroicons-cpu-chip',
-    title: appStore.t('about.pillar2Title'),
-    body: appStore.t('about.pillar2Body'),
-  },
-  {
-    icon: 'i-heroicons-wrench-screwdriver',
-    title: appStore.t('about.pillar3Title'),
-    body: appStore.t('about.pillar3Body'),
-  },
-])
-
-const flowSteps = computed(() => [
-  appStore.t('about.step1'),
-  appStore.t('about.step2'),
-  appStore.t('about.step3'),
-  appStore.t('about.step4'),
-])
-
-function localizedPath(path: string) {
-  return appStore.localizedPath(path)
-}
 </script>
