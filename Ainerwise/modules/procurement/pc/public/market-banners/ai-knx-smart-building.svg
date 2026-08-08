@@ -1,36 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="420" viewBox="0 0 1440 420" fill="none">
-  <rect width="1440" height="420" rx="34" fill="#06111F"/>
-  <path d="M0 0h1440v420H0z" fill="url(#bg)"/>
-  <path d="M50 74h1340M50 160h1340M50 246h1340M50 332h1340M166 30v360M314 30v360M462 30v360M610 30v360M758 30v360M906 30v360M1054 30v360M1202 30v360" stroke="#5EEAD4" stroke-opacity=".1"/>
-  <circle cx="1077" cy="198" r="145" fill="#10B981" fill-opacity=".12"/>
-  <circle cx="1077" cy="198" r="92" fill="#38BDF8" fill-opacity=".13"/>
-  <circle cx="1077" cy="198" r="46" fill="#6EE7B7" fill-opacity=".24"/>
-  <path d="M887 253c95-68 243-68 338 0M927 145c64 39 238 39 302 0M1029 54c46 76 46 212 0 288M1124 54c-46 76-46 212 0 288" stroke="#93C5FD" stroke-opacity=".33" stroke-width="3"/>
-  <g opacity=".95">
-    <rect x="740" y="132" width="365" height="166" rx="18" fill="#07101F" stroke="#1E40AF" stroke-opacity=".55"/>
-    <rect x="772" y="166" width="72" height="92" rx="10" fill="#123C69"/>
-    <rect x="862" y="142" width="92" height="116" rx="10" fill="#0E7490"/>
-    <rect x="972" y="183" width="92" height="75" rx="10" fill="#0F766E"/>
-    <path d="M755 258h329" stroke="#67E8F9" stroke-opacity=".35" stroke-width="4"/>
-    <path d="M808 148l32-24 32 24M914 123l45-33 45 33M1019 167l25-19 25 19" fill="#FCD34D" fill-opacity=".9"/>
-    <path d="M803 184h13M803 208h13M803 232h13M891 169h14M891 193h14M891 217h14M923 169h14M923 193h14M923 217h14M1004 207h14M1004 232h14M1036 207h14M1036 232h14" stroke="#BAE6FD" stroke-width="5" stroke-linecap="round"/>
-  </g>
-  <g>
-    <path d="M633 231c85-46 162-59 247-39M622 187c90 7 168 4 263-19M630 279c100-7 172-25 253-61" stroke="#34D399" stroke-opacity=".45" stroke-width="3"/>
-    <circle cx="626" cy="187" r="8" fill="#22D3EE"/>
-    <circle cx="633" cy="231" r="8" fill="#34D399"/>
-    <circle cx="630" cy="279" r="8" fill="#FCD34D"/>
-  </g>
-  <text x="78" y="112" fill="#6EE7B7" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="8">AINERWISE OFFICIAL</text>
-  <text x="78" y="182" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="900">AI + KNX Smart Building</text>
-  <text x="78" y="238" fill="#C7D2FE" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Design, source, compare and deliver intelligent building systems.</text>
-  <text x="78" y="304" fill="#ECFDF5" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">AI Brain | KNX bus | energy | security | lifecycle service</text>
-  <rect x="78" y="334" width="210" height="48" rx="24" fill="#22C55E"/>
-  <text x="111" y="365" fill="#052E16" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="900">Explore solutions</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="160" viewBox="0 0 1440 160" fill="none">
+  <rect width="1440" height="160" rx="24" fill="#030712"/>
+  <path d="M0 0h1440v160H0z" fill="url(#bg)"/>
+  <path d="M44 38h424M44 82h510M44 126h378M798 24h552M840 80h500M766 132h420" stroke="#5EEAD4" stroke-opacity=".12"/>
+  <circle cx="1142" cy="80" r="88" fill="#22C55E" fill-opacity=".14"/>
+  <circle cx="1142" cy="80" r="54" fill="#38BDF8" fill-opacity=".18"/>
+  <circle cx="1142" cy="80" r="22" fill="#A7F3D0" fill-opacity=".45"/>
+  <path d="M930 112c83-50 213-50 296 0M954 48c62 33 204 33 266 0M1082 16c35 49 35 126 0 174M1198 16c-35 49-35 126 0 174" stroke="#93C5FD" stroke-opacity=".32" stroke-width="2"/>
+  <rect x="808" y="44" width="88" height="74" rx="10" fill="#0E7490" opacity=".86"/>
+  <rect x="910" y="28" width="116" height="90" rx="10" fill="#164E63" opacity=".92"/>
+  <rect x="1044" y="62" width="92" height="56" rx="10" fill="#0F766E" opacity=".85"/>
+  <path d="M808 118h338" stroke="#67E8F9" stroke-opacity=".35" stroke-width="4"/>
+  <path d="M854 44l34-26 34 26M970 28l48-32 48 32M1090 62l30-20 30 20" fill="#FDE68A" opacity=".9"/>
+  <path d="M842 66h10M842 88h10M842 108h10M956 54h12M956 78h12M956 102h12M1000 54h12M1000 78h12M1000 102h12M1080 84h10M1080 104h10M1114 84h10M1114 104h10" stroke="#BAE6FD" stroke-width="4" stroke-linecap="round"/>
+  <path d="M536 88c84-38 193-52 306-25M538 116c104-8 197-29 307-60" stroke="#34D399" stroke-opacity=".35" stroke-width="3"/>
+  <circle cx="536" cy="88" r="7" fill="#22D3EE"/>
+  <circle cx="538" cy="116" r="7" fill="#34D399"/>
+  <text x="54" y="58" fill="#6EE7B7" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="900" letter-spacing="5">AINERWISE OFFICIAL</text>
+  <text x="54" y="102" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="900">AI + KNX Smart Building</text>
+  <text x="54" y="132" fill="#C7D2FE" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="700">Devices, AI assessment, BOQ, RFQ and local delivery in one flow.</text>
+  <rect x="1210" y="54" width="174" height="52" rx="26" fill="#22C55E"/>
+  <text x="1246" y="87" fill="#052E16" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="900">Explore</text>
   <defs>
-    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1100 90) rotate(146) scale(972 532)">
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1075 50) rotate(159) scale(870 280)">
       <stop stop-color="#064E3B"/>
-      <stop offset=".45" stop-color="#0F172A"/>
+      <stop offset=".5" stop-color="#0F172A"/>
       <stop offset="1" stop-color="#020617"/>
     </radialGradient>
   </defs>

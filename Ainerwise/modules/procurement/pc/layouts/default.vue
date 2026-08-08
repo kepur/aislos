@@ -127,6 +127,7 @@ const topNav = computed(() => [
   { to: '/marketplace', label: appStore.t('nav.marketplace') },
   { to: '/how-it-works', label: appStore.t('nav.how') },
   { to: '/buyer/projects', label: appStore.t('nav.aiProjects') },
+  { to: '/about', label: appStore.t('nav.about') },
 ])
 
 const currentTopPath = ref(normalizePath(route.path))

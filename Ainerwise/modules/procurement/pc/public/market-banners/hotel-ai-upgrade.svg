@@ -1,28 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="420" viewBox="0 0 1440 420" fill="none">
-  <rect width="1440" height="420" rx="34" fill="#07101F"/>
-  <path d="M0 0h1440v420H0z" fill="url(#bg)"/>
-  <path d="M52 78h1324M52 166h1324M52 254h1324M52 342h1324" stroke="#FBBF24" stroke-opacity=".1"/>
-  <path d="M828 113h285v232H828z" fill="#0F172A" stroke="#F59E0B" stroke-opacity=".35"/>
-  <path d="M1137 164h130v181h-130z" fill="#123C69" stroke="#38BDF8" stroke-opacity=".25"/>
-  <path d="M858 147h39M926 147h39M994 147h39M1062 147h25M858 194h39M926 194h39M994 194h39M1062 194h25M858 241h39M926 241h39M994 241h39M1062 241h25M858 288h39M926 288h39M994 288h39M1062 288h25M1172 199h61M1172 244h61M1172 289h61" stroke="#FDE68A" stroke-width="9" stroke-linecap="round" stroke-opacity=".75"/>
-  <path d="M791 345h520" stroke="#94A3B8" stroke-opacity=".35" stroke-width="5"/>
-  <path d="M696 111c89 67 187 107 298 119M694 218c85-18 172-16 261 7M707 310c72-46 157-73 253-82" stroke="#34D399" stroke-opacity=".45" stroke-width="3"/>
-  <circle cx="696" cy="111" r="9" fill="#22D3EE"/>
-  <circle cx="694" cy="218" r="9" fill="#34D399"/>
-  <circle cx="707" cy="310" r="9" fill="#FBBF24"/>
-  <rect x="1058" y="58" width="206" height="72" rx="20" fill="#07101F" stroke="#34D399" stroke-opacity=".35"/>
-  <text x="1085" y="91" fill="#86EFAC" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="900">SMALL HOTEL</text>
-  <text x="1085" y="116" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="900">Smart Upgrade Kit</text>
-  <text x="82" y="106" fill="#86EFAC" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="8">HOTEL AI UPGRADE</text>
-  <text x="82" y="180" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="900">Upgrade Rooms Without Guesswork</text>
-  <text x="82" y="236" fill="#C7D2FE" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Access, lighting, CCTV, energy and maintenance scoped by AI.</text>
-  <text x="82" y="304" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">Start from products. Convert to BOQ, RFQ and local installation.</text>
-  <rect x="82" y="334" width="218" height="48" rx="24" fill="#FBBF24"/>
-  <text x="117" y="365" fill="#422006" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="900">Explore AI building</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="160" viewBox="0 0 1440 160" fill="none">
+  <rect width="1440" height="160" rx="24" fill="#08111F"/>
+  <path d="M0 0h1440v160H0z" fill="url(#bg)"/>
+  <path d="M726 128c90-66 188-91 294-74 105 17 171 66 321 21" stroke="#FBBF24" stroke-opacity=".24" stroke-width="3"/>
+  <rect x="836" y="26" width="96" height="102" rx="8" fill="#0E7490" opacity=".84"/>
+  <rect x="952" y="46" width="114" height="82" rx="8" fill="#155E75" opacity=".92"/>
+  <rect x="1088" y="18" width="140" height="110" rx="8" fill="#92400E" opacity=".68"/>
+  <rect x="1250" y="64" width="74" height="64" rx="8" fill="#0F766E" opacity=".76"/>
+  <path d="M866 48h9M866 70h9M866 92h9M894 48h9M894 70h9M894 92h9M984 68h10M984 92h10M1018 68h10M1018 92h10M1120 40h10M1120 64h10M1120 88h10M1162 40h10M1162 64h10M1162 88h10M1204 40h10M1204 64h10M1204 88h10M1278 84h8M1278 106h8" stroke="#FEF3C7" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="1116" cy="80" r="78" fill="#F59E0B" fill-opacity=".12"/>
+  <circle cx="1116" cy="80" r="40" fill="#22D3EE" fill-opacity=".16"/>
+  <path d="M760 76h80M932 76h20M1066 76h22M1228 76h22" stroke="#34D399" stroke-opacity=".42" stroke-width="3"/>
+  <text x="54" y="58" fill="#FCD34D" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="900" letter-spacing="5">SMALL HOTEL</text>
+  <text x="54" y="102" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="900">Hotel AI Upgrade Kits</text>
+  <text x="54" y="132" fill="#FED7AA" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="700">Rooms, locks, CCTV, energy and lifecycle service packages.</text>
+  <rect x="1210" y="54" width="174" height="52" rx="26" fill="#F59E0B"/>
+  <text x="1242" y="87" fill="#111827" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="900">Get quote</text>
   <defs>
-    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1086 102) rotate(151) scale(971 540)">
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1082 52) rotate(164) scale(900 310)">
       <stop stop-color="#78350F"/>
-      <stop offset=".42" stop-color="#0F172A"/>
+      <stop offset=".48" stop-color="#0F172A"/>
       <stop offset="1" stop-color="#020617"/>
     </radialGradient>
   </defs>
