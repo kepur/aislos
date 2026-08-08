@@ -57,7 +57,7 @@
       </div>
     </header>
 
-    <main class="flex-grow pt-16">
+    <main class="flex-grow">
       <slot />
     </main>
 
