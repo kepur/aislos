@@ -97,31 +97,31 @@ function externalPath(baseUrl: string, path = '/') {
 const navItems = computed(() => {
   if (mode === 'store') {
     return [
-      { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
       { to: externalPath(urls.aislos, '/ai-building-brain'), label: t('nav.aiBrain'), external: true },
       { to: externalPath(urls.aislos, '/solutions'), label: t('nav.solutions'), external: true },
       { to: localPath('/products'), label: t('nav.products'), external: false },
       { to: externalPath(urls.developer, '/developers'), label: t('nav.developers'), external: true },
       { to: externalPath(urls.developer, '/marketplace'), label: t('nav.marketplace'), external: true },
+      { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
     ]
   }
   if (mode === 'developer') {
     return [
-      { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
       { to: externalPath(urls.aislos, '/ai-building-brain'), label: t('nav.aiBrain'), external: true },
       { to: externalPath(urls.aislos, '/solutions'), label: t('nav.solutions'), external: true },
       { to: externalPath(urls.store, '/products'), label: t('nav.products'), external: true },
       { to: localPath('/developers'), label: t('nav.developers'), external: false },
       { to: localPath('/marketplace'), label: t('nav.marketplace'), external: false },
+      { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
     ]
   }
   return [
-    { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
     { to: localPath('/ai-building-brain'), label: t('nav.aiBrain'), external: false },
     { to: localPath('/solutions'), label: t('nav.solutions'), external: false },
     { to: externalPath(urls.store, '/products'), label: t('nav.products'), external: true },
     { to: externalPath(urls.developer, '/developers'), label: t('nav.developers'), external: true },
     { to: externalPath(urls.developer, '/marketplace'), label: t('nav.marketplace'), external: true },
+    { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
   ]
 })
 
