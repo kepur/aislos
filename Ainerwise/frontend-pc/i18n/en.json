@@ -710,7 +710,12 @@
       "notifications": "Notifications",
       "companyProfile": "Company",
       "team": "Team",
-      "settings": "Settings"
+      "settings": "Settings",
+      "delivery": "Delivery",
+      "installations": "Installation",
+      "assets": "Assets",
+      "afterSales": "After-sales",
+      "approvals": "Approvals"
     }
   },
   "sign": {

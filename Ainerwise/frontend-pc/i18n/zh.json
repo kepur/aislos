@@ -710,7 +710,12 @@
       "notifications": "通知",
       "companyProfile": "公司档案",
       "team": "团队",
-      "settings": "设置"
+      "settings": "设置",
+      "delivery": "交付",
+      "installations": "安装",
+      "assets": "资产",
+      "afterSales": "售后",
+      "approvals": "审批"
     }
   },
   "sign": {

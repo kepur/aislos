@@ -78,7 +78,15 @@ const { brand, portalKey } = useProcurementBrand(policy)
 // Routes are served under a locale prefix (/cn/market/...), so the raw path
 // never matched these checks and the workspace nav silently disappeared.
 const basePath = computed(() => stripLocalePrefix(route.path))
-const isCebu = computed(() => basePath.value === '/market' || basePath.value.startsWith('/market/') || portalKey.value === 'cebu')
+// /portal carries the second half of the same buyer journey, so it shows the
+// same shell and nav rather than a workspace of its own.
+const isCebu = computed(() =>
+  basePath.value === '/market' ||
+  basePath.value.startsWith('/market/') ||
+  basePath.value === '/portal' ||
+  basePath.value.startsWith('/portal/') ||
+  portalKey.value === 'cebu',
+)
 const isSupplier = computed(() => basePath.value === '/supplier' || basePath.value.startsWith('/supplier/'))
 
 const brandLabel = computed(() =>
@@ -87,15 +95,21 @@ const brandLabel = computed(() =>
 
 const moreOpen = ref(false)
 
-// Buyer destinations, brought in line with the 4106 workspace. The first eight
-// stay in the bar; the rest move into the overflow menu.
+// One buyer journey, in the order it actually happens: source and buy under
+// /market/buyer, then delivery through after-sales under /portal. Those two
+// route trees used to be separate workspaces with no link between them.
 const cebuNav = computed(() => [
   { to: '/market/buyer/dashboard', label: t('procurement.nav.workspace') },
-  { to: '/market/buyer/projects', label: t('procurement.nav.projects') },
   { to: '/market/buyer/requests', label: t('procurement.nav.requests') },
+  { to: '/market/buyer/projects', label: t('procurement.nav.projects') },
   { to: '/market/buyer/orders', label: t('procurement.nav.orders') },
+  { to: '/portal/projects', label: t('procurement.nav.delivery') },
+  { to: '/portal/installations', label: t('procurement.nav.installations') },
+  { to: '/portal/assets', label: t('procurement.nav.assets') },
+  { to: '/portal/tickets', label: t('procurement.nav.afterSales') },
   { to: '/market/buyer/messages', label: t('procurement.nav.messages') },
   { to: '/market/buyer/wallet', label: t('procurement.nav.wallet') },
+  { to: '/portal/approvals', label: t('procurement.nav.approvals') },
   { to: '/market/buyer/disputes', label: t('procurement.nav.disputes') },
   { to: '/market/buyer/ideal-list', label: t('procurement.nav.idealList') },
   { to: '/market/buyer/notifications', label: t('procurement.nav.notifications') },

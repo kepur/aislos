@@ -11,6 +11,18 @@
     --input-bg: #ffffff;
     --input-border: rgba(15, 23, 42, 0.15);
     --input-text: #0f172a;
+
+    /* Workspace tokens. Every theme defines the same names so workspace
+       surfaces can be written once instead of per-theme. */
+    --text-muted: #64748b;
+    --text-faint: #94a3b8;
+    --surface-soft: #f1f5f9;
+    --surface-sunken: #f8fafc;
+    --hairline-soft: rgba(15, 23, 42, 0.07);
+    --accent: #2563eb;
+    --accent-strong: #1d4ed8;
+    --accent-soft: #eff6ff;
+    --accent-contrast: #ffffff;
   }
   .dark {
     --page-text: #e2e8f0;
@@ -19,6 +31,16 @@
     --input-bg: rgba(255, 255, 255, 0.05);
     --input-border: rgba(255, 255, 255, 0.10);
     --input-text: #ffffff;
+
+    --text-muted: #94a3b8;
+    --text-faint: #64748b;
+    --surface-soft: rgba(255, 255, 255, 0.05);
+    --surface-sunken: rgba(255, 255, 255, 0.03);
+    --hairline-soft: rgba(255, 255, 255, 0.07);
+    --accent: #38bdf8;
+    --accent-strong: #0ea5e9;
+    --accent-soft: rgba(56, 189, 248, 0.12);
+    --accent-contrast: #04121d;
   }
 
   /* ── KNX-style theme (default) ────────────────────────────────────
@@ -42,6 +64,16 @@
     --input-bg: #ffffff;
     --input-border: #d7e0db;
     --input-text: var(--ink);
+
+    --text-muted: var(--ink-muted);
+    --text-faint: #8a9a93;
+    --surface-soft: var(--surface-alt);
+    --surface-sunken: #fafcfb;
+    --hairline-soft: rgba(13, 27, 22, 0.06);
+    --accent: var(--brand);
+    --accent-strong: var(--brand-strong);
+    --accent-soft: var(--brand-soft);
+    --accent-contrast: var(--brand-contrast);
   }
   body {
     @apply antialiased bg-transparent;
@@ -118,6 +150,49 @@
   .pc-card:hover {
     border-color: rgba(255, 255, 255, 0.12);
   }
+
+  /* === Workspace surfaces ===
+     Written once against the theme tokens so buyer/supplier/customer consoles
+     render correctly under knx, light and dark instead of assuming dark. */
+  .ws-title { color: var(--page-text); }
+  .ws-muted { color: var(--text-muted); }
+  .ws-faint { color: var(--text-faint); }
+  .ws-accent { color: var(--accent); }
+  .ws-soft { background: var(--surface-soft); }
+  .ws-sunken { background: var(--surface-sunken); }
+  .ws-hairline { border-color: var(--card-border); }
+
+  .ws-tile {
+    @apply rounded-2xl border p-4 transition;
+    background: var(--surface-soft);
+    border-color: var(--hairline-soft);
+  }
+  .ws-tile:hover { border-color: var(--accent); }
+
+  .ws-chip {
+    @apply rounded-full border px-3 py-1 text-xs transition;
+    background: var(--surface-soft);
+    border-color: var(--hairline-soft);
+    color: var(--page-text);
+  }
+  .ws-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  .ws-row {
+    @apply rounded-xl border p-3 transition;
+    border-color: var(--hairline-soft);
+  }
+  .ws-row:hover {
+    border-color: var(--accent);
+    background: var(--surface-sunken);
+  }
+
+  .ws-divide > * + * { border-color: var(--hairline-soft); }
+  .ws-trust { background: var(--card-bg); }
+
+  /* Blurred colour glows sit well on the dark identity but read as smudges on
+     the two light grounds, so they only render under .dark. */
+  .ws-glow { display: none; }
+  .dark .ws-glow { display: block; }
 
   .pc-section-muted {
     @apply bg-slate-950 text-white border-t border-white/10;

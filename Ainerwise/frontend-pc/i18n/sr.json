@@ -309,7 +309,12 @@
       "notifications": "Obavestenja",
       "companyProfile": "Firma",
       "team": "Tim",
-      "settings": "Podesavanja"
+      "settings": "Podesavanja",
+      "delivery": "Isporuka",
+      "installations": "Instalacija",
+      "assets": "Oprema",
+      "afterSales": "Podrska",
+      "approvals": "Odobrenja"
     }
   },
   "products": {

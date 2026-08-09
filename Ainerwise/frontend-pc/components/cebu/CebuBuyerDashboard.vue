@@ -4,7 +4,7 @@
     <div class="flex flex-wrap items-start justify-between gap-4">
       <div class="min-w-0">
         <div class="flex flex-wrap items-center gap-2">
-          <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] ws-accent">
             {{ $t('procurement.buyerHome.eyebrow') }}
           </p>
           <span
@@ -16,7 +16,7 @@
             class="rounded-full border border-sky-400/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-300"
           >{{ $t('procurement.buyerHome.business') }}</span>
         </div>
-        <h1 class="mt-1 text-2xl font-bold text-white">{{ $t('procurement.buyerHome.title') }}</h1>
+        <h1 class="mt-1 text-2xl font-bold ws-title">{{ $t('procurement.buyerHome.title') }}</h1>
       </div>
       <div class="flex flex-wrap items-center gap-2">
         <NuxtLink to="/market/marketplace" class="btn-secondary !py-2 !px-4 text-sm">
@@ -32,8 +32,8 @@
     </div>
 
     <!-- Trust strip -->
-    <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-slate-950/50 backdrop-blur-md">
-      <div class="pointer-events-none absolute inset-0 opacity-60">
+    <div class="relative overflow-hidden rounded-2xl border ws-hairline backdrop-blur-md ws-trust">
+      <div class="pointer-events-none absolute inset-0 opacity-60 ws-glow">
         <div class="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl"></div>
         <div class="absolute -bottom-28 right-10 h-64 w-64 rounded-full bg-emerald-400/10 blur-3xl"></div>
       </div>
@@ -41,18 +41,18 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="text-lg">🛡</span>
-            <h2 class="text-lg font-semibold text-white">{{ $t('procurement.buyerHome.trustTitle') }}</h2>
+            <h2 class="text-lg font-semibold ws-title">{{ $t('procurement.buyerHome.trustTitle') }}</h2>
           </div>
-          <p class="mt-1 text-sm leading-6 text-slate-400">{{ $t('procurement.buyerHome.trustDesc') }}</p>
-          <NuxtLink to="/market/buyer/company-profile" class="mt-3 inline-block text-sm text-indigo-300 hover:text-indigo-200">
+          <p class="mt-1 text-sm leading-6 ws-muted">{{ $t('procurement.buyerHome.trustDesc') }}</p>
+          <NuxtLink to="/market/buyer/company-profile" class="mt-3 inline-block text-sm ws-accent hover:opacity-80">
             {{ $t('procurement.buyerHome.improveTrust') }} →
           </NuxtLink>
         </div>
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-5">
           <div v-for="metric in trustMetrics" :key="metric.label" class="min-w-0">
-            <p class="truncate text-xs font-medium text-slate-500">{{ metric.label }}</p>
-            <p class="mt-1 text-2xl font-bold text-white">{{ metric.value }}</p>
-            <div v-if="metric.percent !== null" class="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
+            <p class="truncate text-xs font-medium ws-faint">{{ metric.label }}</p>
+            <p class="mt-1 text-2xl font-bold ws-title">{{ metric.value }}</p>
+            <div v-if="metric.percent !== null" class="mt-2 h-1 overflow-hidden rounded-full ws-soft">
               <div :class="['h-full rounded-full', metric.bar]" :style="{ width: `${metric.percent}%` }"></div>
             </div>
           </div>
@@ -66,14 +66,14 @@
         v-for="kpi in kpis"
         :key="kpi.label"
         :to="kpi.to"
-        class="pc-card group flex items-center gap-4 !p-5 transition hover:border-indigo-400/40"
+        class="pc-card group flex items-center gap-4 !p-5 transition hover:border-[color:var(--accent)]"
       >
         <div :class="['flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg', kpi.tone]">
           {{ kpi.icon }}
         </div>
         <div class="min-w-0">
-          <p class="truncate text-sm text-slate-400">{{ kpi.label }}</p>
-          <p class="truncate text-2xl font-semibold text-white">{{ loading ? '…' : kpi.value }}</p>
+          <p class="truncate text-sm ws-muted">{{ kpi.label }}</p>
+          <p class="truncate text-2xl font-semibold ws-title">{{ loading ? '…' : kpi.value }}</p>
         </div>
       </NuxtLink>
     </div>
@@ -82,28 +82,28 @@
     <div class="pc-card overflow-hidden !p-0">
       <div class="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
         <div class="p-6 lg:p-8">
-          <p class="text-sm font-semibold text-indigo-300">🛍 {{ $t('procurement.buyerHome.shopEyebrow') }}</p>
-          <h2 class="mt-3 text-3xl font-bold tracking-tight text-white">{{ $t('procurement.buyerHome.shopTitle') }}</h2>
-          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-400">{{ $t('procurement.buyerHome.shopDesc') }}</p>
+          <p class="text-sm font-semibold ws-accent">🛍 {{ $t('procurement.buyerHome.shopEyebrow') }}</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-tight ws-title">{{ $t('procurement.buyerHome.shopTitle') }}</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-6 ws-muted">{{ $t('procurement.buyerHome.shopDesc') }}</p>
           <div class="mt-6 flex flex-wrap gap-3">
             <NuxtLink to="/market/marketplace" class="btn-primary">{{ $t('procurement.buyerHome.enterMarket') }} →</NuxtLink>
             <NuxtLink to="/market/marketplace?sort=trust" class="btn-secondary">{{ $t('procurement.buyerHome.sortByTrust') }}</NuxtLink>
           </div>
         </div>
-        <div class="border-t border-white/10 bg-indigo-500/[0.06] p-6 lg:border-l lg:border-t-0 lg:p-8">
+        <div class="border-t ws-hairline ws-sunken p-6 lg:border-l lg:border-t-0 lg:p-8">
           <div class="grid h-full content-center gap-3">
-            <NuxtLink to="/market/marketplace" class="rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:border-indigo-400/40">
-              <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{{ $t('procurement.buyerHome.statListings') }}</p>
-              <p class="mt-1 text-2xl font-bold text-white">{{ totalListings }}</p>
+            <NuxtLink to="/market/marketplace" class="ws-tile">
+              <p class="text-xs font-semibold uppercase tracking-[0.16em] ws-faint">{{ $t('procurement.buyerHome.statListings') }}</p>
+              <p class="mt-1 text-2xl font-bold ws-title">{{ totalListings }}</p>
             </NuxtLink>
             <div class="grid grid-cols-2 gap-3">
-              <NuxtLink to="/market/marketplace" class="rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:border-indigo-400/40">
-                <p class="text-xs font-semibold text-slate-500">{{ $t('procurement.buyerHome.statModes') }}</p>
-                <p class="mt-2 text-sm font-semibold text-indigo-300">Buy / Quote</p>
+              <NuxtLink to="/market/marketplace" class="ws-tile">
+                <p class="text-xs font-semibold ws-faint">{{ $t('procurement.buyerHome.statModes') }}</p>
+                <p class="mt-2 text-sm font-semibold ws-accent">Buy / Quote</p>
               </NuxtLink>
-              <NuxtLink to="/market/buyer/requests" class="rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:border-indigo-400/40">
-                <p class="text-xs font-semibold text-slate-500">{{ $t('procurement.buyerHome.statMyRequests') }}</p>
-                <p class="mt-2 text-sm font-semibold text-indigo-300">{{ requests.length }}</p>
+              <NuxtLink to="/market/buyer/requests" class="ws-tile">
+                <p class="text-xs font-semibold ws-faint">{{ $t('procurement.buyerHome.statMyRequests') }}</p>
+                <p class="mt-2 text-sm font-semibold ws-accent">{{ requests.length }}</p>
               </NuxtLink>
             </div>
           </div>
@@ -114,13 +114,13 @@
     <!-- AI Project Forge -->
     <NuxtLink
       to="/market/buyer/projects"
-      class="pc-card relative flex flex-wrap items-center justify-between gap-6 overflow-hidden transition hover:border-indigo-400/40"
+      class="pc-card relative flex flex-wrap items-center justify-between gap-6 overflow-hidden transition hover:border-[color:var(--accent)]"
     >
-      <div class="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-purple-500/15 blur-3xl"></div>
+      <div class="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-purple-500/15 blur-3xl ws-glow"></div>
       <div class="relative min-w-[280px] flex-1">
-        <p class="text-sm font-semibold text-indigo-300">⚙ AI Project Forge</p>
-        <h2 class="mt-2 text-xl font-bold tracking-tight text-white">{{ $t('procurement.buyerHome.forgeTitle') }}</h2>
-        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-400">{{ $t('procurement.buyerHome.forgeDesc') }}</p>
+        <p class="text-sm font-semibold ws-accent">⚙ AI Project Forge</p>
+        <h2 class="mt-2 text-xl font-bold tracking-tight ws-title">{{ $t('procurement.buyerHome.forgeTitle') }}</h2>
+        <p class="mt-2 max-w-2xl text-sm leading-6 ws-muted">{{ $t('procurement.buyerHome.forgeDesc') }}</p>
         <span class="btn-primary mt-4 inline-block">{{ $t('procurement.buyerHome.forgeCta') }} →</span>
       </div>
       <div class="relative hidden select-none text-7xl opacity-30 lg:block">🏗️</div>
@@ -132,15 +132,15 @@
       <!-- Active requests table -->
       <div class="pc-card lg:col-span-2">
         <div class="mb-4 flex items-center justify-between">
-          <h3 class="text-lg font-medium text-white">{{ $t('procurement.buyerHome.activeRequests') }}</h3>
-          <NuxtLink to="/market/buyer/requests" class="text-sm text-indigo-300 hover:text-indigo-200">
+          <h3 class="text-lg font-medium ws-title">{{ $t('procurement.buyerHome.activeRequests') }}</h3>
+          <NuxtLink to="/market/buyer/requests" class="text-sm ws-accent hover:opacity-80">
             {{ $t('procurement.buyerHome.viewAll') }}
           </NuxtLink>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm">
-            <thead class="text-slate-400">
-              <tr class="border-b border-white/10">
+            <thead class="ws-muted">
+              <tr class="border-b ws-hairline">
                 <th class="py-2 pr-4 font-medium">{{ $t('procurement.buyerHome.colRequest') }}</th>
                 <th class="py-2 pr-4 font-medium">{{ $t('procurement.buyerHome.colBudget') }}</th>
                 <th class="py-2 pr-4 font-medium">{{ $t('procurement.buyerHome.colStatus') }}</th>
@@ -149,21 +149,21 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="r in requests.slice(0, 6)" :key="r.id" class="border-b border-white/5">
-                <td class="py-3 pr-4 text-white">{{ r.title || $t('procurement.buyerHome.untitled') }}</td>
-                <td class="py-3 pr-4 text-slate-400">{{ formatBudget(r) }}</td>
+              <tr v-for="r in requests.slice(0, 6)" :key="r.id" class="border-b ws-hairline">
+                <td class="py-3 pr-4 ws-title">{{ r.title || $t('procurement.buyerHome.untitled') }}</td>
+                <td class="py-3 pr-4 ws-muted">{{ formatBudget(r) }}</td>
                 <td class="py-3 pr-4">
                   <span :class="['rounded-full px-2 py-0.5 text-xs', statusTone(r.status)]">{{ r.status || '—' }}</span>
                 </td>
-                <td class="py-3 pr-4 font-medium text-indigo-300">{{ r.offer_count ?? r.offers_count ?? 0 }}</td>
+                <td class="py-3 pr-4 font-medium ws-accent">{{ r.offer_count ?? r.offers_count ?? 0 }}</td>
                 <td class="py-3">
-                  <NuxtLink :to="`/market/buyer/requests/${r.id}/offers`" class="text-xs text-indigo-300 hover:text-indigo-200">
+                  <NuxtLink :to="`/market/buyer/requests/${r.id}/offers`" class="text-xs ws-accent hover:opacity-80">
                     {{ $t('procurement.buyerHome.compareOffers') }}
                   </NuxtLink>
                 </td>
               </tr>
               <tr v-if="!requests.length">
-                <td colspan="5" class="py-6 text-center text-slate-500">
+                <td colspan="5" class="py-6 text-center ws-faint">
                   {{ $t('procurement.buyerHome.noRequests') }}
                   <NuxtLink to="/market/post-request" class="text-indigo-300">{{ $t('procurement.buyerHome.goPost') }}</NuxtLink>
                 </td>
@@ -176,35 +176,35 @@
       <div class="space-y-6">
         <!-- Recent messages -->
         <div class="pc-card">
-          <h3 class="mb-3 text-lg font-medium text-white">{{ $t('procurement.buyerHome.recentMessages') }}</h3>
-          <ul class="divide-y divide-white/5">
+          <h3 class="mb-3 text-lg font-medium ws-title">{{ $t('procurement.buyerHome.recentMessages') }}</h3>
+          <ul class="divide-y ws-divide">
             <li v-for="t in threads.slice(0, 4)" :key="t.id" class="flex items-start gap-3 py-3">
               <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-500/15 text-sm text-indigo-200">
                 {{ (t.subject || 'O').slice(0, 1) }}
               </div>
               <div class="min-w-0">
-                <p class="truncate text-sm font-medium text-white">{{ t.subject || $t('procurement.buyerHome.orderThread') }}</p>
-                <p class="truncate text-xs text-slate-500">{{ t.status || t.last_message_preview || $t('procurement.buyerHome.openThread') }}</p>
+                <p class="truncate text-sm font-medium ws-title">{{ t.subject || $t('procurement.buyerHome.orderThread') }}</p>
+                <p class="truncate text-xs ws-faint">{{ t.status || t.last_message_preview || $t('procurement.buyerHome.openThread') }}</p>
               </div>
             </li>
-            <li v-if="!threads.length" class="py-4 text-sm text-slate-500">{{ $t('procurement.buyerHome.noThreads') }}</li>
+            <li v-if="!threads.length" class="py-4 text-sm ws-faint">{{ $t('procurement.buyerHome.noThreads') }}</li>
           </ul>
-          <NuxtLink to="/market/buyer/messages" class="mt-3 block text-center text-sm text-indigo-300 hover:text-indigo-200">
+          <NuxtLink to="/market/buyer/messages" class="mt-3 block text-center text-sm ws-accent hover:opacity-80">
             {{ $t('procurement.buyerHome.viewAllMessages') }}
           </NuxtLink>
         </div>
 
         <!-- Recommended categories -->
         <div class="pc-card">
-          <h3 class="mb-3 text-lg font-medium text-white">{{ $t('procurement.buyerHome.recommendedCats') }}</h3>
+          <h3 class="mb-3 text-lg font-medium ws-title">{{ $t('procurement.buyerHome.recommendedCats') }}</h3>
           <div class="flex flex-wrap gap-2">
             <NuxtLink
               v-for="c in categories.slice(0, 8)"
               :key="c.id"
               :to="`/market/marketplace?category_schema_id=${c.id}`"
-              class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-200 transition hover:border-indigo-400/40 hover:text-indigo-200"
+              class="ws-chip"
             >{{ c.name || c.title }}</NuxtLink>
-            <span v-if="!categories.length" class="text-sm text-slate-500">{{ $t('procurement.buyerHome.noCats') }}</span>
+            <span v-if="!categories.length" class="text-sm ws-faint">{{ $t('procurement.buyerHome.noCats') }}</span>
           </div>
         </div>
       </div>
@@ -216,12 +216,12 @@
         v-for="link in enterpriseLinks"
         :key="link.to"
         :to="link.to"
-        class="pc-card group flex items-center gap-3 !p-4 transition hover:border-indigo-400/40"
+        class="pc-card group flex items-center gap-3 !p-4 transition hover:border-[color:var(--accent)]"
       >
         <div :class="['flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl', link.tone]">{{ link.icon }}</div>
         <div class="min-w-0">
-          <p class="truncate text-sm font-semibold text-white">{{ link.title }}</p>
-          <p class="truncate text-xs text-slate-500">{{ link.desc }}</p>
+          <p class="truncate text-sm font-semibold ws-title">{{ link.title }}</p>
+          <p class="truncate text-xs ws-faint">{{ link.desc }}</p>
         </div>
       </NuxtLink>
     </div>
@@ -230,10 +230,10 @@
     <div v-if="recommendations.length" class="pc-card">
       <div class="mb-4 flex items-center justify-between">
         <div>
-          <h3 class="text-lg font-semibold text-white">✨ {{ $t('procurement.buyerHome.todayPicks') }}</h3>
-          <p class="mt-0.5 text-xs text-slate-500">{{ $t('procurement.buyerHome.todayPicksDesc') }}</p>
+          <h3 class="text-lg font-semibold ws-title">✨ {{ $t('procurement.buyerHome.todayPicks') }}</h3>
+          <p class="mt-0.5 text-xs ws-faint">{{ $t('procurement.buyerHome.todayPicksDesc') }}</p>
         </div>
-        <NuxtLink to="/market/marketplace" class="text-sm text-indigo-300 hover:text-indigo-200">
+        <NuxtLink to="/market/marketplace" class="text-sm ws-accent hover:opacity-80">
           {{ $t('procurement.buyerHome.viewAll') }} →
         </NuxtLink>
       </div>
@@ -242,9 +242,9 @@
           v-for="item in recommendations"
           :key="item.id"
           :to="`/market/marketplace/${item.id}`"
-          class="group overflow-hidden rounded-xl border border-white/10 transition hover:border-indigo-400/40"
+          class="group overflow-hidden rounded-xl border ws-hairline transition hover:border-[color:var(--accent)]"
         >
-          <div class="flex aspect-square items-center justify-center overflow-hidden bg-white/5 text-2xl">
+          <div class="flex aspect-square items-center justify-center overflow-hidden ws-soft text-2xl">
             <img
               v-if="item.images && item.images[0]"
               :src="item.images[0]"
@@ -254,9 +254,9 @@
             <span v-else>📦</span>
           </div>
           <div class="p-2">
-            <p class="line-clamp-2 text-xs font-semibold leading-tight text-white">{{ item.title }}</p>
+            <p class="line-clamp-2 text-xs font-semibold leading-tight ws-title">{{ item.title }}</p>
             <div class="mt-1 flex items-center justify-between gap-1">
-              <p class="text-xs font-bold text-indigo-300">{{ formatMinor(item.price_minor, item.currency) }}</p>
+              <p class="text-xs font-bold ws-accent">{{ formatMinor(item.price_minor, item.currency) }}</p>
               <span
                 v-if="item.market_mode"
                 :class="[
@@ -321,7 +321,7 @@ const tierTone = computed(() => {
     GOLD: 'border-amber-400/30 bg-amber-500/10 text-amber-300',
     PLATINUM: 'border-sky-400/30 bg-sky-500/10 text-sky-300',
     DIAMOND: 'border-emerald-400/30 bg-emerald-500/10 text-emerald-300',
-  }[tier] || 'border-white/15 bg-white/5 text-slate-300'
+  }[tier] || 'ws-hairline ws-soft ws-muted'
 })
 
 const trustMetrics = computed(() => {
