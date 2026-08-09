@@ -33,7 +33,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="r in filtered" :key="r.id" class="border-b border-white/5">
+            <tr v-for="r in paged" :key="r.id" class="border-b border-white/5">
               <td class="py-3 pr-4 font-mono text-xs text-slate-400">{{ r.id.slice(0, 8) }}</td>
               <td class="py-3 pr-4 text-white">{{ r.title || '未命名需求' }}</td>
               <td class="py-3 pr-4 text-slate-300">{{ budgetLabel(r) }}</td>
@@ -55,11 +55,20 @@
       </div>
 
       <p class="mt-4 text-sm text-slate-500">共 {{ filtered.length }} 条需求</p>
+      <WorkspacePagination v-model:page="page" :page-size="pageSize" :total="filtered.length" />
+
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+// Client-side paging: these lists already hold the full filtered set, so the
+// pager slices it rather than adding a round trip per page.
+const page = ref(1)
+const pageSize = 20
+const paged = computed(() => filtered.value.slice((page.value - 1) * pageSize, page.value * pageSize))
+watch(() => filtered.value.length, () => { page.value = 1 })
+
 const { listProcurementRequests } = useCommerce()
 const items = ref<any[]>([])
 const error = ref('')

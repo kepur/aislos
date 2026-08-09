@@ -19,45 +19,72 @@
             >
               {{ link.label }}
             </NuxtLink>
-            <!-- The buyer workspace has more destinations than fit the bar; the
-                 overflow ones live behind this menu instead of being dropped. -->
-            <div v-if="overflowNav.length" class="relative" @mouseleave="moreOpen = false">
-              <button
-                type="button"
-                class="rounded-md px-2.5 py-1.5 font-medium transition hover:text-white hover:bg-white/5"
-                :class="{ '!text-indigo-300 bg-indigo-500/10': moreOpen || isOverflowActive }"
-                @mouseenter="moreOpen = true"
-                @click="moreOpen = !moreOpen"
-              >
-                {{ t('procurement.nav.more') }} ▾
-              </button>
-              <div
-                v-if="moreOpen"
-                class="ws-menu absolute right-0 top-full z-50 mt-2 grid min-w-[420px] grid-cols-2 gap-0.5 overflow-hidden rounded-2xl border p-2"
-              >
+          </nav>
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+          <LanguageSwitcher class="procurement-lang" />
+          <!-- Account menu. The overflow destinations used to hang off a
+               hover-triggered "more" item mid-bar, which opened by accident and
+               closed the moment the pointer left. It is a click-opened menu on
+               the avatar now, the place people already look for account items. -->
+          <div ref="accountRef" class="relative">
+            <button
+              type="button"
+              class="ws-avatar flex items-center gap-2 rounded-full py-1 pl-1 pr-2.5 transition"
+              :class="{ 'ws-avatar-open': accountOpen }"
+              :aria-expanded="accountOpen"
+              aria-haspopup="menu"
+              @click="accountOpen = !accountOpen"
+            >
+              <span class="ws-avatar-badge">{{ userInitial }}</span>
+              <span class="hidden text-xs font-medium sm:inline">{{ accountLabel }}</span>
+              <span class="text-[10px] opacity-60">▾</span>
+            </button>
+
+            <div
+              v-if="accountOpen"
+              class="ws-menu absolute right-0 top-full z-50 mt-2 w-[26rem] overflow-hidden rounded-2xl border p-2"
+              role="menu"
+            >
+              <div class="flex items-center gap-3 rounded-xl px-3 py-2.5 ws-sunken">
+                <span class="ws-avatar-badge !h-9 !w-9 !text-sm">{{ userInitial }}</span>
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-semibold ws-title">{{ user?.full_name || accountLabel }}</p>
+                  <p class="truncate text-xs ws-faint">{{ user?.email }}</p>
+                </div>
+              </div>
+
+              <div v-if="overflowNav.length" class="mt-2 grid grid-cols-2 gap-0.5">
                 <NuxtLink
                   v-for="link in overflowNav"
                   :key="link.to"
                   :to="link.to"
                   class="ws-menu-item flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition"
                   active-class="ws-menu-item-active"
-                  @click="moreOpen = false"
+                  role="menuitem"
+                  @click="accountOpen = false"
                 >
                   <span class="ws-menu-dot"></span>
                   {{ link.label }}
                 </NuxtLink>
               </div>
+
+              <div class="mt-2 border-t ws-hairline pt-2">
+                <p v-if="policy" class="px-3 pb-1.5 text-[11px] ws-faint">
+                  {{ $t('procurement.mode') }}: {{ policy.default_procurement_mode }}
+                </p>
+                <button
+                  type="button"
+                  class="ws-menu-item flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition hover:!text-red-500"
+                  role="menuitem"
+                  @click="logout"
+                >
+                  <span class="ws-menu-dot"></span>
+                  {{ $t('nav.logout') }}
+                </button>
+              </div>
             </div>
-          </nav>
-        </div>
-        <div class="flex items-center gap-3 text-sm">
-          <span v-if="policy" class="hidden sm:inline text-slate-400">
-            {{ $t('procurement.mode') }}: {{ policy.default_procurement_mode }}
-          </span>
-          <LanguageSwitcher class="procurement-lang" />
-          <button type="button" class="text-slate-400 hover:text-red-400" @click="logout">
-            {{ $t('nav.logout') }}
-          </button>
+          </div>
         </div>
       </div>
     </header>
@@ -94,7 +121,23 @@ const brandLabel = computed(() =>
   isCebu.value ? t('procurement.brands.cebu') : t('procurement.brands.aislos'),
 )
 
-const moreOpen = ref(false)
+const { user } = useAuth()
+const accountOpen = ref(false)
+const accountRef = ref<HTMLElement | null>(null)
+
+const userInitial = computed(() =>
+  (user.value?.full_name || user.value?.email || '?').charAt(0).toUpperCase(),
+)
+const accountLabel = computed(() => user.value?.full_name?.split(' ')[0] || t('procurement.nav.account'))
+
+// A click-opened menu has to close on an outside click, or it traps the page.
+function closeOnOutsideClick(event: MouseEvent) {
+  if (!accountOpen.value) return
+  if (accountRef.value && !accountRef.value.contains(event.target as Node)) accountOpen.value = false
+}
+onMounted(() => document.addEventListener('click', closeOnOutsideClick))
+onBeforeUnmount(() => document.removeEventListener('click', closeOnOutsideClick))
+watch(() => route.fullPath, () => { accountOpen.value = false })
 
 // One buyer journey, in the order it actually happens: source and buy under
 // /market/buyer, then delivery through after-sales under /portal. Those two
@@ -137,9 +180,7 @@ const NAV_BAR_SLOTS = 8
 const activeNav = computed(() => (isSupplier.value ? supplierNav : cebuNav.value))
 const primaryNav = computed(() => activeNav.value.slice(0, NAV_BAR_SLOTS))
 const overflowNav = computed(() => activeNav.value.slice(NAV_BAR_SLOTS))
-const isOverflowActive = computed(() =>
-  overflowNav.value.some(link => basePath.value === link.to || basePath.value.startsWith(`${link.to}/`)),
-)
+
 </script>
 
 <style scoped>

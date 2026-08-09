@@ -36,7 +36,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="o in filtered" :key="o.id" class="border-b border-white/5">
+            <tr v-for="o in paged" :key="o.id" class="border-b border-white/5">
               <td class="py-3 pr-4 font-mono text-xs text-slate-400">#{{ o.id.slice(0, 8) }}</td>
               <td class="py-3 pr-4 text-white">{{ o.supplier_company_name || o.supplier_name || '—' }}</td>
               <td class="py-3 pr-4 font-semibold text-white">{{ formatMinor(totalMinor(o), o.currency) }}</td>
@@ -53,10 +53,19 @@
 
       <p class="mt-4 text-sm text-slate-500">共 {{ filtered.length }} 笔订单</p>
     </div>
+      <WorkspacePagination v-model:page="page" :page-size="pageSize" :total="filtered.length" />
+
   </section>
 </template>
 
 <script setup lang="ts">
+// Client-side paging: these lists already hold the full filtered set, so the
+// pager slices it rather than adding a round trip per page.
+const page = ref(1)
+const pageSize = 20
+const paged = computed(() => filtered.value.slice((page.value - 1) * pageSize, page.value * pageSize))
+watch(() => filtered.value.length, () => { page.value = 1 })
+
 const { listOrders } = useCommerce()
 const items = ref<any[]>([])
 const error = ref('')

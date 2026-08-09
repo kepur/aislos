@@ -26,7 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="ticket in tickets" :key="ticket.id" class="border-b border-slate-50 hover:bg-blue-50/30 transition-colors">
+          <tr v-for="ticket in paged" :key="ticket.id" class="border-b border-slate-50 hover:bg-blue-50/30 transition-colors">
             <td class="px-4 py-3 font-medium ws-title">{{ ticket.title }}</td>
             <td class="px-4 py-3 ws-muted">{{ ticket.issue_type || '-' }}</td>
             <td class="px-4 py-3">
@@ -106,10 +106,19 @@
         </div>
       </div>
     </Transition>
+      <WorkspacePagination v-model:page="page" :page-size="pageSize" :total="tickets.length" />
+
   </div>
 </template>
 
 <script setup lang="ts">
+// Client-side paging: these lists already hold the full filtered set, so the
+// pager slices it rather than adding a round trip per page.
+const page = ref(1)
+const pageSize = 20
+const paged = computed(() => tickets.value.slice((page.value - 1) * pageSize, page.value * pageSize))
+watch(() => tickets.value.length, () => { page.value = 1 })
+
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
 const { apiFetch } = useApi()

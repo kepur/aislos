@@ -719,7 +719,8 @@
       "afterSales": "After-sales",
       "approvals": "Approvals",
       "siteVisits": "Site visits",
-      "insights": "Insights"
+      "insights": "Insights",
+      "account": "Account"
     }
   },
   "sign": {
@@ -989,5 +990,10 @@
     "stageDelivery": "Delivery",
     "stageService": "Service",
     "partialError": "{count} data set(s) failed to load."
+  },
+  "pagination": {
+    "prev": "Previous",
+    "next": "Next",
+    "showing": "{from}–{to} of {total}"
   }
 }

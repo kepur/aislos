@@ -318,7 +318,8 @@
       "afterSales": "Podrska",
       "approvals": "Odobrenja",
       "siteVisits": "Izlasci",
-      "insights": "Analitika"
+      "insights": "Analitika",
+      "account": "Nalog"
     }
   },
   "products": {
@@ -989,5 +990,10 @@
     "stageDelivery": "Isporuka",
     "stageService": "Servis",
     "partialError": "{count} skup(ova) podataka nije ucitan."
+  },
+  "pagination": {
+    "prev": "Prethodna",
+    "next": "Sledeca",
+    "showing": "{from}–{to} od {total}"
   }
 }

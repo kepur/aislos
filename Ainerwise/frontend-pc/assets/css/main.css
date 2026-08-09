@@ -228,6 +228,29 @@
   }
   .ws-menu-item-active .ws-menu-dot { background: var(--accent); transform: scale(1.5); }
 
+  /* Account button in the workspace header. */
+  .ws-avatar {
+    border: 1px solid var(--card-border);
+    background: var(--surface-soft);
+    color: var(--page-text);
+  }
+  .ws-avatar:hover { border-color: var(--accent); }
+  .ws-avatar-open { border-color: var(--accent); background: var(--accent-soft); }
+  .ws-avatar-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    font-size: 0.72rem;
+    font-weight: 700;
+    flex: none;
+  }
+
+
   /* Blurred colour glows sit well on the dark identity but read as smudges on
      the two light grounds, so they only render under .dark. */
   .ws-glow { display: none; }

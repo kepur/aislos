@@ -7,7 +7,7 @@
 
     <div v-if="projects.length" class="space-y-4">
       <div
- v-for="project in projects"
+ v-for="project in paged"
         :key="project.id"
  class="portal-card hover:shadow-md cursor-pointer transition-all group"
         @click="$router.push(`/portal/projects/${project.id}`)"
@@ -51,10 +51,19 @@
       <p class="text-sm ws-faint">{{ loading ? 'Loading projects...' : 'No active projects yet' }}</p>
       <p v-if="!loading" class="text-xs ws-faint mt-1">Projects appear here once a quote is accepted</p>
     </div>
+      <WorkspacePagination v-model:page="page" :page-size="pageSize" :total="projects.length" />
+
   </div>
 </template>
 
 <script setup lang="ts">
+// Client-side paging: these lists already hold the full filtered set, so the
+// pager slices it rather than adding a round trip per page.
+const page = ref(1)
+const pageSize = 20
+const paged = computed(() => projects.value.slice((page.value - 1) * pageSize, page.value * pageSize))
+watch(() => projects.value.length, () => { page.value = 1 })
+
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
 const { apiFetch } = useApi()

@@ -26,7 +26,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="lead in leads" :key="lead.id"
+          <tr v-for="lead in paged" :key="lead.id"
  class="border-b border-slate-50 hover:bg-blue-50/30 cursor-pointer transition-colors"
               @click="navigateTo(`/portal/leads/${lead.id}`)">
             <td class="px-4 py-3 font-medium ws-title">{{ lead.project_type || '-' }}</td>
@@ -50,10 +50,19 @@
         </tbody>
       </table>
     </div>
+      <WorkspacePagination v-model:page="page" :page-size="pageSize" :total="leads.length" />
+
   </div>
 </template>
 
 <script setup lang="ts">
+// Client-side paging: these lists already hold the full filtered set, so the
+// pager slices it rather than adding a round trip per page.
+const page = ref(1)
+const pageSize = 20
+const paged = computed(() => leads.value.slice((page.value - 1) * pageSize, page.value * pageSize))
+watch(() => leads.value.length, () => { page.value = 1 })
+
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
 const { apiFetch } = useApi()
