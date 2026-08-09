@@ -98,5 +98,25 @@ export function useCommerce() {
       apiFetch<{ items: any[]; total: number }>(`${prefix}/threads/${id}/messages`),
     postMessage: (id: string, body: string) =>
       apiFetch<any>(`${prefix}/threads/${id}/messages`, { method: 'POST', body: { body } }),
+    // Trust and account context live on the cebu-compat surface, not /commerce.
+    // The buyer workspace needs both to render the trust strip and to decide
+    // whether the enterprise shortcuts apply.
+    getTrustProfile: () => apiFetch<TrustProfile & { user?: TrustProfile }>('/cebu-compat/trust/me'),
+    getAccountContext: () => apiFetch<AccountContext>('/auth/me/account-context'),
   }
+}
+
+export interface TrustProfile {
+  trust_score?: number
+  trust_tier?: string
+  deal_completion_rate?: number
+  profile_completion_rate?: number
+  dispute_rate?: number
+  deposit_amount_minor?: number
+  deposit_currency?: string
+}
+
+export interface AccountContext {
+  account_type?: string
+  features?: Record<string, boolean>
 }
