@@ -32,7 +32,6 @@
         </div>
         <LanguageSwitcher />
         <template v-if="isLoggedIn">
-          <PortalSwitcher />
           <a :href="dashboardUrl" class="text-sm font-medium text-primary-400 hover:text-primary-300">
             {{ $t('nav.dashboard') }}
           </a>

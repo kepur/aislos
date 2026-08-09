@@ -7,7 +7,7 @@
         </div>
         <div>
           <span class="text-base font-bold tracking-tight text-slate-800">AinerWise</span>
-          <span class="block text-[10px] font-semibold uppercase tracking-wider text-blue-500">Customer Workspace</span>
+          <span class="block text-[10px] font-semibold uppercase tracking-wider text-blue-500">{{ $t('portal.shell.workspace') }}</span>
         </div>
       </NuxtLink>
     </div>
@@ -18,7 +18,7 @@
           <span class="text-sm font-bold text-white">{{ userInitial }}</span>
         </div>
         <div class="min-w-0">
-          <p class="truncate text-sm font-semibold text-slate-800">{{ user?.full_name || 'Customer' }}</p>
+          <p class="truncate text-sm font-semibold text-slate-800">{{ user?.full_name || $t('portal.shell.customer') }}</p>
           <p class="truncate text-xs text-slate-400">{{ user?.email }}</p>
         </div>
       </div>
@@ -39,29 +39,30 @@
 
     <div class="px-4 pb-4">
       <div class="rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
-        <p class="text-xs font-semibold text-blue-700">One customer experience</p>
-        <p class="mt-1 text-xs leading-relaxed text-blue-500/80">Track sourcing, delivery, installation, assets, and after-sales in one place.</p>
-        <NuxtLink to="/portal/tickets" class="mt-2 inline-block text-xs font-semibold text-blue-600">Open support</NuxtLink>
+        <p class="text-xs font-semibold text-blue-700">{{ $t('portal.shell.promoTitle') }}</p>
+        <p class="mt-1 text-xs leading-relaxed text-blue-500/80">{{ $t('portal.shell.promoBody') }}</p>
+        <NuxtLink to="/portal/tickets" class="mt-2 inline-block text-xs font-semibold text-blue-600">{{ $t('portal.shell.openSupport') }}</NuxtLink>
       </div>
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
 const { user } = useAuth()
 
 const userInitial = computed(() => (user.value?.full_name || user.value?.email || 'C').charAt(0).toUpperCase())
-const menuItems = [
-  { to: '/portal', label: 'Overview', code: 'OV' },
-  { to: '/portal/leads', label: 'Requirements', code: 'RQ' },
-  { to: '/portal/procurement', label: 'Procurement', code: 'PO' },
-  { to: '/portal/approvals', label: 'Approvals', code: 'AP' },
-  { to: '/portal/projects', label: 'Projects', code: 'PR' },
-  { to: '/portal/installations', label: 'Installations', code: 'IN' },
-  { to: '/portal/assets', label: 'Assets', code: 'AS' },
-  { to: '/portal/tickets', label: 'After-sales', code: 'SV' },
-  { to: '/portal/profile', label: 'Profile', code: 'ME' },
-]
+const menuItems = computed(() => [
+  { to: '/portal', label: t('portal.shell.navOverview'), code: 'OV' },
+  { to: '/portal/leads', label: t('portal.shell.navRequirements'), code: 'RQ' },
+  { to: '/portal/procurement', label: t('portal.shell.navProcurement'), code: 'PO' },
+  { to: '/portal/approvals', label: t('portal.shell.navApprovals'), code: 'AP' },
+  { to: '/portal/projects', label: t('portal.shell.navProjects'), code: 'PR' },
+  { to: '/portal/installations', label: t('portal.shell.navInstallations'), code: 'IN' },
+  { to: '/portal/assets', label: t('portal.shell.navAssets'), code: 'AS' },
+  { to: '/portal/tickets', label: t('portal.shell.navAfterSales'), code: 'SV' },
+  { to: '/portal/profile', label: t('portal.shell.navProfile'), code: 'ME' },
+])
 </script>
 
 <style scoped>

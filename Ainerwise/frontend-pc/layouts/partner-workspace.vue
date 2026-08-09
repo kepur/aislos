@@ -14,7 +14,6 @@
           </nav>
         </div>
         <div class="flex items-center gap-3">
-          <PortalSwitcher />
           <span class="hidden text-xs text-slate-500 sm:inline">{{ user?.email }}</span>
           <button class="rounded-lg border border-white/10 px-3 py-2 text-xs text-slate-400 hover:border-red-400/30 hover:text-red-300" @click="logout">Log out</button>
         </div>

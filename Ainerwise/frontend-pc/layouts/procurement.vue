@@ -1,20 +1,20 @@
 <template>
   <div class="min-h-screen procurement-layout text-slate-100">
     <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur-md">
-      <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div class="flex items-center gap-3 min-w-0">
-          <NuxtLink :to="brand.homePath" class="text-sm font-semibold text-white shrink-0">
+          <NuxtLink :to="brand.homePath" class="text-xl font-bold text-white shrink-0">
             {{ brandLabel }}
           </NuxtLink>
           <span :class="['rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider shrink-0', brand.badge]">
             {{ $t('procurement.workspace') }}
           </span>
-          <nav v-if="isCebu || isSupplier" class="hidden md:flex items-center gap-1 ml-2 text-xs text-slate-400">
+          <nav v-if="isCebu || isSupplier" class="hidden md:flex items-center gap-1 ml-4 text-sm text-slate-300">
             <NuxtLink
               v-for="link in primaryNav"
               :key="link.to"
               :to="link.to"
-              class="rounded-md px-2 py-1 hover:text-indigo-200 hover:bg-white/5"
+              class="rounded-md px-2.5 py-1.5 font-medium transition hover:text-white hover:bg-white/5"
               active-class="!text-indigo-300 bg-indigo-500/10"
             >
               {{ link.label }}
@@ -24,7 +24,7 @@
             <div v-if="overflowNav.length" class="relative" @mouseleave="moreOpen = false">
               <button
                 type="button"
-                class="rounded-md px-2 py-1 hover:text-indigo-200 hover:bg-white/5"
+                class="rounded-md px-2.5 py-1.5 font-medium transition hover:text-white hover:bg-white/5"
                 :class="{ '!text-indigo-300 bg-indigo-500/10': moreOpen || isOverflowActive }"
                 @mouseenter="moreOpen = true"
                 @click="moreOpen = !moreOpen"
@@ -39,7 +39,7 @@
                   v-for="link in overflowNav"
                   :key="link.to"
                   :to="link.to"
-                  class="block px-3 py-2 text-xs text-slate-300 hover:bg-white/5 hover:text-indigo-200"
+                  class="block px-3.5 py-2.5 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
                   active-class="!text-indigo-300 bg-indigo-500/10"
                   @click="moreOpen = false"
                 >

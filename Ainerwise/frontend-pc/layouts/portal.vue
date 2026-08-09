@@ -19,7 +19,6 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <PortalSwitcher />
           <LanguageSwitcher class="portal-lang-switch" />
           <NuxtLink to="/submit-requirement"
             class="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-500 px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-blue-500/20 transition-all">
