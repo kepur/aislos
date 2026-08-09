@@ -78,6 +78,15 @@
   body {
     @apply antialiased bg-transparent;
     color: var(--page-text);
+    /* A page should never scroll sideways. `clip` rather than `hidden` so this
+       does not turn the body into a scroll container, which would break the
+       sticky headers and sticky filter rails the workspace relies on. A
+       miscalculated child then shows up as clipped content — a visible bug —
+       instead of dragging the whole layout off-screen. */
+    overflow-x: clip;
+  }
+  @supports not (overflow-x: clip) {
+    body { overflow-x: hidden; }
   }
 }
 
