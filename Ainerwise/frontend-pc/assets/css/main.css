@@ -176,6 +176,14 @@
     color: var(--page-text);
   }
   .ws-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .ws-chip:disabled { opacity: 0.4; cursor: not-allowed; }
+  .ws-chip:disabled:hover { border-color: var(--hairline-soft); color: var(--page-text); }
+  .ws-chip-active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
 
   .ws-row {
     @apply rounded-xl border p-3 transition;
@@ -188,6 +196,37 @@
 
   .ws-divide > * + * { border-color: var(--hairline-soft); }
   .ws-trust { background: var(--card-bg); }
+
+  /* Overflow menu. Follows the theme instead of hardcoding a dark panel, and
+     lays out in two columns so it reads as a menu rather than a phone list. */
+  .ws-menu {
+    background: var(--card-bg);
+    border-color: var(--card-border);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 44px rgba(2, 6, 23, 0.16), 0 2px 8px rgba(2, 6, 23, 0.06);
+  }
+  .dark .ws-menu {
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  }
+  .ws-menu-item { color: var(--text-muted); }
+  .ws-menu-item:hover {
+    background: var(--surface-soft);
+    color: var(--page-text);
+  }
+  .ws-menu-item .ws-menu-dot {
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 999px;
+    background: var(--text-faint);
+    flex: none;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .ws-menu-item:hover .ws-menu-dot { background: var(--accent); transform: scale(1.5); }
+  .ws-menu-item-active {
+    background: var(--accent-soft);
+    color: var(--accent) !important;
+  }
+  .ws-menu-item-active .ws-menu-dot { background: var(--accent); transform: scale(1.5); }
 
   /* Blurred colour glows sit well on the dark identity but read as smudges on
      the two light grounds, so they only render under .dark. */

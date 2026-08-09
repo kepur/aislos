@@ -33,16 +33,17 @@
               </button>
               <div
                 v-if="moreOpen"
-                class="absolute right-0 top-full z-50 mt-1 min-w-[160px] overflow-hidden rounded-xl border border-white/10 bg-slate-950/95 py-1 shadow-xl backdrop-blur-md"
+                class="ws-menu absolute right-0 top-full z-50 mt-2 grid min-w-[420px] grid-cols-2 gap-0.5 overflow-hidden rounded-2xl border p-2"
               >
                 <NuxtLink
                   v-for="link in overflowNav"
                   :key="link.to"
                   :to="link.to"
-                  class="block px-3.5 py-2.5 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
-                  active-class="!text-indigo-300 bg-indigo-500/10"
+                  class="ws-menu-item flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition"
+                  active-class="ws-menu-item-active"
                   @click="moreOpen = false"
                 >
+                  <span class="ws-menu-dot"></span>
                   {{ link.label }}
                 </NuxtLink>
               </div>
@@ -104,6 +105,7 @@ const cebuNav = computed(() => [
   { to: '/market/buyer/projects', label: t('procurement.nav.projects') },
   { to: '/market/buyer/orders', label: t('procurement.nav.orders') },
   { to: '/portal/projects', label: t('procurement.nav.delivery') },
+  { to: '/portal/site-visits', label: t('procurement.nav.siteVisits') },
   { to: '/portal/installations', label: t('procurement.nav.installations') },
   { to: '/portal/assets', label: t('procurement.nav.assets') },
   { to: '/portal/tickets', label: t('procurement.nav.afterSales') },
@@ -115,6 +117,7 @@ const cebuNav = computed(() => [
   { to: '/market/buyer/notifications', label: t('procurement.nav.notifications') },
   { to: '/market/buyer/company-profile', label: t('procurement.nav.companyProfile') },
   { to: '/market/buyer/team', label: t('procurement.nav.team') },
+  { to: '/portal/insights', label: t('procurement.nav.insights') },
   { to: '/market/buyer/settings', label: t('procurement.nav.settings') },
 ])
 const supplierNav = [

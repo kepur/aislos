@@ -67,15 +67,20 @@ import { prefixForLocale, withLocalePrefix } from '~/utils/localeRoutes'
 
 const { theme, set: setTheme } = useTheme()
 const { isLoggedIn, isAdmin, logout } = useAuth()
-const { t, locale } = useI18n({ useScope: 'global' })
+const { t, te, locale } = useI18n({ useScope: 'global' })
 const { mode, portal: legacyPortal, urls } = usePortalMode()
 const { manifest } = usePortalManifest()
-const portal = computed(() => ({
-  name: manifest.value?.portal_key === 'store' || mode === 'store'
-    ? `AISLOS ${t('nav.products')}`
-    : manifest.value?.display_name || legacyPortal.name,
-  home: localPath(manifest.value?.home_route || legacyPortal.home),
-}))
+const portal = computed(() => {
+  const portalKey = manifest.value?.portal_key || ''
+  const localizedKey = portalKey ? `portals.${portalKey}` : ''
+  const localizedName = localizedKey && te(localizedKey) ? t(localizedKey) : ''
+  return {
+    name: portalKey === 'store' || mode === 'store'
+      ? `AISLOS ${t('nav.products')}`
+      : (localizedName || manifest.value?.display_name || legacyPortal.name),
+    home: localPath(manifest.value?.home_route || legacyPortal.home),
+  }
+})
 const mobileMenuOpen = ref(false)
 
 function localPath(path: string) {
@@ -94,34 +99,30 @@ function externalPath(baseUrl: string, path = '/') {
 }
 
 const navItems = computed(() => {
-  if (mode === 'store') {
-    return [
-      { to: externalPath(urls.aislos, '/ai-building-brain'), label: t('nav.aiBrain'), external: true },
-      { to: externalPath(urls.aislos, '/solutions'), label: t('nav.solutions'), external: true },
-      { to: localPath('/products'), label: t('nav.products'), external: false },
-      { to: externalPath(urls.developer, '/developers'), label: t('nav.developers'), external: true },
-      { to: externalPath(urls.developer, '/marketplace'), label: t('nav.marketplace'), external: true },
-      { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
-    ]
-  }
-  if (mode === 'developer') {
-    return [
-      { to: externalPath(urls.aislos, '/ai-building-brain'), label: t('nav.aiBrain'), external: true },
-      { to: externalPath(urls.aislos, '/solutions'), label: t('nav.solutions'), external: true },
-      { to: externalPath(urls.store, '/products'), label: t('nav.products'), external: true },
-      { to: localPath('/developers'), label: t('nav.developers'), external: false },
-      { to: localPath('/marketplace'), label: t('nav.marketplace'), external: false },
-      { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
-    ]
-  }
-  return [
-    { to: localPath('/ai-building-brain'), label: t('nav.aiBrain'), external: false },
-    { to: localPath('/solutions'), label: t('nav.solutions'), external: false },
-    { to: externalPath(urls.store, '/products'), label: t('nav.products'), external: true },
-    { to: externalPath(urls.developer, '/developers'), label: t('nav.developers'), external: true },
-    { to: externalPath(urls.developer, '/marketplace'), label: t('nav.marketplace'), external: true },
-    { to: externalPath(urls.market, '/marketplace'), label: t('nav.procurementMarket'), external: true },
+  // One entry per real destination. The product catalogue and the procurement
+  // market were two menu items over two tables; they are now one catalogue
+  // with a source filter, served in-site rather than linking out to :4106.
+  // Developers and the agent store were two entries for two small pages and
+  // are now tabs on one page.
+  const items = [
+    { key: 'aiBrain', path: '/ai-building-brain', label: t('nav.aiBrain') },
+    { key: 'solutions', path: '/solutions', label: t('nav.solutions') },
+    { key: 'catalog', path: '/catalog', label: t('nav.catalog') },
+    { key: 'agents', path: '/agents', label: t('nav.agents') },
   ]
+  // Every one of these lives on the public PC site, so they stay local unless
+  // the visitor is on a portal that does not serve them.
+  const localKeys: Record<string, string[]> = {
+    store: ['catalog'],
+    developer: ['agents'],
+  }
+  const servedHere = localKeys[mode] ?? items.map(item => item.key)
+  return items.map(item => {
+    if (servedHere.includes(item.key)) {
+      return { to: localPath(item.path), label: item.label, external: false }
+    }
+    return { to: externalPath(urls.aislos, item.path), label: item.label, external: true }
+  })
 })
 
 const dashboardUrl = computed(() => {

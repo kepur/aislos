@@ -13,6 +13,7 @@ from app.api.v1.endpoints import (
     business_brain,
     cases,
     certifications,
+    catalog,
     cebu_compat,
     commerce,
     costing,
@@ -77,6 +78,7 @@ api_router.include_router(auth.router)
 api_router.include_router(portal_access.router)
 api_router.include_router(demo_mode.router)
 api_router.include_router(solutions.router)
+api_router.include_router(catalog.router)
 api_router.include_router(products.router)
 api_router.include_router(product_categories.router)
 api_router.include_router(leads.router)
