@@ -62,12 +62,6 @@
 </template>
 
 <script setup lang="ts">
-// Client-side paging: these lists already hold the full filtered set, so the
-// pager slices it rather than adding a round trip per page.
-const page = ref(1)
-const pageSize = 20
-const paged = computed(() => filtered.value.slice((page.value - 1) * pageSize, page.value * pageSize))
-watch(() => filtered.value.length, () => { page.value = 1 })
 
 const { listProcurementRequests } = useCommerce()
 const items = ref<any[]>([])
@@ -85,6 +79,14 @@ const filtered = computed(() => {
     return true
   })
 })
+
+// Client-side paging: these lists already hold the full filtered set, so the
+// pager slices it rather than adding a round trip per page.
+const page = ref(1)
+const pageSize = 20
+const paged = computed(() => filtered.value.slice((page.value - 1) * pageSize, page.value * pageSize))
+watch(() => filtered.value.length, () => { page.value = 1 })
+
 
 function offerCount(r: any) {
   return r.offer_count ?? r.offers_count ?? r.offers ?? 0

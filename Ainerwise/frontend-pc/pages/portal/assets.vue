@@ -23,6 +23,11 @@
 </template>
 
 <script setup lang="ts">
+
+definePageMeta({ layout: 'procurement', middleware: 'auth' })
+const { apiFetch } = useApi()
+const assets = ref<any[]>([])
+
 // Client-side paging: these lists already hold the full filtered set, so the
 // pager slices it rather than adding a round trip per page.
 const page = ref(1)
@@ -30,8 +35,5 @@ const pageSize = 20
 const paged = computed(() => assets.value.slice((page.value - 1) * pageSize, page.value * pageSize))
 watch(() => assets.value.length, () => { page.value = 1 })
 
-definePageMeta({ layout: 'procurement', middleware: 'auth' })
-const { apiFetch } = useApi()
-const assets = ref<any[]>([])
 onMounted(async () => { assets.value = (await apiFetch<any>('/customer/workspace/assets')).items || [] })
 </script>

@@ -59,12 +59,6 @@
 </template>
 
 <script setup lang="ts">
-// Client-side paging: these lists already hold the full filtered set, so the
-// pager slices it rather than adding a round trip per page.
-const page = ref(1)
-const pageSize = 20
-const paged = computed(() => filtered.value.slice((page.value - 1) * pageSize, page.value * pageSize))
-watch(() => filtered.value.length, () => { page.value = 1 })
 
 const { listOrders } = useCommerce()
 const items = ref<any[]>([])
@@ -82,6 +76,14 @@ const filtered = computed(() => {
     String(o.supplier_company_name || o.supplier_name || '').toLowerCase().includes(kw),
   )
 })
+
+// Client-side paging: these lists already hold the full filtered set, so the
+// pager slices it rather than adding a round trip per page.
+const page = ref(1)
+const pageSize = 20
+const paged = computed(() => filtered.value.slice((page.value - 1) * pageSize, page.value * pageSize))
+watch(() => filtered.value.length, () => { page.value = 1 })
+
 
 function totalMinor(o: any) {
   return o.total_minor ?? o.total_amount_minor ?? 0
