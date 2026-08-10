@@ -721,6 +721,10 @@
       "siteVisits": "预约上门",
       "insights": "分析",
       "account": "账户"
+    },
+    "menu": {
+      "work": "工作项",
+      "account": "账户与设置"
     }
   },
   "sign": {
@@ -902,7 +906,18 @@
       "official": "官方认证",
       "supplier": "供应商挂牌",
       "secondhand": "二手 / 回收"
-    }
+    },
+    "categories": "类目",
+    "allCategories": "全部类目",
+    "tradeMode": "交易模式",
+    "verifiedOnly": "仅看已认证供应商",
+    "resultCount": "{total} 件商品",
+    "sortTrust": "按信任度",
+    "platformStock": "平台自营",
+    "ctaBuy": "立即购买",
+    "ctaQuote": "请求报价",
+    "ctaEnquire": "询价",
+    "clearFilters": "清除筛选"
   },
   "agents": {
     "eyebrow": "Agent 生态",
@@ -933,7 +948,9 @@
     "step3Desc": "通过后在商店可见，客户可一键装进自己的工作区。",
     "submitAgent": "提交我的 Agent",
     "manifestTitle": "Agent 清单 v{version}",
-    "governed": "受治理"
+    "governed": "受治理",
+    "reviewedAgents": "已审核 Agent",
+    "perWorkspace": "每个工作区"
   },
   "siteVisit": {
     "title": "预约上门",
@@ -995,5 +1012,19 @@
     "prev": "上一页",
     "next": "下一页",
     "showing": "第 {from}–{to} 条，共 {total} 条"
+  },
+  "journey": {
+    "title": "采购进度",
+    "stageOf": "第 {current} / {total} 步",
+    "stage": {
+      "requested": "发布需求",
+      "offers": "收到报价",
+      "awarded": "授标下单",
+      "escrow": "付款托管",
+      "delivery": "发货交付",
+      "install": "预约安装",
+      "accepted": "验收完成",
+      "service": "售后服务"
+    }
   }
 }

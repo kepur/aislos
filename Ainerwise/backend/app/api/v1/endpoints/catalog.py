@@ -22,7 +22,7 @@ from sqlalchemy import func, or_, select
 
 from app.api.deps import DB
 from app.core.product_catalog import PUBLIC_PRODUCT_STATUSES
-from app.models.commerce import SupplierListing, TradeCategorySchema
+from app.models.commerce import SupplierListing, TradeCategorySchema, TrustProfile
 from app.models.product import Product, ProductCategory
 from app.models.user import Company
 
@@ -85,12 +85,20 @@ def _product_to_item(row: Product, category_name: str | None) -> dict:
         "category_id": str(row.category_id) if row.category_id else None,
         "category_name": category_name,
         "image": _first_image(row.images_json),
+        "verified": True,
+        "trust_score": None,
         "detail_path": f"/products/{row.slug}",
         "created_at": row.created_at,
     }
 
 
-def _listing_to_item(row: SupplierListing, company_name: str | None, category: TradeCategorySchema | None) -> dict:
+def _listing_to_item(
+    row: SupplierListing,
+    company_name: str | None,
+    category: TradeCategorySchema | None,
+    verification: str | None = None,
+    trust_score: int | None = None,
+) -> dict:
     attributes = row.attributes_json or {}
     return {
         "id": str(row.id),
@@ -105,6 +113,8 @@ def _listing_to_item(row: SupplierListing, company_name: str | None, category: T
         "category_id": str(row.category_schema_id) if row.category_schema_id else None,
         "category_name": category.name if category else None,
         "image": _first_image(attributes.get("images")),
+        "verified": str(verification or "").lower() in {"verified", "approved"},
+        "trust_score": trust_score,
         "detail_path": f"/market/marketplace/{row.id}",
         "created_at": row.created_at,
     }
@@ -118,7 +128,9 @@ async def unified_catalog(
     source: str | None = Query(default=None, description="official | supplier | secondhand"),
     market_mode: str | None = Query(default=None, description="B2B | B2C"),
     keyword: str | None = None,
-    sort: str = Query(default="newest", description="newest | price_asc | price_desc"),
+    category_id: uuid.UUID | None = Query(default=None, description="matches either category tree"),
+    verified_only: bool = False,
+    sort: str = Query(default="newest", description="newest | price_asc | price_desc | trust"),
 ):
     wanted_sources = {s.strip().lower() for s in (source or "").split(",") if s.strip()}
     normalized_mode = (market_mode or "").strip().upper()
@@ -135,6 +147,8 @@ async def unified_catalog(
         if keyword:
             term = f"%{keyword.strip()}%"
             stmt = stmt.where(or_(Product.name.ilike(term), Product.brand.ilike(term)))
+        if category_id:
+            stmt = stmt.where(Product.category_id == category_id)
         for row, category_name in (await db.execute(stmt)).all():
             item = _product_to_item(row, category_name)
             if wanted_sources and item["source"] not in wanted_sources:
@@ -148,15 +162,20 @@ async def unified_catalog(
     # --- Supplier listing side -------------------------------------------
     if not wanted_sources or wanted_sources & {"supplier", "secondhand"}:
         stmt = (
-            select(SupplierListing, Company.name, TradeCategorySchema)
+            select(SupplierListing, Company.name, TradeCategorySchema, Company.verification_status, TrustProfile.trust_score)
             .join(Company, Company.id == SupplierListing.company_id, isouter=True)
             .join(
                 TradeCategorySchema,
                 TradeCategorySchema.id == SupplierListing.category_schema_id,
                 isouter=True,
             )
+            .join(TrustProfile, TrustProfile.company_id == SupplierListing.company_id, isouter=True)
             .where(SupplierListing.status == "active")
         )
+        if category_id:
+            stmt = stmt.where(SupplierListing.category_schema_id == category_id)
+        if verified_only:
+            stmt = stmt.where(func.lower(Company.verification_status).in_(["verified", "approved"]))
         if keyword:
             term = f"%{keyword.strip()}%"
             stmt = stmt.where(or_(SupplierListing.title.ilike(term), Company.name.ilike(term)))
@@ -165,8 +184,8 @@ async def unified_catalog(
                 func.coalesce(SupplierListing.attributes_json["market_mode"].astext, "B2B")
             )
             stmt = stmt.where(mode_expr.in_([normalized_mode, "BOTH"]))
-        for row, company_name, category in (await db.execute(stmt)).all():
-            item = _listing_to_item(row, company_name, category)
+        for row, company_name, category, verification, trust_score in (await db.execute(stmt)).all():
+            item = _listing_to_item(row, company_name, category, verification, trust_score)
             if wanted_sources and item["source"] not in wanted_sources:
                 continue
             items.append(item)
@@ -176,6 +195,8 @@ async def unified_catalog(
         items.sort(key=lambda i: (i["price_minor"] is None, i["price_minor"] or 0))
     elif sort == "price_desc":
         items.sort(key=lambda i: (i["price_minor"] is None, -(i["price_minor"] or 0)))
+    elif sort == "trust":
+        items.sort(key=lambda i: -(i.get("trust_score") or 0))
     else:
         items.sort(key=lambda i: i["created_at"] or "", reverse=True)
 

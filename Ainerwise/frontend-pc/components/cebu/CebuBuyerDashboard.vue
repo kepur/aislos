@@ -19,10 +19,10 @@
         <h1 class="mt-1 text-2xl font-bold ws-title">{{ $t('procurement.buyerHome.title') }}</h1>
       </div>
       <div class="flex flex-wrap items-center gap-2">
-        <NuxtLink to="/market/marketplace" class="btn-secondary !py-2 !px-4 text-sm">
+        <NuxtLink to="/catalog" class="btn-secondary !py-2 !px-4 text-sm">
           {{ $t('procurement.buyerHome.browse') }}
         </NuxtLink>
-        <NuxtLink to="/market/marketplace?sort=trust" class="btn-secondary !py-2 !px-4 text-sm">
+        <NuxtLink to="/catalog?sort=trust" class="btn-secondary !py-2 !px-4 text-sm">
           {{ $t('procurement.buyerHome.findSuppliers') }}
         </NuxtLink>
         <NuxtLink to="/market/post-request" class="btn-primary !py-2 !px-4 text-sm">
@@ -86,18 +86,18 @@
           <h2 class="mt-3 text-3xl font-bold tracking-tight ws-title">{{ $t('procurement.buyerHome.shopTitle') }}</h2>
           <p class="mt-3 max-w-2xl text-sm leading-6 ws-muted">{{ $t('procurement.buyerHome.shopDesc') }}</p>
           <div class="mt-6 flex flex-wrap gap-3">
-            <NuxtLink to="/market/marketplace" class="btn-primary">{{ $t('procurement.buyerHome.enterMarket') }} →</NuxtLink>
-            <NuxtLink to="/market/marketplace?sort=trust" class="btn-secondary">{{ $t('procurement.buyerHome.sortByTrust') }}</NuxtLink>
+            <NuxtLink to="/catalog" class="btn-primary">{{ $t('procurement.buyerHome.enterMarket') }} →</NuxtLink>
+            <NuxtLink to="/catalog?sort=trust" class="btn-secondary">{{ $t('procurement.buyerHome.sortByTrust') }}</NuxtLink>
           </div>
         </div>
         <div class="border-t ws-hairline ws-sunken p-6 lg:border-l lg:border-t-0 lg:p-8">
           <div class="grid h-full content-center gap-3">
-            <NuxtLink to="/market/marketplace" class="ws-tile">
+            <NuxtLink to="/catalog" class="ws-tile">
               <p class="text-xs font-semibold uppercase tracking-[0.16em] ws-faint">{{ $t('procurement.buyerHome.statListings') }}</p>
               <p class="mt-1 text-2xl font-bold ws-title">{{ totalListings }}</p>
             </NuxtLink>
             <div class="grid grid-cols-2 gap-3">
-              <NuxtLink to="/market/marketplace" class="ws-tile">
+              <NuxtLink to="/catalog" class="ws-tile">
                 <p class="text-xs font-semibold ws-faint">{{ $t('procurement.buyerHome.statModes') }}</p>
                 <p class="mt-2 text-sm font-semibold ws-accent">Buy / Quote</p>
               </NuxtLink>
@@ -201,7 +201,7 @@
             <NuxtLink
               v-for="c in categories.slice(0, 8)"
               :key="c.id"
-              :to="`/market/marketplace?category_schema_id=${c.id}`"
+              :to="`/catalog?category_id=${c.id}`"
               class="ws-chip"
             >{{ c.name || c.title }}</NuxtLink>
             <span v-if="!categories.length" class="text-sm ws-faint">{{ $t('procurement.buyerHome.noCats') }}</span>
@@ -233,7 +233,7 @@
           <h3 class="text-lg font-semibold ws-title">✨ {{ $t('procurement.buyerHome.todayPicks') }}</h3>
           <p class="mt-0.5 text-xs ws-faint">{{ $t('procurement.buyerHome.todayPicksDesc') }}</p>
         </div>
-        <NuxtLink to="/market/marketplace" class="text-sm ws-accent hover:opacity-80">
+        <NuxtLink to="/catalog" class="text-sm ws-accent hover:opacity-80">
           {{ $t('procurement.buyerHome.viewAll') }} →
         </NuxtLink>
       </div>

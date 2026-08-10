@@ -721,6 +721,10 @@
       "siteVisits": "Site visits",
       "insights": "Insights",
       "account": "Account"
+    },
+    "menu": {
+      "work": "Work",
+      "account": "Account & settings"
     }
   },
   "sign": {
@@ -902,7 +906,18 @@
       "official": "Official",
       "supplier": "Supplier",
       "secondhand": "Second-hand"
-    }
+    },
+    "categories": "Categories",
+    "allCategories": "All categories",
+    "tradeMode": "Trade mode",
+    "verifiedOnly": "Verified suppliers only",
+    "resultCount": "{total} items",
+    "sortTrust": "By trust",
+    "platformStock": "Platform stock",
+    "ctaBuy": "Buy now",
+    "ctaQuote": "Request quote",
+    "ctaEnquire": "Enquire",
+    "clearFilters": "Clear filters"
   },
   "agents": {
     "eyebrow": "Agent ecosystem",
@@ -933,7 +948,9 @@
     "step3Desc": "Once approved it appears in the store and installs into a customer workspace in one click.",
     "submitAgent": "Submit an agent",
     "manifestTitle": "Agent manifest v{version}",
-    "governed": "Governed"
+    "governed": "Governed",
+    "reviewedAgents": "reviewed agents",
+    "perWorkspace": "per workspace"
   },
   "siteVisit": {
     "title": "Book a site visit",
@@ -995,5 +1012,19 @@
     "prev": "Previous",
     "next": "Next",
     "showing": "{from}–{to} of {total}"
+  },
+  "journey": {
+    "title": "Procurement progress",
+    "stageOf": "Step {current} of {total}",
+    "stage": {
+      "requested": "Request posted",
+      "offers": "Offers received",
+      "awarded": "Awarded",
+      "escrow": "Paid into escrow",
+      "delivery": "Delivery",
+      "install": "Installation booked",
+      "accepted": "Signed off",
+      "service": "After-sales"
+    }
   }
 }

@@ -1,15 +1,15 @@
 <template>
   <div class="min-h-screen procurement-layout text-slate-100">
     <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur-md">
-      <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div class="flex items-center gap-3 min-w-0">
-          <NuxtLink :to="brand.homePath" class="text-xl font-bold text-white shrink-0">
+          <NuxtLink :to="brand.homePath" class="text-2xl font-bold text-white shrink-0">
             {{ brandLabel }}
           </NuxtLink>
           <span :class="['rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider shrink-0', brand.badge]">
             {{ $t('procurement.workspace') }}
           </span>
-          <nav v-if="isCebu || isSupplier" class="hidden md:flex items-center gap-1 ml-4 text-sm text-slate-300">
+          <nav v-if="isCebu || isSupplier" class="hidden md:flex items-center gap-1 ml-5 text-[0.95rem] text-slate-300">
             <NuxtLink
               v-for="link in primaryNav"
               :key="link.to"
@@ -54,19 +54,24 @@
                 </div>
               </div>
 
-              <div v-if="overflowNav.length" class="mt-2 grid grid-cols-2 gap-0.5">
-                <NuxtLink
-                  v-for="link in overflowNav"
-                  :key="link.to"
-                  :to="link.to"
-                  class="ws-menu-item flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition"
-                  active-class="ws-menu-item-active"
-                  role="menuitem"
-                  @click="accountOpen = false"
-                >
-                  <span class="ws-menu-dot"></span>
-                  {{ link.label }}
-                </NuxtLink>
+              <div v-for="group in menuGroups" :key="group.key" class="mt-2">
+                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.14em] ws-faint">
+                  {{ group.label }}
+                </p>
+                <div class="grid grid-cols-2 gap-0.5">
+                  <NuxtLink
+                    v-for="link in group.items"
+                    :key="link.to"
+                    :to="link.to"
+                    class="ws-menu-item flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition"
+                    active-class="ws-menu-item-active"
+                    role="menuitem"
+                    @click="accountOpen = false"
+                  >
+                    <UIcon :name="link.icon" class="h-4 w-4 shrink-0 opacity-70" />
+                    {{ link.label }}
+                  </NuxtLink>
+                </div>
               </div>
 
               <div class="mt-2 border-t ws-hairline pt-2">
@@ -79,7 +84,7 @@
                   role="menuitem"
                   @click="logout"
                 >
-                  <span class="ws-menu-dot"></span>
+                  <UIcon name="i-heroicons-arrow-right-on-rectangle" class="h-4 w-4 shrink-0 opacity-70" />
                   {{ $t('nav.logout') }}
                 </button>
               </div>
@@ -122,6 +127,14 @@ const brandLabel = computed(() =>
 )
 
 const { user } = useAuth()
+const { getAccountContext } = useCommerce()
+const accountContext = ref<{ account_type?: string } | null>(null)
+// Company and team only mean something on a business account; a personal buyer
+// seeing a "team" entry is just noise.
+const isBusiness = computed(() => String(accountContext.value?.account_type || '').toUpperCase() === 'BUSINESS')
+onMounted(async () => {
+  try { accountContext.value = await getAccountContext() } catch { accountContext.value = null }
+})
 const accountOpen = ref(false)
 const accountRef = ref<HTMLElement | null>(null)
 
@@ -175,6 +188,39 @@ const supplierNav = [
   { to: '/supplier/team', label: '团队' },
   { to: '/supplier/settings', label: '设置' },
 ]
+
+// Menu contents, grouped by what the entry is for rather than listed flat.
+const menuGroups = computed(() => {
+  if (isSupplier.value) {
+    return [{ key: 'work', label: t('procurement.menu.work'), items: overflowNav.value }]
+  }
+  const account = [
+    { to: '/market/buyer/settings', icon: 'i-heroicons-cog-8-tooth', label: t('procurement.nav.settings') },
+    { to: '/market/buyer/wallet', icon: 'i-heroicons-wallet', label: t('procurement.nav.wallet') },
+    { to: '/market/buyer/notifications', icon: 'i-heroicons-bell-alert', label: t('procurement.nav.notifications') },
+  ]
+  if (isBusiness.value) {
+    account.push(
+      { to: '/market/buyer/company-profile', icon: 'i-heroicons-building-office', label: t('procurement.nav.companyProfile') },
+      { to: '/market/buyer/team', icon: 'i-heroicons-users', label: t('procurement.nav.team') },
+    )
+  }
+  return [
+    {
+      key: 'work',
+      label: t('procurement.menu.work'),
+      items: [
+        { to: '/market/buyer/messages', icon: 'i-heroicons-chat-bubble-left-right', label: t('procurement.nav.messages') },
+        { to: '/portal/approvals', icon: 'i-heroicons-check-badge', label: t('procurement.nav.approvals') },
+        { to: '/market/buyer/disputes', icon: 'i-heroicons-exclamation-triangle', label: t('procurement.nav.disputes') },
+        { to: '/market/buyer/ideal-list', icon: 'i-heroicons-heart', label: t('procurement.nav.idealList') },
+        { to: '/portal/tickets', icon: 'i-heroicons-lifebuoy', label: t('procurement.nav.afterSales') },
+        { to: '/portal/insights', icon: 'i-heroicons-chart-bar', label: t('procurement.nav.insights') },
+      ],
+    },
+    { key: 'account', label: t('procurement.menu.account'), items: account },
+  ]
+})
 
 const NAV_BAR_SLOTS = 8
 const activeNav = computed(() => (isSupplier.value ? supplierNav : cebuNav.value))

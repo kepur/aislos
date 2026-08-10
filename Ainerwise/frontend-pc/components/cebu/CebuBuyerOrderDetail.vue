@@ -22,6 +22,8 @@
         </div>
       </div>
 
+      <JourneyProgress :status="order.status" />
+
       <p v-if="message" class="pc-card text-sm text-emerald-300">{{ message }}</p>
       <p v-if="error" class="pc-card text-sm text-red-300">{{ error }}</p>
 

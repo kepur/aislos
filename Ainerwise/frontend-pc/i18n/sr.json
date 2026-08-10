@@ -320,6 +320,10 @@
       "siteVisits": "Izlasci",
       "insights": "Analitika",
       "account": "Nalog"
+    },
+    "menu": {
+      "work": "Posao",
+      "account": "Nalog i podesavanja"
     }
   },
   "products": {
@@ -902,7 +906,18 @@
       "official": "Zvanicno",
       "supplier": "Dobavljac",
       "secondhand": "Polovno"
-    }
+    },
+    "categories": "Kategorije",
+    "allCategories": "Sve kategorije",
+    "tradeMode": "Rezim trgovine",
+    "verifiedOnly": "Samo verifikovani dobavljaci",
+    "resultCount": "{total} artikala",
+    "sortTrust": "Po poverenju",
+    "platformStock": "Roba platforme",
+    "ctaBuy": "Kupi odmah",
+    "ctaQuote": "Zatrazi ponudu",
+    "ctaEnquire": "Upit",
+    "clearFilters": "Ponisti filtere"
   },
   "agents": {
     "eyebrow": "Agent ekosistem",
@@ -933,7 +948,9 @@
     "step3Desc": "Nakon odobrenja agent je vidljiv i instalira se u jedan klik.",
     "submitAgent": "Posalji agenta",
     "manifestTitle": "Manifest agenta v{version}",
-    "governed": "Regulisano"
+    "governed": "Regulisano",
+    "reviewedAgents": "provereni agenti",
+    "perWorkspace": "po radnom prostoru"
   },
   "siteVisit": {
     "title": "Zakazi izlazak na teren",
@@ -995,5 +1012,19 @@
     "prev": "Prethodna",
     "next": "Sledeca",
     "showing": "{from}–{to} od {total}"
+  },
+  "journey": {
+    "title": "Tok nabavke",
+    "stageOf": "Korak {current} od {total}",
+    "stage": {
+      "requested": "Zahtev poslat",
+      "offers": "Ponude primljene",
+      "awarded": "Dodeljeno",
+      "escrow": "Placeno u escrow",
+      "delivery": "Isporuka",
+      "install": "Instalacija zakazana",
+      "accepted": "Primopredaja",
+      "service": "Podrska"
+    }
   }
 }

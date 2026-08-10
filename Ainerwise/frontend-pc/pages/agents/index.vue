@@ -1,113 +1,153 @@
 <template>
-  <div class="section-padding">
-    <div class="container-main">
-      <!-- Store first, developer onboarding after: most visitors come to find
-           an agent, not to publish one. The two used to be separate top-level
-           nav entries for 49 and 133 lines of page. -->
-      <header class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div class="max-w-2xl">
-          <p class="text-xs font-bold uppercase tracking-[0.25em] ws-accent">{{ $t('agents.eyebrow') }}</p>
-          <h1 class="mt-3 text-4xl font-bold ws-title">{{ $t('agents.title') }}</h1>
-          <p class="mt-3 ws-muted">{{ $t('agents.subtitle') }}</p>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <button
-            v-for="tab in tabs"
-            :key="tab.key"
-            type="button"
-            class="ws-chip !px-4 !py-2 !text-sm"
-            :class="{ 'ws-chip-active': activeTab === tab.key }"
-            @click="activeTab = tab.key"
-          >{{ tab.label }}</button>
-        </div>
-      </header>
+  <div class="agents-page">
+    <!-- Hero: the roster is the product, so the count and the roles lead. -->
+    <header class="agents-hero">
+      <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div class="grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-center">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.24em] ws-accent">{{ $t('agents.eyebrow') }}</p>
+            <h1 class="mt-3 text-4xl font-bold leading-[1.08] ws-title lg:text-5xl">{{ $t('agents.title') }}</h1>
+            <p class="mt-4 max-w-xl leading-7 ws-muted">{{ $t('agents.subtitle') }}</p>
 
-      <!-- Agent store -->
-      <section v-show="activeTab === 'store'" class="mt-10">
+            <div class="mt-8 flex flex-wrap gap-2">
+              <button
+                v-for="tab in tabs"
+                :key="tab.key"
+                type="button"
+                class="agents-tab"
+                :class="{ 'agents-tab--on': activeTab === tab.key }"
+                @click="activeTab = tab.key"
+              >
+                <UIcon :name="tab.icon" class="h-4 w-4" />
+                {{ tab.label }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Roster preview doubles as the visual: real agent roles, not an
+               abstract illustration. -->
+          <div class="agents-orbit">
+            <div v-for="(agent, i) in listings.slice(0, 5)" :key="agent.id" class="agents-orbit__chip" :style="orbitStyle(i)">
+              <span class="agents-orbit__dot"></span>
+              {{ agent.role_title || agent.name }}
+            </div>
+            <div class="agents-orbit__core">
+              <p class="text-2xl font-bold ws-title">{{ listings.length }}</p>
+              <p class="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] ws-faint">
+                {{ $t('agents.reviewedAgents') }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+      <!-- Store -->
+      <div v-show="activeTab === 'store'">
         <div v-if="listings.length" class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          <article v-for="listing in listings" :key="listing.id" class="pc-card flex flex-col gap-4">
-            <div class="flex items-start justify-between gap-3">
-              <div class="min-w-0">
-                <h2 class="text-lg font-semibold ws-title">{{ listing.name }}</h2>
-                <p class="mt-0.5 text-xs ws-accent">{{ listing.role_title || $t('agents.aiEmployee') }}</p>
+          <article v-for="agent in listings" :key="agent.id" class="agent-card">
+            <div class="agent-card__head">
+              <div class="agent-card__avatar">{{ (agent.name || '?').charAt(0) }}</div>
+              <div class="min-w-0 flex-1">
+                <h2 class="truncate text-base font-bold ws-title">{{ agent.name }}</h2>
+                <p class="truncate text-xs ws-accent">{{ agent.role_title || $t('agents.aiEmployee') }}</p>
               </div>
-              <span class="shrink-0 rounded-full bg-emerald-500/15 px-2 py-1 text-[10px] font-semibold text-emerald-700 dark:text-emerald-300">
+              <span class="agent-card__seal">
+                <UIcon name="i-heroicons-shield-check" class="h-3 w-3" />
                 {{ $t('agents.reviewed') }}
               </span>
             </div>
-            <p class="line-clamp-3 text-sm ws-muted">{{ listing.description || $t('agents.fallbackDesc') }}</p>
-            <div v-if="listing.workflows?.length" class="flex flex-wrap gap-1">
-              <span
-                v-for="workflow in listing.workflows"
-                :key="workflow"
-                class="rounded px-2 py-1 font-mono text-[10px] ws-soft ws-faint"
-              >{{ workflow }}</span>
+
+            <p class="agent-card__desc">{{ agent.description || $t('agents.fallbackDesc') }}</p>
+
+            <div v-if="agent.workflows?.length" class="agent-card__flows">
+              <span v-for="workflow in agent.workflows.slice(0, 4)" :key="workflow" class="agent-flow">{{ workflow }}</span>
+              <span v-if="agent.workflows.length > 4" class="agent-flow agent-flow--more">
+                +{{ agent.workflows.length - 4 }}
+              </span>
             </div>
-            <div class="mt-auto flex items-center justify-between border-t ws-hairline pt-4">
-              <span class="font-semibold ws-title">{{ priceLabel(listing) }}</span>
-              <button class="btn-primary !px-4 !py-2 text-sm" @click="install(listing)">
+
+            <div class="agent-card__foot">
+              <div>
+                <p class="text-sm font-bold ws-title">{{ priceLabel(agent) }}</p>
+                <p class="text-[11px] ws-faint">{{ $t('agents.perWorkspace') }}</p>
+              </div>
+              <button class="agent-install" @click="install(agent)">
                 {{ $t('agents.install') }}
+                <UIcon name="i-heroicons-arrow-right" class="h-3.5 w-3.5" />
               </button>
             </div>
           </article>
         </div>
-        <p v-else class="mt-10 text-center text-sm ws-muted">{{ $t('agents.emptyStore') }}</p>
+        <p v-else class="pc-card py-16 text-center text-sm ws-muted">{{ $t('agents.emptyStore') }}</p>
 
-        <div v-if="isLoggedIn && installations.length" class="mt-12">
-          <h2 class="text-xl font-semibold ws-title">{{ $t('agents.myAgents') }}</h2>
+        <div v-if="isLoggedIn && installations.length" class="mt-14">
+          <h2 class="text-lg font-bold ws-title">{{ $t('agents.myAgents') }}</h2>
           <div class="mt-4 grid gap-3 md:grid-cols-2">
-            <div
-              v-for="item in installations"
-              :key="item.id"
-              class="pc-card flex items-center justify-between gap-4 !p-4"
-            >
-              <div class="min-w-0">
-                <p class="truncate font-medium ws-title">{{ item.name }}</p>
-                <p class="truncate text-xs ws-muted">
-                  {{ $t('agents.installMeta', { status: item.status, workspace: item.workspace_id }) }}
-                </p>
+            <div v-for="item in installations" :key="item.id" class="pc-card flex items-center justify-between gap-4 !p-4">
+              <div class="flex min-w-0 items-center gap-3">
+                <span class="agent-card__avatar !h-9 !w-9 !text-sm">{{ (item.name || '?').charAt(0) }}</span>
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-semibold ws-title">{{ item.name }}</p>
+                  <p class="truncate text-xs ws-faint">
+                    {{ $t('agents.installMeta', { status: item.status, workspace: item.workspace_id }) }}
+                  </p>
+                </div>
               </div>
-              <button v-if="item.status === 'installed'" class="text-xs text-red-400" @click="uninstall(item)">
+              <button v-if="item.status === 'installed'" class="text-xs text-red-500 hover:underline" @click="uninstall(item)">
                 {{ $t('agents.uninstall') }}
               </button>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <!-- Developer onboarding -->
-      <section v-show="activeTab === 'build'" class="mt-10 grid gap-10 lg:grid-cols-[1.1fr_.9fr] lg:items-start">
+      <div v-show="activeTab === 'build'" class="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-start">
         <div>
           <h2 class="text-2xl font-bold ws-title">{{ $t('agents.buildTitle') }}</h2>
-          <p class="mt-4 ws-muted">{{ $t('agents.buildSubtitle') }}</p>
-          <div class="mt-8 grid gap-4">
-            <article v-for="step in buildSteps" :key="step.title" class="pc-card flex gap-4 !p-5">
-              <span class="font-mono text-sm ws-accent">{{ step.index }}</span>
-              <div>
-                <h3 class="font-semibold ws-title">{{ step.title }}</h3>
-                <p class="mt-1 text-sm ws-muted">{{ step.body }}</p>
+          <p class="mt-3 leading-7 ws-muted">{{ $t('agents.buildSubtitle') }}</p>
+
+          <ol class="mt-8 space-y-0">
+            <li v-for="(step, i) in buildSteps" :key="step.title" class="build-step">
+              <div class="build-step__marker">
+                <span class="build-step__num">{{ step.index }}</span>
+                <span v-if="i < buildSteps.length - 1" class="build-step__line"></span>
               </div>
-            </article>
-          </div>
-          <NuxtLink to="/developers/listings" class="btn-primary mt-8 inline-block">
+              <div class="pb-8">
+                <h3 class="font-bold ws-title">{{ step.title }}</h3>
+                <p class="mt-1.5 text-sm leading-6 ws-muted">{{ step.body }}</p>
+              </div>
+            </li>
+          </ol>
+
+          <NuxtLink to="/developers/listings" class="btn-primary inline-flex items-center gap-2">
             {{ $t('agents.submitAgent') }}
+            <UIcon name="i-heroicons-arrow-right" class="h-4 w-4" />
           </NuxtLink>
         </div>
 
-        <div class="pc-card">
-          <div class="flex items-center justify-between">
-            <h3 class="font-semibold ws-title">
+        <div class="manifest-panel">
+          <div class="manifest-panel__bar">
+            <span class="manifest-dot manifest-dot--r"></span>
+            <span class="manifest-dot manifest-dot--y"></span>
+            <span class="manifest-dot manifest-dot--g"></span>
+            <p class="ml-2 font-mono text-xs ws-faint">
               {{ $t('agents.manifestTitle', { version: manifest.manifest_version || '1.0' }) }}
-            </h3>
-            <span class="text-xs text-emerald-600 dark:text-emerald-300">{{ $t('agents.governed') }}</span>
+            </p>
+            <span class="ml-auto inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+              <UIcon name="i-heroicons-lock-closed" class="h-3 w-3" />
+              {{ $t('agents.governed') }}
+            </span>
           </div>
-          <pre class="mt-5 overflow-x-auto rounded-lg p-4 text-xs ws-sunken ws-muted">{{ JSON.stringify(manifest.example || {}, null, 2) }}</pre>
+          <pre class="manifest-panel__code">{{ JSON.stringify(manifest.example || {}, null, 2) }}</pre>
         </div>
-      </section>
+      </div>
 
-      <p v-if="message" class="mt-6 text-sm text-emerald-600 dark:text-emerald-300">{{ message }}</p>
-      <p v-if="error" class="mt-6 text-sm text-red-400">{{ error }}</p>
-    </div>
+      <p v-if="message" class="mt-6 text-sm text-emerald-600 dark:text-emerald-400">{{ message }}</p>
+      <p v-if="error" class="mt-6 text-sm text-red-500">{{ error }}</p>
+    </section>
   </div>
 </template>
 
@@ -125,8 +165,8 @@ const message = ref('')
 const error = ref('')
 
 const tabs = computed(() => [
-  { key: 'store' as const, label: t('agents.tabStore') },
-  { key: 'build' as const, label: t('agents.tabBuild') },
+  { key: 'store' as const, icon: 'i-heroicons-squares-2x2', label: t('agents.tabStore') },
+  { key: 'build' as const, icon: 'i-heroicons-code-bracket', label: t('agents.tabBuild') },
 ])
 
 const buildSteps = computed(() => [
@@ -134,6 +174,18 @@ const buildSteps = computed(() => [
   { index: '02', title: t('agents.step2Title'), body: t('agents.step2Desc') },
   { index: '03', title: t('agents.step3Title'), body: t('agents.step3Desc') },
 ])
+
+// Fan the preview chips out down the right-hand side.
+function orbitStyle(index: number) {
+  const offsets = [
+    { top: '4%', right: '6%' },
+    { top: '26%', right: '30%' },
+    { top: '50%', right: '2%' },
+    { top: '70%', right: '26%' },
+    { top: '88%', right: '10%' },
+  ]
+  return offsets[index] || {}
+}
 
 function priceLabel(listing: any) {
   if (listing.price_monthly == null) return t('agents.included')
@@ -182,3 +234,208 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+.agents-hero {
+  border-bottom: 1px solid var(--card-border);
+  background:
+    radial-gradient(circle at 82% 20%, var(--accent-soft), transparent 46%),
+    linear-gradient(180deg, var(--surface-sunken), transparent);
+}
+
+.agents-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-soft);
+  background: var(--card-bg);
+  padding: 0.6rem 1.15rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.16s ease;
+}
+.agents-tab:hover { border-color: var(--accent); color: var(--accent); }
+.agents-tab--on {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+/* Roster preview */
+.agents-orbit {
+  position: relative;
+  display: none;
+  min-height: 20rem;
+}
+@media (min-width: 1024px) { .agents-orbit { display: block; } }
+.agents-orbit__core {
+  position: absolute;
+  left: 8%;
+  top: 38%;
+  border-radius: 1.25rem;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  padding: 1.1rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(2, 6, 23, 0.1);
+}
+.agents-orbit__chip {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-soft);
+  background: var(--card-bg);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+}
+.agents-orbit__dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+/* Agent cards */
+.agent-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  border-radius: 1.1rem;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  padding: 1.2rem;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+.agent-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(2, 6, 23, 0.1);
+}
+.agent-card__head { display: flex; align-items: center; gap: 0.75rem; }
+.agent-card__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  border-radius: 0.8rem;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 800;
+}
+.agent-card__seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: none;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.14);
+  padding: 0.2rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #047857;
+}
+:global(.dark) .agent-card__seal { color: #6ee7b7; }
+
+.agent-card__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.agent-card__flows { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.agent-flow {
+  border-radius: 0.4rem;
+  background: var(--surface-soft);
+  padding: 0.15rem 0.45rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.66rem;
+  color: var(--text-faint);
+}
+.agent-flow--more { color: var(--accent); }
+
+.agent-card__foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-top: 1px solid var(--hairline-soft);
+  padding-top: 0.9rem;
+}
+.agent-install {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  background: var(--accent);
+  padding: 0.45rem 0.95rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-contrast);
+  transition: filter 0.16s ease, transform 0.16s ease;
+}
+.agent-install:hover { filter: brightness(1.08); transform: translateX(1px); }
+
+/* Build steps */
+.build-step { display: flex; gap: 1rem; }
+.build-step__marker { position: relative; display: flex; flex-direction: column; align-items: center; }
+.build-step__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.build-step__line { flex: 1; width: 1px; background: var(--hairline-soft); }
+
+/* Manifest panel styled as an editor pane */
+.manifest-panel {
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  box-shadow: 0 16px 40px rgba(2, 6, 23, 0.08);
+}
+.manifest-panel__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-bottom: 1px solid var(--hairline-soft);
+  background: var(--surface-soft);
+  padding: 0.7rem 0.9rem;
+}
+.manifest-dot { width: 0.6rem; height: 0.6rem; border-radius: 999px; }
+.manifest-dot--r { background: #f87171; }
+.manifest-dot--y { background: #fbbf24; }
+.manifest-dot--g { background: #34d399; }
+.manifest-panel__code {
+  overflow-x: auto;
+  margin: 0;
+  padding: 1.1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+</style>
