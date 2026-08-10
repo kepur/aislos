@@ -18,7 +18,7 @@
                 :class="{ 'agents-tab--on': activeTab === tab.key }"
                 @click="activeTab = tab.key"
               >
-                <UIcon :name="tab.icon" class="h-4 w-4" />
+                <AppIcon :name="tab.icon" class="h-4 w-4" />
                 {{ tab.label }}
               </button>
             </div>
@@ -54,7 +54,7 @@
                 <p class="truncate text-xs ws-accent">{{ agent.role_title || $t('agents.aiEmployee') }}</p>
               </div>
               <span class="agent-card__seal">
-                <UIcon name="i-heroicons-shield-check" class="h-3 w-3" />
+                <AppIcon name="i-heroicons-shield-check" class="h-3 w-3" />
                 {{ $t('agents.reviewed') }}
               </span>
             </div>
@@ -75,7 +75,7 @@
               </div>
               <button class="agent-install" @click="install(agent)">
                 {{ $t('agents.install') }}
-                <UIcon name="i-heroicons-arrow-right" class="h-3.5 w-3.5" />
+                <AppIcon name="i-heroicons-arrow-right" class="h-3.5 w-3.5" />
               </button>
             </div>
           </article>
@@ -124,7 +124,7 @@
 
           <NuxtLink to="/developers/listings" class="btn-primary inline-flex items-center gap-2">
             {{ $t('agents.submitAgent') }}
-            <UIcon name="i-heroicons-arrow-right" class="h-4 w-4" />
+            <AppIcon name="i-heroicons-arrow-right" class="h-4 w-4" />
           </NuxtLink>
         </div>
 
@@ -137,7 +137,7 @@
               {{ $t('agents.manifestTitle', { version: manifest.manifest_version || '1.0' }) }}
             </p>
             <span class="ml-auto inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-              <UIcon name="i-heroicons-lock-closed" class="h-3 w-3" />
+              <AppIcon name="i-heroicons-lock-closed" class="h-3 w-3" />
               {{ $t('agents.governed') }}
             </span>
           </div>

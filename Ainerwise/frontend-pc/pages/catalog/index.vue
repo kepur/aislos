@@ -12,7 +12,7 @@
           </div>
           <div class="flex items-stretch gap-2">
             <div class="relative">
-              <UIcon
+              <AppIcon
                 name="i-heroicons-magnifying-glass"
                 class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ws-faint"
               />
@@ -37,7 +37,7 @@
             :class="{ 'catalog-seg--on': activeSource === tab.key }"
             @click="selectSource(tab.key)"
           >
-            <UIcon :name="tab.icon" class="h-4 w-4" />
+            <AppIcon :name="tab.icon" class="h-4 w-4" />
             {{ tab.label }}
             <span class="catalog-seg__count">{{ tab.count }}</span>
           </button>
@@ -132,7 +132,7 @@
               <NuxtLink :to="item.detail_path" class="block">
                 <div class="catalog-card__media">
                   <img v-if="item.image" :src="item.image" :alt="item.title" />
-                  <UIcon v-else name="i-heroicons-cube" class="h-10 w-10 ws-faint" />
+                  <AppIcon v-else name="i-heroicons-cube" class="h-10 w-10 ws-faint" />
                   <span :class="['catalog-badge', `catalog-badge--${item.source}`]">
                     {{ $t(`catalog.source.${item.source}`) }}
                   </span>
@@ -140,7 +140,7 @@
                 <div class="catalog-card__body">
                   <p class="catalog-card__title">{{ item.title }}</p>
                   <p class="catalog-card__meta">
-                    <UIcon
+                    <AppIcon
                       v-if="item.verified"
                       name="i-heroicons-check-badge"
                       class="mr-0.5 inline h-3.5 w-3.5 align-[-2px] text-emerald-500"
@@ -163,7 +163,7 @@
           </div>
 
           <div v-else class="pc-card py-20 text-center">
-            <UIcon name="i-heroicons-magnifying-glass" class="mx-auto h-10 w-10 ws-faint" />
+            <AppIcon name="i-heroicons-magnifying-glass" class="mx-auto h-10 w-10 ws-faint" />
             <p class="mt-3 text-sm ws-muted">{{ $t('catalog.empty') }}</p>
             <button class="ws-chip mt-4 !px-4 !py-2" @click="resetFilters">{{ $t('catalog.clearFilters') }}</button>
           </div>

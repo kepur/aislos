@@ -2196,5 +2196,12 @@
       "accepted": "Primopredaja",
       "service": "Podrska"
     }
+  },
+  "rail": {
+    "label": "Navigacija radnog prostora",
+    "journey": "Tok nabavke",
+    "newRequest": "Objavi zahtev",
+    "collapse": "Skupi",
+    "expand": "Prosiri"
   }
 }

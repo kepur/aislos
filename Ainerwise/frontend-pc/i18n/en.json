@@ -2196,5 +2196,12 @@
       "accepted": "Signed off",
       "service": "After-sales"
     }
+  },
+  "rail": {
+    "label": "Workspace navigation",
+    "journey": "Journey",
+    "newRequest": "Post a request",
+    "collapse": "Collapse",
+    "expand": "Expand"
   }
 }

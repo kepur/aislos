@@ -237,6 +237,55 @@
   }
   .ws-menu-item-active .ws-menu-dot { background: var(--accent); transform: scale(1.5); }
 
+  /* Ripple for the workspace nav. The pseudo-element grows from the click
+     point (set as --rx/--ry by the handler) and fades, so a tap reads as
+     acknowledged before the route has finished changing. */
+  .ws-ripple {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .ws-ripple::after {
+    content: "";
+    position: absolute;
+    left: var(--rx, 50%);
+    top: var(--ry, 50%);
+    width: 0;
+    height: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .ws-ripple.is-rippling::after {
+    animation: ws-ripple-out 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  @keyframes ws-ripple-out {
+    0% { width: 0; height: 0; opacity: 0.26; }
+    100% { width: 240%; height: 240%; opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ws-ripple.is-rippling::after { animation: none; }
+  }
+
+  /* Workspace badge and active nav item. Both used to be hardcoded indigo
+     values picked for a dark bar, which washed out on the light themes and
+     clashed with the knx accent. */
+  .ws-badge {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  @supports not (color: color-mix(in srgb, red 50%, transparent)) {
+    .ws-badge { border-color: var(--accent); }
+  }
+  .ws-nav-on {
+    background: var(--accent-soft);
+    color: var(--accent) !important;
+    font-weight: 600;
+  }
+
   /* Account button in the workspace header. */
   .ws-avatar {
     border: 1px solid var(--card-border);

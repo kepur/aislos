@@ -16,7 +16,7 @@
             'journey-lamp--current': index === activeIndex,
           }"
         >
-          <UIcon v-if="index < activeIndex" name="i-heroicons-check" class="h-3.5 w-3.5" />
+          <AppIcon v-if="index < activeIndex" name="i-heroicons-check" class="h-3.5 w-3.5" />
           <span v-else class="journey-lamp__dot"></span>
         </span>
         <p class="journey-label" :class="{ 'journey-label--active': index <= activeIndex }">{{ stage.label }}</p>

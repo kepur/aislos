@@ -2196,5 +2196,12 @@
       "accepted": "验收完成",
       "service": "售后服务"
     }
+  },
+  "rail": {
+    "label": "工作台导航",
+    "journey": "采购流程",
+    "newRequest": "发布需求",
+    "collapse": "收起",
+    "expand": "展开"
   }
 }

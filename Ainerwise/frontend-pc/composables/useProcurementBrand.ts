@@ -5,14 +5,14 @@ const BRAND_STYLES = {
     key: 'aislos',
     accent: 'from-blue-500 to-indigo-500',
     accentText: 'text-indigo-300',
-    badge: 'bg-indigo-500/20 text-indigo-200 border-indigo-400/30',
+    badge: 'ws-badge',
     homePath: '/',
   },
   cebu: {
     key: 'cebu',
     accent: 'from-blue-500 to-indigo-500',
     accentText: 'text-indigo-300',
-    badge: 'bg-indigo-500/20 text-indigo-200 border-indigo-400/30',
+    badge: 'ws-badge',
     homePath: '/market',
   },
 } as const

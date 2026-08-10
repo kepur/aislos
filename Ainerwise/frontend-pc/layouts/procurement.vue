@@ -14,8 +14,9 @@
               v-for="link in primaryNav"
               :key="link.to"
               :to="link.to"
-              class="rounded-md px-2.5 py-1.5 font-medium transition hover:text-white hover:bg-white/5"
-              active-class="!text-indigo-300 bg-indigo-500/10"
+              class="ws-ripple rounded-md px-2.5 py-1.5 font-medium transition hover:text-white hover:bg-white/5"
+              active-class="ws-nav-on"
+              @click="ripple"
             >
               {{ link.label }}
             </NuxtLink>
@@ -68,7 +69,7 @@
                     role="menuitem"
                     @click="accountOpen = false"
                   >
-                    <UIcon :name="link.icon" class="h-4 w-4 shrink-0 opacity-70" />
+                    <AppIcon :name="link.icon" class="h-4 w-4 shrink-0 opacity-70" />
                     {{ link.label }}
                   </NuxtLink>
                 </div>
@@ -84,7 +85,7 @@
                   role="menuitem"
                   @click="logout"
                 >
-                  <UIcon name="i-heroicons-arrow-right-on-rectangle" class="h-4 w-4 shrink-0 opacity-70" />
+                  <AppIcon name="i-heroicons-arrow-right-on-rectangle" class="h-4 w-4 shrink-0 opacity-70" />
                   {{ $t('nav.logout') }}
                 </button>
               </div>
@@ -93,9 +94,12 @@
         </div>
       </div>
     </header>
-    <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
-      <slot />
-    </main>
+    <div class="mx-auto flex w-full max-w-[100rem] gap-0">
+      <WorkspaceRail v-if="isCebu" :is-business="isBusiness" />
+      <main class="min-w-0 flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:pl-6">
+        <slot />
+      </main>
+    </div>
   </div>
 </template>
 
@@ -128,6 +132,19 @@ const brandLabel = computed(() =>
 
 const { user } = useAuth()
 const { getAccountContext } = useCommerce()
+
+function ripple(event: MouseEvent) {
+  const el = event.currentTarget as HTMLElement | null
+  if (!el) return
+  const rect = el.getBoundingClientRect()
+  el.style.setProperty('--rx', `${event.clientX - rect.left}px`)
+  el.style.setProperty('--ry', `${event.clientY - rect.top}px`)
+  el.classList.remove('is-rippling')
+  // Force a reflow so removing and re-adding the class restarts the animation.
+  void el.offsetWidth
+  el.classList.add('is-rippling')
+  window.setTimeout(() => el.classList.remove('is-rippling'), 520)
+}
 const accountContext = ref<{ account_type?: string } | null>(null)
 // Company and team only mean something on a business account; a personal buyer
 // seeing a "team" entry is just noise.
