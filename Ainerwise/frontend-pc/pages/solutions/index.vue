@@ -14,7 +14,13 @@
       secondary-to="/ai-building-brain"
       :secondary-label="$t('home.intelligenceExplore')"
       :core-label="$t('home.hubCore')"
-    />
+    >
+      <template #background>
+        <ClientOnly>
+          <SolutionsHeroScene />
+        </ClientOnly>
+      </template>
+    </AinerwiseImmersiveHero>
 
     <!-- The eight lines, as a KNX-style capability grid -->
     <KnxSectionBlock

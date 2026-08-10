@@ -1,7 +1,12 @@
 <template>
   <div class="relative min-h-screen">
     <ClientOnly>
-      <LazyGlobal3DBackground v-if="isDark" />
+      <!-- Each theme gets its own scene rather than only dark having one:
+           dark keeps the particle network, knx gets a floor plan with signal
+           pulses, light gets drifting wireframe solids. -->
+      <LazyGlobal3DBackground v-if="theme === 'dark'" />
+      <LazyKnxGridBackground v-else-if="theme === 'knx'" />
+      <LazyLightPrismBackground v-else />
     </ClientOnly>
     <NuxtLayout>
       <NuxtPage />

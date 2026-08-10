@@ -1,7 +1,7 @@
 <template>
   <aside class="ws-rail" :class="{ 'ws-rail--collapsed': collapsed }" :aria-label="$t('rail.label')">
     <!-- Primary action stays pinned at the top, the way the 4106 rail does it. -->
-    <NuxtLink to="/market/post-request" class="ws-rail__cta" :title="collapsed ? $t('rail.newRequest') : undefined">
+    <NuxtLink :to="localized('/market/post-request')" class="ws-rail__cta" :title="collapsed ? $t('rail.newRequest') : undefined">
       <AppIcon name="i-heroicons-plus-circle" class="h-5 w-5 shrink-0" />
       <span v-if="!collapsed" class="truncate">{{ $t('rail.newRequest') }}</span>
     </NuxtLink>
@@ -33,7 +33,7 @@
             <NuxtLink
               v-for="item in group.items"
               :key="item.to"
-              :to="item.to"
+              :to="localized(item.to)"
               class="ws-rail__item"
               active-class="ws-rail__item--on"
               :title="collapsed ? item.label : undefined"
@@ -66,6 +66,7 @@
 const props = defineProps<{ isBusiness?: boolean }>()
 
 const { t } = useI18n()
+const { localized } = useLocalizedLink()
 
 // Remembered across navigations and reloads, so the rail stays how the user
 // left it rather than re-expanding on every page.

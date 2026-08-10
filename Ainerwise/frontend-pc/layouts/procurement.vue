@@ -3,7 +3,7 @@
     <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur-md">
       <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div class="flex items-center gap-3 min-w-0">
-          <NuxtLink :to="brand.homePath" class="text-2xl font-bold text-white shrink-0">
+          <NuxtLink :to="localized(brand.homePath)" class="text-2xl font-bold text-white shrink-0">
             {{ brandLabel }}
           </NuxtLink>
           <span :class="['rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider shrink-0', brand.badge]">
@@ -13,7 +13,7 @@
             <NuxtLink
               v-for="link in primaryNav"
               :key="link.to"
-              :to="link.to"
+              :to="localized(link.to)"
               class="ws-ripple rounded-md px-2.5 py-1.5 font-medium transition hover:text-white hover:bg-white/5"
               active-class="ws-nav-on"
               @click="ripple"
@@ -63,7 +63,7 @@
                   <NuxtLink
                     v-for="link in group.items"
                     :key="link.to"
-                    :to="link.to"
+                    :to="localized(link.to)"
                     class="ws-menu-item flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition"
                     active-class="ws-menu-item-active"
                     role="menuitem"
@@ -110,6 +110,7 @@ import { stripLocalePrefix } from '~/utils/localeRoutes'
 const { logout } = useAuth()
 const { t } = useI18n()
 const route = useRoute()
+const { localized } = useLocalizedLink()
 const policy = useState<PortalPolicy | null>('procurement-portal-policy', () => null)
 const { brand, portalKey } = useProcurementBrand(policy)
 // Routes are served under a locale prefix (/cn/market/...), so the raw path
