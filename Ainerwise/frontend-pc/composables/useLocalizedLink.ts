@@ -16,8 +16,10 @@ export function useLocalizedLink() {
   const route = useRoute()
   const prefix = computed(() => getLocalePrefixFromPath(route.path))
 
-  function localized(path: string) {
-    if (!path.startsWith('/')) return path
+  function localized(path?: string | null) {
+    // Some links are optional (a grid item with no `to`); guard so an absent
+    // path can never crash the render.
+    if (!path || !path.startsWith('/')) return path ?? undefined
     return prefix.value ? withLocalePrefix(path, prefix.value) : path
   }
 

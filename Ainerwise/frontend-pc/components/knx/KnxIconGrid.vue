@@ -4,7 +4,7 @@
       :is="item.to ? resolveLink : 'div'"
       v-for="item in items"
       :key="item.key || item.label"
-      :to="localized(item.to)"
+      :to="item.to ? localized(item.to) : undefined"
       class="knx-tile group"
     >
       <span
