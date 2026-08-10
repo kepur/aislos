@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6 h-full flex flex-col">
     <div class="flex items-center justify-between mb-2">
-      <h1 class="text-2xl font-bold text-slate-900">Message Center</h1>
+      <h1 class="text-2xl font-bold text-slate-900">{{ appStore.t('buyer.messages.title') }}</h1>
     </div>
 
     <div class="rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 via-white to-orange-50 px-5 py-4 shadow-sm">
@@ -10,9 +10,9 @@
           <UIcon name="i-heroicons-shield-check" class="h-5 w-5" />
         </div>
         <div>
-          <p class="text-sm font-semibold text-slate-900">Keep deal and delivery discussions in-site</p>
+          <p class="text-sm font-semibold text-slate-900">{{ appStore.t('buyer.messages.guardTitle') }}</p>
           <p class="mt-1 text-sm text-slate-600">
-            Email and Telegram can remind you to come back, but the binding record for disputes, proof, and order history stays inside this chat thread.
+            {{ appStore.t('buyer.messages.guardDesc') }}
           </p>
         </div>
       </div>
@@ -24,7 +24,7 @@
         <div class="p-4 border-b border-slate-200 bg-white">
           <div class="relative max-w-sm">
           <span class="absolute inset-y-0 left-3 flex items-center pointer-events-none"><svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></span>
-          <input type="text" placeholder="Search messages..."
+          <input type="text" :placeholder="appStore.t('buyer.messages.search')"
             class="w-full rounded-lg border border-slate-200 bg-white pl-9 pr-4 py-2 text-sm text-slate-800 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200" />
         </div>
         </div>
@@ -54,7 +54,7 @@
             <h3 class="font-medium text-slate-900">{{ activeContact.name }}</h3>
           </div>
           <UButton size="xs" color="gray" variant="ghost" :to="`/buyer/orders/${activeContact.orderId}`">
-            View Order #{{ activeContact.orderId }}
+            {{ appStore.t('buyer.messages.viewOrder') }} #{{ activeContact.orderId }}
           </UButton>
         </div>
 
@@ -77,10 +77,12 @@
             <UInput
               v-model="newMessage"
               class="flex-1"
-              placeholder="Type your message here..."
+              :placeholder="appStore.t('buyer.messages.placeholder')"
               autocomplete="off"
             />
-            <UButton type="submit" color="indigo" icon="i-heroicons-paper-airplane" :disabled="!newMessage.trim()">Send</UButton>
+            <UButton type="submit" color="indigo" icon="i-heroicons-paper-airplane" :disabled="!newMessage.trim()">
+              {{ appStore.t('buyer.messages.send') }}
+            </UButton>
           </div>
         </form>
       </div>
@@ -93,6 +95,8 @@ import { ref, nextTick } from 'vue'
 import type { Message } from '~/types'
 
 definePageMeta({ layout: 'buyer' })
+
+const appStore = useAppStore()
 
 const contacts = ref([
   {

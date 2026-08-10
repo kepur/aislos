@@ -18,7 +18,7 @@
     "store": "产品目录",
     "marketplace": "Agent 商店",
     "developers": "开发者",
-    "procurementMarket": "Market",
+    "procurementMarket": "采购市场",
     "catalog": "产品目录",
     "agents": "Agent 生态"
   },
@@ -157,7 +157,139 @@
     "aiSubtitle": "这些能力来自平台的 AI 层，而不是总线本身——标准 KNX 安装做不到。",
     "monitoringTitle": "持续监测什么",
     "monitoringSubtitle": "交付之后仍在采集的数据，也是年度服务价值的来源。",
-    "relatedTitle": "其他产品线"
+    "relatedTitle": "其他产品线",
+    "bySlug": {
+      "smart-hotel": {
+        "title": "智能酒店客房控制",
+        "description": "完整的智能酒店客房自动化，含客人检测、灯光场景、HVAC 控制与能耗优化。面向希望降低能耗并提升入住体验的酒店。",
+        "scenarios": [
+          "酒店",
+          "精品酒店",
+          "服务式公寓",
+          "度假村"
+        ]
+      },
+      "smart-villa": {
+        "title": "智能别墅与公寓改造",
+        "description": "为既有别墅与公寓升级智能照明、气候控制、安防与能耗监测。非侵入式改造，可配合现有线路。",
+        "scenarios": [
+          "别墅",
+          "公寓",
+          "住宅社区",
+          "度假屋"
+        ]
+      },
+      "cctv-access-control": {
+        "title": "CCTV 与门禁控制",
+        "description": "面向商业与住宅的专业监控与门禁系统：IP 摄像头、NVR、门禁、对讲与远程看护。",
+        "scenarios": [
+          "商业建筑",
+          "商铺",
+          "办公",
+          "住宅",
+          "停车场"
+        ]
+      },
+      "knx-lighting": {
+        "title": "KNX 照明与场景自动化",
+        "description": "基于 KNX 的专业照明控制，含场景管理、日光采集、在场检测，并可对接楼宇管理系统。",
+        "scenarios": [
+          "新建",
+          "改造",
+          "商业空间",
+          "高端住宅"
+        ]
+      },
+      "solar-energy-monitoring": {
+        "title": "光伏与能源监测",
+        "description": "实时光伏发电监测、用电跟踪与性能优化看板，兼容主流逆变器品牌。",
+        "scenarios": [
+          "光伏电站",
+          "商业建筑",
+          "工业",
+          "带光伏住宅"
+        ]
+      },
+      "factory-industrial-energy-brain": {
+        "title": "工厂自动化与工业能源大脑",
+        "description": "面向工厂、仓储与制造的工业智能建筑层，连接机台能耗、PLC/SCADA、网关、空压、冷机、电机、机器人、光伏/电池、OT 可视与生命周期维护。",
+        "scenarios": [
+          "工厂",
+          "仓储",
+          "制造厂",
+          "产业园"
+        ]
+      },
+      "storageguard": {
+        "title": "StorageGuard — 冷链与仓储合规监测",
+        "description": "冷链与精密仓储的 7×24 温湿度合规监测，含可审计报告、断电告警与年度校准服务。",
+        "scenarios": [
+          "医药仓",
+          "食品冷库",
+          "实验室"
+        ]
+      },
+      "kitchenguard": {
+        "title": "KitchenGuard — 商厨安全监测",
+        "description": "燃气、CO、漏水与温度安全监测，含切断、告警升级与年检证书。",
+        "scenarios": [
+          "商厨",
+          "酒店",
+          "中央厨房"
+        ]
+      },
+      "aquaguard": {
+        "title": "AquaGuard — 水质与排放合规监测",
+        "description": "pH、电导、浊度与 COD 监测，含环保合规报告与探头服务。",
+        "scenarios": [
+          "工厂",
+          "泳池",
+          "工艺用水"
+        ]
+      },
+      "energyguard": {
+        "title": "EnergyGuard — 光伏、储能与能源监测",
+        "description": "光伏、储能与建筑能耗监测，含电价、告警与优化看板。",
+        "scenarios": [
+          "光伏站",
+          "商业",
+          "工业"
+        ]
+      },
+      "factorypulse": {
+        "title": "FactoryPulse — 非侵入 OEE 与预测性维护",
+        "description": "非侵入式机台监测，提供 OEE 可视与预测性维护规划。",
+        "scenarios": [
+          "工厂",
+          "装配线"
+        ]
+      },
+      "assetpulse": {
+        "title": "AssetPulse — 高价值资产与工具追踪",
+        "description": "BLE/UWB/LoRa 资产追踪，含电子围栏与多站点库存报告。",
+        "scenarios": [
+          "仓储",
+          "多站点运营"
+        ]
+      },
+      "agribrain": {
+        "title": "AgriBrain — 温室与农场智能（面向未来）",
+        "description": "面向温室与农场的土壤、气候、水肥监测能力（未来就绪）。",
+        "scenarios": [
+          "温室",
+          "农场"
+        ]
+      },
+      "remote-maintenance": {
+        "title": "远程维护与支持",
+        "description": "对已交付智能建筑系统的持续远程监测、维护、固件更新与技术支持。含年度服务计划与响应保障。",
+        "scenarios": [
+          "已交付项目",
+          "酒店",
+          "办公"
+        ]
+      }
+    }
   },
   "products": {
     "title": "产品目录",
@@ -175,7 +307,63 @@
     "verified": "认证供应商",
     "allCategories": "全部分类",
     "filter": "筛选",
-    "noProducts": "暂无产品"
+    "noProducts": "暂无产品",
+    "intro": "AinerWise 聚焦中国一线、项目级供应链，如华为数字能源、阳光电源、隆基、小米生态、主流 CCTV/门禁厂商与认证 OEM/ODM 伙伴。这些是可进方案的积木，不是低价通货。",
+    "surfaceOfficial": "官方推荐",
+    "surfaceMarket": "市场产品",
+    "surfaceRecycled": "企业回收",
+    "marketLink": "AinerWise 市场",
+    "secondhandLink": "2Hands",
+    "loading": "正在加载产品…",
+    "loadError": "产品加载失败。",
+    "retry": "重试",
+    "refPrice": "€{price} 参考价",
+    "warrantyYears": "质保 {n} 年",
+    "supportYears": "支持 {years} 年",
+    "maintenanceYears": "{n} 年维护",
+    "tryAgain": "请重试。",
+    "categories": {
+      "knx-devices": "KNX 设备",
+      "gateways": "网关",
+      "sensors": "传感器",
+      "smart-panels": "智能面板",
+      "cctv": "CCTV",
+      "access-control": "门禁控制",
+      "network-devices": "网络设备",
+      "hvac-controllers": "HVAC 控制器",
+      "energy-meters": "电表",
+      "solar-monitoring": "光伏监测",
+      "lighting-control": "照明控制",
+      "home-assistant-compatible": "Home Assistant 兼容",
+      "service-packages-cat": "服务套餐",
+      "industrial-automation": "工业自动化",
+      "plc-scada-gateways": "PLC / SCADA 网关",
+      "machine-energy-monitoring": "机台能耗监测",
+      "storageguard-monitoring": "StorageGuard 监测"
+    },
+    "items": {
+      "solar-energy-gateway": {
+        "name": "光伏 / 电池 / 充电能源网关"
+      },
+      "ai-cctv-poe-camera": {
+        "name": "PoE AI CCTV 摄像头"
+      },
+      "industrial-plc-gateway": {
+        "name": "工业 PLC / Modbus / OPC UA 网关"
+      },
+      "edge-ai-building-box": {
+        "name": "本地 AI 建筑边缘盒"
+      },
+      "machine-energy-meter": {
+        "name": "非侵入式机台电能表"
+      },
+      "vfd-motor-monitor": {
+        "name": "变频器 / 电机与空压监测模块"
+      },
+      "plc-scada-robot-opcua-connector": {
+        "name": "PLC / SCADA 与机器人 OPC-UA 连接器"
+      }
+    }
   },
   "services": {
     "title": "服务套餐",
@@ -268,7 +456,7 @@
   "lead": {
     "title": "提交项目需求",
     "subtitle": "告诉我们您的项目情况，获取初步评估",
-    "step1": "基础信息",
+    "step1": "步骤 1",
     "step2": "联系信息",
     "step3": "现场信息",
     "projectType": "项目类型",
@@ -287,7 +475,626 @@
     "progress": "进度",
     "step1Label": "您计划什么类型的项目？",
     "step1Desc": "这是唯一的传统选择步骤。之后信息将通过 AI 式对话收集。",
-    "estimateWarning": "AI 预算输出仅为估算。最终报价需经人工审核、会议、现场勘察、供应商确认和签署合同。"
+    "estimateWarning": "AI 预算输出仅为估算。最终报价需经人工审核、会议、现场勘察、供应商确认和签署合同。",
+    "selectedProject": "已选项目",
+    "changeCategory": "更换类别",
+    "intakeKicker": "LangGraph 信息采集",
+    "collectStep": "逐步收集项目信息",
+    "aiAnalyze": "AI 分析",
+    "answerPlaceholder": "回答 AI 的问题…",
+    "working": "处理中…",
+    "send": "发送",
+    "submitting": "提交中…",
+    "submittedRequirement": "需求已提交。",
+    "submittedPhase1": "第一阶段方案请求已提交。",
+    "submittedFollowup": "管理员将审核 AI 估算并人工跟进。",
+    "projectPreview": "项目预览",
+    "percentComplete": "已完成 {n}%",
+    "levelTarget": "{level} 目标",
+    "statusDone": "已完成",
+    "statusActive": "进行中",
+    "statusPending": "待处理",
+    "selectedBehavior": "已选智能能力层级",
+    "estimateNotice": "仅为 AI 估算。最终报价需经人工审核、客户会议、现场勘察、供应商确认和签署合同。",
+    "leadScore": "线索评分",
+    "leadScoreDesc": "根据完整度、预算、联系方式、目标层级和第一阶段意向计算。",
+    "proposalDirections": "初步方案方向",
+    "device": "设备",
+    "support": "支持",
+    "readyPhase1Title": "可申请第一阶段方案",
+    "readyPhase1Desc": "免费 AI 估算仅作方向参考。第一阶段包含人工审核、更细 BOM、架构草案、供应商确认和一次会议。",
+    "requestPhase1": "申请第一阶段方案",
+    "tagGap": "AI 提问",
+    "tagIntake": "你的回复",
+    "tagAi": "AI 分析",
+    "tagReady": "可提交",
+    "tagPhase1": "第一阶段",
+    "tagSubmitted": "已提交",
+    "chatOpening": "好的。我将为「{category}」创建评估，并只询问下一个缺失的智能建筑问题。\n\n{prompt}",
+    "chatCaptured": "已记录。下一项缺失信息：\n\n{prompt}",
+    "chatComplete": "谢谢。信息已足够做初步估算。\n\n目标层级：{level} {levelLabel}\n\n{notice}",
+    "chatEnough": "信息已足够做初步 AI 估算。你可以将此评估提交给管理员审核。",
+    "chatPhase1Ack": "明白。我会将此标记为第一阶段意向。详细 BOM、架构图、供应商确认或最终报价前仍需人工审核。",
+    "chatSubmitted": "已提交。AinerWise 管理员会在任何报价或承诺前审核初步 AI 估算。",
+    "assistantSeed": "我想对以下项目做 AI 设施评估：{category}。",
+    "submitFailed": "提交失败",
+    "stages": {
+      "phase1Ready": "第一阶段就绪",
+      "qualified": "合格线索",
+      "warm": "温热线索",
+      "cold": "冷线索"
+    },
+    "modules": {
+      "category": "项目类别",
+      "location": "项目地点",
+      "site": "建筑 / 场地概况",
+      "existing": "现有系统",
+      "production": "生产 / 设备",
+      "goals": "智能目标",
+      "identity": "身份与门禁",
+      "energy": "能源与光伏",
+      "budget": "预算与服务周期",
+      "contact": "联系方式",
+      "storage_type": "仓储类型与库房",
+      "temperature_humidity": "温湿度",
+      "compliance_use": "合规用途",
+      "outage": "断电保护",
+      "alert_channels": "告警渠道",
+      "monitoring_points": "监测点位",
+      "calibration_cycle": "校准与服务"
+    },
+    "moduleHints": {
+      "category": "选择项目类型",
+      "location": "需要国家和城市",
+      "site": "面积、房间、楼层或负载",
+      "existing": "网络、CCTV、HVAC、太阳能、接入、KNX...",
+      "production": "工厂生产线、机器、机器人、公用设施、PLC/SCADA",
+      "goals": "能源、安全、舒适、人工智能、维护……",
+      "identity": "仅具有访问/AI 身份的项目需要",
+      "energy": "光伏、电池、电动汽车、关税、报告",
+      "budget": "预算范围和支持年限",
+      "contact": "姓名和电子邮件/电话",
+      "storage_type": "冷库、冰柜、药房冰箱、仓库……",
+      "temperature_humidity": "例如2-8°C、-18°C、<60% 相对湿度",
+      "compliance_use": "食品 (HACCP) 或制药 (GDP)、审核报告",
+      "outage": "断电风险和电流记录",
+      "alert_channels": "短信、电报、电子邮件、电话",
+      "monitoring_points": "房间和门的总分",
+      "calibration_cycle": "校准周期和服务期限"
+    },
+    "plans": {
+      "budget": {
+        "name": "预算计划",
+        "complexity": "起动机改造",
+        "risk": "中等风险",
+        "support": "1-3年",
+        "summary": "基本控制、必要的闭路电视/访问/网络/能源监控以及有限的自动化。",
+        "summaryIndustrial": "选定仪表、机器状态、OT 网关和基本警报的入门级工业可见性。"
+      },
+      "standard": {
+        "name": "标准计划",
+        "complexity": "实际交付",
+        "risk": "风险管理",
+        "support": "3-5年",
+        "summary": "传感器自动化、能源仪表板、远程维护和服务就绪设备选择。",
+        "summaryIndustrial": "线路级能源仪表板、PLC/SCADA 集成、压缩机/制冷机调度和远程维护。"
+      },
+      "premium_ai": {
+        "name": "高级人工智能计划",
+        "complexity": "需要人工审核",
+        "risk": "高评价",
+        "support": "5-10年",
+        "summary": "人工智能分析、身份/访问智能、本地人工智能选项和更深入的生命周期规划。",
+        "summaryIndustrial": "AI异常检测、预测性维护、本地OT数据网关、生产能源智能和SLA规划。"
+      },
+      "future_autonomous": {
+        "name": "未来自主计划",
+        "complexity": "概念演示",
+        "risk": "仅限定制",
+        "device": "定制工程",
+        "support": "定制SLA",
+        "summary": "机器人就绪和自主设施概念。工程评审前无固定价格。"
+      }
+    },
+    "categories": {
+      "villa": {
+        "label": "智能别墅 / 未来之家",
+        "description": "家庭 AI 大脑、本地隐私、家庭身份、舒适、能源、充电与智能房间设备。"
+      },
+      "school": {
+        "label": "学校 / 校园",
+        "description": "教室、安全、CO2、门禁、监控、网络、能耗报告与维护流程。"
+      },
+      "apartment": {
+        "label": "公寓楼",
+        "description": "公共区域、停车、访客门禁、计量表与住户支持的物业大脑。"
+      },
+      "office": {
+        "label": "企业办公楼",
+        "description": "会议室、访客门禁、占用、IT 网络与设施 AI 每日摘要。"
+      },
+      "factory": {
+        "label": "工厂 / 工业厂房",
+        "description": "工业自动化、机台能耗、PLC/SCADA、OT 网络、机器人、空压、冷机、电机与维护。"
+      },
+      "hotel": {
+        "label": "酒店 / 服务式公寓",
+        "description": "客房控制、离房节能、客房服务权限与远程维护。"
+      },
+      "energy": {
+        "label": "光伏 + 能源站",
+        "description": "光伏、电池、充电、电价、关键负载、告警与月度 AI 能耗报告。"
+      },
+      "storage": {
+        "label": "冷链 / 仓储（StorageGuard）",
+        "description": "温湿度合规、门磁事件、断电告警、审计报告、校准与年维护。"
+      },
+      "kitchen": {
+        "label": "商厨安全（KitchenGuard）",
+        "description": "燃气、CO、漏水与温度安全，自动切断、告警升级、年检证书与 AMC。"
+      },
+      "water": {
+        "label": "水质 / 排放合规（AquaGuard）",
+        "description": "pH、电导、浊度与 COD 监测，环保合规报告、校准与探头更换。"
+      },
+      "asset": {
+        "label": "资产与工具追踪（AssetPulse）",
+        "description": "BLE/UWB/LoRa 标签追踪、电子围栏、库存与多站点报告。"
+      },
+      "agri": {
+        "label": "温室 / 农场（AgriBrain — 未来）",
+        "description": "土壤、气候、水肥监测与季节服务的未来能力，待伙伴与需求验证。"
+      },
+      "retrofit": {
+        "label": "既有建筑改造",
+        "description": "升级旧线路、监控、网络、门禁与能耗可视，不过度承诺。"
+      },
+      "custom": {
+        "label": "定制未来建筑",
+        "description": "高级 AI、本地 AI 盒子、身份识别、机器人路径与人工工程评审。"
+      }
+    },
+    "levels": {
+      "L3": {
+        "label": "能耗优化",
+        "description": "聚焦能耗监测、场景、日程、看板、告警与生命周期报告。"
+      },
+      "L4": {
+        "label": "AI 辅助",
+        "description": "增加 AI 分析、异常检测、人工审核建议与智能运营摘要。"
+      },
+      "L5": {
+        "label": "本地 AI 大脑",
+        "description": "增加本地 AI 盒子、隐私优先身份、离线控制逻辑与跨系统编排。"
+      }
+    },
+    "questions": {
+      "villa": {
+        "location": {
+          "prompt": "别墅位于哪里？请包括国家和城市。",
+          "placeholder": "示例：塞尔维亚贝尔格莱德"
+        },
+        "building": {
+          "prompt": "大概面积、层数、主要房间清单是多少？",
+          "placeholder": "例如：320平方米，2层，客厅，厨房，4间卧室......"
+        },
+        "existing": {
+          "prompt": "已有哪些系统：网络、闭路电视、警报、HVAC、太阳能、电动汽车充电器、智能开关或 KNX？",
+          "placeholder": "描述当前的布线、互联网、闭路电视、太阳能、暖通空调……"
+        },
+        "goals": {
+          "prompt": "家庭应该变成什么样：节能、人工智能家庭大脑、安全、舒适、离线隐私，还是机器人？",
+          "placeholder": "示例：离线AI隐私、节能、人脸访问、电动汽车充电……"
+        },
+        "identity": {
+          "prompt": "您是否需要人脸识别、访客二维码、车牌、指纹或未来声纹等身份特征？",
+          "placeholder": "列出所需的访问和身份功能..."
+        },
+        "energy": {
+          "prompt": "您是否需要太阳能、电池、电动汽车充电、高峰/非高峰电价逻辑或设备能源优化？",
+          "placeholder": "描述光伏、电池、电动汽车和能源目标..."
+        },
+        "budget": {
+          "prompt": "我们应该围绕什么预算范围和服务期限进行设计？",
+          "placeholder": "示例：15,000-50,000 欧元，5 年支持"
+        },
+        "contact": {
+          "prompt": "最后，我们应该联系谁？请提供姓名、电子邮件和可选的 Telegram/WhatsApp。",
+          "placeholder": "示例：Wei，wei{'@'}example.com，Telegram {'@'}..."
+        }
+      },
+      "school": {
+        "location": {
+          "prompt": "校园位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "building": {
+          "prompt": "涉及多少栋大楼、教室、楼层、实验室、管理区域和学生？",
+          "placeholder": "示例：2 栋大楼、32 间教室、600 名学生..."
+        },
+        "existing": {
+          "prompt": "已经安装了哪些现有的闭路电视、访问控制、网络、HVAC、太阳能或 BMS 系统？",
+          "placeholder": "描述现有系统和痛点..."
+        },
+        "goals": {
+          "prompt": "首要目标是什么：安全、节能、教室舒适度、实验室访问、网络可视性或维护？",
+          "placeholder": "列出最重要的优先事项..."
+        },
+        "energy": {
+          "prompt": "您是否需要太阳能监控、教室二氧化碳排放、暖通空调调度或每月能源报告？",
+          "placeholder": "描述能源和环境需求..."
+        },
+        "budget": {
+          "prompt": "我们应该假设什么预算范围和支持期限？",
+          "placeholder": "示例：50k-100k 欧元，5 年生命周期支持"
+        },
+        "contact": {
+          "prompt": "AinerWise 应联系谁进行本次校园评估？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "apartment": {
+        "location": {
+          "prompt": "公寓楼位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "building": {
+          "prompt": "涉及多少个单位、楼层、公共区域、停车位、电表？",
+          "placeholder": "示例：40 个单位、8 层、车库、大堂..."
+        },
+        "existing": {
+          "prompt": "现有的对讲系统、闭路电视、门禁、仪表、照明或网络系统有哪些？",
+          "placeholder": "描述当前系统..."
+        },
+        "goals": {
+          "prompt": "应该改进哪些方面：访客通道、公共区域能源、租户体验、停车、维修工作流程或安全？",
+          "placeholder": "列出财产目标..."
+        },
+        "energy": {
+          "prompt": "您是否需要公共区域能源报告、公共负载的光伏发电或电表监控？",
+          "placeholder": "能源和计量需求..."
+        },
+        "budget": {
+          "prompt": "什么样的预算范围和服务期限是现实的？",
+          "placeholder": "示例：15,000-50,000 欧元，3 年支持"
+        },
+        "contact": {
+          "prompt": "我们应该联系谁进行财产跟进？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "office": {
+        "location": {
+          "prompt": "办公楼位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "building": {
+          "prompt": "办公室有多大、有多少层、有多少员工、会议室、IT 室和访客区？",
+          "placeholder": "示例：4100 平方米，4 层，12 间会议室..."
+        },
+        "existing": {
+          "prompt": "现有哪些门禁、闭路电视、网络、HVAC、预订或 BMS 系统到位？",
+          "placeholder": "描述一下当前的办公系统..."
+        },
+        "goals": {
+          "prompt": "目标是什么：会议自动化、访客访问、节能、工作场所利用率、本地人工智能或设施摘要？",
+          "placeholder": "列出办公室人工智能/设施目标..."
+        },
+        "identity": {
+          "prompt": "您是否需要员工身份、访客二维码、人脸访问、移动凭证或仅限管理员的 AI 权限？",
+          "placeholder": "描述身份和访问需求..."
+        },
+        "budget": {
+          "prompt": "我们应该假设什么预算范围和维护周期？",
+          "placeholder": "示例：50k-100k 欧元，5 年支持"
+        },
+        "contact": {
+          "prompt": "办公室项目联系人是谁？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "factory": {
+        "location": {
+          "prompt": "工厂、厂房或仓库位于哪里？",
+          "placeholder": "国家、城市、工业园区（如果相关）"
+        },
+        "building": {
+          "prompt": "工厂规模是多少：生产面积、楼层/区域、生产线、仓库、公用设施和班次？",
+          "placeholder": "示例：12,000 平方米、3 条生产线、压缩机房、冷水机组、2 班制..."
+        },
+        "existing": {
+          "prompt": "现有哪些 OT/IT 系统：PLC、SCADA、BMS、仪表、VFD、压缩机、冷水机、机器人、CCTV、门禁、太阳能或 MES？",
+          "placeholder": "列出 PLC/SCADA 品牌、协议、仪表、机器、网络、PV..."
+        },
+        "production": {
+          "prompt": "应监控或链接哪些机械或生产设备？",
+          "placeholder": "例如：数控机床、输送机、机械臂、泵、锅炉、冷水机、压缩机、包装线..."
+        },
+        "goals": {
+          "prompt": "应该改进什么：机器正常运行时间、线路能源、峰值需求、电能质量、预测性维护、安全可见性或生产报告？",
+          "placeholder": "列出工业自动化和业务目标..."
+        },
+        "energy": {
+          "prompt": "主要能源负荷和能源资产有哪些：光伏、电池、电动汽车、压缩机、冷水机组、电机、变频器、泵、烤箱或峰值电价？",
+          "placeholder": "描述负载概况、资费问题和监控目标..."
+        },
+        "identity": {
+          "prompt": "您是否需要员工/访客访问、机器区域权限、OT 网络隔离、CCTV AI 或安全边界规则？",
+          "placeholder": "访问、安全、OT/IT 分离、限制区域..."
+        },
+        "budget": {
+          "prompt": "我们应该围绕什么预算范围和服务/SLA 期限进行设计？",
+          "placeholder": "示例：50k-300k 欧元，5 年生命周期支持，生产停机敏感"
+        },
+        "contact": {
+          "prompt": "AinerWise 应该联系谁来进行工厂工程跟进？",
+          "placeholder": "姓名、职位、公司电子邮件、电话或 Telegram"
+        }
+      },
+      "hotel": {
+        "location": {
+          "prompt": "酒店或酒店式公寓位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "building": {
+          "prompt": "涉及多少个房间、楼层、房型、公共区域、服务区域？",
+          "placeholder": "示例：48个房间，5层，大堂，走廊......"
+        },
+        "existing": {
+          "prompt": "现有的门锁、恒温器、CCTV、PMS、网络或房间控制有哪些？",
+          "placeholder": "描述当前的酒店系统..."
+        },
+        "goals": {
+          "prompt": "哪些方面需要改进：宾客欢迎模式、外出节能、家政权限、房间状态或维护？",
+          "placeholder": "列出宾客和运营目标..."
+        },
+        "energy": {
+          "prompt": "您是否需要 HVAC 节能、房间占用感应、太阳能仪表板或每月酒店报告？",
+          "placeholder": "能源和房间控制需求..."
+        },
+        "budget": {
+          "prompt": "我们应该围绕什么预算范围和支持期限进行设计？",
+          "placeholder": "示例：50k-100k 欧元，5 年生命周期支持"
+        },
+        "contact": {
+          "prompt": "我们应该联系谁来进行酒店跟进？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "energy": {
+        "location": {
+          "prompt": "太阳能或能源站点位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "building": {
+          "prompt": "应监控哪些建筑或场地负载：办公室、仓库、酒店、电动汽车、关键负载？",
+          "placeholder": "描述站点和负载概况..."
+        },
+        "existing": {
+          "prompt": "已有哪些光伏、逆变器、电池、电表、电动汽车充电器或 EMS 设备？",
+          "placeholder": "逆变器品牌、电池、仪表、电动汽车充电器..."
+        },
+        "goals": {
+          "prompt": "您想要优化什么：光伏自耗、峰值电价、电动汽车充电、电池、警报或报告？",
+          "placeholder": "列出能源优化目标..."
+        },
+        "energy": {
+          "prompt": "您是否需要资费规则、负载优先级、异常警报、月度报告或远程维护？",
+          "placeholder": "描述能源逻辑和报告需求..."
+        },
+        "budget": {
+          "prompt": "我们应该假设什么预算范围和支持期限？",
+          "placeholder": "示例：15,000-50,000 欧元，3 年支持"
+        },
+        "contact": {
+          "prompt": "AinerWise 应联系谁进行能源评估？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "storage": {
+        "location": {
+          "prompt": "存储设施位于哪里？请包括国家和城市。",
+          "placeholder": "示例：塞尔维亚贝尔格莱德"
+        },
+        "storage_type": {
+          "prompt": "这是什么类型的存储以及有多少个房间或区域：步入式冷藏室、冷冻室、药房冰箱、常温仓库或实验室？",
+          "placeholder": "示例：3 个冷藏室 + 1 个冰柜、食品配送"
+        },
+        "temperature_humidity": {
+          "prompt": "每个房间必须保持在什么温度和湿度范围内？",
+          "placeholder": "示例：2-8°C 冷藏、-18°C 冷冻、<60% RH"
+        },
+        "compliance_use": {
+          "prompt": "这是针对食品 (HACCP) 还是药品/医疗 (GDP) 商品，您是否需要审核就绪的合规报告？",
+          "placeholder": "示例：制药业，需要每月 GDP 审计报告"
+        },
+        "outage": {
+          "prompt": "断电风险是什么？您今天是否已经进行了温度记录或监控？",
+          "placeholder": "示例：偶尔中断，现在只有手动纸质日志"
+        },
+        "alert_channels": {
+          "prompt": "中断和超出范围警报应如何通知您：短信、电报、电子邮件、电话或应用程序内？",
+          "placeholder": "示例：电报 + 电子邮件、紧急警报电话"
+        },
+        "monitoring_points": {
+          "prompt": "所有房间、门和传感器总共需要多少个监控点？",
+          "placeholder": "示例：约24点"
+        },
+        "calibration_cycle": {
+          "prompt": "传感器必须多久校准一次？您希望服务运行多少年？",
+          "placeholder": "示例：每年校准，3 年服务期限"
+        },
+        "budget": {
+          "prompt": "我们应该围绕什么预算范围和服务期限进行设计？",
+          "placeholder": "示例：6,000-18,000 欧元，3 年合规支持"
+        },
+        "contact": {
+          "prompt": "最后，AinerWise 应该联系谁来进行 StorageGuard 评估？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "kitchen": {
+        "location": {
+          "prompt": "厨房/场地位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "kitchen_count": {
+          "prompt": "有多少个厨房或烹饪线，是否有自动燃气切断阀？",
+          "placeholder": "示例：2 个厨房，现有燃气阀"
+        },
+        "gas_type": {
+          "prompt": "使用什么气体类型（天然气、液化石油气）？您是否需要二氧化碳和水泄漏监测？",
+          "placeholder": "示例：天然气 + CO + 水槽下泄漏"
+        },
+        "alarm_contacts": {
+          "prompt": "谁应该接收警报（经理、物业、维护）以及通过哪些渠道？",
+          "placeholder": "示例：经理短信、物业电报、呼叫升级"
+        },
+        "service_term": {
+          "prompt": "是否需要年度安全检查证书，需要多少年？",
+          "placeholder": "示例：年检、3 年 AMC"
+        },
+        "budget": {
+          "prompt": "What budget range should we design around?",
+          "placeholder": "示例：6,000-16,000 欧元"
+        },
+        "contact": {
+          "prompt": "AinerWise 应联系谁进行 KitchenGuard 评估？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "water": {
+        "location": {
+          "prompt": "供水/污水处理厂位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "water_system": {
+          "prompt": "这是什么水系统（污水、水池、冷却、工艺）以及有多少个排放/采样点？",
+          "placeholder": "示例：工厂废水、2 个排水口"
+        },
+        "parameters": {
+          "prompt": "必须监测哪些参数：pH、电导率、浊度、COD、温度？",
+          "placeholder": "示例：pH、COD、浊度"
+        },
+        "reporting": {
+          "prompt": "您是否需要政府/环境合规报告？多久需要一次？",
+          "placeholder": "示例：监管机构月度报告"
+        },
+        "service_term": {
+          "prompt": "探头必须多久校准/更换一次，以及使用多少年？",
+          "placeholder": "示例：季度校准，3 年服务"
+        },
+        "budget": {
+          "prompt": "我们应该假设什么预算范围？",
+          "placeholder": "示例：12,000-30,000 欧元"
+        },
+        "contact": {
+          "prompt": "AinerWise 应联系谁进行 AquaGuard 评估？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "asset": {
+        "location": {
+          "prompt": "资产/地点位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "building": {
+          "prompt": "什么资产、有多少、室内还是室外、跨多少个站点？",
+          "placeholder": "示例：300 个工具，2 个仓库"
+        },
+        "goals": {
+          "prompt": "您需要什么：地理围栏警报、库存盘点、位置准确性、多站点报告？",
+          "placeholder": "示例：地理围栏+库存"
+        },
+        "monitoring_points": {
+          "prompt": "大约需要跟踪多少个标签/资产？",
+          "placeholder": "示例：大约 300 个标签"
+        },
+        "budget": {
+          "prompt": "我们应该假设什么预算范围和标签订阅期？",
+          "placeholder": "示例：9k-22k 欧元，3 年期"
+        },
+        "contact": {
+          "prompt": "AinerWise 应联系谁进行此 AssetPulse 评估？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "agri": {
+        "location": {
+          "prompt": "温室/农场位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "building": {
+          "prompt": "规模是多少：面积、区域/温室数量、作物？",
+          "placeholder": "示例：2 个温室，1 公顷"
+        },
+        "goals": {
+          "prompt": "监测/优化什么：土壤湿度、气候、灌溉、肥料？",
+          "placeholder": "示例：土壤+灌溉"
+        },
+        "budget": {
+          "prompt": "这是概念、试点还是实施，预算是多少？",
+          "placeholder": "示例：先行试点"
+        },
+        "contact": {
+          "prompt": "AinerWise 应该联系谁来了解这个 AgriBrain 概念？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "retrofit": {
+        "location": {
+          "prompt": "现有建筑位于何处？",
+          "placeholder": "国家和城市"
+        },
+        "building": {
+          "prompt": "涉及什么建筑类型、面积、楼层和房间/区域？",
+          "placeholder": "描述建筑结构..."
+        },
+        "existing": {
+          "prompt": "当今存在哪些系统，哪些系统已经过时或令人痛苦？",
+          "placeholder": "布线、闭路电视、门禁、暖通空调、网络、照明……"
+        },
+        "goals": {
+          "prompt": "改造目标是什么：基本控制、安全升级、能源仪表板、KNX 还是家庭助理？",
+          "placeholder": "描述期望的改造结果..."
+        },
+        "budget": {
+          "prompt": "我们应该假设什么预算范围和支持期限？",
+          "placeholder": "示例：5,000-15,000 欧元，3 年支持"
+        },
+        "contact": {
+          "prompt": "我们应该联系谁进行改造跟进？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      },
+      "custom": {
+        "location": {
+          "prompt": "这个未来的建筑或概念项目将位于哪里？",
+          "placeholder": "国家和城市"
+        },
+        "building": {
+          "prompt": "这是什么样的建筑或场地？我们应该假设什么规模？",
+          "placeholder": "描述建筑类型、面积、楼层、房间..."
+        },
+        "goals": {
+          "prompt": "您想象的未来能力是什么：本地人工智能大脑、机器人、数字人、自主能源、身份或预测性维护？",
+          "placeholder": "描述一下愿景..."
+        },
+        "existing": {
+          "prompt": "哪些系统已经存在或必须集成？",
+          "placeholder": "KNX、HA、CCTV、HVAC、太阳能、机器人平台..."
+        },
+        "budget": {
+          "prompt": "应该从什么预算范围和阶段开始：概念、第一阶段提案或实施？",
+          "placeholder": "示例：首先仅设计，然后提供 5 年支持"
+        },
+        "contact": {
+          "prompt": "我们应该联系谁进行定制工程审核？",
+          "placeholder": "姓名、电子邮件、电话或电报"
+        }
+      }
+    },
+    "submitShort": "提交"
   },
   "supplier": {
     "title": "成为供应商",
@@ -882,7 +1689,370 @@
     "lc4": "AI 运行报告",
     "lc4Hint": "用人话说明这一年发生了什么",
     "ctaTitle": "先做一次评估,再谈方案",
-    "ctaSubtitle": "描述你的建筑与目标,AI 会先把问题问清楚,再由工程师给出可执行的下一步。"
+    "ctaSubtitle": "描述你的建筑与目标,AI 会先把问题问清楚,再由工程师给出可执行的下一步。",
+    "scenarios": {
+      "villa": {
+        "name": "智能别墅 / 未来之家",
+        "type": "住宅 AI 大脑",
+        "boundary": "现可交付至高级定制",
+        "positioning": "面向家庭的本地 AI 建筑系统，连接身份识别、房间、能源、安防、厨房、卫浴、卧室、充电、花园与运维服务。",
+        "sense": [
+          "家庭成员身份",
+          "在场与房间占用",
+          "漏水、烟雾、燃气、湿度",
+          "光伏、电池与充电状态"
+        ],
+        "control": [
+          "灯光场景与窗帘",
+          "HVAC 舒适模式",
+          "门禁、访客与车库权限",
+          "智能卧室、厨房与卫浴设备"
+        ],
+        "optimize": [
+          "睡眠与舒适曲线",
+          "光伏优先充电",
+          "低电价时段用电调度",
+          "空房节能"
+        ],
+        "maintain": [
+          "远程网关健康",
+          "固件与备份检查",
+          "备件计划",
+          "年度生命周期复盘"
+        ]
+      },
+      "school": {
+        "name": "学校 / 校园",
+        "type": "校园 AI 大脑",
+        "boundary": "视项目而定",
+        "positioning": "面向教室舒适、安全、网络可视、能耗报告与维护流程的校园运营层。",
+        "sense": [
+          "师生与访客分区",
+          "CO2、温湿度与噪声",
+          "摄像头与网络设备健康",
+          "课后占用情况"
+        ],
+        "control": [
+          "教室灯光与 HVAC 日程",
+          "实验室与机房门禁",
+          "访客区权限",
+          "校园告警流程"
+        ],
+        "optimize": [
+          "课表联动节能",
+          "屋顶光伏可视",
+          "高耗能楼宇排序",
+          "每日设施摘要"
+        ],
+        "maintain": [
+          "离线摄像头告警",
+          "AP 与交换机状态",
+          "报修工单创建",
+          "月度能耗报告"
+        ]
+      },
+      "apartment": {
+        "name": "公寓楼",
+        "type": "物业 AI 大脑",
+        "boundary": "现可交付 / 视项目而定",
+        "positioning": "覆盖公区能耗、门禁、CCTV、停车、住户体验、报修流程与生命周期服务的物业层。",
+        "sense": [
+          "公区占用",
+          "停车车牌",
+          "公区照明与表计数据",
+          "访客与快递门禁事件"
+        ],
+        "control": [
+          "公区照明",
+          "访客二维码通行",
+          "停车闸机权限",
+          "住户服务通知"
+        ],
+        "optimize": [
+          "公区分摊能耗",
+          "公区光伏负载",
+          "维护优先级",
+          "月度物业报告"
+        ],
+        "maintain": [
+          "门禁日志",
+          "摄像头状态",
+          "表计网关健康",
+          "预防性维护提醒"
+        ]
+      },
+      "office": {
+        "name": "企业办公楼",
+        "type": "设施 AI 大脑",
+        "boundary": "AI 身份能力需高级定制",
+        "positioning": "覆盖访客管理、会议室、员工舒适、IT 可视、门禁与能耗优化的办公设施系统。",
+        "sense": [
+          "员工与访客在场",
+          "会议室使用率",
+          "机房温度与 UPS 状态",
+          "网络 AP 与交换机健康"
+        ],
+        "control": [
+          "会议室场景",
+          "访客临时通行",
+          "楼层 HVAC 日程",
+          "屏幕、灯光与窗帘模式"
+        ],
+        "optimize": [
+          "空区节能",
+          "工位利用率",
+          "每日设施摘要",
+          "高耗能楼层告警"
+        ],
+        "maintain": [
+          "CCTV 与门禁可用性",
+          "网络事件跟踪",
+          "固件更新计划",
+          "基于 SLA 的服务流程"
+        ]
+      },
+      "factory": {
+        "name": "工厂 / 工业厂房",
+        "type": "工业能源 AI 大脑",
+        "boundary": "视项目而定 / 高级定制",
+        "positioning": "覆盖产线、机台、PLC/SCADA、OT 网络、空压、冷机、电机、机器人、光伏/电池、安全边界与生命周期维护的工业运营层。",
+        "sense": [
+          "机台状态、运行、告警与停机",
+          "产线级能耗、电能质量与峰值负荷",
+          "空压、冷机、电机、变频器、泵与锅炉负载",
+          "PLC/SCADA/Modbus/MQTT/OPC-UA 集成信号"
+        ],
+        "control": [
+          "空压与冷机能耗日程",
+          "非安全设定点建议",
+          "机器人/AGV 调度接口",
+          "维护工单触发"
+        ],
+        "optimize": [
+          "削峰与负荷转移",
+          "机台级能耗浪费",
+          "生产排程能耗规划",
+          "异常检测与预测性维护"
+        ],
+        "maintain": [
+          "OT 网关与网络健康",
+          "PLC/SCADA 集成备注",
+          "关键备件与 SLA 计划",
+          "安全边界与停机复盘"
+        ]
+      },
+      "hotel": {
+        "name": "酒店 / 服务式公寓",
+        "type": "客房体验 + 能源",
+        "boundary": "现可交付 / 视项目而定",
+        "positioning": "客房控制与远程维护系统，在降低能耗浪费的同时提升入住、舒适与房态可视。",
+        "sense": [
+          "客人入住状态",
+          "房间占用",
+          "客房服务权限",
+          "公区 CCTV 与门禁事件"
+        ],
+        "control": [
+          "欢迎与离房场景",
+          "客房 HVAC 与灯光",
+          "窗帘与面板",
+          "员工权限"
+        ],
+        "optimize": [
+          "空房节能",
+          "客房舒适预设",
+          "月度能耗报告",
+          "预防性维护计划"
+        ],
+        "maintain": [
+          "客房设备健康",
+          "远程排障",
+          "备件面板计划",
+          "服务套餐跟踪"
+        ]
+      },
+      "energy": {
+        "name": "光伏 + 能源站",
+        "type": "能源 AI 大脑",
+        "boundary": "视项目而定",
+        "positioning": "面向光伏、储能、充电、关键负载、电价、告警与能耗报告的可视与优化层。",
+        "sense": [
+          "光伏发电",
+          "电池 SOC",
+          "逆变器与电表状态",
+          "充电会话"
+        ],
+        "control": [
+          "负载优先级规则",
+          "充电时间窗",
+          "电池放电策略",
+          "关键负载告警"
+        ],
+        "optimize": [
+          "峰电价削减",
+          "光伏自发自用",
+          "故障与异常检测",
+          "月度 AI 能源建议"
+        ],
+        "maintain": [
+          "逆变器健康",
+          "电表网关状态",
+          "远程诊断",
+          "生命周期服务计划"
+        ]
+      }
+    },
+    "capabilities": {
+      "sense": {
+        "kicker": "感知",
+        "title": "建筑能知道什么"
+      },
+      "control": {
+        "kicker": "控制",
+        "title": "系统能操作什么"
+      },
+      "optimize": {
+        "kicker": "优化",
+        "title": "AI 能帮到哪里"
+      },
+      "maintain": {
+        "kicker": "维护",
+        "title": "服务如何持续"
+      }
+    },
+    "tiers": {
+      "budget": {
+        "name": "经济方案",
+        "estimate": "基础估算区间",
+        "note": "适合首次改造与有限范围。",
+        "text": "联网控制、基础传感器、CCTV/门禁基础能力，以及 1-3 年支持。"
+      },
+      "standard": {
+        "name": "标准方案",
+        "estimate": "最适合真实项目",
+        "note": "早期 AinerWise 交付推荐默认档。",
+        "text": "传感自动化、能耗监测、远程维护与可服务硬件。"
+      },
+      "premium": {
+        "name": "高级 AI 方案",
+        "estimate": "需人工审核",
+        "note": "需现场、供应商与工程验证。",
+        "text": "AI 分析、身份门禁、本地 AI 盒子、CCTV AI 与高级能源逻辑。"
+      },
+      "future": {
+        "name": "未来自主方案",
+        "estimate": "需定制工程",
+        "note": "不展示固定价格。",
+        "text": "机器人就绪建筑、预测性维护、自主能源决策与未来设施大脑。"
+      }
+    },
+    "tags": {
+      "availableNow": {
+        "name": "现可交付",
+        "text": "通常可用现有硬件与常规项目检查交付。"
+      },
+      "projectDependent": {
+        "name": "视项目而定",
+        "text": "取决于现场、布线、协议、产品可得性与安装能力。"
+      },
+      "advancedCustom": {
+        "name": "高级定制",
+        "text": "需要人工工程评审与付费设计阶段。"
+      },
+      "futureReady": {
+        "name": "面向未来",
+        "text": "架构可预留升级路径，但不承诺今天交付。"
+      },
+      "conceptDemo": {
+        "name": "概念演示",
+        "text": "用于说明愿景，不作为报价承诺。"
+      }
+    },
+    "levelsDetail": {
+      "L1": {
+        "name": "联网控制",
+        "text": "在可靠总线上完成开关、场景与日程。稳定，但建筑本身并不“知道”发生了什么。"
+      },
+      "L2": {
+        "name": "传感自动化",
+        "text": "由在场、光照与温度传感器驱动自动行为，仍是规则驱动。"
+      },
+      "L3": {
+        "name": "监测与优化",
+        "text": "持续采集能耗与设备数据；平台报告漂移与浪费位置。"
+      },
+      "L4": {
+        "name": "预测",
+        "text": "按站点学习模式：故障前发现异常，设定点随真实占用调整。"
+      },
+      "L5": {
+        "name": "AI 辅助运行",
+        "text": "建筑用自然语言提出动作建议；涉及费用或安全变更的决策仍需人工批准。"
+      },
+      "L6": {
+        "name": "自主（未来）",
+        "text": "机器人就绪流程与自调度维护。架构预留路径，今天不做交付承诺。"
+      }
+    }
+  },
+  "agentMarketplace": {
+    "eyebrow": "AISLOS Agent 商店",
+    "title": "安装受治理的 AI 员工。",
+    "subtitle": "每个 Agent 发布前均经过审核。安装不会自动授予公司数据权限；权限始终显式且可审计。",
+    "buildCta": "创建 Agent",
+    "aiEmployee": "AI 员工",
+    "reviewed": "已审核",
+    "fallbackDesc": "受治理的 AISLOS Agent 能力。",
+    "included": "已包含",
+    "perMonth": "{price} {currency}/月",
+    "install": "安装",
+    "myAgents": "我已安装的 Agent",
+    "installMeta": "{status} · 工作区 {workspace} · 权限仍单独治理",
+    "uninstall": "卸载",
+    "selectWorkspace": "管理已安装 Agent 前请先选择工作区。",
+    "selectWorkspaceInstall": "安装 Agent 前请先选择工作区。",
+    "installedOk": "{name} 已安装。未自动授予任何数据权限。",
+    "installFailed": "安装失败"
+  },
+  "portals": {
+    "consumer_pc": "AinerWise 消费平台",
+    "consumer_h5": "AinerWise",
+    "customer_pc": "客户工作台",
+    "aislos": "AISLOS",
+    "developer": "AISLOS 开发者"
+  },
+  "developersPortal": {
+    "eyebrow": "AISLOS 开发者门户",
+    "title": "构建能安全进入真实工作流的 AI 员工。",
+    "subtitle": "发布 Agent 清单、申请最小权限、通过人工审核，并通过 Agent 市场触达方案公司。",
+    "submitAgent": "提交 Agent",
+    "browseMarketplace": "浏览市场",
+    "manifestTitle": "清单 v{version}",
+    "governed": "默认受治理",
+    "step1Title": "1. 提交",
+    "step1Desc": "通过版本化清单描述工作流、定价与申请权限。",
+    "step2Title": "2. 人工审核",
+    "step2Desc": "AISLOS 会在上架给客户前审核用途与风险。",
+    "step3Title": "3. 安全安装",
+    "step3Desc": "第三方 Agent 默认暂停，且不授予任何数据权限。",
+    "consoleEyebrow": "开发者控制台",
+    "consoleTitle": "提交 Agent 以供审核",
+    "consoleSubtitle": "申请权限仅用于审核。批准与安装本身不会授予数据访问权。",
+    "phName": "Agent 名称",
+    "phRole": "角色标题，例如 KNX 设计专家",
+    "phVersion": "版本",
+    "phDescription": "这个 Agent 做什么",
+    "phWorkflows": "工作流，逗号分隔",
+    "phScopes": "申请权限，逗号分隔",
+    "phPrice": "月费（EUR）",
+    "submitting": "提交中…",
+    "submitReview": "提交人工审核",
+    "myListings": "我的上架",
+    "reviewNotes": "审核：{notes}",
+    "requestedScopes": "申请权限：{scopes}",
+    "none": "无",
+    "emptyListings": "尚无已提交的 Agent。",
+    "submitFailed": "提交失败"
   },
   "catalog": {
     "eyebrow": "统一目录",

@@ -182,9 +182,9 @@
 const { t } = useI18n()
 const { scenarios, capabilityBlocks } = useBuildingBrain()
 
-const activeKey = ref(scenarios[0].key)
+const activeKey = ref('villa')
 const selectedLevel = ref<'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'L6'>('L4')
-const active = computed(() => scenarios.find((s) => s.key === activeKey.value) || scenarios[0])
+const active = computed(() => scenarios.value.find((s) => s.key === activeKey.value) || scenarios.value[0])
 
 const demoLevelOptions = computed(() => [
   { key: 'L1' as const, label: t('brain.demoLevelL1') },

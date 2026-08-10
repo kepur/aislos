@@ -31,7 +31,7 @@
                 <UInput v-model="profileForm.full_name" :placeholder="t('buyer.settings.fullNamePlaceholder')" />
               </UFormGroup>
               <UFormGroup :label="t('buyer.settings.mobile')">
-                <div class="grid grid-cols-[130px_1fr] gap-2">
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(9rem,11rem)_minmax(0,1fr)]">
                   <USelect
                     v-model="profileForm.phone_country"
                     :options="dialOptions"
@@ -47,12 +47,24 @@
               <UInput :model-value="profileForm.email" disabled />
             </UFormGroup>
 
-            <div class="grid gap-4 sm:grid-cols-3">
-              <UFormGroup :label="t('buyer.settings.telegram')">
-                <UInput v-model="profileForm.telegram_chat_id" :placeholder="t('buyer.settings.telegramPlaceholder')" />
-              </UFormGroup>
+            <UFormGroup :label="t('buyer.settings.telegram')">
+              <UInput v-model="profileForm.telegram_chat_id" :placeholder="t('buyer.settings.telegramPlaceholder')" />
+            </UFormGroup>
+
+            <div class="space-y-4">
               <UFormGroup :label="t('buyer.settings.whatsapp')">
-                <div class="grid grid-cols-[130px_1fr] gap-2">
+                <label
+                  v-if="hasMobileNumber"
+                  class="mb-2 flex items-center gap-2 text-sm text-slate-600"
+                >
+                  <input
+                    v-model="whatsappSameAsMobile"
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-slate-300 accent-indigo-600"
+                  />
+                  <span>{{ t('buyer.settings.sameAsMobile') }}</span>
+                </label>
+                <div v-if="!whatsappSameAsMobile" class="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(9rem,11rem)_minmax(0,1fr)]">
                   <USelect
                     v-model="profileForm.whatsapp_country"
                     :options="dialOptions"
@@ -61,9 +73,24 @@
                   />
                   <UInput v-model="profileForm.whatsapp_local" :placeholder="contactPlaceholder(profileForm.whatsapp_country)" />
                 </div>
+                <p v-else class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500">
+                  {{ composedMobileNumber || t('buyer.settings.sameAsMobileHint') }}
+                </p>
               </UFormGroup>
+
               <UFormGroup :label="t('buyer.settings.viber')">
-                <div class="grid grid-cols-[130px_1fr] gap-2">
+                <label
+                  v-if="hasMobileNumber"
+                  class="mb-2 flex items-center gap-2 text-sm text-slate-600"
+                >
+                  <input
+                    v-model="viberSameAsMobile"
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-slate-300 accent-indigo-600"
+                  />
+                  <span>{{ t('buyer.settings.sameAsMobile') }}</span>
+                </label>
+                <div v-if="!viberSameAsMobile" class="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(9rem,11rem)_minmax(0,1fr)]">
                   <USelect
                     v-model="profileForm.viber_country"
                     :options="dialOptions"
@@ -72,6 +99,9 @@
                   />
                   <UInput v-model="profileForm.viber_local" :placeholder="contactPlaceholder(profileForm.viber_country)" />
                 </div>
+                <p v-else class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500">
+                  {{ composedMobileNumber || t('buyer.settings.sameAsMobileHint') }}
+                </p>
               </UFormGroup>
             </div>
 
@@ -197,7 +227,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import {
   CONTACT_DIAL_OPTIONS,
   composeContactNumber,
@@ -264,6 +294,36 @@ const profileForm = ref({
   whatsapp_local: '',
   viber_country: 'RS',
   viber_local: '',
+})
+
+const whatsappSameAsMobile = ref(false)
+const viberSameAsMobile = ref(false)
+
+const composedMobileNumber = computed(() =>
+  composeContactNumber(profileForm.value.phone_country, profileForm.value.phone_local) || '',
+)
+
+const hasMobileNumber = computed(() => Boolean(composedMobileNumber.value))
+
+function resolveWhatsappNumber() {
+  if (whatsappSameAsMobile.value && composedMobileNumber.value) {
+    return composedMobileNumber.value
+  }
+  return composeContactNumber(profileForm.value.whatsapp_country, profileForm.value.whatsapp_local) || null
+}
+
+function resolveViberNumber() {
+  if (viberSameAsMobile.value && composedMobileNumber.value) {
+    return composedMobileNumber.value
+  }
+  return composeContactNumber(profileForm.value.viber_country, profileForm.value.viber_local) || null
+}
+
+watch(hasMobileNumber, (ready) => {
+  if (!ready) {
+    whatsappSameAsMobile.value = false
+    viberSameAsMobile.value = false
+  }
 })
 
 const notificationForm = ref<NotificationPreferencesResponse>({
@@ -354,6 +414,12 @@ async function loadProfileAndPreferences() {
     viber_local: viber.localNumber,
   }
 
+  const mobileNumber = composeContactNumber(phone.countryCode, phone.localNumber) || ''
+  const whatsappNumber = composeContactNumber(whatsapp.countryCode, whatsapp.localNumber) || ''
+  const viberNumber = composeContactNumber(viber.countryCode, viber.localNumber) || ''
+  whatsappSameAsMobile.value = Boolean(mobileNumber && whatsappNumber && mobileNumber === whatsappNumber)
+  viberSameAsMobile.value = Boolean(mobileNumber && viberNumber && mobileNumber === viberNumber)
+
   notificationForm.value = normalizedPrefs
 }
 
@@ -378,8 +444,8 @@ async function saveProfile() {
       body: {
         email: profileForm.value.email || null,
         telegram_chat_id: profileForm.value.telegram_chat_id.trim() || null,
-        whatsapp_number: composeContactNumber(profileForm.value.whatsapp_country, profileForm.value.whatsapp_local) || null,
-        viber_number: composeContactNumber(profileForm.value.viber_country, profileForm.value.viber_local) || null,
+        whatsapp_number: resolveWhatsappNumber(),
+        viber_number: resolveViberNumber(),
       },
     })
     await authStore.fetchMe()
@@ -403,8 +469,8 @@ async function saveNotifications() {
         whatsapp_enabled: notificationForm.value.channels.whatsapp,
         viber_enabled: notificationForm.value.channels.viber,
         telegram_chat_id: profileForm.value.telegram_chat_id.trim() || null,
-        whatsapp_number: composeContactNumber(profileForm.value.whatsapp_country, profileForm.value.whatsapp_local) || null,
-        viber_number: composeContactNumber(profileForm.value.viber_country, profileForm.value.viber_local) || null,
+        whatsapp_number: resolveWhatsappNumber(),
+        viber_number: resolveViberNumber(),
         alerts_enabled: Boolean(
           notificationForm.value.events.new_message ||
           notificationForm.value.events.intent_match ||

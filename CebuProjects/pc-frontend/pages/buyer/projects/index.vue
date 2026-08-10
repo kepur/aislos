@@ -1,30 +1,30 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between gap-4 flex-wrap">
-      <div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-5 flex items-center justify-between gap-4 flex-wrap">
+      <div class="min-w-0">
         <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <UIcon name="i-heroicons-cpu-chip" class="h-7 w-7 text-indigo-600" />
-          AI Project Forge
+          <UIcon name="i-heroicons-cpu-chip" class="h-7 w-7 text-indigo-600 flex-shrink-0" />
+          {{ appStore.t('buyer.projects.forgeTitle') }}
         </h1>
         <p class="text-sm text-slate-500 mt-1">
-          Describe your project, upload documents — AI generates a structured procurement list.
+          {{ appStore.t('buyer.projects.forgeSubtitle') }}
         </p>
       </div>
-      <UButton color="indigo" icon="i-heroicons-plus" size="lg" @click="showCreate = true">
-        New Project
+      <UButton color="indigo" icon="i-heroicons-plus" class="flex-shrink-0" @click="openCreateModal">
+        {{ appStore.t('buyer.projects.new') }}
       </UButton>
     </div>
 
     <!-- Empty State -->
     <div v-if="!loading && projects.length === 0" class="bg-white rounded-3xl border border-slate-200 p-16 text-center">
       <div class="text-6xl mb-4">🏗️</div>
-      <h3 class="text-xl font-semibold text-slate-900">No Projects Yet</h3>
+      <h3 class="text-xl font-semibold text-slate-900">{{ appStore.t('buyer.projects.emptyTitle') }}</h3>
       <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto">
-        Create your first project to let AI analyze your requirements and generate a smart procurement list.
+        {{ appStore.t('buyer.projects.emptyDesc') }}
       </p>
-      <UButton color="indigo" icon="i-heroicons-plus" size="lg" class="mt-6" @click="showCreate = true">
-        Create Your First Project
+      <UButton color="indigo" icon="i-heroicons-plus" size="lg" class="mt-6" @click="openCreateModal">
+        {{ appStore.t('buyer.projects.createFirst') }}
       </UButton>
     </div>
 
@@ -70,69 +70,88 @@
     <!-- Loading -->
     <div v-if="loading" class="text-center py-16">
       <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 text-indigo-400 animate-spin mx-auto" />
-      <p class="text-sm text-slate-500 mt-3">Loading projects...</p>
+      <p class="text-sm text-slate-500 mt-3">{{ appStore.t('buyer.projects.loading') }}</p>
     </div>
 
     <!-- Create Project Modal -->
     <UModal v-model="showCreate">
       <UCard class="sm:min-w-[480px]">
         <template #header>
-          <h3 class="text-lg font-semibold text-slate-900">Create New Project</h3>
+          <h3 class="text-lg font-semibold text-slate-900">{{ appStore.t('buyer.projects.createTitle') }}</h3>
         </template>
 
         <div class="space-y-4">
-          <UFormGroup label="Project Title" required>
-            <UInput v-model="form.title" placeholder="e.g. 2-Storey Residential House Construction" size="lg" />
+          <UFormGroup :label="appStore.t('buyer.projects.fieldTitle')" required>
+            <UInput v-model="form.title" :placeholder="appStore.t('buyer.projects.phTitle')" size="lg" />
           </UFormGroup>
 
-          <UFormGroup label="Project Type">
+          <UFormGroup :label="appStore.t('buyer.projects.fieldType')">
             <USelect v-model="form.project_type" :options="projectTypes" size="lg" />
           </UFormGroup>
 
           <div class="grid grid-cols-2 gap-4">
-            <UFormGroup label="Country">
-              <UInput v-model="form.country" placeholder="Philippines" />
+            <UFormGroup :label="appStore.t('buyer.projects.fieldCountry')">
+              <select
+                v-model="form.country"
+                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              >
+                <option v-for="region in regionOptions" :key="region.code" :value="region.code">
+                  {{ region.name }} ({{ region.code }})
+                </option>
+              </select>
             </UFormGroup>
-            <UFormGroup label="City">
-              <UInput v-model="form.city" placeholder="Cebu City" />
+            <UFormGroup :label="appStore.t('buyer.projects.fieldCity')">
+              <UInput v-model="form.city" :placeholder="selectedRegion?.defaultCity || 'Belgrade'" />
             </UFormGroup>
           </div>
 
           <div class="grid grid-cols-3 gap-4">
-            <UFormGroup label="Area">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldArea')">
               <UInput v-model.number="form.area_value" type="number" placeholder="150" />
             </UFormGroup>
-            <UFormGroup label="Unit">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldUnit')">
               <USelect v-model="form.area_unit" :options="['sqm', 'sqft', 'm2', 'hectares']" />
             </UFormGroup>
-            <UFormGroup label="Quality">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldQuality')">
               <USelect v-model="form.quality_preference" :options="qualityOptions" />
             </UFormGroup>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
-            <UFormGroup label="Budget Min">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldBudgetMin')">
               <UInput v-model.number="form.budget_min" type="number" placeholder="500000" />
             </UFormGroup>
-            <UFormGroup label="Budget Max">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldBudgetMax')">
               <UInput v-model.number="form.budget_max" type="number" placeholder="2000000" />
             </UFormGroup>
           </div>
 
-          <UFormGroup label="Description">
+          <UFormGroup :label="appStore.t('buyer.projects.fieldCurrency')">
+            <USelect
+              v-model="form.currency"
+              :options="appStore.currencyOptions"
+              option-attribute="label"
+              value-attribute="code"
+            />
+            <p class="mt-1 text-xs text-slate-500">
+              {{ currencyPolicyHint }}
+            </p>
+          </UFormGroup>
+
+          <UFormGroup :label="appStore.t('buyer.projects.fieldDescription')">
             <UTextarea
               v-model="form.description"
               :rows="4"
-              placeholder="Describe your project in detail. Include materials needed, specifications, timeline, etc."
+              :placeholder="appStore.t('buyer.projects.phDescription')"
             />
           </UFormGroup>
         </div>
 
         <template #footer>
           <div class="flex justify-end gap-3">
-            <UButton variant="ghost" color="gray" @click="showCreate = false">Cancel</UButton>
+            <UButton variant="ghost" color="gray" @click="showCreate = false">{{ appStore.t('buyer.projects.cancel') }}</UButton>
             <UButton color="indigo" :loading="creating" @click="createProject">
-              Create Project
+              {{ appStore.t('buyer.projects.create') }}
             </UButton>
           </div>
         </template>
@@ -142,9 +161,12 @@
 </template>
 
 <script setup lang="ts">
+import { FALLBACK_PAYMENT_POLICIES, currencyOptionLabel, formatMoneyMinor, localeForLanguage } from '~/utils/currencyPolicy'
+
 definePageMeta({ layout: 'buyer', middleware: ['buyer'] })
 
 const authStore = useAuthStore()
+const appStore = useAppStore()
 const config = useRuntimeConfig()
 
 const loading = ref(true)
@@ -152,32 +174,95 @@ const creating = ref(false)
 const showCreate = ref(false)
 const projects = ref<any[]>([])
 
-const projectTypes = [
-  { label: '🏠 General', value: 'GENERAL' },
-  { label: '🏗️ Construction', value: 'CONSTRUCTION' },
-  { label: '☀️ Solar', value: 'SOLAR' },
-  { label: '💻 Tech Build', value: 'TECH_BUILD' },
-  { label: '🔨 Renovation', value: 'RENOVATION' },
-]
-const qualityOptions = [
-  { label: '🤷 Not Sure', value: 'NOT_SURE' },
-  { label: '💰 Budget', value: 'BUDGET' },
-  { label: '⚖️ Mid-Range', value: 'MID_RANGE' },
-  { label: '✨ Premium', value: 'PREMIUM' },
-]
+type RegionOption = {
+  code: string
+  name: string
+  defaultCity?: string
+}
+
+const projectTypes = computed(() => [
+  { label: `🏠 ${appStore.t('buyer.projects.typeGeneral')}`, value: 'GENERAL' },
+  { label: `🏗️ ${appStore.t('buyer.projects.typeConstruction')}`, value: 'CONSTRUCTION' },
+  { label: `☀️ ${appStore.t('buyer.projects.typeSolar')}`, value: 'SOLAR' },
+  { label: `💻 ${appStore.t('buyer.projects.typeTech')}`, value: 'TECH_BUILD' },
+  { label: `🔨 ${appStore.t('buyer.projects.typeRenovation')}`, value: 'RENOVATION' },
+])
+const qualityOptions = computed(() => [
+  { label: `🤷 ${appStore.t('buyer.projects.qualityNotSure')}`, value: 'NOT_SURE' },
+  { label: `💰 ${appStore.t('buyer.projects.qualityBudget')}`, value: 'BUDGET' },
+  { label: `⚖️ ${appStore.t('buyer.projects.qualityMid')}`, value: 'MID_RANGE' },
+  { label: `✨ ${appStore.t('buyer.projects.qualityPremium')}`, value: 'PREMIUM' },
+])
 
 const form = reactive({
   title: '',
   project_type: 'GENERAL',
-  country: 'Philippines',
+  country: '',
   city: '',
   area_value: null as number | null,
   area_unit: 'sqm',
   budget_min: null as number | null,
   budget_max: null as number | null,
+  currency: 'EUR',
   quality_preference: 'NOT_SURE',
   description: '',
 })
+
+const fallbackDefaultCities: Record<string, string> = {
+  RS: 'Belgrade',
+  PL: 'Warsaw',
+  PH: 'Cebu City',
+  BA: 'Sarajevo',
+  RO: 'Bucharest',
+}
+
+const fallbackRegions: RegionOption[] = Object.values(FALLBACK_PAYMENT_POLICIES).map((policy) => ({
+  code: policy.country_code,
+  name: policy.country_name,
+  defaultCity: fallbackDefaultCities[policy.country_code],
+}))
+
+const regionOptions = computed<RegionOption[]>(() => {
+  const regions = (authStore.systemMode as any)?.regions
+  if (Array.isArray(regions) && regions.length) {
+    return regions
+      .map((region: any) => ({
+        code: String(region.code || '').toUpperCase(),
+        name: String(region.name || region.label || region.code || '').trim(),
+        defaultCity: region.default_city || region.city || undefined,
+      }))
+      .filter((region: RegionOption) => region.code && region.name)
+  }
+  return fallbackRegions
+})
+
+const selectedRegion = computed(() => regionOptions.value.find(region => region.code === form.country))
+const dateLocale = computed(() => localeForLanguage(appStore.language, form.currency || appStore.currency))
+const currencyPolicyHint = computed(() => {
+  const policy = appStore.paymentPolicy
+  const local = policy.local_currency_alias ? `${policy.local_currency} / ${policy.local_currency_alias}` : policy.local_currency
+  if (appStore.language === 'ZH') {
+    return `${policy.country_name || form.country}: 结算币 ${currencyOptionLabel(form.currency)}；本地参考币 ${local}。`
+  }
+  return `${policy.country_name || form.country}: settlement ${currencyOptionLabel(form.currency)}; local reference ${local}.`
+})
+
+function ensureDefaultRegion() {
+  if (!form.country && regionOptions.value.length) {
+    form.country = regionOptions.value[0].code
+  }
+  if (!form.currency) {
+    form.currency = appStore.currency || 'EUR'
+  }
+}
+
+async function openCreateModal() {
+  showCreate.value = true
+  if (!authStore.systemMode) {
+    await authStore.fetchSystemMode()
+  }
+  ensureDefaultRegion()
+}
 
 function projectTypeIcon(type: string) {
   const map: Record<string, string> = {
@@ -196,10 +281,8 @@ function statusColor(status: string) {
   return map[status] || 'gray'
 }
 
-function formatCurrency(amount: number, currency = 'PHP') {
-  try {
-    return new Intl.NumberFormat('en-PH', { style: 'currency', currency, maximumFractionDigits: 0 }).format(amount)
-  } catch { return `${amount} ${currency}` }
+function formatCurrency(amount: number, currency = appStore.currency || 'EUR') {
+  return formatMoneyMinor(Number(amount || 0) * 100, currency, localeForLanguage(appStore.language, currency))
 }
 
 function timeAgo(dateStr: string): string {
@@ -236,6 +319,7 @@ async function createProject() {
     if (form.area_unit) body.area_unit = form.area_unit
     if (form.budget_min) body.budget_min = form.budget_min
     if (form.budget_max) body.budget_max = form.budget_max
+    body.currency = form.currency || appStore.currency || 'EUR'
     if (form.quality_preference) body.quality_preference = form.quality_preference
     if (form.description) body.description = form.description
 
@@ -253,5 +337,19 @@ async function createProject() {
   }
 }
 
-onMounted(loadProjects)
+watch(regionOptions, ensureDefaultRegion, { immediate: true })
+watch(() => form.country, async (country) => {
+  if (!country) return
+  await appStore.setRegionCountry(country)
+  form.currency = appStore.currency || appStore.defaultSettlementCurrency || 'EUR'
+})
+
+onMounted(async () => {
+  if (!authStore.systemMode) {
+    await authStore.fetchSystemMode()
+  }
+  ensureDefaultRegion()
+  form.currency = appStore.currency || 'EUR'
+  await loadProjects()
+})
 </script>

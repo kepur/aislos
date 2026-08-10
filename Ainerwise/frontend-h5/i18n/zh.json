@@ -270,7 +270,8 @@
     "companyName": "公司名称",
     "noAccount": "还没有账号？",
     "hasAccount": "已有账号？",
-    "forgotPassword": "忘记密码？"
+    "forgotPassword": "忘记密码？",
+    "loginRequired": "需要登录"
   },
   "portal": {
     "dashboard": "控制台",

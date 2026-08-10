@@ -23,7 +23,9 @@
     "retry": "重试",
     "language": "语言",
     "refresh": "刷新",
-    "status": "状态"
+    "status": "状态",
+    "newest": "最新",
+    "results": "条结果"
   },
   "auth": {
     "sign_in": "登录",
@@ -68,7 +70,8 @@
     "wallet": "钱包",
     "me": "我的",
     "secondhand": "2Hands",
-    "pings": "需求池"
+    "pings": "需求池",
+    "adCampaigns": "广告活动"
   },
   "market": {
     "search_placeholder": "搜索商品...",
@@ -254,7 +257,13 @@
     "location": "送货地址",
     "select_offer": "选择报价",
     "award": "确认下单",
-    "no_offers_yet": "暂无报价"
+    "no_offers_yet": "暂无报价",
+    "deadline": "截止日期",
+    "most_offers": "最多报价",
+    "offers": "报价",
+    "offers_mode": "按报价数量排序",
+    "rank": "排名",
+    "rank_mode": "按活跃度排序"
   },
   "supplier": {
     "browse_requests": "浏览需求",

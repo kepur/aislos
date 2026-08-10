@@ -15,7 +15,7 @@
 
       <div v-if="!selectedCategory" class="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-6">
         <div class="glass-panel p-6 border-primary-500/30">
-          <p class="text-sm font-bold uppercase tracking-wider text-primary-300">Step 1</p>
+          <p class="text-sm font-bold uppercase tracking-wider text-primary-300">{{ $t('lead.step1') }}</p>
           <h2 class="mt-2 text-2xl font-bold text-white">{{ $t('lead.step1Label') }}</h2>
           <p class="mt-3 text-slate-300">{{ $t('lead.step1Desc') }}</p>
           <div class="mt-6 pc-notice-warning">
@@ -42,7 +42,7 @@
         <div class="glass-panel border-primary-500/30 border p-4">
           <div class="flex flex-col xl:flex-row xl:items-center gap-4">
             <div class="flex-1">
-              <p class="text-xs font-bold uppercase tracking-wider text-primary-300">Selected project</p>
+              <p class="text-xs font-bold uppercase tracking-wider text-primary-300">{{ $t('lead.selectedProject') }}</p>
               <h2 class="mt-1 text-2xl font-bold text-white">{{ selectedCategory.label }}</h2>
             </div>
             <div class="flex flex-wrap gap-2">
@@ -58,7 +58,7 @@
               </button>
             </div>
             <button type="button" class="border px-4 py-2 text-sm font-semibold text-slate-300 hover:border-slate-500" @click="resetForge">
-              Change category
+              {{ $t('lead.changeCategory') }}
             </button>
           </div>
         </div>
@@ -67,11 +67,11 @@
           <div class="glass-panel border-primary-500/30 overflow-hidden">
             <div class="border-b p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <p class="text-sm font-bold uppercase tracking-wider text-primary-400">LangGraph Intake</p>
-                <h2 class="mt-1 text-2xl font-bold text-white">Collect project information step by step</h2>
+                <p class="text-sm font-bold uppercase tracking-wider text-primary-400">{{ $t('lead.intakeKicker') }}</p>
+                <h2 class="mt-1 text-2xl font-bold text-white">{{ $t('lead.collectStep') }}</h2>
               </div>
               <button type="button" class="bg-primary-900/300/20 text-primary-400 px-4 py-2 text-sm font-semibold" @click="askNextQuestion">
-                AI Analyze
+                {{ $t('lead.aiAnalyze') }}
               </button>
             </div>
 
@@ -96,19 +96,19 @@
 
             <div class="border-t border-white/10 bg-white/5 p-4">
               <div v-if="submitted" class="bg-emerald-400/10 border border-emerald-500/30 p-4 text-emerald-200">
-                {{ phase1Requested ? 'Phase-1 Proposal request submitted.' : 'Requirement submitted.' }}
-                Admin will review the AI estimate and follow up manually.
+                {{ phase1Requested ? $t('lead.submittedPhase1') : $t('lead.submittedRequirement') }}
+                {{ $t('lead.submittedFollowup') }}
               </div>
               <form v-else class="flex flex-col sm:flex-row gap-3" @submit.prevent="sendMessage">
                 <textarea
                   v-model="draft"
                   rows="2"
                   class="input-field resize-none"
-                  :placeholder="currentQuestion?.placeholder || 'Answer the AI question...'"
+                  :placeholder="currentQuestion?.placeholder || $t('lead.answerPlaceholder')"
                   @keydown.enter.exact.prevent="sendMessage"
                 ></textarea>
                 <button type="submit" class="btn-primary sm:w-40" :disabled="loading || (!readyToSubmit && !draft.trim())">
-                  {{ loading ? 'Working...' : (readyToSubmit && !draft.trim()) ? 'Submit' : 'Send' }}
+                  {{ loading ? $t('lead.working') : (readyToSubmit && !draft.trim()) ? $t('lead.submitShort') : $t('lead.send') }}
                 </button>
               </form>
               <p v-if="error" class="mt-2 text-sm text-red-400">{{ error }}</p>
@@ -118,10 +118,10 @@
           <aside class="glass-panel p-6 border-primary-500/30 h-fit xl:sticky xl:top-24">
             <div class="flex items-start justify-between gap-4">
               <div>
-                <p class="text-sm font-bold uppercase tracking-wider text-primary-300">Project Preview</p>
-                <h2 class="mt-1 text-2xl font-bold text-white">{{ progress }}% complete</h2>
+                <p class="text-sm font-bold uppercase tracking-wider text-primary-300">{{ $t('lead.projectPreview') }}</p>
+                <h2 class="mt-1 text-2xl font-bold text-white">{{ $t('lead.percentComplete', { n: progress }) }}</h2>
               </div>
-              <span class="border px-3 py-1 text-sm font-semibold text-primary-300">{{ targetLevel }} target</span>
+              <span class="border px-3 py-1 text-sm font-semibold text-primary-300">{{ $t('lead.levelTarget', { level: targetLevel }) }}</span>
             </div>
 
             <div class="mt-6 space-y-3">
@@ -139,13 +139,13 @@
                   </div>
                 </div>
                 <span class="shrink-0 px-3 py-1 text-xs font-bold" :class="module.done ? 'pc-badge-done' : module.active ? 'pc-badge-active' : 'pc-badge-pending'">
-                  {{ module.done ? 'Done' : module.active ? 'Active' : 'Pending' }}
+                  {{ module.done ? $t('lead.statusDone') : module.active ? $t('lead.statusActive') : $t('lead.statusPending') }}
                 </span>
               </div>
             </div>
 
             <div class="mt-6 border p-4">
-              <p class="text-sm font-semibold text-white">Selected intelligence behavior</p>
+              <p class="text-sm font-semibold text-white">{{ $t('lead.selectedBehavior') }}</p>
               <p class="mt-2 text-sm text-slate-300">{{ targetLevelMeta.description }}</p>
             </div>
 
@@ -156,8 +156,8 @@
             <div class="mt-6 border p-4">
               <div class="flex items-center justify-between gap-3">
                 <div>
-                  <p class="text-sm font-semibold text-white">Lead Score</p>
-                  <p class="mt-1 text-xs text-slate-400">Calculated from completeness, budget, contact, target level, and Phase-1 intent.</p>
+                  <p class="text-sm font-semibold text-white">{{ $t('lead.leadScore') }}</p>
+                  <p class="mt-1 text-xs text-slate-400">{{ $t('lead.leadScoreDesc') }}</p>
                 </div>
                 <div class="text-right">
                   <p class="text-2xl font-bold text-primary-300">{{ leadScore }}</p>
@@ -167,7 +167,7 @@
             </div>
 
             <div class="mt-6">
-              <p class="text-sm font-semibold text-white">Preliminary Proposal Directions</p>
+              <p class="text-sm font-semibold text-white">{{ $t('lead.proposalDirections') }}</p>
               <div class="mt-3 space-y-3">
                 <div
                   v-for="plan in proposalPlans"
@@ -184,21 +184,18 @@
                   </div>
                   <p class="mt-3 text-sm text-slate-300">{{ plan.summary }}</p>
                   <dl class="mt-3 grid grid-cols-2 gap-2 text-xs">
-                    <div><dt class="text-slate-400">Device</dt><dd class="font-semibold text-white">{{ plan.device }}</dd></div>
-                    <div><dt class="text-slate-400">Support</dt><dd class="font-semibold text-white">{{ plan.support }}</dd></div>
+                    <div><dt class="text-slate-400">{{ $t('lead.device') }}</dt><dd class="font-semibold text-white">{{ plan.device }}</dd></div>
+                    <div><dt class="text-slate-400">{{ $t('lead.support') }}</dt><dd class="font-semibold text-white">{{ plan.support }}</dd></div>
                   </dl>
                 </div>
               </div>
             </div>
 
             <div v-if="readyToSubmit && !submitted" class="mt-6 border border-primary-500/30 bg-primary-900/30 p-4">
-              <p class="font-semibold text-white">Ready for Phase-1 Proposal</p>
-              <p class="mt-2 text-sm text-slate-300">
-                Free AI estimate gives direction only. Phase-1 means human review, deeper BOM,
-                architecture draft, supplier confirmation, and one meeting.
-              </p>
+              <p class="font-semibold text-white">{{ $t('lead.readyPhase1Title') }}</p>
+              <p class="mt-2 text-sm text-slate-300">{{ $t('lead.readyPhase1Desc') }}</p>
               <button type="button" class="mt-4 btn-primary w-full" :disabled="loading" @click="requestPhase1Proposal">
-                {{ loading ? 'Submitting...' : 'Request Phase-1 Proposal' }}
+                {{ loading ? $t('lead.submitting') : $t('lead.requestPhase1') }}
               </button>
             </div>
           </aside>
@@ -209,6 +206,7 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n({ useScope: 'global' })
 const { apiFetch } = useApi()
 const assistant = useAssistant()
 const aiComplete = ref(false)
@@ -226,160 +224,53 @@ function mergeExtracted(extracted: Record<string, any>) {
 type CategoryKey = 'villa' | 'school' | 'apartment' | 'office' | 'factory' | 'hotel' | 'energy' | 'storage' | 'kitchen' | 'water' | 'asset' | 'agri' | 'retrofit' | 'custom'
 type LevelKey = 'L3' | 'L4' | 'L5'
 
-const estimateNotice = 'AI estimate only. Final quote requires manual review, customer meeting, site survey, supplier confirmation, and signed contract.'
+const estimateNotice = computed(() => t('lead.estimateNotice'))
 
-const projectCategories = [
-  { key: 'villa', label: 'Smart Villa / Future Home', level: 'L3-L5', description: 'Home AI brain, local privacy, family identity, comfort, energy, EV, smart room equipment.', systems: ['KNX', 'Home Assistant', 'CCTV', 'Energy Monitoring', 'EV Charging', 'Offline AI'] },
-  { key: 'school', label: 'School / Campus', level: 'L3-L4', description: 'Classrooms, safety, CO2, access, CCTV, network, energy reports, maintenance workflow.', systems: ['CCTV', 'Access Control', 'HVAC', 'Energy Monitoring', 'Network'] },
-  { key: 'apartment', label: 'Apartment Building', level: 'L3-L4', description: 'Property brain for common areas, parking, visitor access, meters, tenant support.', systems: ['Access Control', 'CCTV', 'Energy Monitoring', 'Maintenance'] },
-  { key: 'office', label: 'Enterprise Office Building', level: 'L3-L5', description: 'Meeting rooms, visitor access, occupancy, IT network, facility AI daily summary.', systems: ['HVAC', 'Lighting', 'Access Control', 'Network', 'Offline AI'] },
-  { key: 'factory', label: 'Factory / Industrial Plant', level: 'L3-L5', description: 'Industrial automation, machine energy, PLC/SCADA, OT network, robots, compressed air, chillers, motors, and maintenance.', systems: ['Industrial Automation', 'PLC/SCADA', 'Machine Energy Monitoring', 'Compressed Air', 'Robots', 'OT Network', 'Solar/Battery'] },
-  { key: 'hotel', label: 'Hotel / Serviced Apartment', level: 'L3-L4', description: 'Guest room control, away energy saving, housekeeping access, remote maintenance.', systems: ['KNX', 'HVAC', 'Lighting', 'Access Control', 'Remote Maintenance'] },
-  { key: 'energy', label: 'Solar + Energy Site', level: 'L3-L5', description: 'PV, battery, EV charging, tariffs, critical loads, alerts, monthly AI energy reports.', systems: ['Solar', 'Battery', 'EV Charging', 'Energy Monitoring'] },
-  { key: 'storage', label: 'Cold Chain / Storage (StorageGuard)', level: 'L2-L4', description: 'Temperature & humidity compliance, door events, outage alerts, audit reports, calibration, and annual maintenance for cold rooms, pharma and food storage.', systems: ['StorageGuard', 'Temperature & Humidity Monitoring', 'Door Sensors', 'Outage Alerts', 'Compliance Reports', 'Calibration', 'Alarm Monitoring'] },
-  { key: 'kitchen', label: 'Commercial Kitchen Safety (KitchenGuard)', level: 'L2-L3', description: 'Gas, CO, water-leak and temperature safety with automatic cut-off, alarm escalation, annual inspection certificates and AMC.', systems: ['KitchenGuard', 'Gas & CO Monitoring', 'Water Leak', 'Cut-off Valve', 'Alarm Monitoring', 'Annual Inspection'] },
-  { key: 'water', label: 'Water / Effluent Compliance (AquaGuard)', level: 'L2-L4', description: 'pH, conductivity, turbidity and COD monitoring with environmental compliance reports, calibration and probe replacement (partner-led).', systems: ['AquaGuard', 'pH / EC / Turbidity / COD', 'Compliance Reports', 'Calibration', 'Probe Replacement', 'Alarm Monitoring'] },
-  { key: 'asset', label: 'Asset & Tool Tracking (AssetPulse)', level: 'L2-L3', description: 'BLE/UWB/LoRa tag tracking with geofence alerts, inventory and multi-site reports as a tag subscription.', systems: ['AssetPulse', 'Asset Tags', 'Geofence Alerts', 'Inventory', 'Multi-site Reports'] },
-  { key: 'agri', label: 'Greenhouse / Farm (AgriBrain — Future)', level: 'L3-L4', description: 'Future-ready soil, climate, water and fertilizer monitoring with seasonal service. Concept scope until partners and demand are validated.', systems: ['AgriBrain', 'Soil & Climate', 'Irrigation', 'Seasonal Service'] },
-  { key: 'retrofit', label: 'Existing Building Retrofit', level: 'L3-L4', description: 'Upgrade older wiring, CCTV, network, access, and energy visibility without overpromising.', systems: ['CCTV', 'Network', 'Lighting', 'Energy Monitoring'] },
-  { key: 'custom', label: 'Custom Future Building', level: 'L4-L5', description: 'Advanced AI, local AI box, identity, robot-ready paths, and manual engineering review.', systems: ['Offline AI', 'Network', 'CCTV', 'Energy Monitoring'] },
-] as const
+const categoryDefs: Array<{ key: CategoryKey; level: string; systems: string[] }> = [
+  { key: 'villa' as const, level: 'L3-L5', systems: ['KNX', 'Home Assistant', 'CCTV', 'Energy Monitoring', 'EV Charging', 'Offline AI'] },
+  { key: 'school' as const, level: 'L3-L4', systems: ['CCTV', 'Access Control', 'HVAC', 'Energy Monitoring', 'Network'] },
+  { key: 'apartment' as const, level: 'L3-L4', systems: ['Access Control', 'CCTV', 'Energy Monitoring', 'Maintenance'] },
+  { key: 'office' as const, level: 'L3-L5', systems: ['HVAC', 'Lighting', 'Access Control', 'Network', 'Offline AI'] },
+  { key: 'factory' as const, level: 'L3-L5', systems: ['Industrial Automation', 'PLC/SCADA', 'Machine Energy Monitoring', 'Compressed Air', 'Robots', 'OT Network', 'Solar/Battery'] },
+  { key: 'hotel' as const, level: 'L3-L4', systems: ['KNX', 'HVAC', 'Lighting', 'Access Control', 'Remote Maintenance'] },
+  { key: 'energy' as const, level: 'L3-L5', systems: ['Solar', 'Battery', 'EV Charging', 'Energy Monitoring'] },
+  { key: 'storage' as const, level: 'L2-L4', systems: ['StorageGuard', 'Temperature & Humidity Monitoring', 'Door Sensors', 'Outage Alerts', 'Compliance Reports', 'Calibration', 'Alarm Monitoring'] },
+  { key: 'kitchen' as const, level: 'L2-L3', systems: ['KitchenGuard', 'Gas & CO Monitoring', 'Water Leak', 'Cut-off Valve', 'Alarm Monitoring', 'Annual Inspection'] },
+  { key: 'water' as const, level: 'L2-L4', systems: ['AquaGuard', 'pH / EC / Turbidity / COD', 'Compliance Reports', 'Calibration', 'Probe Replacement', 'Alarm Monitoring'] },
+  { key: 'asset' as const, level: 'L2-L3', systems: ['AssetPulse', 'Asset Tags', 'Geofence Alerts', 'Inventory', 'Multi-site Reports'] },
+  { key: 'agri' as const, level: 'L3-L4', systems: ['AgriBrain', 'Soil & Climate', 'Irrigation', 'Seasonal Service'] },
+  { key: 'retrofit' as const, level: 'L3-L4', systems: ['CCTV', 'Network', 'Lighting', 'Energy Monitoring'] },
+  { key: 'custom' as const, level: 'L4-L5', systems: ['Offline AI', 'Network', 'CCTV', 'Energy Monitoring'] },
+]
 
-const levelOptions = [
-  { key: 'L3', label: 'Energy Optimized', description: 'Focus on energy monitoring, scenes, schedules, dashboards, alarms, and lifecycle reports.' },
-  { key: 'L4', label: 'AI Assisted', description: 'Adds AI analysis, anomaly detection, admin-reviewed recommendations, and smart operational summaries.' },
-  { key: 'L5', label: 'Local AI Brain', description: 'Adds local AI box, privacy-first identity, offline control logic, and advanced cross-system orchestration.' },
-] as const
-
-const questionBank: Record<CategoryKey, Array<{ key: string; module: string; prompt: string; placeholder: string }>> = {
-  villa: [
-    { key: 'location', module: 'location', prompt: 'Where is the villa located? Please include country and city.', placeholder: 'Example: Belgrade, Serbia' },
-    { key: 'building', module: 'site', prompt: 'What is the approximate area, number of floors, and main room list?', placeholder: 'Example: 320 sqm, 2 floors, living room, kitchen, 4 bedrooms...' },
-    { key: 'existing', module: 'existing', prompt: 'What systems already exist: network, CCTV, alarm, HVAC, solar, EV charger, smart switches, or KNX?', placeholder: 'Describe current wiring, internet, CCTV, solar, HVAC...' },
-    { key: 'goals', module: 'goals', prompt: 'What should the home become: energy saving, AI family brain, security, comfort, offline privacy, or robot-ready?', placeholder: 'Example: offline AI privacy, energy saving, face access, EV charging...' },
-    { key: 'identity', module: 'identity', prompt: 'Do you need identity features such as face recognition, visitor QR, car plate, fingerprint, or future voiceprint?', placeholder: 'List required access and identity features...' },
-    { key: 'energy', module: 'energy', prompt: 'Do you need solar, battery, EV charging, peak/off-peak tariff logic, or appliance energy optimization?', placeholder: 'Describe PV, battery, EV and energy goals...' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and service period should we design around?', placeholder: 'Example: 15k-50k EUR, 5-year support' },
-    { key: 'contact', module: 'contact', prompt: 'Finally, who should we contact? Please provide name, email, and optional Telegram/WhatsApp.', placeholder: 'Example: Wei, wei@example.com, Telegram @...' },
-  ],
-  school: [
-    { key: 'location', module: 'location', prompt: 'Where is the campus located?', placeholder: 'Country and city' },
-    { key: 'building', module: 'site', prompt: 'How many buildings, classrooms, floors, labs, admin areas, and students are involved?', placeholder: 'Example: 2 buildings, 32 classrooms, 600 students...' },
-    { key: 'existing', module: 'existing', prompt: 'What existing CCTV, access control, network, HVAC, solar, or BMS systems are already installed?', placeholder: 'Describe existing systems and pain points...' },
-    { key: 'goals', module: 'goals', prompt: 'What are the top goals: safety, energy saving, classroom comfort, lab access, network visibility, or maintenance?', placeholder: 'List top priorities...' },
-    { key: 'energy', module: 'energy', prompt: 'Do you need solar monitoring, classroom CO2, HVAC scheduling, or monthly energy reports?', placeholder: 'Describe energy and environment needs...' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and support period should we assume?', placeholder: 'Example: 50k-100k EUR, 5-year lifecycle support' },
-    { key: 'contact', module: 'contact', prompt: 'Who should AinerWise contact for this campus assessment?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  apartment: [
-    { key: 'location', module: 'location', prompt: 'Where is the apartment building located?', placeholder: 'Country and city' },
-    { key: 'building', module: 'site', prompt: 'How many units, floors, common areas, parking areas, and meters are involved?', placeholder: 'Example: 40 units, 8 floors, garage, lobby...' },
-    { key: 'existing', module: 'existing', prompt: 'What existing intercom, CCTV, access, meters, lighting, or network systems exist?', placeholder: 'Describe current systems...' },
-    { key: 'goals', module: 'goals', prompt: 'What should improve: visitor access, common-area energy, tenant experience, parking, repair workflow, or security?', placeholder: 'List property goals...' },
-    { key: 'energy', module: 'energy', prompt: 'Do you need common-area energy reports, PV for public loads, or meter monitoring?', placeholder: 'Energy and metering needs...' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and service period are realistic?', placeholder: 'Example: 15k-50k EUR, 3-year support' },
-    { key: 'contact', module: 'contact', prompt: 'Who should we contact for property follow-up?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  office: [
-    { key: 'location', module: 'location', prompt: 'Where is the office building located?', placeholder: 'Country and city' },
-    { key: 'building', module: 'site', prompt: 'How large is the office, how many floors, employees, meeting rooms, IT rooms, and visitor areas?', placeholder: 'Example: 4100 sqm, 4 floors, 12 meeting rooms...' },
-    { key: 'existing', module: 'existing', prompt: 'What existing access control, CCTV, network, HVAC, booking, or BMS systems are in place?', placeholder: 'Describe current office systems...' },
-    { key: 'goals', module: 'goals', prompt: 'What are the goals: meeting automation, visitor access, energy saving, workplace utilization, local AI, or facility summaries?', placeholder: 'List office AI/facility goals...' },
-    { key: 'identity', module: 'identity', prompt: 'Do you need employee identity, visitor QR, face access, mobile credentials, or admin-only AI permissions?', placeholder: 'Describe identity and access needs...' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and maintenance period should we assume?', placeholder: 'Example: 50k-100k EUR, 5-year support' },
-    { key: 'contact', module: 'contact', prompt: 'Who is the office project contact?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  factory: [
-    { key: 'location', module: 'location', prompt: 'Where is the factory, plant, or warehouse located?', placeholder: 'Country, city, industrial park if relevant' },
-    { key: 'building', module: 'site', prompt: 'What is the plant scale: production area, floors/zones, production lines, warehouse, utilities, and shifts?', placeholder: 'Example: 12,000 sqm, 3 lines, compressor room, chiller plant, 2 shifts...' },
-    { key: 'existing', module: 'existing', prompt: 'What existing OT/IT systems exist: PLC, SCADA, BMS, meters, VFDs, compressors, chillers, robots, CCTV, access, solar, or MES?', placeholder: 'List PLC/SCADA brands, protocols, meters, machines, network, PV...' },
-    { key: 'production', module: 'production', prompt: 'Which mechanical or production equipment should be monitored or linked?', placeholder: 'Example: CNC machines, conveyors, robotic arms, pumps, boilers, chillers, compressors, packaging line...' },
-    { key: 'goals', module: 'goals', prompt: 'What should improve: machine uptime, energy by line, peak demand, power quality, predictive maintenance, safety visibility, or production reporting?', placeholder: 'List industrial automation and business goals...' },
-    { key: 'energy', module: 'energy', prompt: 'What are the major energy loads and energy assets: PV, battery, EV fleet, compressors, chillers, motors, VFDs, pumps, ovens, or peak tariff?', placeholder: 'Describe load profile, tariff problem, and monitoring goals...' },
-    { key: 'identity', module: 'identity', prompt: 'Do you need staff/visitor access, machine-area permissions, OT network isolation, CCTV AI, or safety boundary rules?', placeholder: 'Access, safety, OT/IT separation, restricted areas...' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and service/SLA period should we design around?', placeholder: 'Example: 50k-300k EUR, 5-year lifecycle support, production downtime sensitive' },
-    { key: 'contact', module: 'contact', prompt: 'Who should AinerWise contact for factory engineering follow-up?', placeholder: 'Name, role, company email, phone or Telegram' },
-  ],
-  hotel: [
-    { key: 'location', module: 'location', prompt: 'Where is the hotel or serviced apartment located?', placeholder: 'Country and city' },
-    { key: 'building', module: 'site', prompt: 'How many rooms, floors, room types, common areas, and service areas are involved?', placeholder: 'Example: 48 rooms, 5 floors, lobby, corridors...' },
-    { key: 'existing', module: 'existing', prompt: 'What existing door locks, thermostats, CCTV, PMS, network, or room controls exist?', placeholder: 'Describe current hotel systems...' },
-    { key: 'goals', module: 'goals', prompt: 'What should improve: guest welcome mode, away energy saving, housekeeping permissions, room status, or maintenance?', placeholder: 'List guest and operation goals...' },
-    { key: 'energy', module: 'energy', prompt: 'Do you need HVAC energy saving, room occupancy sensing, solar dashboard, or monthly hotel reports?', placeholder: 'Energy and room-control needs...' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and support period should we design around?', placeholder: 'Example: 50k-100k EUR, 5-year lifecycle support' },
-    { key: 'contact', module: 'contact', prompt: 'Who should we contact for hotel follow-up?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  energy: [
-    { key: 'location', module: 'location', prompt: 'Where is the solar or energy site located?', placeholder: 'Country and city' },
-    { key: 'building', module: 'site', prompt: 'What building or site loads should be monitored: office, warehouse, hotel, EV, critical loads?', placeholder: 'Describe site and load profile...' },
-    { key: 'existing', module: 'existing', prompt: 'What PV, inverter, battery, meter, EV charger, or EMS equipment already exists?', placeholder: 'Inverter brand, battery, meters, EV chargers...' },
-    { key: 'goals', module: 'goals', prompt: 'What do you want to optimize: PV self-consumption, peak tariff, EV charging, battery, alerts, or reports?', placeholder: 'List energy optimization goals...' },
-    { key: 'energy', module: 'energy', prompt: 'Do you need tariff rules, load priority, anomaly alarms, monthly reports, or remote maintenance?', placeholder: 'Describe energy logic and reporting needs...' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and support period should we assume?', placeholder: 'Example: 15k-50k EUR, 3-year support' },
-    { key: 'contact', module: 'contact', prompt: 'Who should AinerWise contact for this energy assessment?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  storage: [
-    { key: 'location', module: 'location', prompt: 'Where is the storage facility located? Please include country and city.', placeholder: 'Example: Belgrade, Serbia' },
-    { key: 'storage_type', module: 'storage_type', prompt: 'What type of storage is this and how many rooms or zones: walk-in cold room, freezer, pharmacy fridge, ambient warehouse, or laboratory?', placeholder: 'Example: 3 cold rooms + 1 freezer, food distribution' },
-    { key: 'temperature_humidity', module: 'temperature_humidity', prompt: 'What temperature and humidity ranges must each room stay within?', placeholder: 'Example: 2-8°C chilled, -18°C frozen, <60% RH' },
-    { key: 'compliance_use', module: 'compliance_use', prompt: 'Is this for food (HACCP) or pharmaceutical / medical (GDP) goods, and do you need audit-ready compliance reports?', placeholder: 'Example: pharmaceutical, monthly GDP audit reports required' },
-    { key: 'outage', module: 'outage', prompt: 'What is the power-failure risk, and do you already have any temperature logging or monitoring today?', placeholder: 'Example: occasional outages, only manual paper logs now' },
-    { key: 'alert_channels', module: 'alert_channels', prompt: 'How should outage and out-of-range alerts reach you: SMS, Telegram, email, phone call, or in-app?', placeholder: 'Example: Telegram + email, phone call for critical alarms' },
-    { key: 'monitoring_points', module: 'monitoring_points', prompt: 'How many monitoring points do you need in total across all rooms, doors, and sensors?', placeholder: 'Example: about 24 points' },
-    { key: 'calibration_cycle', module: 'calibration_cycle', prompt: 'How often must sensors be calibrated, and over how many years do you want the service to run?', placeholder: 'Example: annual calibration, 3-year service term' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and service period should we design around?', placeholder: 'Example: 6k-18k EUR, 3-year compliance support' },
-    { key: 'contact', module: 'contact', prompt: 'Finally, who should AinerWise contact for this StorageGuard assessment?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  kitchen: [
-    { key: 'location', module: 'location', prompt: 'Where is the kitchen / venue located?', placeholder: 'Country and city' },
-    { key: 'kitchen_count', module: 'kitchen_count', prompt: 'How many kitchens or cooking lines, and is there an automatic gas cut-off valve?', placeholder: 'Example: 2 kitchens, existing gas valve' },
-    { key: 'gas_type', module: 'gas_type', prompt: 'What gas type is used (natural gas, LPG), and do you need CO and water-leak monitoring?', placeholder: 'Example: natural gas + CO + leak under sinks' },
-    { key: 'alarm_contacts', module: 'alarm_contacts', prompt: 'Who should receive alarms (manager, property, maintenance) and via which channels?', placeholder: 'Example: manager SMS, property Telegram, call escalation' },
-    { key: 'service_term', module: 'service_term', prompt: 'Do you need annual safety inspection certificates, and over how many years?', placeholder: 'Example: annual inspection, 3-year AMC' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range should we design around?', placeholder: 'Example: 6k-16k EUR' },
-    { key: 'contact', module: 'contact', prompt: 'Who should AinerWise contact for this KitchenGuard assessment?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  water: [
-    { key: 'location', module: 'location', prompt: 'Where is the water / effluent site located?', placeholder: 'Country and city' },
-    { key: 'water_system', module: 'water_system', prompt: 'What water system is this (effluent, pool, cooling, process) and how many discharge / sample points?', placeholder: 'Example: factory effluent, 2 outfalls' },
-    { key: 'parameters', module: 'parameters', prompt: 'Which parameters must be monitored: pH, conductivity, turbidity, COD, temperature?', placeholder: 'Example: pH, COD, turbidity' },
-    { key: 'reporting', module: 'reporting', prompt: 'Do you need government / environmental compliance reports, and how often?', placeholder: 'Example: monthly regulator report' },
-    { key: 'service_term', module: 'service_term', prompt: 'How often must probes be calibrated / replaced, and over how many years of service?', placeholder: 'Example: quarterly calibration, 3-year service' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range should we assume?', placeholder: 'Example: 12k-30k EUR' },
-    { key: 'contact', module: 'contact', prompt: 'Who should AinerWise contact for this AquaGuard assessment?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  asset: [
-    { key: 'location', module: 'location', prompt: 'Where are the assets / sites located?', placeholder: 'Country and city' },
-    { key: 'building', module: 'site', prompt: 'What assets and how many, indoor or outdoor, and across how many sites?', placeholder: 'Example: 300 tools, 2 warehouses' },
-    { key: 'goals', module: 'goals', prompt: 'What do you need: geofence alerts, inventory counts, location accuracy, multi-site reports?', placeholder: 'Example: geofence + inventory' },
-    { key: 'monitoring_points', module: 'monitoring_points', prompt: 'Roughly how many tags / assets to track?', placeholder: 'Example: about 300 tags' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and tag-subscription period should we assume?', placeholder: 'Example: 9k-22k EUR, 3-year' },
-    { key: 'contact', module: 'contact', prompt: 'Who should AinerWise contact for this AssetPulse assessment?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  agri: [
-    { key: 'location', module: 'location', prompt: 'Where is the greenhouse / farm located?', placeholder: 'Country and city' },
-    { key: 'building', module: 'site', prompt: 'What scale: area, number of zones / greenhouses, crops?', placeholder: 'Example: 2 greenhouses, 1 ha' },
-    { key: 'goals', module: 'goals', prompt: 'What to monitor / optimize: soil moisture, climate, irrigation, fertilizer?', placeholder: 'Example: soil + irrigation' },
-    { key: 'budget', module: 'budget', prompt: 'Is this concept, pilot, or implementation, and what budget?', placeholder: 'Example: pilot first' },
-    { key: 'contact', module: 'contact', prompt: 'Who should AinerWise contact for this AgriBrain concept?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  retrofit: [
-    { key: 'location', module: 'location', prompt: 'Where is the existing building located?', placeholder: 'Country and city' },
-    { key: 'building', module: 'site', prompt: 'What building type, area, floors, and rooms/zones are involved?', placeholder: 'Describe building structure...' },
-    { key: 'existing', module: 'existing', prompt: 'What systems exist today and what is outdated or painful?', placeholder: 'Wiring, CCTV, access, HVAC, network, lighting...' },
-    { key: 'goals', module: 'goals', prompt: 'What is the retrofit goal: basic control, security upgrade, energy dashboard, KNX, or Home Assistant?', placeholder: 'Describe desired retrofit outcome...' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and support period should we assume?', placeholder: 'Example: 5k-15k EUR, 3-year support' },
-    { key: 'contact', module: 'contact', prompt: 'Who should we contact for retrofit follow-up?', placeholder: 'Name, email, phone or Telegram' },
-  ],
-  custom: [
-    { key: 'location', module: 'location', prompt: 'Where will this future building or concept project be located?', placeholder: 'Country and city' },
-    { key: 'building', module: 'site', prompt: 'What kind of building or site is this, and what scale should we assume?', placeholder: 'Describe building type, area, floors, rooms...' },
-    { key: 'goals', module: 'goals', prompt: 'What future capability are you imagining: local AI brain, robots, digital human, autonomous energy, identity, or predictive maintenance?', placeholder: 'Describe the vision...' },
-    { key: 'existing', module: 'existing', prompt: 'What systems already exist or must be integrated?', placeholder: 'KNX, HA, CCTV, HVAC, solar, robot platform...' },
-    { key: 'budget', module: 'budget', prompt: 'What budget range and phase should this start with: concept, Phase-1 proposal, or implementation?', placeholder: 'Example: design-only first, 5-year support later' },
-    { key: 'contact', module: 'contact', prompt: 'Who should we contact for custom engineering review?', placeholder: 'Name, email, phone or Telegram' },
-  ],
+const questionOrder: Record<CategoryKey, Array<{ key: string; module: string }>> = {
+  villa: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'existing', module: 'existing' }, { key: 'goals', module: 'goals' }, { key: 'identity', module: 'identity' }, { key: 'energy', module: 'energy' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  school: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'existing', module: 'existing' }, { key: 'goals', module: 'goals' }, { key: 'energy', module: 'energy' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  apartment: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'existing', module: 'existing' }, { key: 'goals', module: 'goals' }, { key: 'energy', module: 'energy' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  office: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'existing', module: 'existing' }, { key: 'goals', module: 'goals' }, { key: 'identity', module: 'identity' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  factory: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'existing', module: 'existing' }, { key: 'production', module: 'production' }, { key: 'goals', module: 'goals' }, { key: 'energy', module: 'energy' }, { key: 'identity', module: 'identity' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  hotel: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'existing', module: 'existing' }, { key: 'goals', module: 'goals' }, { key: 'energy', module: 'energy' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  energy: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'existing', module: 'existing' }, { key: 'goals', module: 'goals' }, { key: 'energy', module: 'energy' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  storage: [{ key: 'location', module: 'location' }, { key: 'storage_type', module: 'storage_type' }, { key: 'temperature_humidity', module: 'temperature_humidity' }, { key: 'compliance_use', module: 'compliance_use' }, { key: 'outage', module: 'outage' }, { key: 'alert_channels', module: 'alert_channels' }, { key: 'monitoring_points', module: 'monitoring_points' }, { key: 'calibration_cycle', module: 'calibration_cycle' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  kitchen: [{ key: 'location', module: 'location' }, { key: 'kitchen_count', module: 'kitchen_count' }, { key: 'gas_type', module: 'gas_type' }, { key: 'alarm_contacts', module: 'alarm_contacts' }, { key: 'service_term', module: 'service_term' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  water: [{ key: 'location', module: 'location' }, { key: 'water_system', module: 'water_system' }, { key: 'parameters', module: 'parameters' }, { key: 'reporting', module: 'reporting' }, { key: 'service_term', module: 'service_term' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  asset: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'goals', module: 'goals' }, { key: 'monitoring_points', module: 'monitoring_points' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  agri: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'goals', module: 'goals' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  retrofit: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'existing', module: 'existing' }, { key: 'goals', module: 'goals' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
+  custom: [{ key: 'location', module: 'location' }, { key: 'building', module: 'site' }, { key: 'goals', module: 'goals' }, { key: 'existing', module: 'existing' }, { key: 'budget', module: 'budget' }, { key: 'contact', module: 'contact' }],
 }
+
+const projectCategories = computed(() => categoryDefs.map((category) => ({
+  ...category,
+  label: t(`lead.categories.${category.key}.label`),
+  description: t(`lead.categories.${category.key}.description`),
+})))
+
+const levelOptions = computed(() => (['L3', 'L4', 'L5'] as LevelKey[]).map((key) => ({
+  key,
+  label: t(`lead.levels.${key}.label`),
+  description: t(`lead.levels.${key}.description`),
+})))
 
 const selectedKey = ref<CategoryKey | null>(null)
 const targetLevel = ref<LevelKey>('L3')
@@ -393,9 +284,16 @@ const loading = ref(false)
 const error = ref('')
 const chatScroll = ref<HTMLElement | null>(null)
 
-const selectedCategory = computed(() => projectCategories.find((item) => item.key === selectedKey.value) || null)
-const targetLevelMeta = computed(() => levelOptions.find((item) => item.key === targetLevel.value) || levelOptions[0])
-const currentQuestions = computed(() => selectedKey.value ? questionBank[selectedKey.value] : [])
+const selectedCategory = computed(() => projectCategories.value.find((item) => item.key === selectedKey.value) || null)
+const targetLevelMeta = computed(() => levelOptions.value.find((item) => item.key === targetLevel.value) || levelOptions.value[0])
+const currentQuestions = computed(() => {
+  if (!selectedKey.value) return []
+  return (questionOrder[selectedKey.value] || []).map((item) => ({
+    ...item,
+    prompt: t(`lead.questions.${selectedKey.value}.${item.key}.prompt`),
+    placeholder: t(`lead.questions.${selectedKey.value}.${item.key}.placeholder`),
+  }))
+})
 const currentQuestion = computed(() => currentQuestions.value[currentIndex.value] || null)
 const answeredCount = computed(() => Object.keys(answers).filter((key) => answers[key]?.trim()).length)
 const progress = computed(() => {
@@ -416,10 +314,10 @@ const leadScore = computed(() => {
 })
 
 const leadStage = computed(() => {
-  if (leadScore.value >= 85) return 'Phase-1 Ready'
-  if (leadScore.value >= 70) return 'Qualified Lead'
-  if (leadScore.value >= 45) return 'Warm Lead'
-  return 'Cold Lead'
+  if (leadScore.value >= 85) return t('lead.stages.phase1Ready')
+  if (leadScore.value >= 70) return t('lead.stages.qualified')
+  if (leadScore.value >= 45) return t('lead.stages.warm')
+  return t('lead.stages.cold')
 })
 
 const proposalPlans = computed(() => {
@@ -433,43 +331,43 @@ const proposalPlans = computed(() => {
   return [
     {
       tier: 'budget',
-      name: 'Budget Plan',
+      name: t('lead.plans.budget.name'),
       level: 'L1-L2',
-      complexity: 'Starter retrofit',
-      risk: 'Medium risk',
+      complexity: t('lead.plans.budget.complexity'),
+      risk: t('lead.plans.budget.risk'),
       device: ranges.budget,
-      support: '1-3 years',
-      summary: industrialProject ? 'Starter industrial visibility for selected meters, machine status, OT gateway, and essential alerts.' : 'Basic control, essential CCTV/access/network/energy monitoring, and limited automation.',
+      support: t('lead.plans.budget.support'),
+      summary: industrialProject ? t('lead.plans.budget.summaryIndustrial') : t('lead.plans.budget.summary'),
     },
     {
       tier: 'standard',
-      name: 'Standard Plan',
+      name: t('lead.plans.standard.name'),
       level: 'L2-L3',
-      complexity: 'Practical delivery',
-      risk: 'Managed risk',
+      complexity: t('lead.plans.standard.complexity'),
+      risk: t('lead.plans.standard.risk'),
       device: ranges.standard,
-      support: '3-5 years',
-      summary: industrialProject ? 'Line-level energy dashboard, PLC/SCADA integration, compressor/chiller scheduling, and remote maintenance.' : 'Sensor automation, energy dashboard, remote maintenance, and service-ready device choices.',
+      support: t('lead.plans.standard.support'),
+      summary: industrialProject ? t('lead.plans.standard.summaryIndustrial') : t('lead.plans.standard.summary'),
     },
     {
       tier: 'premium_ai',
-      name: 'Premium AI Plan',
+      name: t('lead.plans.premium_ai.name'),
       level: targetLevel.value === 'L5' ? 'L4-L5' : 'L3-L4',
-      complexity: 'Manual review required',
-      risk: 'High review',
+      complexity: t('lead.plans.premium_ai.complexity'),
+      risk: t('lead.plans.premium_ai.risk'),
       device: ranges.premium,
-      support: '5-10 years',
-      summary: industrialProject ? 'AI anomaly detection, predictive maintenance, local OT data gateway, production energy intelligence, and SLA planning.' : 'AI analysis, identity/access intelligence, local AI options, and deeper lifecycle planning.',
+      support: t('lead.plans.premium_ai.support'),
+      summary: industrialProject ? t('lead.plans.premium_ai.summaryIndustrial') : t('lead.plans.premium_ai.summary'),
     },
     {
       tier: 'future_autonomous',
-      name: 'Future Autonomous Plan',
+      name: t('lead.plans.future_autonomous.name'),
       level: 'L5-L6',
-      complexity: 'Concept demo',
-      risk: 'Custom only',
-      device: 'Custom engineering',
-      support: 'Custom SLA',
-      summary: 'Robot-ready and autonomous facility concepts. No fixed price before engineering review.',
+      complexity: t('lead.plans.future_autonomous.complexity'),
+      risk: t('lead.plans.future_autonomous.risk'),
+      device: t('lead.plans.future_autonomous.device'),
+      support: t('lead.plans.future_autonomous.support'),
+      summary: t('lead.plans.future_autonomous.summary'),
     },
   ]
 })
@@ -477,34 +375,38 @@ const proposalPlans = computed(() => {
 const previewModules = computed(() => {
   const modules = selectedKey.value === 'storage'
     ? [
-        { key: 'category', label: 'Project Category', summary: selectedCategory.value?.label || 'Choose project type' },
-        { key: 'location', label: 'Site Location', summary: answers.location || 'Country and city required' },
-        { key: 'storage_type', label: 'Storage Type & Rooms', summary: answers.storage_type || 'Cold room, freezer, pharmacy fridge, warehouse...' },
-        { key: 'temperature_humidity', label: 'Temperature & Humidity', summary: answers.temperature_humidity || 'e.g. 2-8°C, -18°C, <60% RH' },
-        { key: 'compliance_use', label: 'Compliance Use', summary: answers.compliance_use || 'Food (HACCP) or pharma (GDP), audit reports' },
-        { key: 'outage', label: 'Outage Protection', summary: answers.outage || 'Power-failure risk and current logging' },
-        { key: 'alert_channels', label: 'Alert Channels', summary: answers.alert_channels || 'SMS, Telegram, email, phone call' },
-        { key: 'monitoring_points', label: 'Monitoring Points', summary: answers.monitoring_points || 'Total points across rooms and doors' },
-        { key: 'calibration_cycle', label: 'Calibration & Service', summary: answers.calibration_cycle || 'Calibration cycle and service term' },
-        { key: 'budget', label: 'Budget & Service Period', summary: answers.budget || 'Budget range and support years' },
-        { key: 'contact', label: 'Contact', summary: answers.contact || 'Name and email/phone' },
+        { key: 'category', answerKey: 'category' },
+        { key: 'location', answerKey: 'location' },
+        { key: 'storage_type', answerKey: 'storage_type' },
+        { key: 'temperature_humidity', answerKey: 'temperature_humidity' },
+        { key: 'compliance_use', answerKey: 'compliance_use' },
+        { key: 'outage', answerKey: 'outage' },
+        { key: 'alert_channels', answerKey: 'alert_channels' },
+        { key: 'monitoring_points', answerKey: 'monitoring_points' },
+        { key: 'calibration_cycle', answerKey: 'calibration_cycle' },
+        { key: 'budget', answerKey: 'budget' },
+        { key: 'contact', answerKey: 'contact' },
       ]
     : [
-        { key: 'category', label: 'Project Category', summary: selectedCategory.value?.label || 'Choose project type' },
-        { key: 'location', label: 'Site Location', summary: answers.location || 'Country and city required' },
-        { key: 'site', label: 'Building / Site Profile', summary: answers.building || 'Area, rooms, floors, or loads' },
-        { key: 'existing', label: 'Existing Systems', summary: answers.existing || 'Network, CCTV, HVAC, solar, access, KNX...' },
-        { key: 'production', label: 'Production / Machines', summary: answers.production || 'Factory lines, machines, robots, utilities, PLC/SCADA' },
-        { key: 'goals', label: 'Smart Goals', summary: answers.goals || 'Energy, security, comfort, AI, maintenance...' },
-        { key: 'identity', label: 'Identity & Access', summary: answers.identity || 'Only needed for projects with access/AI identity' },
-        { key: 'energy', label: 'Energy & Solar', summary: answers.energy || 'PV, battery, EV, tariffs, reports' },
-        { key: 'budget', label: 'Budget & Service Period', summary: answers.budget || 'Budget range and support years' },
-        { key: 'contact', label: 'Contact', summary: answers.contact || 'Name and email/phone' },
+        { key: 'category', answerKey: 'category' },
+        { key: 'location', answerKey: 'location' },
+        { key: 'site', answerKey: 'site' },
+        { key: 'existing', answerKey: 'existing' },
+        { key: 'production', answerKey: 'production' },
+        { key: 'goals', answerKey: 'goals' },
+        { key: 'identity', answerKey: 'identity' },
+        { key: 'energy', answerKey: 'energy' },
+        { key: 'budget', answerKey: 'budget' },
+        { key: 'contact', answerKey: 'contact' },
       ]
   const activeModule = currentQuestion.value?.module
   return modules.map((module) => ({
-    ...module,
-    done: module.key === 'category' || Boolean(answers[module.key]),
+    key: module.key,
+    label: t(`lead.modules.${module.key}`),
+    summary: module.key === 'category'
+      ? (selectedCategory.value?.label || t('lead.moduleHints.category'))
+      : (answers[module.answerKey] || t(`lead.moduleHints.${module.key}`)),
+    done: module.key === 'category' || Boolean(answers[module.answerKey]),
     active: module.key === activeModule,
   }))
 })
@@ -515,19 +417,19 @@ function scrollChat() {
   })
 }
 
-function pushAi(text: string, tag = 'gap_question') {
+function pushAi(text: string, tag = t('lead.tagGap')) {
   messages.value.push({ id: Date.now() + Math.random(), role: 'ai', text, tag })
   scrollChat()
 }
 
 function pushUser(text: string) {
-  messages.value.push({ id: Date.now() + Math.random(), role: 'user', text, tag: 'intake_chat' })
+  messages.value.push({ id: Date.now() + Math.random(), role: 'user', text, tag: t('lead.tagIntake') })
   scrollChat()
 }
 
 async function startCategory(key: CategoryKey) {
   selectedKey.value = key
-  const category = projectCategories.find((item) => item.key === key)
+  const category = projectCategories.value.find((item) => item.key === key)
   targetLevel.value = category?.level.includes('L5') ? 'L5' : 'L3'
   messages.value = []
   Object.keys(answers).forEach((answerKey) => delete answers[answerKey])
@@ -536,13 +438,12 @@ async function startCategory(key: CategoryKey) {
   phase1Requested.value = false
   aiComplete.value = false
 
-  // AI agent opening question (when configured); otherwise scripted first prompt.
   if (assistant.enabled.value) {
     loading.value = true
     try {
-      const res = await assistant.ask(key, [{ role: 'user', content: `I want an AI facility assessment for: ${category?.label}.` }], { target_intelligence_level: targetLevel.value })
+      const res = await assistant.ask(key, [{ role: 'user', content: t('lead.assistantSeed', { category: category?.label }) }], { target_intelligence_level: targetLevel.value })
       if (res?.configured && res.reply) {
-        pushAi(res.reply, res.complete ? 'proposal_ready' : 'ai_analyze')
+        pushAi(res.reply, res.complete ? t('lead.tagReady') : t('lead.tagAi'))
         if (res.complete) aiComplete.value = true
         return
       }
@@ -552,14 +453,14 @@ async function startCategory(key: CategoryKey) {
       loading.value = false
     }
   }
-  pushAi(`Great. I will create a ${category?.label} assessment and ask only the next missing smart-building question.\n\n${currentQuestion.value?.prompt}`)
+  pushAi(t('lead.chatOpening', { category: category?.label, prompt: currentQuestion.value?.prompt || '' }))
 }
 
 function askNextQuestion() {
   if (currentQuestion.value) {
-    pushAi(currentQuestion.value.prompt, 'ai_analyze')
+    pushAi(currentQuestion.value.prompt, t('lead.tagAi'))
   } else {
-    pushAi('I have enough information for a preliminary AI estimate. You can submit this assessment for admin review.', 'proposal_ready')
+    pushAi(t('lead.chatEnough'), t('lead.tagReady'))
   }
 }
 
@@ -575,7 +476,6 @@ async function sendMessage() {
   draft.value = ''
   pushUser(text)
 
-  // AI agent path (when configured in Admin → Integrations).
   if (assistant.enabled.value && selectedCategory.value) {
     loading.value = true
     try {
@@ -583,7 +483,7 @@ async function sendMessage() {
       const res = await assistant.ask(selectedCategory.value.key, history, { ...answers, target_intelligence_level: targetLevel.value })
       if (res?.configured) {
         mergeExtracted(res.extracted)
-        if (res.reply) pushAi(res.reply, res.complete ? 'proposal_ready' : 'ai_analyze')
+        if (res.reply) pushAi(res.reply, res.complete ? t('lead.tagReady') : t('lead.tagAi'))
         if (res.complete) aiComplete.value = true
         return
       }
@@ -594,16 +494,19 @@ async function sendMessage() {
     }
   }
 
-  // Scripted fallback flow.
   if (currentQuestion.value) {
     answers[currentQuestion.value.module] = text
     currentIndex.value += 1
     const next = currentQuestion.value
     if (next) {
-      pushAi(`Captured. Next missing item:\n\n${next.prompt}`)
+      pushAi(t('lead.chatCaptured', { prompt: next.prompt }))
       return
     }
-    pushAi(`Thanks. The intake is now complete enough for a preliminary estimate.\n\nTarget level: ${targetLevel.value} ${targetLevelMeta.value.label}\n\n${estimateNotice}`, 'proposal_ready')
+    pushAi(t('lead.chatComplete', {
+      level: targetLevel.value,
+      levelLabel: targetLevelMeta.value.label,
+      notice: estimateNotice.value,
+    }), t('lead.tagReady'))
     return
   }
 
@@ -612,8 +515,8 @@ async function sendMessage() {
 
 async function requestPhase1Proposal() {
   phase1Requested.value = true
-  pushUser('Request Phase-1 Proposal')
-  pushAi('Understood. I will mark this as Phase-1 intent. Human review is required before any detailed BOM, architecture diagram, supplier confirmation, or final quotation.', 'phase1_requested')
+  pushUser(t('lead.requestPhase1'))
+  pushAi(t('lead.chatPhase1Ack'), t('lead.tagPhase1'))
   await submitLead(true)
 }
 
@@ -661,15 +564,13 @@ async function submitLead(requestPhase1 = false) {
           `Target intelligence level: ${targetLevel.value} ${targetLevelMeta.value.label}.`,
           `Lead score: ${leadScore.value} (${leadStage.value}).`,
           phase1Requested.value ? 'Customer requested paid Phase-1 Proposal.' : 'Customer has not requested Phase-1 Proposal yet.',
-          estimateNotice,
+          estimateNotice.value,
           transcript,
         ].join('\n\n'),
         contact_name: answers.contact?.split(',')?.[0] || 'AI Assessment Lead',
         contact_email: extractEmail(answers.contact || '') || 'unknown@ainerwise.local',
         contact_phone: answers.contact || '',
         site_info_json: {
-          // Include every answered module key so new solution lines (KitchenGuard,
-          // AquaGuard, AssetPulse, AgriBrain) land their intake fields for AI analysis.
           ...answers,
           target_intelligence_level: targetLevel.value,
           category_key: selectedCategory.value.key,
@@ -677,7 +578,7 @@ async function submitLead(requestPhase1 = false) {
           lead_stage: leadStage.value,
           phase1_requested: phase1Requested.value,
           proposal_tiers: proposalPlans.value,
-          building: answers.building,
+          building: answers.building || answers.site,
           existing_systems: answers.existing,
           production_machines: answers.production,
           smart_goals: answers.goals,
@@ -691,15 +592,15 @@ async function submitLead(requestPhase1 = false) {
           monitoring_points: answers.monitoring_points,
           calibration_cycle: answers.calibration_cycle,
           budget_and_service: answers.budget,
-          estimate_notice: estimateNotice,
+          estimate_notice: estimateNotice.value,
           transcript: messages.value,
         },
       },
     })
     submitted.value = true
-    pushAi('Submitted. AinerWise admin will review the preliminary AI estimate before any quote or commitment.', 'submitted')
+    pushAi(t('lead.chatSubmitted'), t('lead.tagSubmitted'))
   } catch (e: any) {
-    error.value = e?.data?.detail || 'Submission failed'
+    error.value = e?.data?.detail || t('lead.submitFailed')
   } finally {
     loading.value = false
   }

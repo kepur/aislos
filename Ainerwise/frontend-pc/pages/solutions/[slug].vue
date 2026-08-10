@@ -221,6 +221,7 @@ const route = useRoute()
 const { t } = useI18n()
 const { apiFetch } = useApi()
 const { lines, bySlug } = useSolutionLines()
+const { localizeSolution } = useLocalizedCatalog()
 
 const solution = ref<any>(null)
 const loading = ref(true)
@@ -247,7 +248,8 @@ async function loadSolution() {
   loading.value = true
   error.value = ''
   try {
-    solution.value = await apiFetch<any>(`/solutions/${route.params.slug}`)
+    const raw = await apiFetch<any>(`/solutions/${route.params.slug}`)
+    solution.value = localizeSolution(raw)
   } catch (e: any) {
     solution.value = null
     if (e?.response?.status !== 404) {

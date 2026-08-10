@@ -18,13 +18,15 @@ export default {
     integrations: '集成配置',
     settings: '系统设置',
     audit: '审计日志',
+    adCampaigns: '广告活动',
+    marketplace: '市场'
   },
   sections: {
     people: '人员',
     marketplace: '市场',
     finance: '财务',
     operations: '运营',
-    system: '系统',
+    system: '系统'
   },
   common: {
     loading: '加载中…',
@@ -59,7 +61,7 @@ export default {
     enable: '启用',
     saving: '保存中…',
     failed: '操作失败',
-    none: '无',
+    none: '无'
   },
   status: {
     ACTIVE: '正常',
@@ -85,7 +87,7 @@ export default {
     SUBMITTED: '已提交',
     APPROVED: '已批准',
     REJECTED: '已拒绝',
-    NEEDS_INFO: '需补充资料',
+    NEEDS_INFO: '需补充资料'
   },
   login: {
     title: '管理后台',
@@ -94,7 +96,7 @@ export default {
     password: '密码',
     signIn: '登录',
     signingIn: '登录中…',
-    adminOnly: '需要管理员权限',
+    adminOnly: '需要管理员权限'
   },
   dashboard: {
     title: '仪表盘',
@@ -103,7 +105,7 @@ export default {
     openDisputes: '待处理争议',
     escrowHeld: '托管资金',
     recentAudit: '最近审计日志',
-    quickActions: '快捷操作',
+    quickActions: '快捷操作'
   },
   users: {
     title: '用户管理',
@@ -113,7 +115,7 @@ export default {
     email: '邮箱',
     role: '角色',
     suspend: '停用',
-    activate: '启用',
+    activate: '启用'
   },
   staff: {
     title: '员工管理',
@@ -125,14 +127,14 @@ export default {
     sendInvite: '发送邀请',
     inviting: '邀请中…',
     fillAll: '请填写所有字段（密码8位以上）',
-    changeRole: '更改角色',
+    changeRole: '更改角色'
   },
   companies: {
     title: '企业管理',
     name: '企业名称',
     verificationLevel: '认证等级',
     suspend: '停用',
-    activate: '启用',
+    activate: '启用'
   },
   verification: {
     title: 'KYC认证审核',
@@ -141,7 +143,7 @@ export default {
     loadDocs: '加载文件',
     noDocsYet: '暂未上传文件',
     needInfo: '需补充资料',
-    submitted: '已提交',
+    submitted: '已提交'
   },
   intents: {
     title: '需求审核',
@@ -150,14 +152,14 @@ export default {
     qty: '数量',
     budget: '预算',
     flag: '标记',
-    restore: '恢复',
+    restore: '恢复'
   },
   orders: {
     title: '订单管理',
     order: '订单',
     buyer: '买家',
     supplier: '供应商',
-    amount: '金额',
+    amount: '金额'
   },
   disputes: {
     title: '争议处理',
@@ -175,14 +177,14 @@ export default {
     favorSupplier: '支持供应商',
     split: '各承担50%',
     resolutionNote: '处理备注（选填）：',
-    evidenceSent: '已向{party}发送证据请求',
+    evidenceSent: '已向{party}发送证据请求'
   },
   escrow: {
     title: '资金托管',
     orderId: '订单',
     amount: '金额',
     release: '释放',
-    refund: '退款',
+    refund: '退款'
   },
   payments: {
     title: '支付与结算',
@@ -192,7 +194,7 @@ export default {
     provider: '服务商',
     method: '方式',
     noEvents: '暂无支付事件',
-    noPayouts: '暂无结算记录',
+    noPayouts: '暂无结算记录'
   },
   shipping: {
     title: '物流管理',
@@ -246,7 +248,7 @@ export default {
     routesByMethod: '启用路线方式分布',
     topExpensive: '最贵路线 Top',
     topCheapest: '最便宜路线 Top',
-    topSlowest: '最慢路线 Top',
+    topSlowest: '最慢路线 Top'
   },
   regions: {
     title: '区域管理',
@@ -270,7 +272,7 @@ export default {
     estimateSuppliers: '估算供应商',
     companies: '家公司',
     branches: '个分支',
-    activeRegions: '覆盖区域',
+    activeRegions: '覆盖区域'
   },
   risk: {
     title: '风险标记',
@@ -287,7 +289,7 @@ export default {
     mitigate: '处理',
     falsePositive: '误报',
     actionNote: '操作备注（选填）：',
-    flags: '条标记',
+    flags: '条标记'
   },
   notifications: {
     title: '通知模板',
@@ -298,7 +300,7 @@ export default {
     body: '内容',
     variables: '可用变量：',
     noTemplates: '暂无配置模板',
-    testSent: '测试已发送：{msg}',
+    testSent: '测试已发送：{msg}'
   },
   integrations: {
     title: '集成配置',
@@ -326,14 +328,14 @@ export default {
     autoTracking: '启用自动物流追踪',
     saveAll: '保存所有设置',
     saving: '保存中…',
-    saved: '设置已保存',
+    saved: '设置已保存'
   },
   settings: {
     title: '系统设置',
     key: '键名',
     value: '值',
     desc: '说明',
-    updated: '更新时间',
+    updated: '更新时间'
   },
   audit: {
     title: '审计日志',
@@ -341,7 +343,7 @@ export default {
     action: '操作',
     target: '目标',
     searchAction: '搜索操作…',
-    riskOnly: '仅风险项',
+    riskOnly: '仅风险项'
   },
   trust: {
     title: '信用评分',
@@ -354,7 +356,7 @@ export default {
     recalc: '重新计算',
     adjust: '调整',
     adjustPrompt: '评分变动（-100 至 100）：',
-    adjustReason: '调整原因：',
+    adjustReason: '调整原因：'
   },
   ai: {
     title: 'AI 服务',
@@ -379,6 +381,6 @@ export default {
     confidence_label: '置信度',
     test: '测试AI连接',
     testSuccess: 'AI连接成功',
-    testFailed: 'AI连接失败',
-  },
+    testFailed: 'AI连接失败'
+  }
 }

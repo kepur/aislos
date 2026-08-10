@@ -130,16 +130,29 @@
 const { t } = useI18n()
 const { apiFetch } = useApi()
 const { lines } = useSolutionLines()
+const { localizeSolution } = useLocalizedCatalog()
 
-const solutions = ref<any[]>([])
-const loading = ref(true)
-const error = ref('')
-
-// The eight lines are already shown above, so the catalogue below lists the
-// rest — partner and single-system solutions — instead of repeating them.
 const lineSlugs = new Set(lines.map((l) => l.slug))
+
+const { data: solutionsData, pending: loading, error: loadError, refresh: loadSolutions } = await useAsyncData(
+  'solutions-catalogue',
+  async () => {
+    const res = await apiFetch<any>('/solutions')
+    return res.items || res || []
+  },
+  { default: () => [] },
+)
+
+const error = computed(() =>
+  loadError.value
+    ? (loadError.value as any)?.data?.detail || (loadError.value as any)?.message || t('solutions.loadError')
+    : '',
+)
+
 const catalogue = computed(() =>
-  solutions.value.filter((s) => !lineSlugs.has(s.slug) && !String(s.slug).startsWith('private-solution-'))
+  (solutionsData.value || [])
+    .filter((s: any) => !lineSlugs.has(s.slug) && !String(s.slug).startsWith('private-solution-'))
+    .map(localizeSolution),
 )
 
 const commonCapabilities = computed(() => [
@@ -161,20 +174,5 @@ const solutionHeroStats = computed(() => [
 ])
 const solutionHeroNodes = computed(() => lines.slice(0, 5).map((line) => line.name))
 
-async function loadSolutions() {
-  loading.value = true
-  error.value = ''
-  try {
-    const res = await apiFetch<any>('/solutions')
-    solutions.value = res.items || res || []
-  } catch (e: any) {
-    solutions.value = []
-    error.value = e?.data?.detail || e?.message || t('solutions.loadError')
-  } finally {
-    loading.value = false
-  }
-}
-
 useHead({ title: () => `${t('solutions.title')} — AinerWise` })
-onMounted(loadSolutions)
 </script>

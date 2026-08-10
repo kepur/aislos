@@ -16,9 +16,9 @@
     "supplierApplication": "Become a Supplier",
     "aiBrain": "AI Brain",
     "store": "Product Catalog",
-    "marketplace": "Agent Store",
+    "marketplace": "Sklep Agentów",
     "developers": "Developers",
-    "procurementMarket": "Market"
+    "procurementMarket": "Rynek zakupów"
   },
   "home": {
     "heroKicker": "AISLOS — The Enterprise AI Operating System",
@@ -71,7 +71,26 @@
     "stageSignal3Label": "procure, deliver, maintain",
     "layersEyebrow": "Beyond a smart-home website",
     "layersTitle": "AinerWise is the customer experience. AISLOS is the operating system behind it.",
-    "layersSubtitle": "Smart standards connect devices. AinerWise connects AI conversation, hardware selection, procurement, installation, evidence, warranty and recurring service."
+    "layersSubtitle": "Smart standards connect devices. AinerWise connects AI conversation, hardware selection, procurement, installation, evidence, warranty and recurring service.",
+    "hubCore": "Mózg AI AinerWise",
+    "hubEyebrow": "Ekosystem",
+    "hubFootnote": "Zobacz wszystkie rozwiązania",
+    "hubSubtitle": "Po lewej stronie łańcuch dostaw pierwszego rzędu w Chinach, z którego zaopatrujemy się. Po prawej systemy budowlane, które integrujemy. Pośrodku mózg AI, który sprawia, że ​​działają jako jeden.",
+    "hubSupplier1": "Cyfrowa moc Huawei",
+    "hubSupplier2": "Słońce",
+    "hubSupplier3": "LONGi",
+    "hubSupplier4": "Ekosystem Xiaomi",
+    "hubSupplier5": "Certyfikowany OEM/ODM",
+    "hubSupplier6": "Dostawcy z certyfikatem KNX",
+    "hubSupplier7": "Lokalni partnerzy serwisowi",
+    "hubTitle": "Jeden mózg pomiędzy łańcuchem dostaw a budynkiem",
+    "sysEnergy": "Energia słoneczna i magazynowanie",
+    "sysHvac": "HVAC",
+    "sysLighting": "Oświetlenie i sceny",
+    "sysNetwork": "Sieć i brzeg",
+    "sysScenes": "Automatyzacja",
+    "sysSecurity": "Bezpieczeństwo i dostęp",
+    "sysShading": "Zacienienie"
   },
   "intelligence": {
     "l1": "Connected Building",
@@ -109,7 +128,166 @@
     "recurringValue": "Typical Recurring Service Value",
     "recurringValueDesc": "Why this stays a long-term serviced facility, not a one-time device sale.",
     "amcOptions": "Annual Maintenance Contract Options",
-    "amcSuffix": "AMC"
+    "amcSuffix": "AMC",
+    "aiSubtitle": "Pochodzą one z warstwy AI platformy, a nie z magistrali – standardowa instalacja KNX nie jest w stanie ich obsłużyć.",
+    "aiTitle": "Co dodaje mózg AI",
+    "badgeAi": "AI buduje mózg",
+    "badgeKnx": "Kompatybilny z KNX",
+    "capAssess": "Ocena sztucznej inteligencji",
+    "capAssessHint": "Cele, dane witryny i luki ustalone przed jakąkolwiek wyceną",
+    "capIntegrate": "Wiele protokołów",
+    "capIntegrateHint": "Bramy KNX, Modbus, BACnet, IP i certyfikowane",
+    "capMonitor": "Ciągłe monitorowanie",
+    "capMonitorHint": "Pomiary przeprowadzane są nadal po przekazaniu, a nie tylko podczas uruchomienia",
+    "capService": "Usługa cyklu życia",
+    "capServiceHint": "Plany wsparcia od 1 do 10 lat z umową SLA",
+    "catalogEyebrow": "Pełny katalog",
+    "catalogSubtitle": "Rozwiązania w zakresie jednego systemu lub dostarczane z partnerem.",
+    "catalogTitle": "Rozwiązania jednosystemowe i partnerskie",
+    "commonEyebrow": "Wspólne możliwości",
+    "commonSubtitle": "Autobus daje Ci kontrolę. Mózg sztucznej inteligencji stale zauważa, co jest nie tak — na tym polega różnica w porównaniu ze zwykłą integracją KNX.",
+    "commonTitle": "Cztery warstwy współdzielone przez każdą linię",
+    "empty": "Obecnie nie są publikowane żadne rozwiązania.",
+    "eyebrow": "Rozwiązania",
+    "linesEyebrow": "Osiem linii rozwiązań",
+    "loadError": "Nie można wczytać rozwiązań.",
+    "monitoringSubtitle": "Dane są nadal zbierane po przekazaniu — i powód, dla którego warto zapłacić za roczną usługę.",
+    "monitoringTitle": "Co pozostaje monitorowane",
+    "relatedTitle": "Inne linie rozwiązań",
+    "systemsSubtitle": "Podsystemy integrowane przez tę linię. Każdy punkt korzysta ze standardowego protokołu — bez uzależnienia od jednej marki.",
+    "systemsTitle": "Objęte systemy budowlane",
+    "bySlug": {
+      "smart-hotel": {
+        "title": "Smart Hotel Room Control",
+        "description": "Complete smart hotel room automation including guest detection, lighting scenes, HVAC control, and energy optimization. Designed for hotels seeking to reduce energy costs while improving guest experience.",
+        "scenarios": [
+          "Hotels",
+          "Boutique Hotels",
+          "Serviced Apartments",
+          "Resorts"
+        ]
+      },
+      "smart-villa": {
+        "title": "Smart Villa & Apartment Retrofit",
+        "description": "Transform existing villas and apartments with smart lighting, climate control, security, and energy monitoring. Non-invasive retrofit solutions that work with existing wiring.",
+        "scenarios": [
+          "Villas",
+          "Apartments",
+          "Residential Complexes",
+          "Vacation Homes"
+        ]
+      },
+      "cctv-access-control": {
+        "title": "CCTV & Access Control",
+        "description": "Professional surveillance and access control systems for commercial and residential properties. IP cameras, NVR, door access, intercom, and remote monitoring solutions.",
+        "scenarios": [
+          "Commercial Buildings",
+          "Shops",
+          "Offices",
+          "Residential",
+          "Parking"
+        ]
+      },
+      "knx-lighting": {
+        "title": "KNX Lighting & Scene Automation",
+        "description": "Professional KNX-based lighting control with scene management, daylight harvesting, presence detection, and integration with building management systems.",
+        "scenarios": [
+          "New Construction",
+          "Renovation",
+          "Commercial Spaces",
+          "High-End Residential"
+        ]
+      },
+      "solar-energy-monitoring": {
+        "title": "Solar & Energy Monitoring",
+        "description": "Real-time solar production monitoring, energy consumption tracking, and performance optimization dashboards. Compatible with major inverter brands.",
+        "scenarios": [
+          "Solar Installations",
+          "Commercial Buildings",
+          "Industrial",
+          "Residential with PV"
+        ]
+      },
+      "factory-industrial-energy-brain": {
+        "title": "Factory Automation & Industrial Energy Brain",
+        "description": "Industrial smart-building layer for factories, warehouses, and manufacturing plants. Connects machine energy monitoring, PLC/SCADA, gateways, compressed air, chillers, motors, robots, PV/battery, OT visibility, and lifecycle maintenance.",
+        "scenarios": [
+          "Factories",
+          "Warehouses",
+          "Manufacturing Plants",
+          "Industrial Parks"
+        ]
+      },
+      "storageguard": {
+        "title": "StorageGuard — Cold Chain & Storage Compliance Monitoring",
+        "description": "24/7 temperature and humidity compliance monitoring for cold chain and precision storage, with audit-ready reports, outage alerts, and annual calibration service.",
+        "scenarios": [
+          "Pharmaceutical Warehouses",
+          "Food Cold Storage",
+          "Laboratories"
+        ]
+      },
+      "kitchenguard": {
+        "title": "KitchenGuard — Commercial Kitchen Safety Monitoring",
+        "description": "Gas, CO, leak and temperature safety monitoring with cut-off, alarm escalation, and annual inspection certificates.",
+        "scenarios": [
+          "Commercial Kitchens",
+          "Hotels",
+          "Central Kitchens"
+        ]
+      },
+      "aquaguard": {
+        "title": "AquaGuard — Water & Effluent Compliance Monitoring",
+        "description": "pH, conductivity, turbidity and COD monitoring with environmental compliance reports and probe service.",
+        "scenarios": [
+          "Factories",
+          "Pools",
+          "Process Water"
+        ]
+      },
+      "energyguard": {
+        "title": "EnergyGuard — Solar, Storage & Energy Monitoring",
+        "description": "PV, storage and building energy monitoring with tariffs, alerts and optimization dashboards.",
+        "scenarios": [
+          "Solar Sites",
+          "Commercial",
+          "Industrial"
+        ]
+      },
+      "factorypulse": {
+        "title": "FactoryPulse — Non-Invasive OEE & Predictive Maintenance",
+        "description": "Non-invasive machine monitoring for OEE visibility and predictive maintenance planning.",
+        "scenarios": [
+          "Factories",
+          "Assembly Lines"
+        ]
+      },
+      "assetpulse": {
+        "title": "AssetPulse — High-Value Asset & Tool Tracking",
+        "description": "BLE/UWB/LoRa asset tracking with geofence alerts and multi-site inventory reports.",
+        "scenarios": [
+          "Warehouses",
+          "Multi-site Operations"
+        ]
+      },
+      "agribrain": {
+        "title": "AgriBrain — Greenhouse & Farm Intelligence (Future-Ready)",
+        "description": "Future-ready soil, climate, water and fertilizer monitoring for greenhouses and farms.",
+        "scenarios": [
+          "Greenhouses",
+          "Farms"
+        ]
+      },
+      "remote-maintenance": {
+        "title": "Remote Maintenance & Support",
+        "description": "Ongoing remote monitoring, maintenance, firmware updates, and technical support for installed smart building systems. Annual service plans with guaranteed response.",
+        "scenarios": [
+          "Installed Projects",
+          "Hotels",
+          "Offices"
+        ]
+      }
+    }
   },
   "products": {
     "title": "Product Catalog",
@@ -127,7 +305,63 @@
     "verified": "Verified Supplier",
     "allCategories": "All Categories",
     "filter": "Filter",
-    "noProducts": "No products found"
+    "noProducts": "No products found",
+    "intro": "AinerWise focuses on China first-tier, project-grade supply chains such as Huawei Digital Power, Sungrow, LONGi, Xiaomi ecosystem, leading CCTV/access vendors, and verified OEM/ODM partners. These are solution-ready building blocks, not cheap commodity products.",
+    "surfaceOfficial": "Official recommended",
+    "surfaceMarket": "Market products",
+    "surfaceRecycled": "Enterprise recycled",
+    "marketLink": "AinerWise Market",
+    "secondhandLink": "2Hands",
+    "loading": "Loading products...",
+    "loadError": "Products could not be loaded.",
+    "retry": "Retry",
+    "refPrice": "€{price} ref.",
+    "warrantyYears": "Warranty {n}y",
+    "supportYears": "Support {years}y",
+    "maintenanceYears": "{n}y maintenance",
+    "tryAgain": "Please try again.",
+    "categories": {
+      "knx-devices": "KNX Devices",
+      "gateways": "Gateways",
+      "sensors": "Sensors",
+      "smart-panels": "Smart Panels",
+      "cctv": "CCTV",
+      "access-control": "Access Control",
+      "network-devices": "Network Devices",
+      "hvac-controllers": "HVAC Controllers",
+      "energy-meters": "Energy Meters",
+      "solar-monitoring": "Solar Monitoring",
+      "lighting-control": "Lighting Control",
+      "home-assistant-compatible": "Home Assistant Compatible",
+      "service-packages-cat": "Service Packages",
+      "industrial-automation": "Industrial Automation",
+      "plc-scada-gateways": "PLC / SCADA Gateways",
+      "machine-energy-monitoring": "Machine Energy Monitoring",
+      "storageguard-monitoring": "StorageGuard Monitoring"
+    },
+    "items": {
+      "solar-energy-gateway": {
+        "name": "Solar / Battery / EV Energy Gateway"
+      },
+      "ai-cctv-poe-camera": {
+        "name": "PoE AI CCTV Camera"
+      },
+      "industrial-plc-gateway": {
+        "name": "Industrial PLC / Modbus / OPC UA Gateway"
+      },
+      "edge-ai-building-box": {
+        "name": "Local AI Building Edge Box"
+      },
+      "machine-energy-meter": {
+        "name": "Non-Invasive Machine Energy Meter"
+      },
+      "vfd-motor-monitor": {
+        "name": "VFD / Motor & Compressor Monitoring Module"
+      },
+      "plc-scada-robot-opcua-connector": {
+        "name": "PLC / SCADA & Robot OPC-UA Connector"
+      }
+    }
   },
   "services": {
     "title": "Service Packages",
@@ -220,7 +454,7 @@
   "lead": {
     "title": "Submit Project Requirement",
     "subtitle": "Tell us about your project and get a preliminary assessment",
-    "step1": "Basic Info",
+    "step1": "Krok 1",
     "step2": "Site Details",
     "step3": "Technical Info",
     "projectType": "Project Type",
@@ -231,15 +465,634 @@
     "contactName": "Your Name",
     "contactEmail": "Email",
     "contactPhone": "Phone",
-    "submit": "Submit Requirement",
+    "submit": "Wyślij zapytanie",
     "success": "Your requirement has been submitted successfully! We will review and contact you soon.",
-    "forgeKicker": "AI Project Forge",
-    "forgeTitle": "Smart Building Assessment",
-    "forgeSubtitle": "Create the project by choosing one category, then let the AI intake collect missing smart-building details conversationally. No final quote is promised here.",
+    "forgeKicker": "Warsztat projektów AI",
+    "forgeTitle": "Ocena inteligentnego budynku",
+    "forgeSubtitle": "Wybierz kategorię projektu, a następnie pozwól AI zebrać brakujące szczegóły inteligentnego budynku w rozmowie. Nie ma tu ostatecznej wyceny.",
     "progress": "Progress",
     "step1Label": "What type of project are you planning?",
     "step1Desc": "This is the only classic project-creation choice. After this, information is collected by AI-style questions.",
-    "estimateWarning": "AI budget output is estimate only. Final quotation requires manual review, meeting, site survey, supplier confirmation, and signed contract."
+    "estimateWarning": "Tylko szacunki AI. Ostateczna wycena wymaga ręcznego przeglądu, spotkania z klientem, ankiety na miejscu, potwierdzenia dostawcy i podpisania umowy.",
+    "selectedProject": "Wybrany projekt",
+    "changeCategory": "Zmień kategorię",
+    "intakeKicker": "Wlot LangGrapha",
+    "collectStep": "Zbieraj informacje o projekcie krok po kroku",
+    "aiAnalyze": "Analiza AI",
+    "answerPlaceholder": "Odpowiedz na pytanie AI...",
+    "working": "Przetwarzanie...",
+    "send": "Wyślij",
+    "submitting": "Wysyłanie...",
+    "submittedRequirement": "Wymaganie przesłane.",
+    "submittedPhase1": "Złożono wniosek dotyczący etapu 1.",
+    "submittedFollowup": "Administrator sprawdzi szacunki AI i podejmie dalsze działania ręcznie.",
+    "projectPreview": "Podgląd projektu",
+    "percentComplete": "{n}% ukończone",
+    "levelTarget": "Cel {level}",
+    "statusDone": "Gotowe",
+    "statusActive": "Aktywne",
+    "statusPending": "Oczekujące",
+    "selectedBehavior": "Wybrane zachowania inteligencji",
+    "estimateNotice": "Tylko szacunki AI. Ostateczna wycena wymaga ręcznego przeglądu, spotkania z klientem, ankiety na miejscu, potwierdzenia dostawcy i podpisania umowy.",
+    "leadScore": "Wynik wiodący",
+    "leadScoreDesc": "Obliczane na podstawie kompletności, budżetu, kontaktu, poziomu docelowego i zamiaru fazy 1.",
+    "proposalDirections": "Wstępne wskazówki dotyczące propozycji",
+    "device": "Urządzenie",
+    "support": "Wsparcie",
+    "readyPhase1Title": "Gotowy do propozycji fazy 1",
+    "readyPhase1Desc": "Bezpłatne szacunki AI dają tylko kierunek. Faza 1 oznacza przegląd ręczny, głębsze BOM, projekt architektury, potwierdzenie dostawcy i jedno spotkanie.",
+    "requestPhase1": "Poproś o propozycję fazy 1",
+    "tagGap": "Pytanie AI",
+    "tagIntake": "twoja odpowiedź",
+    "tagAi": "analiza AI",
+    "tagReady": "gotowe",
+    "tagPhase1": "faza 1",
+    "tagSubmitted": "wysłano",
+    "chatOpening": "Świetnie. Przygotuję ocenę dla {category} i zadam tylko kolejne brakujące pytanie o inteligentny budynek.\n\n{prompt}",
+    "chatCaptured": "Zapisano. Następny brakujący element:\n\n{prompt}",
+    "chatComplete": "Dziękuję. Zebrane informacje wystarczą do wstępnej wyceny.\n\nPoziom docelowy: {level} {levelLabel}\n\n{notice}",
+    "chatEnough": "Mam wystarczająco informacji do wstępnej oceny AI. Możesz przesłać tę ocenę do weryfikacji administratora.",
+    "chatPhase1Ack": "Rozumiem. Oznaczę to jako zamiar fazy 1. Przed szczegółowym BOM, diagramem architektury, potwierdzeniem dostawcy lub ostateczną wyceną wymagany jest przegląd człowieka.",
+    "chatSubmitted": "Wysłano. Administrator AinerWise sprawdzi wstępną ocenę AI przed jakąkolwiek wyceną lub zobowiązaniem.",
+    "assistantSeed": "Chcę ocenę obiektu AI dla: {category}.",
+    "submitFailed": "Przesyłanie nie powiodło się",
+    "stages": {
+      "phase1Ready": "Faza 1 gotowa",
+      "qualified": "Kwalifikowany lead",
+      "warm": "Ciepły ołów",
+      "cold": "Zimny ​​ołów"
+    },
+    "modules": {
+      "category": "Kategoria projektu",
+      "location": "Lokalizacja witryny",
+      "site": "Profil budynku/miejsca",
+      "existing": "Istniejące systemy",
+      "production": "Produkcja / Maszyny",
+      "goals": "Inteligentne cele",
+      "identity": "Tożsamość i dostęp",
+      "energy": "Energia i energia słoneczna",
+      "budget": "Budżet i okres świadczenia usług",
+      "contact": "Kontakt",
+      "storage_type": "Typ przechowywania i pokoje",
+      "temperature_humidity": "Temperatura i wilgotność",
+      "compliance_use": "Zastosowanie zgodności",
+      "outage": "Ochrona przed awarią",
+      "alert_channels": "Kanały alertów",
+      "monitoring_points": "Punkty Monitorowania",
+      "calibration_cycle": "Kalibracja i serwis"
+    },
+    "moduleHints": {
+      "category": "Wybierz typ projektu",
+      "location": "Wymagany kraj i miasto",
+      "site": "Powierzchnia, pomieszczenia, piętra lub ładunki",
+      "existing": "Sieć, CCTV, HVAC, energia słoneczna, dostęp, KNX...",
+      "production": "Linie fabryczne, maszyny, roboty, media, PLC/SCADA",
+      "goals": "Energia, bezpieczeństwo, komfort, sztuczna inteligencja, konserwacja...",
+      "identity": "Potrzebne tylko w przypadku projektów z tożsamością dostępu/AI",
+      "energy": "PV, akumulator, EV, taryfy, raporty",
+      "budget": "Zakres budżetu i lata wsparcia",
+      "contact": "Imię i nazwisko oraz adres e-mail/telefon",
+      "storage_type": "Chłodnia, zamrażarka, lodówka apteczna, magazyn...",
+      "temperature_humidity": "np. 2-8°C, -18°C, <60% wilgotności względnej",
+      "compliance_use": "Żywność (HACCP) lub farmacja (GDP), raporty z audytów",
+      "outage": "Ryzyko awarii zasilania i rejestracja prądu",
+      "alert_channels": "SMS, Telegram, e-mail, rozmowa telefoniczna",
+      "monitoring_points": "Suma punktów za pokoje i drzwi",
+      "calibration_cycle": "Cykl kalibracji i termin świadczenia usług"
+    },
+    "plans": {
+      "budget": {
+        "name": "Plan budżetu",
+        "complexity": "Modernizacja rozrusznika",
+        "risk": "Średnie ryzyko",
+        "support": "1-3 lata",
+        "summary": "Podstawowa kontrola, niezbędny monitoring CCTV/dostępu/sieci/energii i ograniczona automatyzacja.",
+        "summaryIndustrial": "Początkowa widoczność przemysłowa dla wybranych liczników, stanu maszyny, bramy OT i niezbędnych alertów."
+      },
+      "standard": {
+        "name": "Plan standardowy",
+        "complexity": "Praktyczna dostawa",
+        "risk": "Zarządzane ryzyko",
+        "support": "3-5 lat",
+        "summary": "Automatyzacja czujników, panel energetyczny, zdalna konserwacja i wybór urządzeń gotowych do serwisu.",
+        "summaryIndustrial": "Panel zarządzania energią na poziomie linii, integracja PLC/SCADA, planowanie sprężarek/agregatów chłodniczych i zdalna konserwacja."
+      },
+      "premium_ai": {
+        "name": "Plan premium AI",
+        "complexity": "Wymagana ręczna recenzja",
+        "risk": "Wysoka recenzja",
+        "support": "5-10 lat",
+        "summary": "Analiza AI, inteligencja tożsamości/dostępu, lokalne opcje AI i głębsze planowanie cyklu życia.",
+        "summaryIndustrial": "Wykrywanie anomalii AI, konserwacja predykcyjna, lokalna bramka danych OT, analiza energii produkcyjnej i planowanie SLA."
+      },
+      "future_autonomous": {
+        "name": "Przyszły plan autonomiczny",
+        "complexity": "Demo koncepcji",
+        "risk": "Tylko niestandardowe",
+        "device": "Inżynieria niestandardowa",
+        "support": "Niestandardowa umowa SLA",
+        "summary": "Koncepcje obiektów gotowych do pracy i autonomicznych. Brak ustalonej ceny przed przeglądem technicznym."
+      }
+    },
+    "categories": {
+      "villa": {
+        "label": "Inteligentna willa / dom przyszłości",
+        "description": "Domowy mózg AI, lokalna prywatność, tożsamość rodziny, komfort, energia, pojazd elektryczny, inteligentne wyposażenie pokoju."
+      },
+      "school": {
+        "label": "Szkoła/kampus",
+        "description": "Sale lekcyjne, bezpieczeństwo, CO2, dostęp, CCTV, sieć, raporty energetyczne, przebieg prac konserwacyjnych."
+      },
+      "apartment": {
+        "label": "Budynek mieszkalny",
+        "description": "Mózg nieruchomości dla obszarów wspólnych, parkingu, dostępu dla gości, liczników, obsługi najemcy."
+      },
+      "office": {
+        "label": "Budynek biurowy przedsiębiorstwa",
+        "description": "Sale konferencyjne, dostęp dla gości, obłożenie, sieć IT, podsumowanie dzienne AI obiektu."
+      },
+      "factory": {
+        "label": "Fabryka / Zakład Przemysłowy",
+        "description": "Automatyka przemysłowa, energia maszyn, PLC/SCADA, sieć OT, roboty, sprężone powietrze, chillery, silniki i konserwacja."
+      },
+      "hotel": {
+        "label": "Hotel/Apartament z obsługą",
+        "description": "Sterowanie pokojem gościnnym, oszczędzanie energii poza domem, dostęp do sprzątania, zdalna konserwacja."
+      },
+      "energy": {
+        "label": "Strona słoneczna + energia",
+        "description": "PV, akumulator, ładowanie EV, taryfy, obciążenia krytyczne, alerty, miesięczne raporty energetyczne AI."
+      },
+      "storage": {
+        "label": "Łańcuch chłodniczy / przechowywanie (StorageGuard)",
+        "description": "Zgodność z temperaturą i wilgotnością, zdarzenia związane z drzwiami, alerty o przestojach, raporty z audytu, kalibracja i coroczna konserwacja komór chłodniczych, magazynów farmaceutycznych i żywności."
+      },
+      "kitchen": {
+        "label": "Bezpieczeństwo kuchni komercyjnych (KitchenGuard)",
+        "description": "Zabezpieczenie przed gazem, CO, wyciekiem wody i temperaturą z automatycznym odcięciem, eskalacją alarmu, certyfikatami rocznych przeglądów i AMC."
+      },
+      "water": {
+        "label": "Zgodność z przepisami dotyczącymi wody i ścieków (AquaGuard)",
+        "description": "Monitorowanie pH, przewodności, mętności i ChZT z raportami zgodności z wymogami ochrony środowiska, kalibracją i wymianą sond (prowadzony przez partnera)."
+      },
+      "asset": {
+        "label": "Śledzenie zasobów i narzędzi (AssetPulse)",
+        "description": "Śledzenie tagów BLE/UWB/LoRa z alertami geofence, raportami o inwentarzu i wieloma lokalizacjami w ramach subskrypcji tagów."
+      },
+      "agri": {
+        "label": "Szklarnia / gospodarstwo (AgriBrain — przyszłość)",
+        "description": "Przyszłościowe monitorowanie gleby, klimatu, wody i nawozów z usługą sezonową. Zakres koncepcji do czasu walidacji partnerów i popytu."
+      },
+      "retrofit": {
+        "label": "Modernizacja istniejącego budynku",
+        "description": "Zmodernizuj starsze okablowanie, CCTV, sieć, dostęp i widoczność energii bez nadmiernych obietnic."
+      },
+      "custom": {
+        "label": "Niestandardowy budynek przyszłości",
+        "description": "Zaawansowana sztuczna inteligencja, lokalna skrzynka AI, tożsamość, ścieżki gotowe do użycia przez robota i ręczny przegląd inżynieryjny."
+      }
+    },
+    "levels": {
+      "L3": {
+        "label": "Zoptymalizowany energetycznie",
+        "description": "Skoncentruj się na monitorowaniu energii, scenach, harmonogramach, pulpitach nawigacyjnych, alarmach i raportach cyklu życia."
+      },
+      "L4": {
+        "label": "Wspomagana sztuczna inteligencja",
+        "description": "Dodaje analizę AI, wykrywanie anomalii, zalecenia sprawdzone przez administratora i inteligentne podsumowania operacyjne."
+      },
+      "L5": {
+        "label": "Lokalny mózg AI",
+        "description": "Dodaje lokalną skrzynkę AI, tożsamość stawiającą na pierwszym miejscu prywatność, logikę kontroli offline i zaawansowaną orkiestrację międzysystemową."
+      }
+    },
+    "questions": {
+      "villa": {
+        "location": {
+          "prompt": "Gdzie znajduje się willa? Proszę podać kraj i miasto.",
+          "placeholder": "Przykład: Belgrad, Serbia"
+        },
+        "building": {
+          "prompt": "Jaka jest przybliżona powierzchnia, liczba pięter i lista głównych pomieszczeń?",
+          "placeholder": "Przykład: 320 m2, 2 piętra, salon, kuchnia, 4 sypialnie..."
+        },
+        "existing": {
+          "prompt": "Jakie systemy już istnieją: sieciowe, CCTV, alarmowe, HVAC, solarne, ładowarki EV, inteligentne przełączniki czy KNX?",
+          "placeholder": "Opisz obecne okablowanie, internet, CCTV, energię słoneczną, HVAC..."
+        },
+        "goals": {
+          "prompt": "Jaki powinien być dom: energooszczędny, mózg rodziny AI, bezpieczeństwo, komfort, prywatność offline czy gotowy na działanie robota?",
+          "placeholder": "Przykład: prywatność AI w trybie offline, oszczędność energii, dostęp do twarzy, ładowanie pojazdów elektrycznych..."
+        },
+        "identity": {
+          "prompt": "Czy potrzebujesz funkcji tożsamości, takich jak rozpoznawanie twarzy, kod QR gościa, tablica rejestracyjna samochodu, odcisk palca lub przyszły odcisk głosu?",
+          "placeholder": "Lista wymaganych funkcji dostępu i tożsamości..."
+        },
+        "energy": {
+          "prompt": "Czy potrzebujesz energii słonecznej, akumulatora, ładowania pojazdów elektrycznych, logiki taryfowej w godzinach szczytu/poza szczytem lub optymalizacji zużycia energii przez urządzenie?",
+          "placeholder": "Opisz cele związane z fotowoltaiką, akumulatorami, pojazdami elektrycznymi i energią..."
+        },
+        "budget": {
+          "prompt": "W oparciu o jaki zakres budżetu i okres świadczenia usług powinniśmy projektować?",
+          "placeholder": "Przykład: 15 tys.-50 tys. EUR, wsparcie na 5 lat"
+        },
+        "contact": {
+          "prompt": "Wreszcie, z kim powinniśmy się skontaktować? Podaj imię i nazwisko, adres e-mail i opcjonalnie Telegram/WhatsApp.",
+          "placeholder": "Przykład: Wei, wei{'@'}example.com, Telegram {'@'}..."
+        }
+      },
+      "school": {
+        "location": {
+          "prompt": "Gdzie znajduje się kampus?",
+          "placeholder": "Kraj i miasto"
+        },
+        "building": {
+          "prompt": "Ile budynków, sal lekcyjnych, pięter, laboratoriów, obszarów administracyjnych i uczniów bierze udział w projekcie?",
+          "placeholder": "Przykład: 2 budynki, 32 sale lekcyjne, 600 uczniów..."
+        },
+        "existing": {
+          "prompt": "Jakie istniejące systemy CCTV, kontroli dostępu, sieciowe, HVAC, solarne lub BMS są już zainstalowane?",
+          "placeholder": "Opisz istniejące systemy i problemy..."
+        },
+        "goals": {
+          "prompt": "Jakie są najważniejsze cele: bezpieczeństwo, oszczędność energii, komfort w klasie, dostęp do laboratorium, widoczność sieci czy konserwacja?",
+          "placeholder": "Lista najważniejszych priorytetów..."
+        },
+        "energy": {
+          "prompt": "Czy potrzebujesz monitorowania energii słonecznej, CO2 w klasie, planowania HVAC lub miesięcznych raportów energetycznych?",
+          "placeholder": "Opisz potrzeby energetyczne i środowiskowe..."
+        },
+        "budget": {
+          "prompt": "Jaki zakres budżetu i okres wsparcia przyjąć?",
+          "placeholder": "Przykład: 50 tys.-100 tys. EUR, 5-letnie wsparcie w cyklu życia"
+        },
+        "contact": {
+          "prompt": "Z kim firma AinerWise powinna się skontaktować w sprawie oceny kampusu?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "apartment": {
+        "location": {
+          "prompt": "Gdzie znajduje się apartamentowiec?",
+          "placeholder": "Kraj i miasto"
+        },
+        "building": {
+          "prompt": "Ile mieszkań, pięter, obszarów wspólnych, parkingów i liczników dotyczy?",
+          "placeholder": "Przykład: 40 mieszkań, 8 pięter, garaż, hol..."
+        },
+        "existing": {
+          "prompt": "Jakie istnieją istniejące systemy domofonowe, CCTV, dostępowe, liczniki, oświetlenie lub sieci?",
+          "placeholder": "Opisz obecne systemy..."
+        },
+        "goals": {
+          "prompt": "Co należy poprawić: dostęp gości, energię w częściach wspólnych, komfort najemcy, parking, przebieg napraw czy bezpieczeństwo?",
+          "placeholder": "Lista celów nieruchomości..."
+        },
+        "energy": {
+          "prompt": "Czy potrzebujesz raportów zużycia energii w obszarach wspólnych, fotowoltaiki dla odbiorników publicznych lub monitorowania liczników?",
+          "placeholder": "Zapotrzebowanie na energię i pomiary..."
+        },
+        "budget": {
+          "prompt": "Jaki zakres budżetu i okres świadczenia usług są realistyczne?",
+          "placeholder": "Przykład: 15 tys.-50 tys. EUR, wsparcie na 3 lata"
+        },
+        "contact": {
+          "prompt": "Z kim powinniśmy się skontaktować w celu monitorowania nieruchomości?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "office": {
+        "location": {
+          "prompt": "Gdzie znajduje się biurowiec?",
+          "placeholder": "Kraj i miasto"
+        },
+        "building": {
+          "prompt": "Jak duże jest biuro, ile pięter, pracowników, sal konferencyjnych, pomieszczeń IT i stref dla gości?",
+          "placeholder": "Przykład: 4100 m2, 4 piętra, 12 sal konferencyjnych..."
+        },
+        "existing": {
+          "prompt": "Jakie istniejące systemy kontroli dostępu, telewizji przemysłowej, sieci, HVAC, rezerwacji lub BMS są stosowane?",
+          "placeholder": "Opisz obecne systemy biurowe..."
+        },
+        "goals": {
+          "prompt": "Jakie są cele: automatyzacja spotkań, dostęp gości, oszczędność energii, wykorzystanie miejsca pracy, lokalna sztuczna inteligencja lub podsumowania obiektów?",
+          "placeholder": "Lista celów AI/obiektu w biurze..."
+        },
+        "identity": {
+          "prompt": "Czy potrzebujesz tożsamości pracownika, kodu QR gościa, dostępu za pomocą twarzy, danych uwierzytelniających na urządzeniu mobilnym lub uprawnień AI dostępnych tylko dla administratora?",
+          "placeholder": "Opisz potrzeby w zakresie tożsamości i dostępu..."
+        },
+        "budget": {
+          "prompt": "Jaki zakres budżetu i okres utrzymania przyjąć?",
+          "placeholder": "Przykład: 50 tys.-100 tys. EUR, wsparcie na 5 lat"
+        },
+        "contact": {
+          "prompt": "Kto jest osobą kontaktową w sprawie projektu biura?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "factory": {
+        "location": {
+          "prompt": "Gdzie znajduje się fabryka, zakład lub magazyn?",
+          "placeholder": "Kraj, miasto, park przemysłowy, jeśli dotyczy"
+        },
+        "building": {
+          "prompt": "Jaka jest skala zakładu: powierzchnia produkcyjna, piętra/strefy, linie produkcyjne, magazyn, media i zmiany?",
+          "placeholder": "Przykład: 12 000 m2, 3 linie, sprężarkownia, agregat chłodniczy, 2 zmiany..."
+        },
+        "existing": {
+          "prompt": "Jakie istnieją istniejące systemy OT/IT: PLC, SCADA, BMS, liczniki, VFD, sprężarki, agregaty chłodnicze, roboty, CCTV, dostępowe, fotowoltaiczne czy MES?",
+          "placeholder": "Lista marek PLC/SCADA, protokołów, liczników, maszyn, sieci, fotowoltaiki..."
+        },
+        "production": {
+          "prompt": "Które urządzenia mechaniczne lub produkcyjne należy monitorować lub łączyć?",
+          "placeholder": "Przykład: maszyny CNC, przenośniki, ramiona robotyczne, pompy, bojlery, agregaty chłodnicze, sprężarki, linia pakująca..."
+        },
+        "goals": {
+          "prompt": "Co należy poprawić: czas pracy maszyn, energię w poszczególnych liniach, szczytowe zapotrzebowanie, jakość energii, konserwację predykcyjną, widoczność bezpieczeństwa czy raportowanie produkcji?",
+          "placeholder": "Wymień automatyzację przemysłową i cele biznesowe..."
+        },
+        "energy": {
+          "prompt": "Jakie są główne obciążenia energetyczne i zasoby energetyczne: fotowoltaika, akumulatory, flota pojazdów elektrycznych, sprężarki, agregaty chłodnicze, silniki, falowniki, pompy, piekarniki lub taryfa szczytowa?",
+          "placeholder": "Opisz profil obciążenia, problem z taryfami i cele monitorowania..."
+        },
+        "identity": {
+          "prompt": "Czy potrzebujesz dostępu personelu/gości, uprawnień do obszaru maszynowego, izolacji sieci OT, sztucznej inteligencji CCTV lub zasad bezpieczeństwa?",
+          "placeholder": "Dostęp, bezpieczeństwo, separacja OT/IT, obszary zastrzeżone..."
+        },
+        "budget": {
+          "prompt": "W oparciu o jaki zakres budżetu i okres świadczenia usług/SLA powinniśmy projektować?",
+          "placeholder": "Przykład: 50 tys.-300 tys. EUR, 5-letnie wsparcie w cyklu życia, wrażliwe na przestoje produkcyjne"
+        },
+        "contact": {
+          "prompt": "Z kim firma AinerWise powinna się skontaktować w celu uzyskania dalszych informacji technicznych w fabryce?",
+          "placeholder": "Imię i nazwisko, rola, firmowy adres e-mail, telefon lub telegram"
+        }
+      },
+      "hotel": {
+        "location": {
+          "prompt": "Gdzie znajduje się hotel lub apartament z obsługą?",
+          "placeholder": "Kraj i miasto"
+        },
+        "building": {
+          "prompt": "Ile pokoi, pięter, typów pokoi, obszarów wspólnych i usługowych dotyczy problem?",
+          "placeholder": "Przykład: 48 pokoi, 5 pięter, lobby, korytarze..."
+        },
+        "existing": {
+          "prompt": "Jakie istnieją istniejące zamki do drzwi, termostaty, CCTV, PMS, sieci lub sterowniki pokojowe?",
+          "placeholder": "Opisz obecne systemy hotelowe..."
+        },
+        "goals": {
+          "prompt": "Co należy poprawić: tryb powitania gości, oszczędzanie energii podczas nieobecności, uprawnienia do sprzątania, stan pokoju czy konserwacja?",
+          "placeholder": "Wymień cele gości i operacji..."
+        },
+        "energy": {
+          "prompt": "Czy potrzebujesz oszczędzania energii HVAC, wykrywania obłożenia pokoju, panelu słonecznego lub miesięcznych raportów hotelowych?",
+          "placeholder": "Zapotrzebowanie na energię i sterowanie pomieszczeniem..."
+        },
+        "budget": {
+          "prompt": "W jakim zakresie budżetu i okresie wsparcia powinniśmy projektować?",
+          "placeholder": "Przykład: 50 tys.-100 tys. EUR, 5-letnie wsparcie w cyklu życia"
+        },
+        "contact": {
+          "prompt": "Z kim powinniśmy się skontaktować w sprawie dalszych działań w hotelu?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "energy": {
+        "location": {
+          "prompt": "Gdzie znajduje się instalacja fotowoltaiczna lub energetyczna?",
+          "placeholder": "Kraj i miasto"
+        },
+        "building": {
+          "prompt": "Jakie obciążenia budynku lub terenu należy monitorować: biuro, magazyn, hotel, pojazd elektryczny, obciążenia krytyczne?",
+          "placeholder": "Opisz witrynę i profil ładowania..."
+        },
+        "existing": {
+          "prompt": "Jakie fotowoltaika, falownik, akumulator, miernik, ładowarka EV lub sprzęt EMS już istnieje?",
+          "placeholder": "Marka falownika, akumulatora, liczników, ładowarek EV..."
+        },
+        "goals": {
+          "prompt": "Co chcesz zoptymalizować: zużycie własne fotowoltaiki, taryfa szczytowa, ładowanie pojazdów elektrycznych, akumulator, alerty czy raporty?",
+          "placeholder": "Lista celów optymalizacji zużycia energii..."
+        },
+        "energy": {
+          "prompt": "Czy potrzebujesz reguł taryfowych, priorytetu obciążenia, alarmów o anomaliach, raportów miesięcznych lub zdalnej konserwacji?",
+          "placeholder": "Opisz logikę energetyczną i potrzeby w zakresie raportowania..."
+        },
+        "budget": {
+          "prompt": "Jaki zakres budżetu i okres wsparcia przyjąć?",
+          "placeholder": "Przykład: 15 tys.-50 tys. EUR, wsparcie na 3 lata"
+        },
+        "contact": {
+          "prompt": "Z kim firma AinerWise powinna się skontaktować w sprawie oceny energetycznej?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "storage": {
+        "location": {
+          "prompt": "Gdzie znajduje się magazyn? Proszę podać kraj i miasto.",
+          "placeholder": "Przykład: Belgrad, Serbia"
+        },
+        "storage_type": {
+          "prompt": "Jaki to rodzaj magazynu i ile pomieszczeń lub stref: chłodnia, zamrażarka, lodówka apteczna, magazyn zamknięty czy laboratorium?",
+          "placeholder": "Przykład: 3 chłodnie + 1 zamrażarka, dystrybucja żywności"
+        },
+        "temperature_humidity": {
+          "prompt": "W jakich zakresach temperatur i wilgotności musi znajdować się każde pomieszczenie?",
+          "placeholder": "Przykład: 2-8°C schłodzone, -18°C zamrożone, <60% RH"
+        },
+        "compliance_use": {
+          "prompt": "Czy dotyczy to artykułów spożywczych (HACCP), czy farmaceutycznych/medycznych (GDP) i czy potrzebujesz raportów zgodności gotowych do audytu?",
+          "placeholder": "Przykład: farmaceutyczne, wymagane miesięczne raporty z audytu PKB"
+        },
+        "outage": {
+          "prompt": "Jakie jest ryzyko awarii zasilania i czy masz już dzisiaj możliwość rejestrowania lub monitorowania temperatury?",
+          "placeholder": "Przykład: okazjonalne awarie, obecnie tylko ręczne rejestrowanie dokumentów papierowych"
+        },
+        "alert_channels": {
+          "prompt": "W jaki sposób powinny docierać do Ciebie powiadomienia o awariach i o przekroczeniu zasięgu: SMS, telegram, e-mail, połączenie telefoniczne lub w aplikacji?",
+          "placeholder": "Przykład: Telegram + e-mail, telefon w przypadku alarmów krytycznych"
+        },
+        "monitoring_points": {
+          "prompt": "Ile punktów monitorowania potrzebujesz w sumie we wszystkich pomieszczeniach, drzwiach i czujnikach?",
+          "placeholder": "Przykład: około 24 punktów"
+        },
+        "calibration_cycle": {
+          "prompt": "Jak często należy kalibrować czujniki i przez ile lat usługa ma działać?",
+          "placeholder": "Przykład: coroczna kalibracja, 3-letni okres użytkowania"
+        },
+        "budget": {
+          "prompt": "W oparciu o jaki zakres budżetu i okres świadczenia usług powinniśmy projektować?",
+          "placeholder": "Przykład: 6 tys.-18 tys. EUR, 3-letnie wsparcie w zakresie zgodności"
+        },
+        "contact": {
+          "prompt": "I wreszcie, z kim firma AinerWise powinna się skontaktować w sprawie oceny StorageGuard?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "kitchen": {
+        "location": {
+          "prompt": "Gdzie znajduje się kuchnia/lokal?",
+          "placeholder": "Kraj i miasto"
+        },
+        "kitchen_count": {
+          "prompt": "Ile kuchni lub linii grzewczych i czy jest tam automatyczny zawór odcinający gaz?",
+          "placeholder": "Przykład: 2 kuchnie, istniejący zawór gazowy"
+        },
+        "gas_type": {
+          "prompt": "Jaki rodzaj gazu jest używany (gaz ziemny, LPG) i czy potrzebny jest monitoring CO i wycieków wody?",
+          "placeholder": "Przykład: gaz ziemny + CO + wyciek pod zlewami"
+        },
+        "alarm_contacts": {
+          "prompt": "Kto powinien otrzymywać alarmy (zarządca, obiekt, konserwator) i jakimi kanałami?",
+          "placeholder": "Przykład: SMS menedżera, telegram własności, eskalacja połączenia"
+        },
+        "service_term": {
+          "prompt": "Czy potrzebne są roczne certyfikaty kontroli bezpieczeństwa i na ile lat?",
+          "placeholder": "Przykład: inspekcja roczna, 3-letnia AMC"
+        },
+        "budget": {
+          "prompt": "W jakim przedziale budżetowym powinniśmy projektować?",
+          "placeholder": "Przykład: 6 tys.-16 tys. EUR"
+        },
+        "contact": {
+          "prompt": "Z kim firma AinerWise powinna się skontaktować w sprawie oceny KitchenGuard?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "water": {
+        "location": {
+          "prompt": "Gdzie znajduje się miejsce ujęcia wody/ścieku?",
+          "placeholder": "Kraj i miasto"
+        },
+        "water_system": {
+          "prompt": "Jaki to system wodny (ścieki, basen, chłodzenie, proces) i ile punktów zrzutu/poboru próbek?",
+          "placeholder": "Przykład: ścieki z fabryki, 2 ujścia"
+        },
+        "parameters": {
+          "prompt": "Jakie parametry należy monitorować: pH, przewodność, zmętnienie, ChZT, temperatura?",
+          "placeholder": "Przykład: pH, ChZT, zmętnienie"
+        },
+        "reporting": {
+          "prompt": "Czy i jak często potrzebujesz raportów dotyczących zgodności z przepisami rządowymi/środowiskowymi?",
+          "placeholder": "Przykład: miesięczny raport organu regulacyjnego"
+        },
+        "service_term": {
+          "prompt": "Jak często należy kalibrować/wymieniać sondy i przez ile lat pracy?",
+          "placeholder": "Przykład: kalibracja kwartalna, serwis 3-letni"
+        },
+        "budget": {
+          "prompt": "Jaki zakres budżetu przyjąć?",
+          "placeholder": "Przykład: 12 tys.-30 tys. EUR"
+        },
+        "contact": {
+          "prompt": "Z kim firma AinerWise powinna się skontaktować w sprawie oceny AquaGuard?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "asset": {
+        "location": {
+          "prompt": "Gdzie znajdują się aktywa/lokalizacje?",
+          "placeholder": "Kraj i miasto"
+        },
+        "building": {
+          "prompt": "Jakie zasoby i w ilu lokalizacjach, wewnątrz czy na zewnątrz?",
+          "placeholder": "Przykład: 300 narzędzi, 2 magazyny"
+        },
+        "goals": {
+          "prompt": "Czego potrzebujesz: alertów o geofence, inwentaryzacji, dokładności lokalizacji, raportów z wielu lokalizacji?",
+          "placeholder": "Przykład: geofence + inwentarz"
+        },
+        "monitoring_points": {
+          "prompt": "Mniej więcej, ile tagów/zasobów należy śledzić?",
+          "placeholder": "Przykład: około 300 tagów"
+        },
+        "budget": {
+          "prompt": "Jaki zakres budżetu i okres subskrypcji tagów przyjąć?",
+          "placeholder": "Przykład: 9 tys.-22 tys. EUR, 3 lata"
+        },
+        "contact": {
+          "prompt": "Z kim firma AinerWise powinna się skontaktować w sprawie oceny AssetPulse?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "agri": {
+        "location": {
+          "prompt": "Gdzie znajduje się szklarnia/gospodarstwo?",
+          "placeholder": "Kraj i miasto"
+        },
+        "building": {
+          "prompt": "Jaka skala: powierzchnia, ilość stref/szklarni, uprawy?",
+          "placeholder": "Przykład: 2 szklarnie, 1 ha"
+        },
+        "goals": {
+          "prompt": "Co monitorować/optymalizować: wilgotność gleby, klimat, nawadnianie, nawozy?",
+          "placeholder": "Przykład: gleba + nawadnianie"
+        },
+        "budget": {
+          "prompt": "Czy to koncepcja, pilotaż czy wdrożenie i jaki budżet?",
+          "placeholder": "Przykład: najpierw pilot"
+        },
+        "contact": {
+          "prompt": "Z kim firma AinerWise powinna się skontaktować w sprawie koncepcji AgriBrain?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "retrofit": {
+        "location": {
+          "prompt": "Gdzie znajduje się istniejący budynek?",
+          "placeholder": "Kraj i miasto"
+        },
+        "building": {
+          "prompt": "Jakiego typu budynku, powierzchni, pięter i pomieszczeń/stref dotyczy problem?",
+          "placeholder": "Opisz konstrukcję budynku..."
+        },
+        "existing": {
+          "prompt": "Jakie systemy istnieją dzisiaj, a które są przestarzałe lub bolesne?",
+          "placeholder": "Okablowanie, CCTV, dostęp, HVAC, sieć, oświetlenie..."
+        },
+        "goals": {
+          "prompt": "Jaki jest cel modernizacji: podstawowe sterowanie, aktualizacja bezpieczeństwa, panel energetyczny, KNX lub Home Assistant?",
+          "placeholder": "Opisz pożądany wynik modernizacji..."
+        },
+        "budget": {
+          "prompt": "Jaki zakres budżetu i okres wsparcia przyjąć?",
+          "placeholder": "Przykład: 5 tys.-15 tys. EUR, wsparcie na 3 lata"
+        },
+        "contact": {
+          "prompt": "Z kim powinniśmy się skontaktować w sprawie dalszych działań modernizacyjnych?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      },
+      "custom": {
+        "location": {
+          "prompt": "Gdzie będzie zlokalizowany przyszły budynek lub projekt koncepcyjny?",
+          "placeholder": "Kraj i miasto"
+        },
+        "building": {
+          "prompt": "Co to za budynek lub teren i jaką skalę należy przyjąć?",
+          "placeholder": "Opisz typ budynku, powierzchnię, piętra, pokoje..."
+        },
+        "goals": {
+          "prompt": "Jakie przyszłe możliwości sobie wyobrażasz: lokalny mózg AI, roboty, cyfrowy człowiek, autonomiczna energia, tożsamość czy konserwacja predykcyjna?",
+          "placeholder": "Opisz wizję..."
+        },
+        "existing": {
+          "prompt": "Jakie systemy już istnieją lub wymagają integracji?",
+          "placeholder": "KNX, HA, CCTV, HVAC, energia słoneczna, platforma robota..."
+        },
+        "budget": {
+          "prompt": "Od jakiego zakresu budżetu i etapu należy to rozpocząć: koncepcja, propozycja fazy 1 czy wdrożenie?",
+          "placeholder": "Przykład: najpierw tylko projekt, później 5-letnie wsparcie"
+        },
+        "contact": {
+          "prompt": "Z kim powinniśmy się skontaktować w celu uzyskania niestandardowej oceny technicznej?",
+          "placeholder": "Imię i nazwisko, adres e-mail, telefon lub telegram"
+        }
+      }
+    },
+    "submitShort": "Wyślij"
   },
   "supplier": {
     "title": "Become a Supplier",
@@ -552,5 +1405,507 @@
     "knx": "Industry",
     "light": "Light",
     "dark": "Dark 3D"
+  },
+  "brain": {
+    "ai1": "Wykrywanie anomalii między systemami: skarga dotycząca komfortu powiązana z zablokowanym zaworem, której nie można zgadnąć",
+    "ai2": "Wartości zadane zgodne z rzeczywistym obłożeniem, a nie ustalonym harmonogramem",
+    "ai3": "Raporty w prostym języku dla właścicieli, którzy nie czytają wykresów trendów",
+    "ai4": "Zalecenia dotyczące aktualizacji uszeregowane według zwrotu, najpierw sprawdzone przez inżyniera",
+    "aiDoes": "Sztuczna inteligencja",
+    "aiDoes1": "Konstruuje wymagania, wypełnia luki, sporządza listę zakupów",
+    "aiDoes2": "Dopasowuje protokoły, regiony, certyfikaty i kompatybilność",
+    "aiDoes3": "Oznacza anomalie i ryzyko, klasyfikuje ulepszenia",
+    "aiDoes4": "Sporządza projekty raportów i kopie",
+    "badgeBeyondBus": "Poza autobusem",
+    "boundaryEyebrow": "Granice funkcji",
+    "boundarySubtitle": "Powiedzenie tego od razu jest znacznie tańsze niż wyjaśnianie tego później.",
+    "boundaryTitle": "Co właściwie oznacza „możliwość dostarczenia”.",
+    "brainLabel": "Warstwa mózgowa AI",
+    "brainText": "Nadal zbieram, porównuję i oznaczam po przekazaniu — rzeczy, których harmonogram i zestaw reguł nie są w stanie zrobić.",
+    "brainTitle": "Budynek, który pozostaje zrozumiały",
+    "bus1": "Niezawodne oświetlenie, cieniowanie, HVAC i sterowanie scenami",
+    "bus2": "Współpraca między markami bez uzależnienia od jednego dostawcy",
+    "bus3": "Działa lokalnie — nadal działa, gdy Internet nie działa",
+    "bus4": "Certyfikowane produkty i uruchamianie w oparciu o standardy",
+    "busLabel": "KNX / warstwa magistrali",
+    "busText": "Standardowe protokoły, kompatybilność między dostawcami, dekady cyklu życia. Budujemy tę warstwę zgodnie ze standardami branżowymi.",
+    "busTitle": "Sterowanie, niezawodność, brak blokady marki",
+    "capabilityEyebrow": "Cztery warstwy",
+    "capabilitySubtitle": "Każdy scenariusz jest opisany za pomocą tych czterech. Optymalizacja to warstwa, którą zapewnia tylko sztuczna inteligencja.",
+    "capabilityTitle": "Wyczuwaj / Kontroluj / Optymalizuj / Utrzymuj",
+    "ctaSubtitle": "Opisz swój budynek i swoje cele. AI najpierw zadaje właściwe pytania; inżynier zamienia to w wykonalny następny krok.",
+    "ctaTitle": "Zacznij od oceny, a następnie omów zakres",
+    "demoEyebrow": "Demo samouczka",
+    "demoLevel": "Docelowa inteligencja",
+    "demoLevelL1": "Połączony",
+    "demoLevelL2": "Automatyzacja czujników",
+    "demoLevelL3": "Zoptymalizowany",
+    "demoLevelL4": "Wspomagana sztuczna inteligencja",
+    "demoLevelL5": "Lokalny mózg",
+    "demoLevelL6": "Przyszłość autonomiczna",
+    "demoNav": "Demo samouczka",
+    "demoNotice": "W tym samouczku opisano przepływ pracy. Prawdziwy zakres nadal zależy od oceny sztucznej inteligencji, przeglądu ręcznego, kontroli na miejscu, potwierdzenia dostawcy i podpisanej propozycji.",
+    "demoScenario": "Scenariusz budowy",
+    "demoSubtitle": "Wybierz typ budynku i cel L1-L6, aby zobaczyć, jak jedno żądanie klienta staje się faktami, mapowaniem systemu, BOQ, RFQ, dostawą i usługą cyklu życia.",
+    "demoTitle": "Jak działa mózg AI",
+    "differenceEyebrow": "Pozycjonowanie",
+    "differenceSubtitle": "Nie alternatywy. Bez solidnej magistrali sztuczna inteligencja nie ma z czym pracować; bez sztucznej inteligencji instalacja przestaje się uczyć w dniu uruchomienia.",
+    "differenceTitle": "Sterowanie autobusem. Mózg ocenia.",
+    "eyebrow": "AI buduje mózg",
+    "gateEyebrow": "Odpowiedzialność",
+    "gateNote": "Sztuczna inteligencja nigdy sama nie przyznaje kontraktu, nie podpisuje umowy, nie przekazuje pieniędzy ani nie zmienia wartości zadanej związanej z bezpieczeństwem. Ważne wyniki trafiają najpierw do kolejki przeglądu przez administratora.",
+    "gateSubtitle": "AI proponuje, osoba decyduje. To jest projekt produktu, a nie zastrzeżenie.",
+    "gateTitle": "Co robi sztuczna inteligencja, co robi człowiek",
+    "humanDoes": "Osoba",
+    "humanDoes1": "Potwierdza cenę i warunki handlowe",
+    "humanDoes2": "Przegląda i podpisuje wszystko, co wychodzi na zewnątrz",
+    "humanDoes3": "Sprawdza witrynę, instaluje i uruchamia",
+    "humanDoes4": "Zatwierdza wszelkie zmiany wartości zadanej związane z bezpieczeństwem",
+    "ladderEyebrow": "Drabina",
+    "ladderNote": "Wyższa nie jest automatycznie lepsza. Większość projektów zapewnia większość korzyści na poziomach L2–L3; L4 i wyższe wymagają prawdziwej historii danych i prawdziwego budżetu operacyjnego, a my jasno powiemy podczas oceny, czy warto.",
+    "ladderSubtitle": "Standardowy projekt KNX koncentruje się wokół L1–L2. Ponad to potrzebne są ciągłe dane i modele.",
+    "ladderTitle": "Od połączonego sterowania do autonomicznego działania",
+    "lc1": "Ciągłe monitorowanie",
+    "lc1Hint": "Pomiary przeprowadzane są nadal po przekazaniu, a nie tylko podczas uruchomienia",
+    "lc2": "Coroczna konserwacja",
+    "lc2Hint": "Inspekcja, kalibracja, części zamienne i umowa SLA",
+    "lc3": "Lokalna sieć serwisowa",
+    "lc3Hint": "Certyfikowani instalatorzy i technicy",
+    "lc4": "Raport z operacji AI",
+    "lc4Hint": "Co właściwie wydarzyło się w tym roku, prostym językiem",
+    "levelsNav": "Poziomy inteligencji",
+    "levelsSubtitle": "Jasno określa, które poziomy autobus osiąga sam, a które wymagają warstwy AI. Nie zacieramy tej linii.",
+    "levelsTitle": "Poziomy inteligencji L1–L6",
+    "lifecycleEyebrow": "Po przekazaniu",
+    "lifecycleSubtitle": "Jednorazowa wyprzedaż sprzętu nie trwa długo. Dzięki tym czterem system będzie użyteczny w piątym roku.",
+    "lifecycleTitle": "Wartością jest długoterminowa obsługa",
+    "needsBrain": "Potrzebuje warstwy AI",
+    "open3d": "Zobacz demonstrację samouczka",
+    "overviewNav": "Możliwości",
+    "overviewSubtitle": "KNX umożliwia sterowanie budynkiem. Mózg sztucznej inteligencji sprawia, że ​​stale zauważa, co jest nie tak — na tym polega różnica w porównaniu ze zwykłą integracją magistrali.",
+    "overviewTitle": "AI Building Brain: warstwa nad autobusem",
+    "processNav": "Jak dostarczamy",
+    "processSubtitle": "Oceniaj, dopasowuj, dostarczaj — i ludzkie punkty kontrolne, które przebiegają przez to wszystko.",
+    "processTitle": "Jak dostarczamy",
+    "reachableWithBus": "Autobus wystarczy",
+    "scenarioEyebrow": "Scenariusze",
+    "scenarioSubtitle": "Wybierz scenariusz, aby zobaczyć, co właściwie oznaczają te cztery warstwy w tym budynku.",
+    "scenarioTitle": "Siedem typów budynków, jeden mózg",
+    "stagesEyebrow": "Dostawa",
+    "stagesSubtitle": "Od pierwszej rozmowy do długoterminowej obsługi: co daje każdy etap i kto to podpisuje.",
+    "stagesTitle": "Trzy etapy",
+    "startAssessment": "Rozpocznij ocenę AI",
+    "tiersEyebrow": "Poziomy propozycji",
+    "tiersSubtitle": "Od praktycznej modernizacji do przyszłego systemu autonomicznego. Zakresy są podawane po ocenie AI, a nie na tej stronie.",
+    "tiersTitle": "Cztery kierunki propozycji",
+    "tutorialAiReply": "AI zamienia to w",
+    "tutorialBoqReady": "Projekt gotowy",
+    "tutorialCommercialDesc": "Dopiero gdy istnieje wystarczająca liczba faktów, sztuczna inteligencja przygotowuje BOQ, przedziały budżetowe, pakiety i dane RFQ do przeglądu ręcznego.",
+    "tutorialCommercialReply": "BOQ, pakiety, migawka handlowa i wersja robocza zapytania ofertowego są gotowe do przeglądu.",
+    "tutorialCommercialTitle": "Wygeneruj pakiet BOQ i RFQ",
+    "tutorialCurrentScenario": "Aktualny scenariusz",
+    "tutorialDeliverables": "Wygenerowane wyjścia",
+    "tutorialDeliveryDesc": "Po wybraniu dostawcy system tworzy pakiety prac, mobilne zadania terenowe, dowody i zapisy usług w cyklu życia.",
+    "tutorialDeliveryTitle": "Zamień nagrodę w pracę w terenie",
+    "tutorialEvidenceValue": "Zdjęcie/podpisanie",
+    "tutorialFactMap": "Mapa faktów",
+    "tutorialFactsDesc": "Sztuczna inteligencja oddziela potwierdzone fakty od brakujących informacji, a następnie zadaje tylko te pytania, które są potrzebne, aby uniknąć fałszywego BOQ.",
+    "tutorialFactsTitle": "Wyodrębniaj fakty i zadawaj luki",
+    "tutorialKicker": "Samouczek dotyczący przepływu pracy",
+    "tutorialLive": "Interaktywny przewodnik",
+    "tutorialNeedDesc": "Klient nie dokonuje wyboru modułów oprogramowania. Sztuczna inteligencja przekłada prosty cel na typ projektu, granicę ryzyka i cel analizy.",
+    "tutorialNeedReply": "Zakres, poziom docelowy i granica dostawy są tworzone przed wyświetleniem jakiejkolwiek ceny.",
+    "tutorialNeedTitle": "Najpierw poznaj wynik",
+    "tutorialOutputBus": "Architektura",
+    "tutorialOutputConfidence": "Zaufanie",
+    "tutorialOutputEvidence": "Dowód",
+    "tutorialOutputKnown": "Znane fakty",
+    "tutorialOutputLevel": "Cel",
+    "tutorialOutputLifecycle": "Cykl życia",
+    "tutorialOutputQuestions": "Kontynuacje",
+    "tutorialOutputRegion": "Region",
+    "tutorialOutputRisk": "Granica",
+    "tutorialOutputScope": "Zakres",
+    "tutorialOutputSystems": "Systemy",
+    "tutorialOutputTasks": "Zadania terenowe",
+    "tutorialPromptApartment": "Zarządzam apartamentowcem i potrzebuję dostępu, parkingu, liczników, telewizji przemysłowej i konserwacji w jednym widoku.",
+    "tutorialPromptEnergy": "Zależy mi na tym, aby ładowanie energią słoneczną, akumulatorami i pojazdami elektrycznymi było widoczne, zoptymalizowane i łatwe w utrzymaniu.",
+    "tutorialPromptFactory": "Potrzebuję przemysłowego mózgu energetycznego, który widzi maszyny, marnotrawstwo energii, alarmy i konserwację.",
+    "tutorialPromptHotel": "Chcę pokoi hotelowych, które oszczędzają energię, zachowując jednocześnie komfort gości i widoczność usług.",
+    "tutorialPromptOffice": "Chcę biurowca koordynującego sale konferencyjne, gości, sieć, HVAC i energię.",
+    "tutorialPromptSchool": "Potrzebuję bezpieczniejszego, wydajniejszego kampusu z komfortową salą lekcyjną i widocznością obiektu.",
+    "tutorialPromptVilla": "Chcę inteligentnej willi, która rozumie rodzinny komfort, energię i bezpieczeństwo.",
+    "tutorialRegionReady": "Polityka gotowa",
+    "tutorialRfqReady": "Pakiet gotowy",
+    "tutorialSnapshot": "Migawka",
+    "tutorialSnapshotValue": "Warunki zamrożone",
+    "tutorialStep": "Krok",
+    "tutorialSystemDesc": "Platforma mapuje czujniki, magistralę/sterowanie, sieć, brzegi AI, energię, bezpieczeństwo i konserwację w jednym widoku systemu.",
+    "tutorialSystemTitle": "Systemy map i kompatybilność",
+    "tutorialTitle": "Od jednego żądania do planu z możliwością dostarczenia",
+    "tutorialUserNeed": "Klient mówi",
+    "scenarios": {
+      "villa": {
+        "name": "Smart Villa / Future Home",
+        "type": "Residential AI Brain",
+        "boundary": "Available Now to Advanced Custom",
+        "positioning": "A local AI-ready family building system that connects identity, rooms, energy, security, kitchen, bathroom, bedroom, EV, garden, and service.",
+        "sense": [
+          "Family member identity",
+          "Presence and room occupancy",
+          "Water leak, smoke, gas, humidity",
+          "Solar, battery, and EV charging status"
+        ],
+        "control": [
+          "Lighting scenes and curtains",
+          "HVAC comfort modes",
+          "Door, visitor, and garage permissions",
+          "Smart bedroom, kitchen, and bathroom equipment"
+        ],
+        "optimize": [
+          "Sleep and comfort curves",
+          "PV-first EV charging",
+          "Low-tariff appliance scheduling",
+          "Unoccupied room energy saving"
+        ],
+        "maintain": [
+          "Remote gateway health",
+          "Firmware and backup checks",
+          "Spare parts planning",
+          "Annual lifecycle review"
+        ]
+      },
+      "school": {
+        "name": "School Campus",
+        "type": "AI Campus Brain",
+        "boundary": "Project Dependent",
+        "positioning": "A campus operating layer for classroom comfort, safety, network visibility, energy reporting, and maintenance workflows.",
+        "sense": [
+          "Teacher, student, and visitor zones",
+          "CO2, temperature, humidity, and noise",
+          "Camera and network device health",
+          "After-school occupancy"
+        ],
+        "control": [
+          "Classroom lighting and HVAC schedules",
+          "Lab and machine room access",
+          "Visitor area permissions",
+          "Campus alert workflows"
+        ],
+        "optimize": [
+          "Class schedule energy saving",
+          "Roof solar visibility",
+          "High-consumption building ranking",
+          "Daily facility summary"
+        ],
+        "maintain": [
+          "Offline camera alerts",
+          "AP and switch status",
+          "Repair ticket creation",
+          "Monthly energy reports"
+        ]
+      },
+      "apartment": {
+        "name": "Apartment Building",
+        "type": "AI Property Brain",
+        "boundary": "Available Now / Project Dependent",
+        "positioning": "A property management layer for common area energy, access, CCTV, parking, tenant experience, repair workflow, and lifecycle service.",
+        "sense": [
+          "Common area occupancy",
+          "Parking license plates",
+          "Public lighting and meter data",
+          "Visitor and parcel access events"
+        ],
+        "control": [
+          "Common area lighting",
+          "Visitor QR access",
+          "Parking gate permissions",
+          "Tenant service notifications"
+        ],
+        "optimize": [
+          "Shared area energy allocation",
+          "PV for public loads",
+          "Maintenance priority",
+          "Monthly property reports"
+        ],
+        "maintain": [
+          "Door access logs",
+          "Camera status",
+          "Meter gateway health",
+          "Preventive maintenance reminders"
+        ]
+      },
+      "office": {
+        "name": "Enterprise Office Building",
+        "type": "AI Facility Brain",
+        "boundary": "Advanced Custom for AI identity",
+        "positioning": "A facility system for visitor management, meeting rooms, employee comfort, IT visibility, access control, and energy optimization.",
+        "sense": [
+          "Employee and visitor presence",
+          "Meeting room usage",
+          "IT room temperature and UPS status",
+          "Network AP and switch health"
+        ],
+        "control": [
+          "Meeting room scenes",
+          "Visitor temporary access",
+          "Floor-level HVAC schedules",
+          "Screen, lighting, and curtain modes"
+        ],
+        "optimize": [
+          "Empty-area energy saving",
+          "Workspace utilization",
+          "Daily facility summary",
+          "High-consumption floor alerts"
+        ],
+        "maintain": [
+          "CCTV and access uptime",
+          "Network incident tracking",
+          "Firmware update planning",
+          "SLA-based service workflow"
+        ]
+      },
+      "factory": {
+        "name": "Factory / Industrial Plant",
+        "type": "AI Industrial Energy Brain",
+        "boundary": "Project Dependent / Advanced Custom",
+        "positioning": "An industrial operating layer for production lines, machinery, PLC/SCADA, OT networks, compressed air, chillers, motors, robots, PV/battery, safety visibility, and lifecycle maintenance.",
+        "sense": [
+          "Machine status, runtime, alarms, and downtime",
+          "Line-level energy, power quality, and peak demand",
+          "Compressed air, chiller, motor, VFD, pump, and boiler loads",
+          "PLC/SCADA/Modbus/MQTT/OPC-UA integration signals"
+        ],
+        "control": [
+          "Energy schedules for compressors and chillers",
+          "Non-safety setpoint recommendations",
+          "Robot/AGV-ready dispatch hooks",
+          "Maintenance work order triggers"
+        ],
+        "optimize": [
+          "Peak demand and load shedding",
+          "Machine-level energy waste",
+          "Production schedule energy planning",
+          "Anomaly detection and predictive maintenance"
+        ],
+        "maintain": [
+          "OT gateway and network health",
+          "PLC/SCADA integration notes",
+          "Critical spare parts and SLA planning",
+          "Safety boundary and downtime review"
+        ]
+      },
+      "hotel": {
+        "name": "Hotel / Serviced Apartment",
+        "type": "Guest Experience + Energy",
+        "boundary": "Available Now / Project Dependent",
+        "positioning": "A guest-room control and remote maintenance system that reduces energy waste while improving check-in, comfort, and room status visibility.",
+        "sense": [
+          "Guest check-in status",
+          "Room occupancy",
+          "Housekeeping access",
+          "Public area CCTV and door events"
+        ],
+        "control": [
+          "Welcome and away scenes",
+          "Room HVAC and lighting",
+          "Curtains and panels",
+          "Staff permissions"
+        ],
+        "optimize": [
+          "Vacant room energy saving",
+          "Room comfort presets",
+          "Monthly energy report",
+          "Preventive maintenance plan"
+        ],
+        "maintain": [
+          "Room device health",
+          "Remote troubleshooting",
+          "Spare panel planning",
+          "Service package tracking"
+        ]
+      },
+      "energy": {
+        "name": "Solar + Energy Site",
+        "type": "AI Energy Brain",
+        "boundary": "Project Dependent",
+        "positioning": "A visibility and optimization layer for PV, battery storage, EV charging, key building loads, tariffs, alerts, and energy reporting.",
+        "sense": [
+          "PV generation",
+          "Battery SOC",
+          "Inverter and meter state",
+          "EV charger sessions"
+        ],
+        "control": [
+          "Load priority rules",
+          "EV charging windows",
+          "Battery discharge strategy",
+          "Critical load alerts"
+        ],
+        "optimize": [
+          "Peak tariff reduction",
+          "PV self-consumption",
+          "Fault and anomaly detection",
+          "Monthly AI energy advice"
+        ],
+        "maintain": [
+          "Inverter health",
+          "Meter gateway status",
+          "Remote diagnostics",
+          "Lifecycle service plan"
+        ]
+      }
+    },
+    "capabilities": {
+      "sense": {
+        "kicker": "Sense",
+        "title": "What the building can know"
+      },
+      "control": {
+        "kicker": "Control",
+        "title": "What the system can operate"
+      },
+      "optimize": {
+        "kicker": "Optimize",
+        "title": "Where AI can help"
+      },
+      "maintain": {
+        "kicker": "Maintain",
+        "title": "How service stays alive"
+      }
+    },
+    "tiers": {
+      "budget": {
+        "name": "Budget Plan",
+        "estimate": "Basic estimated range",
+        "note": "Good for first retrofit and limited scope.",
+        "text": "Connected control, essential sensors, CCTV/access basics, and 1-3 year support."
+      },
+      "standard": {
+        "name": "Standard Plan",
+        "estimate": "Most practical for real projects",
+        "note": "Recommended default for early AinerWise delivery.",
+        "text": "Sensor automation, energy monitoring, remote maintenance, and service-ready hardware."
+      },
+      "premium": {
+        "name": "Premium AI Plan",
+        "estimate": "Manual review required",
+        "note": "Needs site, supplier, and engineering validation.",
+        "text": "AI analytics, identity-aware access, local AI box, CCTV AI, and advanced energy logic."
+      },
+      "future": {
+        "name": "Future Autonomous Plan",
+        "estimate": "Custom engineering required",
+        "note": "No fixed price shown.",
+        "text": "Robot-ready building, predictive maintenance, autonomous energy decisions, and future facility brain."
+      }
+    },
+    "tags": {
+      "availableNow": {
+        "name": "Available Now",
+        "text": "Can usually be delivered with current hardware and normal project checks."
+      },
+      "projectDependent": {
+        "name": "Project Dependent",
+        "text": "Depends on site, wiring, protocols, product availability, and installer capability."
+      },
+      "advancedCustom": {
+        "name": "Advanced Custom",
+        "text": "Requires manual engineering review and a paid design phase."
+      },
+      "futureReady": {
+        "name": "Future-Ready",
+        "text": "Architecture can reserve this upgrade path without promising delivery today."
+      },
+      "conceptDemo": {
+        "name": "Concept Demo",
+        "text": "Used to explain the vision, not as a quotation commitment."
+      }
+    },
+    "levelsDetail": {
+      "L1": {
+        "name": "Connected control",
+        "text": "Switches, scenes and schedules on a proper bus. Reliable, but the building does not know anything."
+      },
+      "L2": {
+        "name": "Sensor automation",
+        "text": "Presence, light and temperature sensors drive automatic behaviour. Still rule-based."
+      },
+      "L3": {
+        "name": "Monitored & optimised",
+        "text": "Energy and equipment data is collected continuously; the platform reports what is drifting and where waste is."
+      },
+      "L4": {
+        "name": "Predictive",
+        "text": "Patterns learned per site: anomalies flagged before failure, setpoints adapted to real occupancy."
+      },
+      "L5": {
+        "name": "AI-assisted operation",
+        "text": "The building proposes actions in plain language; a human approves anything that costs money or changes safety behaviour."
+      },
+      "L6": {
+        "name": "Autonomous (future)",
+        "text": "Robot-ready workflows and self-scheduling maintenance. Architecture reserves the path; we do not promise delivery today."
+      }
+    }
+  },
+  "agentMarketplace": {
+    "eyebrow": "AISLOS Agent Marketplace",
+    "title": "Instaluj zarządzanych pracowników AI.",
+    "subtitle": "Każdy Agent jest weryfikowany przed publikacją. Instalacja nie daje dostępu do danych firmy; uprawnienia pozostają jawne i audytowalne.",
+    "buildCta": "Zbuduj Agenta",
+    "aiEmployee": "Pracownik AI",
+    "reviewed": "Zweryfikowany",
+    "fallbackDesc": "Zarządzana zdolność Agenta AISLOS.",
+    "included": "W zestawie",
+    "perMonth": "{price} {currency}/mies.",
+    "install": "Zainstaluj",
+    "myAgents": "Moje zainstalowane Agenty",
+    "installMeta": "{status} · Workspace {workspace} · uprawnienia pozostają osobno zarządzane",
+    "uninstall": "Odinstaluj",
+    "selectWorkspace": "Wybierz Workspace przed zarządzaniem Agentami.",
+    "selectWorkspaceInstall": "Wybierz Workspace przed instalacją Agenta.",
+    "installedOk": "{name} zainstalowany. Nie nadano automatycznie uprawnień do danych.",
+    "installFailed": "Instalacja nie powiodła się"
+  },
+  "portals": {
+    "consumer_pc": "Platforma konsumencka AinerWise",
+    "consumer_h5": "AinerWise",
+    "customer_pc": "Panel klienta",
+    "aislos": "AISLOS",
+    "developer": "AISLOS Developer"
+  },
+  "developersPortal": {
+    "eyebrow": "AISLOS Developer Portal",
+    "title": "Build AI employees that enter real workflows safely.",
+    "subtitle": "Publish Agent manifests, request the minimum scopes, pass human review, and reach solution companies through the Agent Marketplace.",
+    "submitAgent": "Submit an Agent",
+    "browseMarketplace": "Browse Marketplace",
+    "manifestTitle": "Manifest v{version}",
+    "governed": "Governed by default",
+    "step1Title": "1. Submit",
+    "step1Desc": "Describe workflows, pricing and requested scopes through a versioned manifest.",
+    "step2Title": "2. Human review",
+    "step2Desc": "AISLOS reviews purpose and risk before any listing reaches customers.",
+    "step3Title": "3. Install safely",
+    "step3Desc": "Third-party Agents start paused with all data grants denied.",
+    "consoleEyebrow": "Developer Console",
+    "consoleTitle": "Submit an Agent for review",
+    "consoleSubtitle": "Requested scopes are a review request only. Approval and installation grant no data access.",
+    "phName": "Agent name",
+    "phRole": "Role title, e.g. KNX Design Specialist",
+    "phVersion": "Version",
+    "phDescription": "What this Agent does",
+    "phWorkflows": "Workflows, comma separated",
+    "phScopes": "Requested scopes, comma separated",
+    "phPrice": "Monthly price EUR",
+    "submitting": "Submitting...",
+    "submitReview": "Submit for human review",
+    "myListings": "My listings",
+    "reviewNotes": "Review: {notes}",
+    "requestedScopes": "Requested scopes: {scopes}",
+    "none": "none",
+    "emptyListings": "No submitted Agents yet.",
+    "submitFailed": "Submission failed"
   }
 }

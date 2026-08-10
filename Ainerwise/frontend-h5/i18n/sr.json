@@ -270,7 +270,8 @@
     "companyName": "Naziv kompanije",
     "noAccount": "Nemate nalog?",
     "hasAccount": "Već imate nalog?",
-    "forgotPassword": "Zaboravili ste lozinku?"
+    "forgotPassword": "Zaboravili ste lozinku?",
+    "loginRequired": "Potrebna prijava"
   },
   "portal": {
     "dashboard": "Kontrolna tabla",

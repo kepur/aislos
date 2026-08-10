@@ -5,26 +5,26 @@
       <div class="min-w-0">
         <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
           <UIcon name="i-heroicons-cpu-chip" class="h-7 w-7 text-indigo-600 flex-shrink-0" />
-          AI Project Forge
+          {{ appStore.t('buyer.projects.forgeTitle') }}
         </h1>
         <p class="text-sm text-slate-500 mt-1">
-          Describe your project, upload documents — AI generates a structured procurement list.
+          {{ appStore.t('buyer.projects.forgeSubtitle') }}
         </p>
       </div>
       <UButton color="indigo" icon="i-heroicons-plus" class="flex-shrink-0" @click="openCreateModal">
-        New Project
+        {{ appStore.t('buyer.projects.new') }}
       </UButton>
     </div>
 
     <!-- Empty State -->
     <div v-if="!loading && projects.length === 0" class="bg-white rounded-3xl border border-slate-200 p-16 text-center">
       <div class="text-6xl mb-4">🏗️</div>
-      <h3 class="text-xl font-semibold text-slate-900">No Projects Yet</h3>
+      <h3 class="text-xl font-semibold text-slate-900">{{ appStore.t('buyer.projects.emptyTitle') }}</h3>
       <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto">
-        Create your first project to let AI analyze your requirements and generate a smart procurement list.
+        {{ appStore.t('buyer.projects.emptyDesc') }}
       </p>
       <UButton color="indigo" icon="i-heroicons-plus" size="lg" class="mt-6" @click="openCreateModal">
-        Create Your First Project
+        {{ appStore.t('buyer.projects.createFirst') }}
       </UButton>
     </div>
 
@@ -70,27 +70,27 @@
     <!-- Loading -->
     <div v-if="loading" class="text-center py-16">
       <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 text-indigo-400 animate-spin mx-auto" />
-      <p class="text-sm text-slate-500 mt-3">Loading projects...</p>
+      <p class="text-sm text-slate-500 mt-3">{{ appStore.t('buyer.projects.loading') }}</p>
     </div>
 
     <!-- Create Project Modal -->
     <UModal v-model="showCreate">
       <UCard class="sm:min-w-[480px]">
         <template #header>
-          <h3 class="text-lg font-semibold text-slate-900">Create New Project</h3>
+          <h3 class="text-lg font-semibold text-slate-900">{{ appStore.t('buyer.projects.createTitle') }}</h3>
         </template>
 
         <div class="space-y-4">
-          <UFormGroup label="Project Title" required>
-            <UInput v-model="form.title" placeholder="e.g. 2-Storey Residential House Construction" size="lg" />
+          <UFormGroup :label="appStore.t('buyer.projects.fieldTitle')" required>
+            <UInput v-model="form.title" :placeholder="appStore.t('buyer.projects.phTitle')" size="lg" />
           </UFormGroup>
 
-          <UFormGroup label="Project Type">
+          <UFormGroup :label="appStore.t('buyer.projects.fieldType')">
             <USelect v-model="form.project_type" :options="projectTypes" size="lg" />
           </UFormGroup>
 
           <div class="grid grid-cols-2 gap-4">
-            <UFormGroup label="Country">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldCountry')">
               <select
                 v-model="form.country"
                 class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
@@ -100,33 +100,33 @@
                 </option>
               </select>
             </UFormGroup>
-            <UFormGroup label="City">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldCity')">
               <UInput v-model="form.city" :placeholder="selectedRegion?.defaultCity || 'Belgrade'" />
             </UFormGroup>
           </div>
 
           <div class="grid grid-cols-3 gap-4">
-            <UFormGroup label="Area">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldArea')">
               <UInput v-model.number="form.area_value" type="number" placeholder="150" />
             </UFormGroup>
-            <UFormGroup label="Unit">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldUnit')">
               <USelect v-model="form.area_unit" :options="['sqm', 'sqft', 'm2', 'hectares']" />
             </UFormGroup>
-            <UFormGroup label="Quality">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldQuality')">
               <USelect v-model="form.quality_preference" :options="qualityOptions" />
             </UFormGroup>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
-            <UFormGroup label="Budget Min">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldBudgetMin')">
               <UInput v-model.number="form.budget_min" type="number" placeholder="500000" />
             </UFormGroup>
-            <UFormGroup label="Budget Max">
+            <UFormGroup :label="appStore.t('buyer.projects.fieldBudgetMax')">
               <UInput v-model.number="form.budget_max" type="number" placeholder="2000000" />
             </UFormGroup>
           </div>
 
-          <UFormGroup label="Settlement Currency">
+          <UFormGroup :label="appStore.t('buyer.projects.fieldCurrency')">
             <USelect
               v-model="form.currency"
               :options="appStore.currencyOptions"
@@ -138,20 +138,20 @@
             </p>
           </UFormGroup>
 
-          <UFormGroup label="Description">
+          <UFormGroup :label="appStore.t('buyer.projects.fieldDescription')">
             <UTextarea
               v-model="form.description"
               :rows="4"
-              placeholder="Describe your project in detail. Include materials needed, specifications, timeline, etc."
+              :placeholder="appStore.t('buyer.projects.phDescription')"
             />
           </UFormGroup>
         </div>
 
         <template #footer>
           <div class="flex justify-end gap-3">
-            <UButton variant="ghost" color="gray" @click="showCreate = false">Cancel</UButton>
+            <UButton variant="ghost" color="gray" @click="showCreate = false">{{ appStore.t('buyer.projects.cancel') }}</UButton>
             <UButton color="indigo" :loading="creating" @click="createProject">
-              Create Project
+              {{ appStore.t('buyer.projects.create') }}
             </UButton>
           </div>
         </template>
@@ -180,19 +180,19 @@ type RegionOption = {
   defaultCity?: string
 }
 
-const projectTypes = [
-  { label: '🏠 General', value: 'GENERAL' },
-  { label: '🏗️ Construction', value: 'CONSTRUCTION' },
-  { label: '☀️ Solar', value: 'SOLAR' },
-  { label: '💻 Tech Build', value: 'TECH_BUILD' },
-  { label: '🔨 Renovation', value: 'RENOVATION' },
-]
-const qualityOptions = [
-  { label: '🤷 Not Sure', value: 'NOT_SURE' },
-  { label: '💰 Budget', value: 'BUDGET' },
-  { label: '⚖️ Mid-Range', value: 'MID_RANGE' },
-  { label: '✨ Premium', value: 'PREMIUM' },
-]
+const projectTypes = computed(() => [
+  { label: `🏠 ${appStore.t('buyer.projects.typeGeneral')}`, value: 'GENERAL' },
+  { label: `🏗️ ${appStore.t('buyer.projects.typeConstruction')}`, value: 'CONSTRUCTION' },
+  { label: `☀️ ${appStore.t('buyer.projects.typeSolar')}`, value: 'SOLAR' },
+  { label: `💻 ${appStore.t('buyer.projects.typeTech')}`, value: 'TECH_BUILD' },
+  { label: `🔨 ${appStore.t('buyer.projects.typeRenovation')}`, value: 'RENOVATION' },
+])
+const qualityOptions = computed(() => [
+  { label: `🤷 ${appStore.t('buyer.projects.qualityNotSure')}`, value: 'NOT_SURE' },
+  { label: `💰 ${appStore.t('buyer.projects.qualityBudget')}`, value: 'BUDGET' },
+  { label: `⚖️ ${appStore.t('buyer.projects.qualityMid')}`, value: 'MID_RANGE' },
+  { label: `✨ ${appStore.t('buyer.projects.qualityPremium')}`, value: 'PREMIUM' },
+])
 
 const form = reactive({
   title: '',

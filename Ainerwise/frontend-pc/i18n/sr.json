@@ -16,9 +16,9 @@
     "supplierApplication": "Postani dobavljač",
     "aiBrain": "AI Mozak",
     "store": "Katalog proizvoda",
-    "marketplace": "Agent Store",
+    "marketplace": "Agent prodavnica",
     "developers": "Programeri",
-    "procurementMarket": "Market",
+    "procurementMarket": "Tržište nabavke",
     "catalog": "Katalog",
     "agents": "Agenti"
   },
@@ -157,7 +157,139 @@
     "aiSubtitle": "AI ne zamenjuje inženjera. On prikuplja činjenice, pronalazi rizike i predlaže sledeći korak za ljudski pregled.",
     "monitoringTitle": "Nadzor i dugoročna vrednost",
     "monitoringSubtitle": "Prava vrednost nastaje posle primopredaje: izveštaji, upozorenja, održavanje i planirane nadogradnje.",
-    "relatedTitle": "Povezana rešenja"
+    "relatedTitle": "Povezana rešenja",
+    "bySlug": {
+      "smart-hotel": {
+        "title": "Smart Hotel Room Control",
+        "description": "Complete smart hotel room automation including guest detection, lighting scenes, HVAC control, and energy optimization. Designed for hotels seeking to reduce energy costs while improving guest experience.",
+        "scenarios": [
+          "Hotels",
+          "Boutique Hotels",
+          "Serviced Apartments",
+          "Resorts"
+        ]
+      },
+      "smart-villa": {
+        "title": "Smart Villa & Apartment Retrofit",
+        "description": "Transform existing villas and apartments with smart lighting, climate control, security, and energy monitoring. Non-invasive retrofit solutions that work with existing wiring.",
+        "scenarios": [
+          "Villas",
+          "Apartments",
+          "Residential Complexes",
+          "Vacation Homes"
+        ]
+      },
+      "cctv-access-control": {
+        "title": "CCTV & Access Control",
+        "description": "Professional surveillance and access control systems for commercial and residential properties. IP cameras, NVR, door access, intercom, and remote monitoring solutions.",
+        "scenarios": [
+          "Commercial Buildings",
+          "Shops",
+          "Offices",
+          "Residential",
+          "Parking"
+        ]
+      },
+      "knx-lighting": {
+        "title": "KNX Lighting & Scene Automation",
+        "description": "Professional KNX-based lighting control with scene management, daylight harvesting, presence detection, and integration with building management systems.",
+        "scenarios": [
+          "New Construction",
+          "Renovation",
+          "Commercial Spaces",
+          "High-End Residential"
+        ]
+      },
+      "solar-energy-monitoring": {
+        "title": "Solar & Energy Monitoring",
+        "description": "Real-time solar production monitoring, energy consumption tracking, and performance optimization dashboards. Compatible with major inverter brands.",
+        "scenarios": [
+          "Solar Installations",
+          "Commercial Buildings",
+          "Industrial",
+          "Residential with PV"
+        ]
+      },
+      "factory-industrial-energy-brain": {
+        "title": "Factory Automation & Industrial Energy Brain",
+        "description": "Industrial smart-building layer for factories, warehouses, and manufacturing plants. Connects machine energy monitoring, PLC/SCADA, gateways, compressed air, chillers, motors, robots, PV/battery, OT visibility, and lifecycle maintenance.",
+        "scenarios": [
+          "Factories",
+          "Warehouses",
+          "Manufacturing Plants",
+          "Industrial Parks"
+        ]
+      },
+      "storageguard": {
+        "title": "StorageGuard — Cold Chain & Storage Compliance Monitoring",
+        "description": "24/7 temperature and humidity compliance monitoring for cold chain and precision storage, with audit-ready reports, outage alerts, and annual calibration service.",
+        "scenarios": [
+          "Pharmaceutical Warehouses",
+          "Food Cold Storage",
+          "Laboratories"
+        ]
+      },
+      "kitchenguard": {
+        "title": "KitchenGuard — Commercial Kitchen Safety Monitoring",
+        "description": "Gas, CO, leak and temperature safety monitoring with cut-off, alarm escalation, and annual inspection certificates.",
+        "scenarios": [
+          "Commercial Kitchens",
+          "Hotels",
+          "Central Kitchens"
+        ]
+      },
+      "aquaguard": {
+        "title": "AquaGuard — Water & Effluent Compliance Monitoring",
+        "description": "pH, conductivity, turbidity and COD monitoring with environmental compliance reports and probe service.",
+        "scenarios": [
+          "Factories",
+          "Pools",
+          "Process Water"
+        ]
+      },
+      "energyguard": {
+        "title": "EnergyGuard — Solar, Storage & Energy Monitoring",
+        "description": "PV, storage and building energy monitoring with tariffs, alerts and optimization dashboards.",
+        "scenarios": [
+          "Solar Sites",
+          "Commercial",
+          "Industrial"
+        ]
+      },
+      "factorypulse": {
+        "title": "FactoryPulse — Non-Invasive OEE & Predictive Maintenance",
+        "description": "Non-invasive machine monitoring for OEE visibility and predictive maintenance planning.",
+        "scenarios": [
+          "Factories",
+          "Assembly Lines"
+        ]
+      },
+      "assetpulse": {
+        "title": "AssetPulse — High-Value Asset & Tool Tracking",
+        "description": "BLE/UWB/LoRa asset tracking with geofence alerts and multi-site inventory reports.",
+        "scenarios": [
+          "Warehouses",
+          "Multi-site Operations"
+        ]
+      },
+      "agribrain": {
+        "title": "AgriBrain — Greenhouse & Farm Intelligence (Future-Ready)",
+        "description": "Future-ready soil, climate, water and fertilizer monitoring for greenhouses and farms.",
+        "scenarios": [
+          "Greenhouses",
+          "Farms"
+        ]
+      },
+      "remote-maintenance": {
+        "title": "Remote Maintenance & Support",
+        "description": "Ongoing remote monitoring, maintenance, firmware updates, and technical support for installed smart building systems. Annual service plans with guaranteed response.",
+        "scenarios": [
+          "Installed Projects",
+          "Hotels",
+          "Offices"
+        ]
+      }
+    }
   },
   "procurement": {
     "title": "AinerWise Procurement",
@@ -342,7 +474,63 @@
     "verified": "Proveren dobavljač",
     "allCategories": "Sve kategorije",
     "filter": "Filter",
-    "noProducts": "Nema proizvoda"
+    "noProducts": "Nema proizvoda",
+    "intro": "AinerWise focuses on China first-tier, project-grade supply chains such as Huawei Digital Power, Sungrow, LONGi, Xiaomi ecosystem, leading CCTV/access vendors, and verified OEM/ODM partners. These are solution-ready building blocks, not cheap commodity products.",
+    "surfaceOfficial": "Official recommended",
+    "surfaceMarket": "Market products",
+    "surfaceRecycled": "Enterprise recycled",
+    "marketLink": "AinerWise Market",
+    "secondhandLink": "2Hands",
+    "loading": "Loading products...",
+    "loadError": "Products could not be loaded.",
+    "retry": "Retry",
+    "refPrice": "€{price} ref.",
+    "warrantyYears": "Warranty {n}y",
+    "supportYears": "Support {years}y",
+    "maintenanceYears": "{n}y maintenance",
+    "tryAgain": "Please try again.",
+    "categories": {
+      "knx-devices": "KNX Devices",
+      "gateways": "Gateways",
+      "sensors": "Sensors",
+      "smart-panels": "Smart Panels",
+      "cctv": "CCTV",
+      "access-control": "Access Control",
+      "network-devices": "Network Devices",
+      "hvac-controllers": "HVAC Controllers",
+      "energy-meters": "Energy Meters",
+      "solar-monitoring": "Solar Monitoring",
+      "lighting-control": "Lighting Control",
+      "home-assistant-compatible": "Home Assistant Compatible",
+      "service-packages-cat": "Service Packages",
+      "industrial-automation": "Industrial Automation",
+      "plc-scada-gateways": "PLC / SCADA Gateways",
+      "machine-energy-monitoring": "Machine Energy Monitoring",
+      "storageguard-monitoring": "StorageGuard Monitoring"
+    },
+    "items": {
+      "solar-energy-gateway": {
+        "name": "Solar / Battery / EV Energy Gateway"
+      },
+      "ai-cctv-poe-camera": {
+        "name": "PoE AI CCTV Camera"
+      },
+      "industrial-plc-gateway": {
+        "name": "Industrial PLC / Modbus / OPC UA Gateway"
+      },
+      "edge-ai-building-box": {
+        "name": "Local AI Building Edge Box"
+      },
+      "machine-energy-meter": {
+        "name": "Non-Invasive Machine Energy Meter"
+      },
+      "vfd-motor-monitor": {
+        "name": "VFD / Motor & Compressor Monitoring Module"
+      },
+      "plc-scada-robot-opcua-connector": {
+        "name": "PLC / SCADA & Robot OPC-UA Connector"
+      }
+    }
   },
   "services": {
     "title": "Servisni paketi",
@@ -435,7 +623,7 @@
   "lead": {
     "title": "Pošalji zahtev projekta",
     "subtitle": "Opišite projekat i dobijte preliminarnu procenu",
-    "step1": "Osnovne informacije",
+    "step1": "Korak 1",
     "step2": "Kontakt",
     "step3": "Informacije o lokaciji",
     "projectType": "Tip projekta",
@@ -448,13 +636,632 @@
     "contactPhone": "Telefon",
     "submit": "Pošalji zahtev",
     "success": "Vaš zahtev je uspešno poslat. Pregledaćemo ga i kontaktirati vas uskoro.",
-    "forgeKicker": "AI Project Forge",
-    "forgeTitle": "Procena Pametne Zgrade",
-    "forgeSubtitle": "Kreirajte projekat odabirom jedne kategorije, zatim dozvolite AI da prikupi nedostajuće detalje pametne zgrade konverzaciono. Ovde se ne obećava konačna ponuda.",
+    "forgeKicker": "AI projektna radionica",
+    "forgeTitle": "Procena pametne zgrade",
+    "forgeSubtitle": "Izaberite kategoriju projekta, a zatim neka AI kroz razgovor prikupi nedostajuće detalje pametne zgrade. Ovde nema konačne ponude.",
     "progress": "Napredak",
     "step1Label": "Koji tip projekta planirate?",
     "step1Desc": "Ovo je jedini klasičan izbor za kreiranje projekta. Nakon toga, informacije se prikupljaju AI-stilom pitanja.",
-    "estimateWarning": "AI budžetski izlaz je samo procena. Konačna ponuda zahteva manuelni pregled, sastanak, pregled lokacije, potvrdu dobavljača i potpisan ugovor."
+    "estimateWarning": "Samo AI procjena. Konačna ponuda zahtijeva ručni pregled, sastanak s kupcima, pregled lokacije, potvrdu dobavljača i potpisan ugovor.",
+    "selectedProject": "Izabrani projekat",
+    "changeCategory": "Promeni kategoriju",
+    "intakeKicker": "LangGraph unos",
+    "collectStep": "Prikupljaj informacije o projektu korak po korak",
+    "aiAnalyze": "AI analiza",
+    "answerPlaceholder": "Odgovorite na pitanje AI...",
+    "working": "Obrada...",
+    "send": "Pošalji",
+    "submitting": "Slanje...",
+    "submittedRequirement": "Zahtjev je poslan.",
+    "submittedPhase1": "Faza-1 Zahtjev za prijedlog podnesen.",
+    "submittedFollowup": "Administrator će pregledati procjenu umjetne inteligencije i nastaviti ručno.",
+    "projectPreview": "Pregled projekta",
+    "percentComplete": "{n}% završeno",
+    "levelTarget": "{level} cilj",
+    "statusDone": "Završeno",
+    "statusActive": "Aktivno",
+    "statusPending": "Na čekanju",
+    "selectedBehavior": "Odabrano ponašanje inteligencije",
+    "estimateNotice": "Samo AI procjena. Konačna ponuda zahtijeva ručni pregled, sastanak s kupcima, pregled lokacije, potvrdu dobavljača i potpisan ugovor.",
+    "leadScore": "Glavni rezultat",
+    "leadScoreDesc": "Izračunato na temelju potpunosti, proračuna, kontakta, ciljane razine i namjere 1. faze.",
+    "proposalDirections": "Upute za preliminarni prijedlog",
+    "device": "Uređaj",
+    "support": "podrška",
+    "readyPhase1Title": "Spremni za Fazu-1 Prijedlog",
+    "readyPhase1Desc": "Besplatna AI procjena daje samo smjernice. Faza-1 znači ljudski pregled, dublji BOM, nacrt arhitekture, potvrdu dobavljača i jedan sastanak.",
+    "requestPhase1": "Zatraži Phase-1 predlog",
+    "tagGap": "AI pitanje",
+    "tagIntake": "vaš odgovor",
+    "tagAi": "AI analiza",
+    "tagReady": "spremno",
+    "tagPhase1": "faza-1",
+    "tagSubmitted": "poslato",
+    "chatOpening": "Odlično. Napraviću procenu za {category} i postaviti samo sledeće nedostajuće pitanje.\n\n{prompt}",
+    "chatCaptured": "Sačuvano. Sledeća stavka koja nedostaje:\n\n{prompt}",
+    "chatComplete": "Hvala. Unos je sada dovoljan za preliminarnu procenu.\n\nCiljni nivo: {level} {levelLabel}\n\n{notice}",
+    "chatEnough": "Imam dovoljno informacija za preliminarnu AI procenu. Možete poslati ovu procenu na pregled administratoru.",
+    "chatPhase1Ack": "Razumem. Označiću ovo kao Phase-1 nameru. Ljudski pregled je potreban pre detaljnog BOM-a, dijagrama arhitekture, potvrde dobavljača ili konačne ponude.",
+    "chatSubmitted": "Poslato. AinerWise administrator će pregledati preliminarnu AI procenu pre bilo koje ponude ili obaveze.",
+    "assistantSeed": "Želim AI procenu objekta za: {category}.",
+    "submitFailed": "Slanje nije uspjelo",
+    "stages": {
+      "phase1Ready": "Faza-1 spremna",
+      "qualified": "Kvalificirani voditelj",
+      "warm": "Toplo olovo",
+      "cold": "Hladno olovo"
+    },
+    "modules": {
+      "category": "Kategorija projekta",
+      "location": "Lokacija stranice",
+      "site": "Profil zgrade / mjesta",
+      "existing": "Postojeći sustavi",
+      "production": "Proizvodnja / Strojevi",
+      "goals": "Pametni ciljevi",
+      "identity": "Identitet i pristup",
+      "energy": "Energija i solarna energija",
+      "budget": "Proračun i razdoblje usluge",
+      "contact": "Kontakt",
+      "storage_type": "Vrsta i prostorije za skladištenje",
+      "temperature_humidity": "Temperatura i vlažnost",
+      "compliance_use": "Upotreba usklađenosti",
+      "outage": "Zaštita od ispada",
+      "alert_channels": "Kanali upozorenja",
+      "monitoring_points": "Točke praćenja",
+      "calibration_cycle": "Kalibracija i servis"
+    },
+    "moduleHints": {
+      "category": "Odaberite vrstu projekta",
+      "location": "Država i grad su potrebni",
+      "site": "Područje, sobe, podovi ili opterećenja",
+      "existing": "Mreža, CCTV, HVAC, solar, pristup, KNX...",
+      "production": "Tvorničke linije, strojevi, roboti, komunalije, PLC/SCADA",
+      "goals": "Energija, sigurnost, udobnost, AI, održavanje...",
+      "identity": "Potrebno samo za projekte s pristupom/AI identitetom",
+      "energy": "PV, baterija, EV, tarife, izvješća",
+      "budget": "Raspon proračuna i godine potpore",
+      "contact": "Ime i email/telefon",
+      "storage_type": "Hladnjača, zamrzivač, ljekarnički hladnjak, skladište...",
+      "temperature_humidity": "npr. 2-8°C, -18°C, <60% RH",
+      "compliance_use": "Hrana (HACCP) ili farmacija (GDP), revizorska izvješća",
+      "outage": "Rizik od nestanka struje i trenutno bilježenje",
+      "alert_channels": "SMS, telegram, e-mail, telefonski poziv",
+      "monitoring_points": "Ukupni broj bodova po sobama i vratima",
+      "calibration_cycle": "Ciklus kalibracije i servisni rok"
+    },
+    "plans": {
+      "budget": {
+        "name": "Plan proračuna",
+        "complexity": "Naknadna ugradnja startera",
+        "risk": "Srednji rizik",
+        "support": "1-3 godine",
+        "summary": "Osnovna kontrola, osnovni CCTV/pristup/mreža/nadzor energije i ograničena automatizacija.",
+        "summaryIndustrial": "Početna industrijska vidljivost za odabrane mjerače, status stroja, OT gateway i bitna upozorenja."
+      },
+      "standard": {
+        "name": "Standardni plan",
+        "complexity": "Praktična dostava",
+        "risk": "Upravljani rizik",
+        "support": "3-5 godina",
+        "summary": "Automatizacija senzora, energetska nadzorna ploča, daljinsko održavanje i izbor uređaja spremnih za servis.",
+        "summaryIndustrial": "Energetska nadzorna ploča na razini linije, PLC/SCADA integracija, raspoređivanje kompresora/rashladnika i daljinsko održavanje."
+      },
+      "premium_ai": {
+        "name": "Premium AI plan",
+        "complexity": "Potreban ručni pregled",
+        "risk": "Visoka recenzija",
+        "support": "5-10 godina",
+        "summary": "Analiza umjetne inteligencije, inteligencija identiteta/pristupa, lokalne opcije umjetne inteligencije i dublje planiranje životnog ciklusa.",
+        "summaryIndustrial": "AI otkrivanje anomalija, prediktivno održavanje, lokalni OT podatkovni pristupnik, proizvodna energetska inteligencija i SLA planiranje."
+      },
+      "future_autonomous": {
+        "name": "Budući autonomni plan",
+        "complexity": "Demo koncepta",
+        "risk": "Samo po narudžbi",
+        "device": "Inženjering po narudžbi",
+        "support": "Prilagođeni SLA",
+        "summary": "Koncepti autonomnih objekata spremnih za robote. Nema fiksne cijene prije tehničkog pregleda."
+      }
+    },
+    "categories": {
+      "villa": {
+        "label": "Pametna vila / budući dom",
+        "description": "Kućni AI mozak, lokalna privatnost, obiteljski identitet, udobnost, energija, EV, oprema za pametne sobe."
+      },
+      "school": {
+        "label": "Škola/kampus",
+        "description": "Učionice, sigurnost, CO2, pristup, CCTV, mreža, izvješća o energiji, tijek rada održavanja."
+      },
+      "apartment": {
+        "label": "Stambena zgrada",
+        "description": "Nekretninski mozak za zajedničke prostore, parking, pristup posjetiteljima, brojila, podršku stanarima."
+      },
+      "office": {
+        "label": "Poslovna zgrada poduzeća",
+        "description": "Sobe za sastanke, pristup posjetiteljima, popunjenost, IT mreža, AI dnevni sažetak objekta."
+      },
+      "factory": {
+        "label": "Tvornica/industrijski pogon",
+        "description": "Industrijska automatizacija, energija strojeva, PLC/SCADA, OT mreža, roboti, komprimirani zrak, rashladni uređaji, motori i održavanje."
+      },
+      "hotel": {
+        "label": "Hotel / Apartman s uslugom",
+        "description": "Kontrola sobe za goste, ušteda energije na udaljenosti, pristup domaćinstvu, daljinsko održavanje."
+      },
+      "energy": {
+        "label": "Stranica za solarnu i energetsku energiju",
+        "description": "PV, baterija, EV punjenje, tarife, kritična opterećenja, upozorenja, mjesečna AI izvješća o energiji."
+      },
+      "storage": {
+        "label": "Hladni lanac/skladištenje (StorageGuard)",
+        "description": "Usklađenost s temperaturom i vlagom, događaji na vratima, upozorenja o prekidu rada, izvješća o reviziji, kalibracija i godišnje održavanje za rashladne komore, farmaciju i skladište hrane."
+      },
+      "kitchen": {
+        "label": "Sigurnost u komercijalnoj kuhinji (KitchenGuard)",
+        "description": "Sigurnost od plina, CO, curenja vode i temperature s automatskim isključivanjem, eskalacijom alarma, potvrdama o godišnjoj inspekciji i AMC-om."
+      },
+      "water": {
+        "label": "Usklađenost s vodom/otpadnim vodama (AquaGuard)",
+        "description": "Praćenje pH, vodljivosti, zamućenosti i KPK s izvješćima o usklađenosti s okolišem, kalibracijom i zamjenom sonde (pod vodstvom partnera)."
+      },
+      "asset": {
+        "label": "Praćenje imovine i alata (AssetPulse)",
+        "description": "Praćenje BLE/UWB/LoRa oznaka s upozorenjima o geoogradi, popisom i izvješćima s više mjesta kao pretplata na oznake."
+      },
+      "agri": {
+        "label": "Staklenik/farma (AgriBrain — budućnost)",
+        "description": "Praćenje tla, klime, vode i gnojiva spremno za budućnost sa sezonskom uslugom. Opseg koncepta dok se ne potvrde partneri i potražnja."
+      },
+      "retrofit": {
+        "label": "Rekonstrukcija postojeće zgrade",
+        "description": "Nadogradite starije ožičenje, CCTV, mrežu, pristup i energetsku vidljivost bez prevelikih obećanja."
+      },
+      "custom": {
+        "label": "Buduća zgrada po mjeri",
+        "description": "Napredni AI, lokalni AI okvir, identitet, staze spremne za robote i ručni inženjerski pregled."
+      }
+    },
+    "levels": {
+      "L3": {
+        "label": "Energetski optimizirano",
+        "description": "Usredotočite se na praćenje energije, scene, rasporede, nadzorne ploče, alarme i izvješća o životnom ciklusu."
+      },
+      "L4": {
+        "label": "Uz pomoć umjetne inteligencije",
+        "description": "Dodaje AI analizu, otkrivanje anomalija, preporuke koje je pregledao administrator i pametne operativne sažetke."
+      },
+      "L5": {
+        "label": "Lokalni AI mozak",
+        "description": "Dodaje lokalnu AI kutiju, privatnost na prvom mjestu, izvanmrežnu logiku upravljanja i naprednu međusistemsku orkestraciju."
+      }
+    },
+    "questions": {
+      "villa": {
+        "location": {
+          "prompt": "Gdje se nalazi vila? Unesite državu i grad.",
+          "placeholder": "Primjer: Beograd, Srbija"
+        },
+        "building": {
+          "prompt": "Koja je približna površina, broj katova i popis glavnih soba?",
+          "placeholder": "Primjer: 320 m2, 2 etaže, dnevni boravak, kuhinja, 4 spavaće sobe..."
+        },
+        "existing": {
+          "prompt": "Koji sustavi već postoje: mreža, CCTV, alarm, HVAC, solarni, EV punjač, ​​pametni prekidači ili KNX?",
+          "placeholder": "Opišite postojeće ožičenje, internet, CCTV, solar, HVAC..."
+        },
+        "goals": {
+          "prompt": "Što bi dom trebao postati: štednja energije, AI obiteljski mozak, sigurnost, udobnost, privatnost izvan mreže ili spreman za robote?",
+          "placeholder": "Primjer: offline AI privatnost, ušteda energije, pristup licem, punjenje EV-a..."
+        },
+        "identity": {
+          "prompt": "Trebate li značajke identiteta kao što su prepoznavanje lica, QR posjetitelja, tablice automobila, otisak prsta ili budući otisak glasa?",
+          "placeholder": "Navedite potrebne značajke pristupa i identiteta..."
+        },
+        "energy": {
+          "prompt": "Trebate li solarnu energiju, bateriju, punjenje EV-a, tarifnu logiku za vršno/izvan vršnog opterećenja ili optimizaciju energije uređaja?",
+          "placeholder": "Opišite PV, bateriju, EV i energetske ciljeve..."
+        },
+        "budget": {
+          "prompt": "Oko kojeg proračunskog raspona i razdoblja usluge trebamo dizajnirati?",
+          "placeholder": "Primjer: 15k-50k EUR, 5-godišnja podrška"
+        },
+        "contact": {
+          "prompt": "Konačno, kome da se obratimo? Navedite ime, e-poštu i izborno Telegram/WhatsApp.",
+          "placeholder": "Primjer: Wei, wei{'@'}example.com, Telegram {'@'}..."
+        }
+      },
+      "school": {
+        "location": {
+          "prompt": "Gdje se nalazi kampus?",
+          "placeholder": "Država i grad"
+        },
+        "building": {
+          "prompt": "Koliko je zgrada, učionica, katova, laboratorija, administrativnih područja i učenika uključeno?",
+          "placeholder": "Primjer: 2 zgrade, 32 učionice, 600 učenika..."
+        },
+        "existing": {
+          "prompt": "Koji su postojeći CCTV, kontrola pristupa, mreža, HVAC, solarni ili BMS sustavi već instalirani?",
+          "placeholder": "Opišite postojeće sustave i bolne točke..."
+        },
+        "goals": {
+          "prompt": "Koji su glavni ciljevi: sigurnost, ušteda energije, udobnost učionice, pristup laboratoriju, vidljivost mreže ili održavanje?",
+          "placeholder": "Navedite glavne prioritete..."
+        },
+        "energy": {
+          "prompt": "Trebate li solarni nadzor, CO2 u učionici, raspored HVAC-a ili mjesečna izvješća o energiji?",
+          "placeholder": "Opišite potrebe za energijom i okolišem..."
+        },
+        "budget": {
+          "prompt": "Koji proračunski raspon i razdoblje podrške trebamo pretpostaviti?",
+          "placeholder": "Primjer: 50k-100k EUR, 5-godišnja podrška životnog ciklusa"
+        },
+        "contact": {
+          "prompt": "Kome se AinerWise treba obratiti za ovu procjenu kampusa?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "apartment": {
+        "location": {
+          "prompt": "Gdje se nalazi stambena zgrada?",
+          "placeholder": "Država i grad"
+        },
+        "building": {
+          "prompt": "O koliko jedinica, katova, zajedničkih prostorija, parkinga i mjerača je riječ?",
+          "placeholder": "Primjer: 40 jedinica, 8 katova, garaža, predvorje..."
+        },
+        "existing": {
+          "prompt": "Koji postojeći interkom, CCTV, pristup, brojila, rasvjeta ili mrežni sustavi postoje?",
+          "placeholder": "Opišite trenutne sustave..."
+        },
+        "goals": {
+          "prompt": "Što bi trebalo poboljšati: pristup posjetiteljima, energiju zajedničkog prostora, iskustvo stanara, parking, tijek popravka ili sigurnost?",
+          "placeholder": "Navedite ciljeve imovine..."
+        },
+        "energy": {
+          "prompt": "Trebate li izvješća o energiji zajedničkih prostorija, PV za javna opterećenja ili nadzor brojila?",
+          "placeholder": "Potrebe za energijom i mjerenjem..."
+        },
+        "budget": {
+          "prompt": "Koji su proračunski raspon i razdoblje usluge realni?",
+          "placeholder": "Primjer: 15k-50k EUR, 3-godišnja podrška"
+        },
+        "contact": {
+          "prompt": "Kome se trebamo obratiti za praćenje imovine?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "office": {
+        "location": {
+          "prompt": "Gdje se nalazi poslovna zgrada?",
+          "placeholder": "Država i grad"
+        },
+        "building": {
+          "prompt": "Koliki je ured, koliko katova, zaposlenika, soba za sastanke, IT soba i područja za posjetitelje?",
+          "placeholder": "Primjer: 4100 m2, 4 kata, 12 soba za sastanke..."
+        },
+        "existing": {
+          "prompt": "Koja postojeća kontrola pristupa, CCTV, mreža, HVAC, booking ili BMS sustavi postoje?",
+          "placeholder": "Opišite trenutne uredske sustave..."
+        },
+        "goals": {
+          "prompt": "Koji su ciljevi: automatizacija sastanaka, pristup posjetitelja, ušteda energije, iskorištenje radnog mjesta, lokalna umjetna inteligencija ili sažeci objekata?",
+          "placeholder": "Navedite uredske AI/ciljeve objekata..."
+        },
+        "identity": {
+          "prompt": "Trebate li identitet zaposlenika, QR posjetitelja, pristup licem, vjerodajnice za mobilni uređaj ili AI dopuštenja samo za administratora?",
+          "placeholder": "Opišite identitet i potrebe pristupa..."
+        },
+        "budget": {
+          "prompt": "Koji proračunski raspon i razdoblje održavanja trebamo pretpostaviti?",
+          "placeholder": "Primjer: 50k-100k EUR, 5-godišnja podrška"
+        },
+        "contact": {
+          "prompt": "Tko je kontakt za uredski projekt?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "factory": {
+        "location": {
+          "prompt": "Gdje se nalazi tvornica, pogon ili skladište?",
+          "placeholder": "Država, grad, industrijski park ako je relevantno"
+        },
+        "building": {
+          "prompt": "Koja je veličina tvornice: proizvodni prostor, etaže/zone, proizvodne linije, skladište, komunalije i smjene?",
+          "placeholder": "Primjer: 12.000 m2, 3 linije, kompresorska soba, rashladni uređaj, 2 smjene..."
+        },
+        "existing": {
+          "prompt": "Koji postojeći OT/IT sustavi postoje: PLC, SCADA, BMS, mjerači, VFD-ovi, kompresori, rashladni uređaji, roboti, CCTV, pristup, solar ili MES?",
+          "placeholder": "Navedite marke PLC/SCADA, protokole, brojila, strojeve, mreže, PV..."
+        },
+        "production": {
+          "prompt": "Koju mehaničku ili proizvodnu opremu treba nadzirati ili povezati?",
+          "placeholder": "Primjer: CNC strojevi, transportne trake, robotske ruke, pumpe, kotlovi, rashladni uređaji, kompresori, linija za pakiranje..."
+        },
+        "goals": {
+          "prompt": "Što bi trebalo poboljšati: vrijeme rada stroja, energiju po liniji, vršnu potražnju, kvalitetu električne energije, prediktivno održavanje, sigurnosnu vidljivost ili izvješćivanje o proizvodnji?",
+          "placeholder": "Navedite industrijsku automatizaciju i poslovne ciljeve..."
+        },
+        "energy": {
+          "prompt": "Koja su glavna energetska opterećenja i energetska sredstva: PV, baterije, EV flota, kompresori, rashladni uređaji, motori, VFD-ovi, pumpe, pećnice ili vršna tarifa?",
+          "placeholder": "Opišite profil opterećenja, tarifni problem i ciljeve praćenja..."
+        },
+        "identity": {
+          "prompt": "Trebate li pristup osoblja/posjetitelja, dopuštenja za područje stroja, OT mrežnu izolaciju, CCTV AI ili sigurnosna granična pravila?",
+          "placeholder": "Pristup, sigurnost, OT/IT odvajanje, ograničena područja..."
+        },
+        "budget": {
+          "prompt": "Oko kojeg proračunskog raspona i razdoblja usluge/SLA trebamo dizajnirati?",
+          "placeholder": "Primjer: 50.000-300.000 EUR, 5-godišnja podrška životnog ciklusa, osjetljivo na zastoje u proizvodnji"
+        },
+        "contact": {
+          "prompt": "Kome bi se AinerWise trebao obratiti za praćenje tvorničkog inženjeringa?",
+          "placeholder": "Ime, uloga, e-mail tvrtke, telefon ili Telegram"
+        }
+      },
+      "hotel": {
+        "location": {
+          "prompt": "Gdje se nalazi hotel ili apartman s uslugom?",
+          "placeholder": "Država i grad"
+        },
+        "building": {
+          "prompt": "O koliko soba, katova, tipova soba, zajedničkih prostorija i uslužnih prostora je riječ?",
+          "placeholder": "Primjer: 48 soba, 5 katova, predvorje, hodnici..."
+        },
+        "existing": {
+          "prompt": "Koje postojeće brave, termostati, CCTV, PMS, mrežne ili sobne kontrole postoje?",
+          "placeholder": "Opišite trenutne hotelske sustave..."
+        },
+        "goals": {
+          "prompt": "Što bi trebalo poboljšati: način dobrodošlice gostima, uštedu energije u odsutnosti, dozvole za održavanje, status sobe ili održavanje?",
+          "placeholder": "Navedite goste i ciljeve operacije..."
+        },
+        "energy": {
+          "prompt": "Trebate li HVAC uštedu energije, senzor zauzetosti sobe, solarnu nadzornu ploču ili mjesečna hotelska izvješća?",
+          "placeholder": "Potrebe za energijom i kontrolom prostorije..."
+        },
+        "budget": {
+          "prompt": "Oko kojeg proračunskog raspona i razdoblja podrške trebamo dizajnirati?",
+          "placeholder": "Primjer: 50k-100k EUR, 5-godišnja podrška životnog ciklusa"
+        },
+        "contact": {
+          "prompt": "Kome se trebamo obratiti za praćenje u hotelu?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "energy": {
+        "location": {
+          "prompt": "Gdje se nalazi solarna ili energetska lokacija?",
+          "placeholder": "Država i grad"
+        },
+        "building": {
+          "prompt": "Koja opterećenja zgrade ili lokacije treba pratiti: ured, skladište, hotel, EV, kritična opterećenja?",
+          "placeholder": "Opišite stranicu i učitajte profil..."
+        },
+        "existing": {
+          "prompt": "Koja PV, pretvarač, baterija, mjerač, EV punjač ili EMS oprema već postoje?",
+          "placeholder": "Marka invertera, baterija, brojila, EV punjači..."
+        },
+        "goals": {
+          "prompt": "Što želite optimizirati: PV vlastitu potrošnju, vršnu tarifu, EV punjenje, bateriju, upozorenja ili izvješća?",
+          "placeholder": "Navedite ciljeve optimizacije energije..."
+        },
+        "energy": {
+          "prompt": "Trebate li tarifna pravila, prioritet opterećenja, alarme za anomalije, mjesečna izvješća ili daljinsko održavanje?",
+          "placeholder": "Opišite energetsku logiku i potrebe izvješćivanja..."
+        },
+        "budget": {
+          "prompt": "Koji proračunski raspon i razdoblje podrške trebamo pretpostaviti?",
+          "placeholder": "Primjer: 15k-50k EUR, 3-godišnja podrška"
+        },
+        "contact": {
+          "prompt": "Kome se AinerWise treba obratiti za ovu energetsku procjenu?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "storage": {
+        "location": {
+          "prompt": "Gdje se nalazi skladište? Unesite državu i grad.",
+          "placeholder": "Primjer: Beograd, Srbija"
+        },
+        "storage_type": {
+          "prompt": "Koja je ovo vrsta skladišta i koliko soba ili zona: hladnoća za prolaz, zamrzivač, ljekarnički hladnjak, ambijentalno skladište ili laboratorij?",
+          "placeholder": "Primjer: 3 rashladne komore + 1 zamrzivač, distribucija hrane"
+        },
+        "temperature_humidity": {
+          "prompt": "U kojim rasponima temperature i vlažnosti svaka soba mora biti?",
+          "placeholder": "Primjer: 2-8°C ohlađeno, -18°C smrznuto, <60% RH"
+        },
+        "compliance_use": {
+          "prompt": "Je li ovo za hranu (HACCP) ili farmaceutsku/medicinsku (GDP) robu i trebate li izvješća o sukladnosti spremna za reviziju?",
+          "placeholder": "Primjer: potrebna su farmaceutska izvješća o reviziji mjesečnog BDP-a"
+        },
+        "outage": {
+          "prompt": "Koliki je rizik od nestanka struje i imate li već danas bilo kakvo bilježenje ili praćenje temperature?",
+          "placeholder": "Primjer: povremeni prekidi, sada samo ručni papirnati zapisnici"
+        },
+        "alert_channels": {
+          "prompt": "Kako bi do vas trebala stići upozorenja o prekidima i izvan dometa: SMS-om, Telegramom, e-poštom, telefonskim pozivom ili u aplikaciji?",
+          "placeholder": "Primjer: Telegram + e-pošta, telefonski poziv za kritične alarme"
+        },
+        "monitoring_points": {
+          "prompt": "Koliko nadzornih točaka trebate ukupno u svim sobama, vratima i senzorima?",
+          "placeholder": "Primjer: oko 24 boda"
+        },
+        "calibration_cycle": {
+          "prompt": "Koliko često se senzori moraju kalibrirati i koliko godina želite da usluga radi?",
+          "placeholder": "Primjer: godišnja kalibracija, 3 godine servisnog roka"
+        },
+        "budget": {
+          "prompt": "Oko kojeg proračunskog raspona i razdoblja usluge trebamo dizajnirati?",
+          "placeholder": "Primjer: 6k-18k EUR, 3-godišnja podrška usklađenosti"
+        },
+        "contact": {
+          "prompt": "Konačno, koga bi AinerWise trebao kontaktirati za ovu StorageGuard procjenu?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "kitchen": {
+        "location": {
+          "prompt": "Gdje se nalazi kuhinja/prostor?",
+          "placeholder": "Država i grad"
+        },
+        "kitchen_count": {
+          "prompt": "Koliko kuhinja ili linija za kuhanje i postoji li automatski ventil za zatvaranje plina?",
+          "placeholder": "Primjer: 2 kuhinje, postojeći plinski ventil"
+        },
+        "gas_type": {
+          "prompt": "Koja vrsta plina se koristi (prirodni plin, LPG) i trebate li nadzor CO i curenja vode?",
+          "placeholder": "Primjer: prirodni plin + CO + curenje ispod sudopera"
+        },
+        "alarm_contacts": {
+          "prompt": "Tko treba primati alarme (upravitelj, vlasništvo, održavanje) i preko kojih kanala?",
+          "placeholder": "Primjer: upravitelj SMS, vlasništvo Telegram, eskalacija poziva"
+        },
+        "service_term": {
+          "prompt": "Trebate li godišnje potvrde o sigurnosnom pregledu i na koliko godina?",
+          "placeholder": "Primjer: godišnji pregled, trogodišnji AMC"
+        },
+        "budget": {
+          "prompt": "Oko kojeg proračunskog raspona trebamo dizajnirati?",
+          "placeholder": "Primjer: 6k-16k EUR"
+        },
+        "contact": {
+          "prompt": "Kome se AinerWise treba obratiti za ovu KitchenGuard procjenu?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "water": {
+        "location": {
+          "prompt": "Gdje se nalazi mjesto za vodu/odvodnju?",
+          "placeholder": "Država i grad"
+        },
+        "water_system": {
+          "prompt": "Koji je ovo vodni sustav (otpadna voda, bazen, hlađenje, proces) i koliko ispusta/točaka uzorkovanja?",
+          "placeholder": "Primjer: tvornički otpad, 2 ispusta"
+        },
+        "parameters": {
+          "prompt": "Koje parametre je potrebno pratiti: pH, vodljivost, zamućenost, COD, temperatura?",
+          "placeholder": "Primjer: pH, COD, zamućenost"
+        },
+        "reporting": {
+          "prompt": "Trebate li državna izvješća / izvješća o usklađenosti s propisima o zaštiti okoliša i koliko često?",
+          "placeholder": "Primjer: mjesečno izvješće regulatora"
+        },
+        "service_term": {
+          "prompt": "Koliko često se sonde moraju kalibrirati/zamjenjivati ​​i tijekom koliko godina rada?",
+          "placeholder": "Primjer: kvartalna kalibracija, 3 godine servisa"
+        },
+        "budget": {
+          "prompt": "Koji proračunski raspon trebamo pretpostaviti?",
+          "placeholder": "Primjer: 12k-30k EUR"
+        },
+        "contact": {
+          "prompt": "Kome se AinerWise treba obratiti za ovu AquaGuard procjenu?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "asset": {
+        "location": {
+          "prompt": "Gdje se nalazi imovina/lokacije?",
+          "placeholder": "Država i grad"
+        },
+        "building": {
+          "prompt": "Koja imovina i koliko, unutarnja ili vanjska, i na koliko mjesta?",
+          "placeholder": "Primjer: 300 alata, 2 skladišta"
+        },
+        "goals": {
+          "prompt": "Što vam je potrebno: upozorenja geoograde, brojanje inventara, točnost lokacije, izvješća s više lokacija?",
+          "placeholder": "Primjer: geoograda + inventar"
+        },
+        "monitoring_points": {
+          "prompt": "Otprilike koliko oznaka/aktive pratiti?",
+          "placeholder": "Primjer: oko 300 oznaka"
+        },
+        "budget": {
+          "prompt": "Koji proračunski raspon i razdoblje pretplate na oznake trebamo pretpostaviti?",
+          "placeholder": "Primjer: 9k-22k EUR, 3 godine"
+        },
+        "contact": {
+          "prompt": "Kome se AinerWise treba obratiti za ovu AssetPulse procjenu?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "agri": {
+        "location": {
+          "prompt": "Gdje se nalazi staklenik/farma?",
+          "placeholder": "Država i grad"
+        },
+        "building": {
+          "prompt": "U kojoj mjeri: površina, broj zona / staklenika, usjevi?",
+          "placeholder": "Primjer: 2 staklenika, 1 ha"
+        },
+        "goals": {
+          "prompt": "Što pratiti/optimizirati: vlažnost tla, klimu, navodnjavanje, gnojivo?",
+          "placeholder": "Primjer: tlo + navodnjavanje"
+        },
+        "budget": {
+          "prompt": "Je li ovo koncept, pilot ili provedba i koliki je proračun?",
+          "placeholder": "Primjer: prvi pilot"
+        },
+        "contact": {
+          "prompt": "Kome bi se AinerWise trebao obratiti za ovaj AgriBrain koncept?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "retrofit": {
+        "location": {
+          "prompt": "Gdje se nalazi postojeća zgrada?",
+          "placeholder": "Država i grad"
+        },
+        "building": {
+          "prompt": "O kojoj se vrsti zgrade, površini, katovima i sobama/zonama radi?",
+          "placeholder": "Opišite strukturu zgrade..."
+        },
+        "existing": {
+          "prompt": "Koji sustavi danas postoje, a koji su zastarjeli ili bolni?",
+          "placeholder": "Ožičenje, CCTV, pristup, HVAC, mreža, rasvjeta..."
+        },
+        "goals": {
+          "prompt": "Koji je cilj naknadne ugradnje: osnovna kontrola, sigurnosna nadogradnja, energetska nadzorna ploča, KNX ili Home Assistant?",
+          "placeholder": "Opišite željeni rezultat naknadne ugradnje..."
+        },
+        "budget": {
+          "prompt": "Koji proračunski raspon i razdoblje podrške trebamo pretpostaviti?",
+          "placeholder": "Primjer: 5k-15k EUR, 3-godišnja podrška"
+        },
+        "contact": {
+          "prompt": "Kome se trebamo obratiti za praćenje retrofita?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      },
+      "custom": {
+        "location": {
+          "prompt": "Gdje će se ta buduća zgrada ili idejni projekt nalaziti?",
+          "placeholder": "Država i grad"
+        },
+        "building": {
+          "prompt": "O kakvoj se zgradi ili mjestu radi i koje bismo mjerilo trebali pretpostaviti?",
+          "placeholder": "Opišite tip zgrade, površinu, katove, prostorije..."
+        },
+        "goals": {
+          "prompt": "Koju buduću sposobnost zamišljate: lokalni AI mozak, roboti, digitalni ljudi, autonomna energija, identitet ili prediktivno održavanje?",
+          "placeholder": "Opišite viziju..."
+        },
+        "existing": {
+          "prompt": "Koji sustavi već postoje ili se moraju integrirati?",
+          "placeholder": "KNX, HA, CCTV, HVAC, solarna, robotska platforma..."
+        },
+        "budget": {
+          "prompt": "S kojim proračunskim rasponom i fazom ovo treba započeti: konceptom, prijedlogom prve faze ili provedbom?",
+          "placeholder": "Primjer: prvo samo dizajn, 5 godina podrške kasnije"
+        },
+        "contact": {
+          "prompt": "Kome se trebamo obratiti za prilagođeni inženjerski pregled?",
+          "placeholder": "Ime, email, telefon ili Telegram"
+        }
+      }
+    },
+    "submitShort": "Pošalji"
   },
   "supplier": {
     "title": "Postani dobavljač",
@@ -877,12 +1684,375 @@
     "lc4": "AI operativni izveštaj",
     "lc4Hint": "Šta se stvarno desilo tokom godine, jasnim jezikom",
     "ctaTitle": "Počnite procenom, zatim razgovaramo o obimu",
-    "ctaSubtitle": "Opišite zgradu i ciljeve. AI prvo postavlja prava pitanja; inženjer to pretvara u konkretan sledeći korak."
+    "ctaSubtitle": "Opišite zgradu i ciljeve. AI prvo postavlja prava pitanja; inženjer to pretvara u konkretan sledeći korak.",
+    "scenarios": {
+      "villa": {
+        "name": "Smart Villa / Future Home",
+        "type": "Residential AI Brain",
+        "boundary": "Available Now to Advanced Custom",
+        "positioning": "A local AI-ready family building system that connects identity, rooms, energy, security, kitchen, bathroom, bedroom, EV, garden, and service.",
+        "sense": [
+          "Family member identity",
+          "Presence and room occupancy",
+          "Water leak, smoke, gas, humidity",
+          "Solar, battery, and EV charging status"
+        ],
+        "control": [
+          "Lighting scenes and curtains",
+          "HVAC comfort modes",
+          "Door, visitor, and garage permissions",
+          "Smart bedroom, kitchen, and bathroom equipment"
+        ],
+        "optimize": [
+          "Sleep and comfort curves",
+          "PV-first EV charging",
+          "Low-tariff appliance scheduling",
+          "Unoccupied room energy saving"
+        ],
+        "maintain": [
+          "Remote gateway health",
+          "Firmware and backup checks",
+          "Spare parts planning",
+          "Annual lifecycle review"
+        ]
+      },
+      "school": {
+        "name": "School Campus",
+        "type": "AI Campus Brain",
+        "boundary": "Project Dependent",
+        "positioning": "A campus operating layer for classroom comfort, safety, network visibility, energy reporting, and maintenance workflows.",
+        "sense": [
+          "Teacher, student, and visitor zones",
+          "CO2, temperature, humidity, and noise",
+          "Camera and network device health",
+          "After-school occupancy"
+        ],
+        "control": [
+          "Classroom lighting and HVAC schedules",
+          "Lab and machine room access",
+          "Visitor area permissions",
+          "Campus alert workflows"
+        ],
+        "optimize": [
+          "Class schedule energy saving",
+          "Roof solar visibility",
+          "High-consumption building ranking",
+          "Daily facility summary"
+        ],
+        "maintain": [
+          "Offline camera alerts",
+          "AP and switch status",
+          "Repair ticket creation",
+          "Monthly energy reports"
+        ]
+      },
+      "apartment": {
+        "name": "Apartment Building",
+        "type": "AI Property Brain",
+        "boundary": "Available Now / Project Dependent",
+        "positioning": "A property management layer for common area energy, access, CCTV, parking, tenant experience, repair workflow, and lifecycle service.",
+        "sense": [
+          "Common area occupancy",
+          "Parking license plates",
+          "Public lighting and meter data",
+          "Visitor and parcel access events"
+        ],
+        "control": [
+          "Common area lighting",
+          "Visitor QR access",
+          "Parking gate permissions",
+          "Tenant service notifications"
+        ],
+        "optimize": [
+          "Shared area energy allocation",
+          "PV for public loads",
+          "Maintenance priority",
+          "Monthly property reports"
+        ],
+        "maintain": [
+          "Door access logs",
+          "Camera status",
+          "Meter gateway health",
+          "Preventive maintenance reminders"
+        ]
+      },
+      "office": {
+        "name": "Enterprise Office Building",
+        "type": "AI Facility Brain",
+        "boundary": "Advanced Custom for AI identity",
+        "positioning": "A facility system for visitor management, meeting rooms, employee comfort, IT visibility, access control, and energy optimization.",
+        "sense": [
+          "Employee and visitor presence",
+          "Meeting room usage",
+          "IT room temperature and UPS status",
+          "Network AP and switch health"
+        ],
+        "control": [
+          "Meeting room scenes",
+          "Visitor temporary access",
+          "Floor-level HVAC schedules",
+          "Screen, lighting, and curtain modes"
+        ],
+        "optimize": [
+          "Empty-area energy saving",
+          "Workspace utilization",
+          "Daily facility summary",
+          "High-consumption floor alerts"
+        ],
+        "maintain": [
+          "CCTV and access uptime",
+          "Network incident tracking",
+          "Firmware update planning",
+          "SLA-based service workflow"
+        ]
+      },
+      "factory": {
+        "name": "Factory / Industrial Plant",
+        "type": "AI Industrial Energy Brain",
+        "boundary": "Project Dependent / Advanced Custom",
+        "positioning": "An industrial operating layer for production lines, machinery, PLC/SCADA, OT networks, compressed air, chillers, motors, robots, PV/battery, safety visibility, and lifecycle maintenance.",
+        "sense": [
+          "Machine status, runtime, alarms, and downtime",
+          "Line-level energy, power quality, and peak demand",
+          "Compressed air, chiller, motor, VFD, pump, and boiler loads",
+          "PLC/SCADA/Modbus/MQTT/OPC-UA integration signals"
+        ],
+        "control": [
+          "Energy schedules for compressors and chillers",
+          "Non-safety setpoint recommendations",
+          "Robot/AGV-ready dispatch hooks",
+          "Maintenance work order triggers"
+        ],
+        "optimize": [
+          "Peak demand and load shedding",
+          "Machine-level energy waste",
+          "Production schedule energy planning",
+          "Anomaly detection and predictive maintenance"
+        ],
+        "maintain": [
+          "OT gateway and network health",
+          "PLC/SCADA integration notes",
+          "Critical spare parts and SLA planning",
+          "Safety boundary and downtime review"
+        ]
+      },
+      "hotel": {
+        "name": "Hotel / Serviced Apartment",
+        "type": "Guest Experience + Energy",
+        "boundary": "Available Now / Project Dependent",
+        "positioning": "A guest-room control and remote maintenance system that reduces energy waste while improving check-in, comfort, and room status visibility.",
+        "sense": [
+          "Guest check-in status",
+          "Room occupancy",
+          "Housekeeping access",
+          "Public area CCTV and door events"
+        ],
+        "control": [
+          "Welcome and away scenes",
+          "Room HVAC and lighting",
+          "Curtains and panels",
+          "Staff permissions"
+        ],
+        "optimize": [
+          "Vacant room energy saving",
+          "Room comfort presets",
+          "Monthly energy report",
+          "Preventive maintenance plan"
+        ],
+        "maintain": [
+          "Room device health",
+          "Remote troubleshooting",
+          "Spare panel planning",
+          "Service package tracking"
+        ]
+      },
+      "energy": {
+        "name": "Solar + Energy Site",
+        "type": "AI Energy Brain",
+        "boundary": "Project Dependent",
+        "positioning": "A visibility and optimization layer for PV, battery storage, EV charging, key building loads, tariffs, alerts, and energy reporting.",
+        "sense": [
+          "PV generation",
+          "Battery SOC",
+          "Inverter and meter state",
+          "EV charger sessions"
+        ],
+        "control": [
+          "Load priority rules",
+          "EV charging windows",
+          "Battery discharge strategy",
+          "Critical load alerts"
+        ],
+        "optimize": [
+          "Peak tariff reduction",
+          "PV self-consumption",
+          "Fault and anomaly detection",
+          "Monthly AI energy advice"
+        ],
+        "maintain": [
+          "Inverter health",
+          "Meter gateway status",
+          "Remote diagnostics",
+          "Lifecycle service plan"
+        ]
+      }
+    },
+    "capabilities": {
+      "sense": {
+        "kicker": "Sense",
+        "title": "What the building can know"
+      },
+      "control": {
+        "kicker": "Control",
+        "title": "What the system can operate"
+      },
+      "optimize": {
+        "kicker": "Optimize",
+        "title": "Where AI can help"
+      },
+      "maintain": {
+        "kicker": "Maintain",
+        "title": "How service stays alive"
+      }
+    },
+    "tiers": {
+      "budget": {
+        "name": "Budget Plan",
+        "estimate": "Basic estimated range",
+        "note": "Good for first retrofit and limited scope.",
+        "text": "Connected control, essential sensors, CCTV/access basics, and 1-3 year support."
+      },
+      "standard": {
+        "name": "Standard Plan",
+        "estimate": "Most practical for real projects",
+        "note": "Recommended default for early AinerWise delivery.",
+        "text": "Sensor automation, energy monitoring, remote maintenance, and service-ready hardware."
+      },
+      "premium": {
+        "name": "Premium AI Plan",
+        "estimate": "Manual review required",
+        "note": "Needs site, supplier, and engineering validation.",
+        "text": "AI analytics, identity-aware access, local AI box, CCTV AI, and advanced energy logic."
+      },
+      "future": {
+        "name": "Future Autonomous Plan",
+        "estimate": "Custom engineering required",
+        "note": "No fixed price shown.",
+        "text": "Robot-ready building, predictive maintenance, autonomous energy decisions, and future facility brain."
+      }
+    },
+    "tags": {
+      "availableNow": {
+        "name": "Available Now",
+        "text": "Can usually be delivered with current hardware and normal project checks."
+      },
+      "projectDependent": {
+        "name": "Project Dependent",
+        "text": "Depends on site, wiring, protocols, product availability, and installer capability."
+      },
+      "advancedCustom": {
+        "name": "Advanced Custom",
+        "text": "Requires manual engineering review and a paid design phase."
+      },
+      "futureReady": {
+        "name": "Future-Ready",
+        "text": "Architecture can reserve this upgrade path without promising delivery today."
+      },
+      "conceptDemo": {
+        "name": "Concept Demo",
+        "text": "Used to explain the vision, not as a quotation commitment."
+      }
+    },
+    "levelsDetail": {
+      "L1": {
+        "name": "Connected control",
+        "text": "Switches, scenes and schedules on a proper bus. Reliable, but the building does not know anything."
+      },
+      "L2": {
+        "name": "Sensor automation",
+        "text": "Presence, light and temperature sensors drive automatic behaviour. Still rule-based."
+      },
+      "L3": {
+        "name": "Monitored & optimised",
+        "text": "Energy and equipment data is collected continuously; the platform reports what is drifting and where waste is."
+      },
+      "L4": {
+        "name": "Predictive",
+        "text": "Patterns learned per site: anomalies flagged before failure, setpoints adapted to real occupancy."
+      },
+      "L5": {
+        "name": "AI-assisted operation",
+        "text": "The building proposes actions in plain language; a human approves anything that costs money or changes safety behaviour."
+      },
+      "L6": {
+        "name": "Autonomous (future)",
+        "text": "Robot-ready workflows and self-scheduling maintenance. Architecture reserves the path; we do not promise delivery today."
+      }
+    }
   },
   "theme": {
     "knx": "Industry",
     "light": "Light",
     "dark": "Dark 3D"
+  },
+  "agentMarketplace": {
+    "eyebrow": "AISLOS Agent Marketplace",
+    "title": "Instalirajte kontrolisane AI zaposlene.",
+    "subtitle": "Svaki Agent se pregleda pre objavljivanja. Instalacija ne daje pristup podacima kompanije; dozvole ostaju eksplicitne i proverljive.",
+    "buildCta": "Napravi Agenta",
+    "aiEmployee": "AI zaposleni",
+    "reviewed": "Pregledano",
+    "fallbackDesc": "Kontolisana AISLOS Agent mogućnost.",
+    "included": "Uključeno",
+    "perMonth": "{price} {currency}/mes",
+    "install": "Instaliraj",
+    "myAgents": "Moji instalirani Agenti",
+    "installMeta": "{status} · Workspace {workspace} · dozvole ostaju odvojeno kontrolisane",
+    "uninstall": "Deinstaliraj",
+    "selectWorkspace": "Izaberite Workspace pre upravljanja Agentima.",
+    "selectWorkspaceInstall": "Izaberite Workspace pre instalacije Agenta.",
+    "installedOk": "{name} je instaliran. Nije automatski data dozvola za podatke.",
+    "installFailed": "Instalacija nije uspela"
+  },
+  "portals": {
+    "consumer_pc": "AinerWise potrošačka platforma",
+    "consumer_h5": "AinerWise",
+    "customer_pc": "Korisnički radni prostor",
+    "aislos": "AISLOS",
+    "developer": "AISLOS Developer"
+  },
+  "developersPortal": {
+    "eyebrow": "AISLOS Developer Portal",
+    "title": "Build AI employees that enter real workflows safely.",
+    "subtitle": "Publish Agent manifests, request the minimum scopes, pass human review, and reach solution companies through the Agent Marketplace.",
+    "submitAgent": "Submit an Agent",
+    "browseMarketplace": "Browse Marketplace",
+    "manifestTitle": "Manifest v{version}",
+    "governed": "Governed by default",
+    "step1Title": "1. Submit",
+    "step1Desc": "Describe workflows, pricing and requested scopes through a versioned manifest.",
+    "step2Title": "2. Human review",
+    "step2Desc": "AISLOS reviews purpose and risk before any listing reaches customers.",
+    "step3Title": "3. Install safely",
+    "step3Desc": "Third-party Agents start paused with all data grants denied.",
+    "consoleEyebrow": "Developer Console",
+    "consoleTitle": "Submit an Agent for review",
+    "consoleSubtitle": "Requested scopes are a review request only. Approval and installation grant no data access.",
+    "phName": "Agent name",
+    "phRole": "Role title, e.g. KNX Design Specialist",
+    "phVersion": "Version",
+    "phDescription": "What this Agent does",
+    "phWorkflows": "Workflows, comma separated",
+    "phScopes": "Requested scopes, comma separated",
+    "phPrice": "Monthly price EUR",
+    "submitting": "Submitting...",
+    "submitReview": "Submit for human review",
+    "myListings": "My listings",
+    "reviewNotes": "Review: {notes}",
+    "requestedScopes": "Requested scopes: {scopes}",
+    "none": "none",
+    "emptyListings": "No submitted Agents yet.",
+    "submitFailed": "Submission failed"
   },
   "catalog": {
     "eyebrow": "Objedinjeni katalog",

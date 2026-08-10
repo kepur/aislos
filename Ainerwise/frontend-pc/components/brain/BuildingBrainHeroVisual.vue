@@ -34,8 +34,8 @@ const activeScenarioIndex = ref(0)
 let timer: ReturnType<typeof window.setInterval> | undefined
 
 const activeLevel = computed(() => levels[activeLevelIndex.value] || 'L4')
-const activeScenario = computed(() => scenarios[activeScenarioIndex.value] || scenarios[0])
-const visibleScenarios = computed(() => scenarios.slice(0, 6))
+const activeScenario = computed(() => scenarios.value[activeScenarioIndex.value] || scenarios.value[0])
+const visibleScenarios = computed(() => scenarios.value.slice(0, 6))
 
 onMounted(() => {
   timer = window.setInterval(() => {

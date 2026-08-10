@@ -126,7 +126,11 @@ const sceneConfigs: Record<string, { label: string; chips: string[]; buildings: 
 
 const levelConfig = computed(() => levelConfigs[props.level])
 const activeScene = computed(() => sceneConfigs[props.scenarioKey] || sceneConfigs.energy)
-const scenarioLabel = computed(() => activeScene.value.label)
+const { t, te } = useI18n({ useScope: 'global' })
+const scenarioLabel = computed(() => {
+  const key = `brain.scenarios.${props.scenarioKey}.name`
+  return te(key) ? t(key) : activeScene.value.label
+})
 
 function mat(color: number, emissive = 0, intensity = 0.25, transparent = false, opacity = 1) {
   return new THREE.MeshStandardMaterial({

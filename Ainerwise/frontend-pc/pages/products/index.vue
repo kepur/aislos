@@ -5,9 +5,7 @@
         <h1 class="text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">{{ $t('products.title') }}</h1>
         <p class="mt-3 text-slate-300">{{ $t('products.subtitle') }}</p>
         <p class="mt-3 max-w-3xl mx-auto text-sm text-slate-400">
-          AinerWise focuses on China first-tier, project-grade supply chains such as Huawei Digital Power, Sungrow, LONGi,
-          Xiaomi ecosystem, leading CCTV/access vendors, and verified OEM/ODM partners. These are solution-ready building
-          blocks, not cheap commodity products.
+          {{ $t('products.intro') }}
         </p>
         <div class="mt-6 flex flex-wrap justify-center gap-3">
           <button
@@ -21,10 +19,10 @@
             {{ surface.label }}
           </button>
           <a :href="marketUrl" class="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200 hover:bg-emerald-500/15">
-            AinerWise Market
+            {{ $t('products.marketLink') }}
           </a>
           <a :href="`${marketUrl}/secondhand`" class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-white/10">
-            2Hands
+            {{ $t('products.secondhandLink') }}
           </a>
         </div>
       </div>
@@ -62,12 +60,12 @@
         <!-- Product Grid -->
         <div class="flex-1">
           <div v-if="loading" class="glass-panel p-8 text-center text-sm text-slate-400">
-            Loading products...
+            {{ $t('products.loading') }}
           </div>
           <div v-else-if="error" class="glass-panel border-red-400/30 p-8 text-center">
-            <p class="font-semibold text-red-300">Products could not be loaded.</p>
+            <p class="font-semibold text-red-300">{{ $t('products.loadError') }}</p>
             <p class="mt-2 text-sm text-red-200/70">{{ error }}</p>
-            <button type="button" class="btn-primary mt-4" @click="loadProducts">Retry</button>
+            <button type="button" class="btn-primary mt-4" @click="loadProducts">{{ $t('products.retry') }}</button>
           </div>
           <div v-else-if="filteredProducts.length" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             <NuxtLink
@@ -94,16 +92,16 @@
                 <p v-if="product.brand" class="text-sm text-slate-400">{{ product.brand }}</p>
                 <p v-if="product.supply_tier" class="mt-2 text-xs text-emerald-300 line-clamp-2">{{ product.supply_tier }}</p>
                 <div class="mt-3 flex items-center justify-between gap-3">
-                  <span v-if="product.list_price" class="font-bold text-primary-400">&euro;{{ product.list_price }} ref.</span>
+                  <span v-if="product.list_price" class="font-bold text-primary-400">{{ $t('products.refPrice', { price: product.list_price }) }}</span>
                   <span v-else class="text-sm text-primary-400 font-medium">{{ $t('products.requestQuote') }}</span>
                   <span v-if="product.moq > 1" class="text-xs text-slate-500">MOQ: {{ product.moq }}</span>
                 </div>
                 <div class="mt-3 grid grid-cols-2 gap-2 text-[11px]">
                   <div v-if="product.warranty_years" class="border border-white/10 bg-white/5 px-2 py-1 text-slate-300">
-                    Warranty {{ product.warranty_years }}y
+                    {{ $t('products.warrantyYears', { n: product.warranty_years }) }}
                   </div>
                   <div v-if="product.service_term_years?.length" class="border border-white/10 bg-white/5 px-2 py-1 text-slate-300">
-                    Support {{ product.service_term_years.join('/') }}y
+                    {{ $t('products.supportYears', { years: product.service_term_years.join('/') }) }}
                   </div>
                 </div>
                 <div v-if="product.lifecycle_pricing_json?.length" class="mt-2 space-y-1">
@@ -112,7 +110,7 @@
                     :key="term.label"
                     class="flex items-center justify-between gap-2 text-[11px] text-slate-400"
                   >
-                    <span>{{ term.years }}y maintenance</span>
+                    <span>{{ $t('products.maintenanceYears', { n: term.years }) }}</span>
                     <span v-if="term.annual_fee" class="text-slate-200">&euro;{{ term.annual_fee }}/yr</span>
                   </div>
                 </div>
@@ -133,6 +131,8 @@ import {
   productItemListJsonLd,
 } from '~/utils/productSeo'
 
+const { t } = useI18n({ useScope: 'global' })
+const { localizeCategory, localizeProduct } = useLocalizedCatalog()
 const { apiFetch } = useApi()
 const route = useRoute()
 const search = ref('')
@@ -141,11 +141,11 @@ const selectedSurface = ref<'official' | 'market' | 'recycled'>('official')
 const requestUrl = useRequestURL()
 const publicConfig = useRuntimeConfig().public
 const marketUrl = computed(() => String(publicConfig.marketUrl || 'http://market.localhost'))
-const surfaceOptions = [
-  { value: 'official', label: 'Official recommended' },
-  { value: 'market', label: 'Market products' },
-  { value: 'recycled', label: 'Enterprise recycled' },
-] as const
+const surfaceOptions = computed(() => [
+  { value: 'official' as const, label: t('products.surfaceOfficial') },
+  { value: 'market' as const, label: t('products.surfaceMarket') },
+  { value: 'recycled' as const, label: t('products.surfaceRecycled') },
+])
 
 const { data, pending: loading, error: loadError, refresh: refreshProducts } = await useAsyncData(
   'official-products-index',
@@ -162,10 +162,10 @@ const { data, pending: loading, error: loadError, refresh: refreshProducts } = a
   { default: () => ({ products: [], categories: [] }), watch: [selectedSurface] },
 )
 
-const products = computed<any[]>(() => data.value?.products || [])
-const categories = computed<any[]>(() => data.value?.categories || [])
+const products = computed<any[]>(() => (data.value?.products || []).map(localizeProduct))
+const categories = computed<any[]>(() => (data.value?.categories || []).map(localizeCategory))
 const error = computed(() => loadError.value
-  ? (loadError.value as any)?.data?.detail || (loadError.value as any)?.message || 'Please try again.'
+  ? (loadError.value as any)?.data?.detail || (loadError.value as any)?.message || t('products.tryAgain')
   : '')
 
 const filteredProducts = computed(() => {

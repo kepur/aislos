@@ -2,34 +2,45 @@
   <div class="section-padding">
     <div class="container-main max-w-6xl">
       <div class="mb-8">
-        <p class="text-xs font-bold tracking-[0.25em] text-primary-400 uppercase">Developer Console</p>
-        <h1 class="mt-2 text-3xl font-bold text-white">Submit an Agent for review</h1>
-        <p class="mt-2 text-slate-400">Requested scopes are a review request only. Approval and installation grant no data access.</p>
+        <p class="text-xs font-bold tracking-[0.25em] text-primary-400 uppercase">{{ $t('developersPortal.consoleEyebrow') }}</p>
+        <h1 class="mt-2 text-3xl font-bold text-white">{{ $t('developersPortal.consoleTitle') }}</h1>
+        <p class="mt-2 text-slate-400">{{ $t('developersPortal.consoleSubtitle') }}</p>
       </div>
       <div class="grid gap-8 lg:grid-cols-[420px_1fr]">
         <form class="glass-panel p-5 space-y-4" @submit.prevent="submit">
-          <input v-model="form.name" required class="input-field" placeholder="Agent name" />
-          <input v-model="form.role_title" class="input-field" placeholder="Role title, e.g. KNX Design Specialist" />
-          <input v-model="form.version" required class="input-field" placeholder="Version" />
-          <textarea v-model="form.description" rows="4" class="input-field" placeholder="What this Agent does"></textarea>
-          <input v-model="workflowsText" required class="input-field" placeholder="Workflows, comma separated" />
-          <input v-model="scopesText" class="input-field" placeholder="Requested scopes, comma separated" />
-          <input v-model.number="form.price_monthly" min="0" type="number" class="input-field" placeholder="Monthly price EUR" />
-          <button class="btn-primary w-full" :disabled="submitting">{{ submitting ? 'Submitting...' : 'Submit for human review' }}</button>
+          <input v-model="form.name" required class="input-field" :placeholder="$t('developersPortal.phName')" />
+          <input v-model="form.role_title" class="input-field" :placeholder="$t('developersPortal.phRole')" />
+          <input v-model="form.version" required class="input-field" :placeholder="$t('developersPortal.phVersion')" />
+          <textarea v-model="form.description" rows="4" class="input-field" :placeholder="$t('developersPortal.phDescription')"></textarea>
+          <input v-model="workflowsText" required class="input-field" :placeholder="$t('developersPortal.phWorkflows')" />
+          <input v-model="scopesText" class="input-field" :placeholder="$t('developersPortal.phScopes')" />
+          <input v-model.number="form.price_monthly" min="0" type="number" class="input-field" :placeholder="$t('developersPortal.phPrice')" />
+          <button class="btn-primary w-full" :disabled="submitting">
+            {{ submitting ? $t('developersPortal.submitting') : $t('developersPortal.submitReview') }}
+          </button>
           <p v-if="error" class="text-sm text-red-300">{{ error }}</p>
         </form>
         <div>
-          <h2 class="text-lg font-semibold text-white mb-4">My listings</h2>
+          <h2 class="text-lg font-semibold text-white mb-4">{{ $t('developersPortal.myListings') }}</h2>
           <div class="space-y-4">
             <article v-for="listing in listings" :key="listing.id" class="glass-panel p-5">
               <div class="flex flex-wrap items-start justify-between gap-3">
-                <div><h3 class="font-semibold text-white">{{ listing.name }}</h3><p class="text-xs text-slate-400">v{{ listing.version }} · {{ listing.slug }}</p></div>
+                <div>
+                  <h3 class="font-semibold text-white">{{ listing.name }}</h3>
+                  <p class="text-xs text-slate-400">v{{ listing.version }} · {{ listing.slug }}</p>
+                </div>
                 <span class="rounded-full border border-primary-400/30 px-3 py-1 text-xs text-primary-300">{{ listing.status }}</span>
               </div>
-              <p v-if="listing.review_notes" class="mt-3 text-sm text-amber-200">Review: {{ listing.review_notes }}</p>
-              <p class="mt-3 text-xs text-slate-500">Requested scopes: {{ listing.requested_scopes.join(', ') || 'none' }}</p>
+              <p v-if="listing.review_notes" class="mt-3 text-sm text-amber-200">
+                {{ $t('developersPortal.reviewNotes', { notes: listing.review_notes }) }}
+              </p>
+              <p class="mt-3 text-xs text-slate-500">
+                {{ $t('developersPortal.requestedScopes', { scopes: listing.requested_scopes.join(', ') || $t('developersPortal.none') }) }}
+              </p>
             </article>
-            <p v-if="!listings.length" class="glass-panel p-8 text-center text-slate-400">No submitted Agents yet.</p>
+            <p v-if="!listings.length" class="glass-panel p-8 text-center text-slate-400">
+              {{ $t('developersPortal.emptyListings') }}
+            </p>
           </div>
         </div>
       </div>
@@ -39,6 +50,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+const { t } = useI18n()
 const { apiFetch } = useApi()
 const listings = ref<any[]>([])
 const workflowsText = ref('')
@@ -66,7 +78,7 @@ async function submit() {
     workflowsText.value = ''; scopesText.value = ''
     await load()
   } catch (e: any) {
-    error.value = e?.data?.detail || 'Submission failed'
+    error.value = e?.data?.detail || t('developersPortal.submitFailed')
   } finally {
     submitting.value = false
   }
