@@ -11,8 +11,8 @@
       ]"
     >
       <template #actions>
-        <NuxtLink to="/submit-requirement" class="btn-primary">{{ $t('brain.startAssessment') }}</NuxtLink>
-        <NuxtLink to="/solutions" class="btn-secondary">{{ $t('nav.solutions') }}</NuxtLink>
+        <NuxtLink :to="localized('/submit-requirement')" class="btn-primary">{{ $t('brain.startAssessment') }}</NuxtLink>
+        <NuxtLink :to="localized('/solutions')" class="btn-secondary">{{ $t('nav.solutions') }}</NuxtLink>
       </template>
     </KnxPageHero>
 
@@ -89,6 +89,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { t } = useI18n()
 
 // Reuses the home page's operating-model copy so the story stays identical

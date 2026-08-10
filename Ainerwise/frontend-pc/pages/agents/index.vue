@@ -122,7 +122,7 @@
             </li>
           </ol>
 
-          <NuxtLink to="/developers/listings" class="btn-primary inline-flex items-center gap-2">
+          <NuxtLink :to="localized('/developers/listings')" class="btn-primary inline-flex items-center gap-2">
             {{ $t('agents.submitAgent') }}
             <AppIcon name="i-heroicons-arrow-right" class="h-4 w-4" />
           </NuxtLink>
@@ -152,6 +152,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { t } = useI18n()
 const { apiFetch } = useApi()
 const { isLoggedIn } = useAuth()

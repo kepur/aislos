@@ -45,7 +45,7 @@
               <td class="py-3 pr-4 text-xs text-slate-500">{{ item.created_at ? new Date(item.created_at).toLocaleString() : '—' }}</td>
               <td class="py-3 pr-4 text-white">{{ item.kind || item.type || '—' }}</td>
               <td class="py-3 pr-4">
-                <NuxtLink v-if="item.order_id" :to="`/market/buyer/orders/${item.order_id}`" class="text-indigo-300 hover:text-indigo-200">{{ item.order_id.slice(0, 8) }}</NuxtLink>
+                <NuxtLink v-if="item.order_id" :to="localized(`/market/buyer/orders/${item.order_id}`)" class="text-indigo-300 hover:text-indigo-200">{{ item.order_id.slice(0, 8) }}</NuxtLink>
                 <span v-else class="text-slate-500">—</span>
               </td>
               <td :class="['py-3 pr-4 font-semibold', isOutflow(item) ? 'text-amber-300' : 'text-emerald-300']">
@@ -65,6 +65,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { listPaymentLedger } = useCommerce()
 const items = ref<any[]>([])
 const error = ref('')

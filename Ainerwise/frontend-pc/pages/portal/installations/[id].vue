@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-6">
-    <NuxtLink to="/portal/installations" class="text-sm font-semibold ws-accent">&larr; Installations</NuxtLink>
+    <NuxtLink :to="localized('/portal/installations')" class="text-sm font-semibold ws-accent">&larr; Installations</NuxtLink>
     <template v-if="item">
       <section class="portal-card">
         <div class="flex flex-wrap items-start justify-between gap-3"><div><p class="text-xs font-semibold uppercase tracking-wider ws-accent">{{ item.project_title }}</p><h1 class="mt-1 text-xl font-bold ws-title">{{ item.title }}</h1><p class="mt-1 text-sm ws-faint">{{ item.trade || 'General installation' }}</p></div><StatusBadge :status="item.status" /></div>
@@ -24,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 const route = useRoute()
 const { apiFetch } = useApi()

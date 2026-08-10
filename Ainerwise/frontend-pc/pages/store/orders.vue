@@ -7,7 +7,7 @@
           <h1 class="mt-2 text-3xl font-bold text-white">My reviewed requests</h1>
           <p class="mt-2 text-slate-400">Reference baskets become formal quotes only after an Ainerwise review.</p>
         </div>
-        <NuxtLink to="/store" class="btn-secondary">Back to Product Catalog</NuxtLink>
+        <NuxtLink :to="localized('/store')" class="btn-secondary">Back to Product Catalog</NuxtLink>
       </div>
       <div class="space-y-5">
         <article v-for="order in orders" :key="order.id" class="glass-panel p-5">
@@ -36,6 +36,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ middleware: 'auth' })
 const { apiFetch } = useApi()
 const orders = ref<any[]>([])

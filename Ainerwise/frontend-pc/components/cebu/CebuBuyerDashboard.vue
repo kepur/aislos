@@ -19,13 +19,13 @@
         <h1 class="mt-1 text-2xl font-bold ws-title">{{ $t('procurement.buyerHome.title') }}</h1>
       </div>
       <div class="flex flex-wrap items-center gap-2">
-        <NuxtLink to="/catalog" class="btn-secondary !py-2 !px-4 text-sm">
+        <NuxtLink :to="localized('/catalog')" class="btn-secondary !py-2 !px-4 text-sm">
           {{ $t('procurement.buyerHome.browse') }}
         </NuxtLink>
-        <NuxtLink to="/catalog?sort=trust" class="btn-secondary !py-2 !px-4 text-sm">
+        <NuxtLink :to="localized('/catalog?sort=trust')" class="btn-secondary !py-2 !px-4 text-sm">
           {{ $t('procurement.buyerHome.findSuppliers') }}
         </NuxtLink>
-        <NuxtLink to="/market/post-request" class="btn-primary !py-2 !px-4 text-sm">
+        <NuxtLink :to="localized('/market/post-request')" class="btn-primary !py-2 !px-4 text-sm">
           + {{ $t('procurement.buyerHome.newRequest') }}
         </NuxtLink>
       </div>
@@ -44,7 +44,7 @@
             <h2 class="text-lg font-semibold ws-title">{{ $t('procurement.buyerHome.trustTitle') }}</h2>
           </div>
           <p class="mt-1 text-sm leading-6 ws-muted">{{ $t('procurement.buyerHome.trustDesc') }}</p>
-          <NuxtLink to="/market/buyer/company-profile" class="mt-3 inline-block text-sm ws-accent hover:opacity-80">
+          <NuxtLink :to="localized('/market/buyer/company-profile')" class="mt-3 inline-block text-sm ws-accent hover:opacity-80">
             {{ $t('procurement.buyerHome.improveTrust') }} →
           </NuxtLink>
         </div>
@@ -65,7 +65,7 @@
       <NuxtLink
         v-for="kpi in kpis"
         :key="kpi.label"
-        :to="kpi.to"
+        :to="localized(kpi.to)"
         class="pc-card group flex items-center gap-4 !p-5 transition hover:border-[color:var(--accent)]"
       >
         <div :class="['flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg', kpi.tone]">
@@ -86,22 +86,22 @@
           <h2 class="mt-3 text-3xl font-bold tracking-tight ws-title">{{ $t('procurement.buyerHome.shopTitle') }}</h2>
           <p class="mt-3 max-w-2xl text-sm leading-6 ws-muted">{{ $t('procurement.buyerHome.shopDesc') }}</p>
           <div class="mt-6 flex flex-wrap gap-3">
-            <NuxtLink to="/catalog" class="btn-primary">{{ $t('procurement.buyerHome.enterMarket') }} →</NuxtLink>
-            <NuxtLink to="/catalog?sort=trust" class="btn-secondary">{{ $t('procurement.buyerHome.sortByTrust') }}</NuxtLink>
+            <NuxtLink :to="localized('/catalog')" class="btn-primary">{{ $t('procurement.buyerHome.enterMarket') }} →</NuxtLink>
+            <NuxtLink :to="localized('/catalog?sort=trust')" class="btn-secondary">{{ $t('procurement.buyerHome.sortByTrust') }}</NuxtLink>
           </div>
         </div>
         <div class="border-t ws-hairline ws-sunken p-6 lg:border-l lg:border-t-0 lg:p-8">
           <div class="grid h-full content-center gap-3">
-            <NuxtLink to="/catalog" class="ws-tile">
+            <NuxtLink :to="localized('/catalog')" class="ws-tile">
               <p class="text-xs font-semibold uppercase tracking-[0.16em] ws-faint">{{ $t('procurement.buyerHome.statListings') }}</p>
               <p class="mt-1 text-2xl font-bold ws-title">{{ totalListings }}</p>
             </NuxtLink>
             <div class="grid grid-cols-2 gap-3">
-              <NuxtLink to="/catalog" class="ws-tile">
+              <NuxtLink :to="localized('/catalog')" class="ws-tile">
                 <p class="text-xs font-semibold ws-faint">{{ $t('procurement.buyerHome.statModes') }}</p>
                 <p class="mt-2 text-sm font-semibold ws-accent">Buy / Quote</p>
               </NuxtLink>
-              <NuxtLink to="/market/buyer/requests" class="ws-tile">
+              <NuxtLink :to="localized('/market/buyer/requests')" class="ws-tile">
                 <p class="text-xs font-semibold ws-faint">{{ $t('procurement.buyerHome.statMyRequests') }}</p>
                 <p class="mt-2 text-sm font-semibold ws-accent">{{ requests.length }}</p>
               </NuxtLink>
@@ -113,7 +113,7 @@
 
     <!-- AI Project Forge -->
     <NuxtLink
-      to="/market/buyer/projects"
+      :to="localized('/market/buyer/projects')"
       class="pc-card relative flex flex-wrap items-center justify-between gap-6 overflow-hidden transition hover:border-[color:var(--accent)]"
     >
       <div class="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-purple-500/15 blur-3xl ws-glow"></div>
@@ -133,7 +133,7 @@
       <div class="pc-card lg:col-span-2">
         <div class="mb-4 flex items-center justify-between">
           <h3 class="text-lg font-medium ws-title">{{ $t('procurement.buyerHome.activeRequests') }}</h3>
-          <NuxtLink to="/market/buyer/requests" class="text-sm ws-accent hover:opacity-80">
+          <NuxtLink :to="localized('/market/buyer/requests')" class="text-sm ws-accent hover:opacity-80">
             {{ $t('procurement.buyerHome.viewAll') }}
           </NuxtLink>
         </div>
@@ -157,7 +157,7 @@
                 </td>
                 <td class="py-3 pr-4 font-medium ws-accent">{{ r.offer_count ?? r.offers_count ?? 0 }}</td>
                 <td class="py-3">
-                  <NuxtLink :to="`/market/buyer/requests/${r.id}/offers`" class="text-xs ws-accent hover:opacity-80">
+                  <NuxtLink :to="localized(`/market/buyer/requests/${r.id}/offers`)" class="text-xs ws-accent hover:opacity-80">
                     {{ $t('procurement.buyerHome.compareOffers') }}
                   </NuxtLink>
                 </td>
@@ -165,7 +165,7 @@
               <tr v-if="!requests.length">
                 <td colspan="5" class="py-6 text-center ws-faint">
                   {{ $t('procurement.buyerHome.noRequests') }}
-                  <NuxtLink to="/market/post-request" class="text-indigo-300">{{ $t('procurement.buyerHome.goPost') }}</NuxtLink>
+                  <NuxtLink :to="localized('/market/post-request')" class="text-indigo-300">{{ $t('procurement.buyerHome.goPost') }}</NuxtLink>
                 </td>
               </tr>
             </tbody>
@@ -189,7 +189,7 @@
             </li>
             <li v-if="!threads.length" class="py-4 text-sm ws-faint">{{ $t('procurement.buyerHome.noThreads') }}</li>
           </ul>
-          <NuxtLink to="/market/buyer/messages" class="mt-3 block text-center text-sm ws-accent hover:opacity-80">
+          <NuxtLink :to="localized('/market/buyer/messages')" class="mt-3 block text-center text-sm ws-accent hover:opacity-80">
             {{ $t('procurement.buyerHome.viewAllMessages') }}
           </NuxtLink>
         </div>
@@ -201,7 +201,7 @@
             <NuxtLink
               v-for="c in categories.slice(0, 8)"
               :key="c.id"
-              :to="`/catalog?category_id=${c.id}`"
+              :to="localized(`/catalog?category_id=${c.id}`)"
               class="ws-chip"
             >{{ c.name || c.title }}</NuxtLink>
             <span v-if="!categories.length" class="text-sm ws-faint">{{ $t('procurement.buyerHome.noCats') }}</span>
@@ -215,7 +215,7 @@
       <NuxtLink
         v-for="link in enterpriseLinks"
         :key="link.to"
-        :to="link.to"
+        :to="localized(link.to)"
         class="pc-card group flex items-center gap-3 !p-4 transition hover:border-[color:var(--accent)]"
       >
         <div :class="['flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl', link.tone]">{{ link.icon }}</div>
@@ -233,7 +233,7 @@
           <h3 class="text-lg font-semibold ws-title">✨ {{ $t('procurement.buyerHome.todayPicks') }}</h3>
           <p class="mt-0.5 text-xs ws-faint">{{ $t('procurement.buyerHome.todayPicksDesc') }}</p>
         </div>
-        <NuxtLink to="/catalog" class="text-sm ws-accent hover:opacity-80">
+        <NuxtLink :to="localized('/catalog')" class="text-sm ws-accent hover:opacity-80">
           {{ $t('procurement.buyerHome.viewAll') }} →
         </NuxtLink>
       </div>
@@ -241,7 +241,7 @@
         <NuxtLink
           v-for="item in recommendations"
           :key="item.id"
-          :to="`/market/marketplace/${item.id}`"
+          :to="localized(`/market/marketplace/${item.id}`)"
           class="group overflow-hidden rounded-xl border ws-hairline transition hover:border-[color:var(--accent)]"
         >
           <div class="flex aspect-square items-center justify-center overflow-hidden ws-soft text-2xl">
@@ -275,6 +275,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 import type { AccountContext, TrustProfile } from '~/composables/useCommerce'
 
 const { t } = useI18n()

@@ -7,8 +7,8 @@
         <p class="mt-1 text-sm text-slate-400">匹配需求、报价、订单、交付与结算，一站管理。</p>
       </div>
       <div class="flex flex-wrap gap-2">
-        <NuxtLink to="/market/marketplace" class="btn-secondary">浏览市场</NuxtLink>
-        <NuxtLink to="/supplier/pings" class="btn-primary">查看匹配需求</NuxtLink>
+        <NuxtLink :to="localized('/market/marketplace')" class="btn-secondary">浏览市场</NuxtLink>
+        <NuxtLink :to="localized('/supplier/pings')" class="btn-primary">查看匹配需求</NuxtLink>
       </div>
     </div>
 
@@ -16,7 +16,7 @@
 
     <!-- KPI cards -->
     <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-      <NuxtLink v-for="kpi in kpis" :key="kpi.label" :to="kpi.to" class="pc-card transition hover:border-indigo-400/40">
+      <NuxtLink v-for="kpi in kpis" :key="kpi.label" :to="localized(kpi.to)" class="pc-card transition hover:border-indigo-400/40">
         <div class="flex items-center gap-3">
           <div :class="['flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg', kpi.tone]">{{ kpi.icon }}</div>
           <div>
@@ -35,7 +35,7 @@
             <span class="h-2 w-2 rounded-full bg-indigo-400"></span>
             <h3 class="text-lg font-medium text-white">最近匹配需求</h3>
           </div>
-          <NuxtLink to="/supplier/pings" class="text-sm text-indigo-300 hover:text-indigo-200">查看全部</NuxtLink>
+          <NuxtLink :to="localized('/supplier/pings')" class="text-sm text-indigo-300 hover:text-indigo-200">查看全部</NuxtLink>
         </div>
         <div class="space-y-3">
           <div v-for="p in pings.slice(0, 4)" :key="p.id" class="rounded-xl border border-white/10 p-4 transition hover:border-indigo-400/40">
@@ -62,7 +62,7 @@
           <h3 class="text-lg font-medium text-white">待办订单</h3>
         </div>
         <div class="space-y-3">
-          <NuxtLink v-for="o in actionOrders.slice(0, 5)" :key="o.id" :to="`/supplier/orders/${o.id}`" class="block rounded-xl border border-white/10 p-4 transition hover:border-indigo-400/40">
+          <NuxtLink v-for="o in actionOrders.slice(0, 5)" :key="o.id" :to="localized(`/supplier/orders/${o.id}`)" class="block rounded-xl border border-white/10 p-4 transition hover:border-indigo-400/40">
             <div class="flex items-center justify-between gap-3">
               <div>
                 <p class="font-semibold text-white">订单 #{{ o.id.slice(0, 8) }}</p>
@@ -79,6 +79,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const api = useCommerce()
 const stats = ref<any>({})
 const pings = ref<any[]>([])

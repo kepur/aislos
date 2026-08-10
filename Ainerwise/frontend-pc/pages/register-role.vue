@@ -6,12 +6,12 @@
       <p class="mt-3 text-slate-400">One account can gain more portal memberships later. Start with your primary role.</p>
     </div>
     <div class="mx-auto grid max-w-5xl gap-5 md:grid-cols-3">
-      <NuxtLink to="/register-buyer" class="pc-card block">
+      <NuxtLink :to="localized('/register-buyer')" class="pc-card block">
         <p class="pc-kicker">Buyer</p>
         <h2 class="mt-3 text-xl font-bold text-white">Source a solution</h2>
         <p class="mt-2 text-sm text-slate-400">Post requirements, compare offers, award orders and track delivery.</p>
       </NuxtLink>
-      <NuxtLink to="/register-supplier" class="pc-card block">
+      <NuxtLink :to="localized('/register-supplier')" class="pc-card block">
         <p class="pc-kicker">Supplier</p>
         <h2 class="mt-3 text-xl font-bold text-white">Sell products and services</h2>
         <p class="mt-2 text-sm text-slate-400">Receive matching RFQs, quote, fulfil orders and manage your catalog.</p>
@@ -26,5 +26,6 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ middleware: 'guest' })
 </script>

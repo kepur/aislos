@@ -5,7 +5,7 @@
         <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Buyer</p>
         <h1 class="mt-1 text-2xl font-bold text-white">我的采购需求</h1>
       </div>
-      <NuxtLink to="/market/post-request" class="btn-primary">+ 发布采购需求</NuxtLink>
+      <NuxtLink :to="localized('/market/post-request')" class="btn-primary">+ 发布采购需求</NuxtLink>
     </div>
 
     <div class="pc-card">
@@ -42,13 +42,13 @@
               <td class="py-3 pr-4 font-medium text-indigo-300">{{ offerCount(r) }}</td>
               <td class="py-3">
                 <div class="flex gap-3">
-                  <NuxtLink :to="`/market/buyer/requests/${r.id}`" class="text-xs text-slate-300 hover:text-white">查看</NuxtLink>
-                  <NuxtLink v-if="offerCount(r) > 0" :to="`/market/buyer/requests/${r.id}/offers`" class="text-xs text-indigo-300 hover:text-indigo-200">对比报价</NuxtLink>
+                  <NuxtLink :to="localized(`/market/buyer/requests/${r.id}`)" class="text-xs text-slate-300 hover:text-white">查看</NuxtLink>
+                  <NuxtLink v-if="offerCount(r) > 0" :to="localized(`/market/buyer/requests/${r.id}/offers`)" class="text-xs text-indigo-300 hover:text-indigo-200">对比报价</NuxtLink>
                 </div>
               </td>
             </tr>
             <tr v-if="!loading && !filtered.length">
-              <td colspan="7" class="py-8 text-center text-slate-500">还没有采购需求，<NuxtLink to="/market/post-request" class="text-indigo-300">去发布</NuxtLink></td>
+              <td colspan="7" class="py-8 text-center text-slate-500">还没有采购需求，<NuxtLink :to="localized('/market/post-request')" class="text-indigo-300">去发布</NuxtLink></td>
             </tr>
           </tbody>
         </table>
@@ -62,6 +62,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 
 const { listProcurementRequests } = useCommerce()
 const items = ref<any[]>([])

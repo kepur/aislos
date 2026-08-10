@@ -5,7 +5,7 @@
         <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Trust and safety</p>
         <h1 class="mt-1 text-2xl font-bold text-white">争议中心</h1>
       </div>
-      <NuxtLink to="/market/buyer/disputes/new" class="btn-primary">发起争议</NuxtLink>
+      <NuxtLink :to="localized('/market/buyer/disputes/new')" class="btn-primary">发起争议</NuxtLink>
     </div>
 
     <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -43,14 +43,14 @@
             <tr v-for="d in filtered" :key="d.id" class="border-b border-white/5">
               <td class="py-3 pr-4 font-mono text-xs text-slate-400">{{ d.id.slice(0, 8) }}</td>
               <td class="py-3 pr-4">
-                <NuxtLink v-if="orderId(d)" :to="`/market/buyer/orders/${orderId(d)}`" class="text-indigo-300 hover:text-indigo-200">{{ orderId(d).slice(0, 8) }}</NuxtLink>
+                <NuxtLink v-if="orderId(d)" :to="localized(`/market/buyer/orders/${orderId(d)}`)" class="text-indigo-300 hover:text-indigo-200">{{ orderId(d).slice(0, 8) }}</NuxtLink>
                 <span v-else class="text-slate-500">—</span>
               </td>
               <td class="py-3 pr-4 text-white">{{ d.reason_code || '—' }}</td>
               <td class="py-3 pr-4 max-w-[280px] truncate text-slate-300">{{ d.description || '—' }}</td>
               <td class="py-3 pr-4"><span :class="['rounded-full px-2 py-0.5 text-xs', statusTone(d.status)]">{{ statusLabel(d.status) }}</span></td>
               <td class="py-3 pr-4 text-xs text-slate-500">{{ d.created_at ? new Date(d.created_at).toLocaleDateString() : '—' }}</td>
-              <td class="py-3"><NuxtLink v-if="orderId(d)" :to="`/market/buyer/orders/${orderId(d)}`" class="text-xs text-indigo-300 hover:text-indigo-200">查看订单</NuxtLink></td>
+              <td class="py-3"><NuxtLink v-if="orderId(d)" :to="localized(`/market/buyer/orders/${orderId(d)}`)" class="text-xs text-indigo-300 hover:text-indigo-200">查看订单</NuxtLink></td>
             </tr>
             <tr v-if="!loading && !filtered.length">
               <td colspan="7" class="py-8 text-center text-slate-500">暂无争议记录</td>
@@ -63,6 +63,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { listDisputes } = useCommerce()
 const items = ref<any[]>([])
 const error = ref('')

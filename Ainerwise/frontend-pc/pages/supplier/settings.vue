@@ -17,14 +17,15 @@
       <p v-if="error" class="text-red-300 md:col-span-2">{{ error }}</p>
     </form>
     <div class="grid gap-3 md:grid-cols-3">
-      <NuxtLink to="/supplier/team" class="btn-secondary text-center">Team</NuxtLink>
-      <NuxtLink to="/supplier/triggers" class="btn-secondary text-center">Alert rules</NuxtLink>
-      <NuxtLink to="/forgot-password" class="btn-secondary text-center">Account recovery</NuxtLink>
+      <NuxtLink :to="localized('/supplier/team')" class="btn-secondary text-center">Team</NuxtLink>
+      <NuxtLink :to="localized('/supplier/triggers')" class="btn-secondary text-center">Alert rules</NuxtLink>
+      <NuxtLink :to="localized('/forgot-password')" class="btn-secondary text-center">Account recovery</NuxtLink>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const api = useCommerce()

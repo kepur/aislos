@@ -11,7 +11,7 @@
   </div>
   <div v-else-if="product" class="section-padding">
     <div class="container-main">
-      <NuxtLink to="/products" class="text-sm text-primary-400 hover:underline">&larr; {{ $t('products.title') }}</NuxtLink>
+      <NuxtLink :to="localized('/products')" class="text-sm text-primary-400 hover:underline">&larr; {{ $t('products.title') }}</NuxtLink>
 
       <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-12">
         <!-- Image -->
@@ -151,6 +151,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 import {
   absoluteSeoUrl,
   firstProductImage,

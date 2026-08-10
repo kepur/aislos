@@ -1,6 +1,6 @@
 <template>
   <section class="space-y-5">
-    <NuxtLink to="/partner/work-packages" class="text-sm text-blue-300">&larr; Back to work packages</NuxtLink>
+    <NuxtLink :to="localized('/partner/work-packages')" class="text-sm text-blue-300">&larr; Back to work packages</NuxtLink>
     <p v-if="error" class="pc-card text-red-300">{{ error }}</p>
     <template v-if="work">
       <div class="pc-card">
@@ -35,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'partner-workspace', middleware: ['auth'] })
 const route = useRoute()
 const { apiFetch } = useApi()

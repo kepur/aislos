@@ -34,7 +34,7 @@
               </li>
             </ul>
           </div>
-          <NuxtLink to="/submit-requirement" class="mt-6 btn-primary block text-center text-sm shadow-[0_0_15px_rgba(14,165,233,0.3)]">{{ $t('services.getQuote') }}</NuxtLink>
+          <NuxtLink :to="localized('/submit-requirement')" class="mt-6 btn-primary block text-center text-sm shadow-[0_0_15px_rgba(14,165,233,0.3)]">{{ $t('services.getQuote') }}</NuxtLink>
         </div>
       </div>
 
@@ -59,6 +59,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { apiFetch } = useApi()
 const { t, te, tm, rt } = useI18n()
 const packages = ref<any[]>([])

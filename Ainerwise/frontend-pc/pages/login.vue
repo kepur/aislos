@@ -30,7 +30,7 @@
         <div>
           <label class="block text-sm font-medium text-slate-300 mb-1">{{ $t('auth.password') }}</label>
           <input v-model="form.password" type="password" required class="input-field" />
-          <NuxtLink to="/forgot-password" class="mt-2 block text-right text-xs font-semibold text-primary-400 hover:underline">Forgot password?</NuxtLink>
+          <NuxtLink :to="localized('/forgot-password')" class="mt-2 block text-right text-xs font-semibold text-primary-400 hover:underline">Forgot password?</NuxtLink>
         </div>
         <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
         <button type="submit" :disabled="loading" class="btn-primary w-full shadow-[0_0_15px_rgba(14,165,233,0.3)]">
@@ -41,7 +41,7 @@
         </button>
         <p class="text-center text-sm text-slate-400">
           {{ $t('auth.noAccount') }}
-          <NuxtLink to="/register" class="text-primary-400 font-medium hover:underline">{{ $t('auth.register') }}</NuxtLink>
+          <NuxtLink :to="localized('/register')" class="text-primary-400 font-medium hover:underline">{{ $t('auth.register') }}</NuxtLink>
         </p>
       </form>
     </div>
@@ -49,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ middleware: 'guest' })
 
 const { login, isAdmin } = useAuth()

@@ -1,7 +1,7 @@
 <template>
   <section class="mx-auto max-w-5xl space-y-6">
     <div class="flex items-center gap-3">
-      <NuxtLink to="/supplier/pings" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回匹配需求</NuxtLink>
+      <NuxtLink :to="localized('/supplier/pings')" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回匹配需求</NuxtLink>
     </div>
     <div>
       <h1 class="text-2xl font-bold text-white">提交报价</h1>
@@ -73,6 +73,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const route = useRoute()

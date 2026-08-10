@@ -5,7 +5,7 @@
     <template v-else-if="request">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div class="min-w-0 flex-1">
-          <NuxtLink to="/market/buyer/requests" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回需求列表</NuxtLink>
+          <NuxtLink :to="localized('/market/buyer/requests')" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回需求列表</NuxtLink>
           <div class="mt-4 flex flex-wrap items-center gap-3">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Request {{ shortId(request.id) }}</p>
             <span :class="['rounded-full px-3 py-1 text-xs font-semibold', statusTone(request.status)]">{{ request.status }}</span>
@@ -26,8 +26,8 @@
           >
             {{ publishing ? '发布中...' : '发布需求' }}
           </button>
-          <NuxtLink :to="`/market/buyer/requests/${request.id}/offers`" class="btn-secondary">对比报价</NuxtLink>
-          <NuxtLink to="/market/marketplace" class="btn-secondary">浏览匹配挂牌</NuxtLink>
+          <NuxtLink :to="localized(`/market/buyer/requests/${request.id}/offers`)" class="btn-secondary">对比报价</NuxtLink>
+          <NuxtLink :to="localized('/market/marketplace')" class="btn-secondary">浏览匹配挂牌</NuxtLink>
         </div>
       </div>
 
@@ -50,7 +50,7 @@
               <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Request specifications</p>
               <h2 class="mt-2 text-xl font-semibold text-white">采购规格</h2>
             </div>
-            <NuxtLink to="/market/post-request" class="text-sm text-indigo-300 hover:text-indigo-200">发布新需求 →</NuxtLink>
+            <NuxtLink :to="localized('/market/post-request')" class="text-sm text-indigo-300 hover:text-indigo-200">发布新需求 →</NuxtLink>
           </div>
 
           <dl class="mt-6 grid gap-4 sm:grid-cols-2">
@@ -173,7 +173,7 @@
                 <p class="mt-1 text-2xl font-bold text-indigo-200">{{ formatMinor(candidatePriceMinor(item), item.currency || request.currency || 'EUR') }}</p>
                 <div class="mt-4 flex flex-wrap justify-start gap-2 sm:justify-end">
                   <button class="btn-secondary" @click="selectedCandidate = item">详情</button>
-                  <NuxtLink :to="`/market/marketplace/${candidateId(item)}`" class="btn-secondary">挂牌</NuxtLink>
+                  <NuxtLink :to="localized(`/market/marketplace/${candidateId(item)}`)" class="btn-secondary">挂牌</NuxtLink>
                   <button
                     class="btn-primary"
                     :disabled="isBound(item) || bindingId === candidateId(item)"
@@ -221,7 +221,7 @@
         </div>
         <p class="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-slate-300">{{ candidateWhy(selectedCandidate) }}</p>
         <div class="mt-5 flex flex-wrap justify-end gap-2">
-          <NuxtLink :to="`/market/marketplace/${candidateId(selectedCandidate)}`" class="btn-secondary">查看挂牌</NuxtLink>
+          <NuxtLink :to="localized(`/market/marketplace/${candidateId(selectedCandidate)}`)" class="btn-secondary">查看挂牌</NuxtLink>
           <button class="btn-primary" :disabled="isBound(selectedCandidate)" @click="bind(candidateId(selectedCandidate))">{{ isBound(selectedCandidate) ? '已绑定' : '绑定到需求' }}</button>
         </div>
       </div>
@@ -230,6 +230,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const props = defineProps<{ id: string }>()
 const api = useCommerce()
 

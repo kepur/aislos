@@ -13,7 +13,7 @@
     </div>
     <div class="mt-12 border-t pt-6 text-sm text-gray-500">
       <p v-if="page.ai_generated" class="mb-3">{{ $t('insights.aiNotice') }}</p>
-      <NuxtLink to="/submit-requirement" class="inline-block bg-gray-900 text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-gray-700">
+      <NuxtLink :to="localized('/submit-requirement')" class="inline-block bg-gray-900 text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-gray-700">
         {{ $t('insights.cta') }}
       </NuxtLink>
     </div>
@@ -21,6 +21,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const route = useRoute()
 const { apiFetch } = useApi()
 

@@ -2,7 +2,7 @@
   <section class="space-y-6">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div><p class="text-xs font-bold uppercase tracking-wider text-blue-300">Partner Company</p><h1 class="mt-1 text-3xl font-bold text-white">Operations overview</h1><p class="mt-2 text-sm text-slate-400">Respond to opportunities, coordinate dispatched work and track delivery performance.</p></div>
-      <NuxtLink to="/partner/rfqs" class="btn-primary">Review open RFQs</NuxtLink>
+      <NuxtLink :to="localized('/partner/rfqs')" class="btn-primary">Review open RFQs</NuxtLink>
     </div>
     <p v-if="error" class="pc-card text-red-300">{{ error }}</p>
     <template v-if="dashboard">
@@ -11,8 +11,8 @@
       </div>
       <div class="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
         <div class="pc-card">
-          <div class="flex items-center justify-between"><h2 class="text-lg font-semibold text-white">Recent requests</h2><NuxtLink to="/partner/rfqs" class="text-sm text-blue-300">View all</NuxtLink></div>
-          <NuxtLink v-for="item in recent" :key="item.id" :to="`/partner/rfqs/${item.id}`" class="mt-3 flex items-center justify-between gap-4 rounded-xl border border-white/5 p-4 hover:border-blue-400/30"><div><p class="font-semibold text-white">{{ item.title }}</p><p class="mt-1 text-xs uppercase text-blue-300">{{ item.trade }}</p></div><span class="text-xs text-slate-400">{{ label(item.invitation_status) }}</span></NuxtLink>
+          <div class="flex items-center justify-between"><h2 class="text-lg font-semibold text-white">Recent requests</h2><NuxtLink :to="localized('/partner/rfqs')" class="text-sm text-blue-300">View all</NuxtLink></div>
+          <NuxtLink v-for="item in recent" :key="item.id" :to="localized(`/partner/rfqs/${item.id}`)" class="mt-3 flex items-center justify-between gap-4 rounded-xl border border-white/5 p-4 hover:border-blue-400/30"><div><p class="font-semibold text-white">{{ item.title }}</p><p class="mt-1 text-xs uppercase text-blue-300">{{ item.trade }}</p></div><span class="text-xs text-slate-400">{{ label(item.invitation_status) }}</span></NuxtLink>
           <p v-if="!recent.length" class="mt-4 text-sm text-slate-500">No requests assigned yet.</p>
         </div>
         <div class="pc-card">
@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'partner-workspace', middleware: ['auth'] })
 const { apiFetch } = useApi(); const dashboard=ref<any>(); const recent=ref<any[]>([]); const packages=ref<any[]>([]); const error=ref('')
 const label=(value:string)=>value?.replaceAll('_',' ')||'unknown'

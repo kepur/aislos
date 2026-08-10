@@ -49,7 +49,7 @@
                 <NuxtLink
                   v-for="p in m.products"
                   :key="p.id"
-                  :to="`/products/${p.slug}`"
+                  :to="localized(`/products/${p.slug}`)"
                   class="block text-xs border border-gray-200 rounded-lg px-2 py-1.5 hover:border-gray-400 bg-gray-50"
                 >
                   <span class="font-medium text-gray-800">{{ p.name }}</span>
@@ -100,6 +100,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 interface ChatMessage {
   role: 'user' | 'assistant'
   content: string

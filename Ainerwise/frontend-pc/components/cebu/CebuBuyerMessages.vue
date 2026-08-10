@@ -42,7 +42,7 @@
               <div class="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-500/15 text-sm text-indigo-200">{{ (active.subject || 'O').slice(0, 1) }}</div>
               <h3 class="font-medium text-white">{{ active.subject || '订单会话' }}</h3>
             </div>
-            <NuxtLink v-if="orderOf(active)" :to="`/market/buyer/orders/${orderOf(active)}`" class="text-xs text-indigo-300 hover:text-indigo-200">查看订单 #{{ shortId(orderOf(active)) }}</NuxtLink>
+            <NuxtLink v-if="orderOf(active)" :to="localized(`/market/buyer/orders/${orderOf(active)}`)" class="text-xs text-indigo-300 hover:text-indigo-200">查看订单 #{{ shortId(orderOf(active)) }}</NuxtLink>
           </div>
 
           <div ref="chatBox" class="flex-1 space-y-3 overflow-y-auto p-4">
@@ -69,6 +69,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const route = useRoute()
 const api = useCommerce()
 const auth = useAuth() as any

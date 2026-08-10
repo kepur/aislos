@@ -28,7 +28,7 @@
       <NuxtLink
         v-for="item in menuItems"
         :key="item.to"
-        :to="item.to"
+        :to="localized(item.to)"
         class="portal-nav-item group flex items-center gap-3 px-3 py-2.5 text-[13px] rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50"
         active-class="!text-blue-600 !bg-blue-50 font-semibold shadow-sm"
       >
@@ -41,7 +41,7 @@
       <div class="rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 p-4">
         <p class="text-xs font-semibold text-blue-700 mb-1">Need Help?</p>
         <p class="text-xs text-blue-500/80 leading-relaxed">Contact our team for smart building consultation.</p>
-        <NuxtLink to="/contact" class="inline-block mt-2 text-xs font-semibold text-blue-600 hover:text-blue-700">
+        <NuxtLink :to="localized('/contact')" class="inline-block mt-2 text-xs font-semibold text-blue-600 hover:text-blue-700">
           Get Support &rarr;
         </NuxtLink>
       </div>
@@ -50,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { t } = useI18n({ useScope: 'global' })
 const { user } = useAuth()
 

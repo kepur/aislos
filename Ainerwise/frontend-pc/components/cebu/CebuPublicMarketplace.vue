@@ -7,7 +7,7 @@
         <h1 class="mt-2 text-3xl font-bold text-white">选品 · 浏览认证供应商挂牌</h1>
         <p class="mt-2 text-sm text-slate-400">公开商品目录，由共享的 AinerWise Commerce API 提供；挑中即可一键转成采购需求。</p>
       </div>
-      <NuxtLink to="/market/post-request" class="btn-primary">发布采购需求</NuxtLink>
+      <NuxtLink :to="localized('/market/post-request')" class="btn-primary">发布采购需求</NuxtLink>
     </div>
 
     <!-- Sticky filter bar -->
@@ -77,14 +77,14 @@
         <div v-else-if="!visibleItems.length" class="pc-card py-16 text-center text-slate-400">
           <div class="text-4xl">🔍</div>
           <p class="mt-3 text-lg font-medium text-slate-300">没有匹配的商品</p>
-          <p class="mt-1 text-sm">调整筛选，或 <NuxtLink to="/market/post-request" class="text-indigo-300 hover:underline">直接发布采购需求</NuxtLink></p>
+          <p class="mt-1 text-sm">调整筛选，或 <NuxtLink :to="localized('/market/post-request')" class="text-indigo-300 hover:underline">直接发布采购需求</NuxtLink></p>
         </div>
 
         <div v-else class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
           <NuxtLink
             v-for="item in visibleItems"
             :key="item.id"
-            :to="`/market/marketplace/${item.id}`"
+            :to="localized(`/market/marketplace/${item.id}`)"
             class="pc-card group !p-0 overflow-hidden transition hover:-translate-y-0.5 hover:border-indigo-400/40"
           >
             <div class="flex aspect-square items-center justify-center bg-white/5 text-5xl transition group-hover:scale-105">
@@ -117,6 +117,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { listPublicCategories, listPublicListings } = useCommerce()
 const categories = ref<any[]>([])
 const items = ref<any[]>([])

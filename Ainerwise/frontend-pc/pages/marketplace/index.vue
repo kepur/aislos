@@ -9,7 +9,7 @@
             {{ $t('agentMarketplace.subtitle') }}
           </p>
         </div>
-        <NuxtLink to="/developers" class="btn-secondary text-center">{{ $t('agentMarketplace.buildCta') }}</NuxtLink>
+        <NuxtLink :to="localized('/developers')" class="btn-secondary text-center">{{ $t('agentMarketplace.buildCta') }}</NuxtLink>
       </div>
 
       <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -53,6 +53,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { t } = useI18n()
 const { apiFetch } = useApi()
 const { isLoggedIn } = useAuth()

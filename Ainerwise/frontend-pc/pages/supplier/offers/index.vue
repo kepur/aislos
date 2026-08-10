@@ -5,7 +5,7 @@
         <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Supplier</p>
         <h1 class="mt-1 text-2xl font-bold text-white">我的报价</h1>
       </div>
-      <NuxtLink to="/supplier/offers/new" class="btn-primary">+ 新报价</NuxtLink>
+      <NuxtLink :to="localized('/supplier/offers/new')" class="btn-primary">+ 新报价</NuxtLink>
     </div>
 
     <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -45,7 +45,7 @@
               </td>
             </tr>
             <tr v-if="!loading && !filtered.length">
-              <td colspan="5" class="py-8 text-center text-slate-500">还没有报价，<NuxtLink to="/supplier/pings" class="text-indigo-300">去匹配需求</NuxtLink></td>
+              <td colspan="5" class="py-8 text-center text-slate-500">还没有报价，<NuxtLink :to="localized('/supplier/pings')" class="text-indigo-300">去匹配需求</NuxtLink></td>
             </tr>
           </tbody>
         </table>
@@ -55,6 +55,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const api = useCommerce()

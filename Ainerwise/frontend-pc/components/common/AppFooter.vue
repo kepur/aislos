@@ -9,19 +9,19 @@
         <div>
           <h3 class="text-sm font-semibold text-white uppercase tracking-wider">{{ $t('footer.solutions') }}</h3>
           <ul class="mt-3 space-y-2">
-            <li><NuxtLink to="/solutions/smart-hotel" class="text-sm hover:text-white">{{ $t('footer.smartHotel') }}</NuxtLink></li>
-            <li><NuxtLink to="/solutions/smart-villa" class="text-sm hover:text-white">{{ $t('footer.smartVilla') }}</NuxtLink></li>
-            <li><NuxtLink to="/solutions/cctv-access-control" class="text-sm hover:text-white">{{ $t('footer.cctvAccess') }}</NuxtLink></li>
-            <li><NuxtLink to="/solutions/knx-lighting" class="text-sm hover:text-white">{{ $t('footer.knxLighting') }}</NuxtLink></li>
-            <li><NuxtLink to="/solutions/solar-energy-monitoring" class="text-sm hover:text-white">{{ $t('footer.solarEnergy') }}</NuxtLink></li>
+            <li><NuxtLink :to="localized('/solutions/smart-hotel')" class="text-sm hover:text-white">{{ $t('footer.smartHotel') }}</NuxtLink></li>
+            <li><NuxtLink :to="localized('/solutions/smart-villa')" class="text-sm hover:text-white">{{ $t('footer.smartVilla') }}</NuxtLink></li>
+            <li><NuxtLink :to="localized('/solutions/cctv-access-control')" class="text-sm hover:text-white">{{ $t('footer.cctvAccess') }}</NuxtLink></li>
+            <li><NuxtLink :to="localized('/solutions/knx-lighting')" class="text-sm hover:text-white">{{ $t('footer.knxLighting') }}</NuxtLink></li>
+            <li><NuxtLink :to="localized('/solutions/solar-energy-monitoring')" class="text-sm hover:text-white">{{ $t('footer.solarEnergy') }}</NuxtLink></li>
           </ul>
         </div>
         <div>
           <h3 class="text-sm font-semibold text-white uppercase tracking-wider">{{ $t('footer.company') }}</h3>
           <ul class="mt-3 space-y-2">
-            <li><NuxtLink to="/about" class="text-sm hover:text-white">{{ $t('footer.about') }}</NuxtLink></li>
-            <li><NuxtLink to="/supplier-application" class="text-sm hover:text-white">{{ $t('nav.supplierApplication') }}</NuxtLink></li>
-            <li><NuxtLink to="/contact" class="text-sm hover:text-white">{{ $t('footer.contact') }}</NuxtLink></li>
+            <li><NuxtLink :to="localized('/about')" class="text-sm hover:text-white">{{ $t('footer.about') }}</NuxtLink></li>
+            <li><NuxtLink :to="localized('/supplier-application')" class="text-sm hover:text-white">{{ $t('nav.supplierApplication') }}</NuxtLink></li>
+            <li><NuxtLink :to="localized('/contact')" class="text-sm hover:text-white">{{ $t('footer.contact') }}</NuxtLink></li>
           </ul>
         </div>
         <div>
@@ -38,3 +38,8 @@
     </div>
   </footer>
 </template>
+
+<script setup lang="ts">
+const { localized } = useLocalizedLink()
+</script>
+

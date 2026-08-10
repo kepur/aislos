@@ -5,7 +5,7 @@
         <h1 class="text-xl font-bold ws-title">{{ $t('portal.myLeads') }}</h1>
         <p class="text-sm ws-faint mt-1">Track your submitted requirements</p>
       </div>
-      <NuxtLink to="/submit-requirement"
+      <NuxtLink :to="localized('/submit-requirement')"
  class="inline-flex items-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-500 px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-blue-500/20 transition-all">
         + New Requirement
       </NuxtLink>
@@ -44,7 +44,7 @@
             <td colspan="5" class="px-4 py-12 text-center">
               <div class="text-3xl mb-2">📋</div>
               <p class="ws-faint text-sm">{{ $t('common.noData') }}</p>
-              <NuxtLink to="/submit-requirement" class="inline-block mt-2 text-sm font-semibold ws-accent hover:opacity-80">Submit your first requirement &rarr;</NuxtLink>
+              <NuxtLink :to="localized('/submit-requirement')" class="inline-block mt-2 text-sm font-semibold ws-accent hover:opacity-80">Submit your first requirement &rarr;</NuxtLink>
             </td>
           </tr>
         </tbody>
@@ -56,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 

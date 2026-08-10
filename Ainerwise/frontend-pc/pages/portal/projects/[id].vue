@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-6">
-    <NuxtLink to="/portal/projects" class="inline-flex items-center gap-1 text-sm font-medium ws-accent hover:opacity-80">
+    <NuxtLink :to="localized('/portal/projects')" class="inline-flex items-center gap-1 text-sm font-medium ws-accent hover:opacity-80">
       <span aria-hidden="true">&larr;</span>
       Back to Projects
     </NuxtLink>
@@ -140,6 +140,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
 const route = useRoute()

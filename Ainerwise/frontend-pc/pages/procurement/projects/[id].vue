@@ -2,7 +2,7 @@
   <div v-if="loading" class="pc-card text-slate-400">{{ $t('common.loading') }}</div>
   <div v-else-if="error" class="pc-card text-red-400">{{ error }}</div>
   <div v-else-if="project">
-    <NuxtLink to="/procurement" class="mb-4 inline-flex text-sm text-slate-400 hover:text-white">
+    <NuxtLink :to="localized('/procurement')" class="mb-4 inline-flex text-sm text-slate-400 hover:text-white">
       ← {{ $t('procurement.backToList') }}
     </NuxtLink>
 
@@ -225,6 +225,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 import type { PortalPolicy, ProcurementFact, ProcurementPackage, ProcurementProject } from '~/composables/useProcurement'
 import { confidencePhase, parseConfidence } from '~/composables/useProcurement'
 

@@ -16,13 +16,13 @@
         </div>
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
           <NuxtLink
- to="/submit-requirement"
+ :to="localized('/submit-requirement')"
  class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 shadow-lg transition hover:bg-blue-50"
           >
             + {{ $t('nav.submitRequirement') }}
           </NuxtLink>
           <NuxtLink
- to="/portal/procurement"
+ :to="localized('/portal/procurement')"
  class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/40 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/15"
           >
             {{ $t('portal.home.goProcurement') }}
@@ -41,7 +41,7 @@
       <NuxtLink
  v-for="stat in statCards"
         :key="stat.label"
-        :to="stat.to"
+        :to="localized(stat.to)"
  class="portal-card group !p-5 transition hover:-translate-y-0.5 hover:shadow-lg"
       >
         <div class="flex items-center gap-3">
@@ -60,7 +60,7 @@
       <div class="portal-card lg:col-span-2">
         <div class="mb-4 flex items-center justify-between">
           <h2 class="text-sm font-bold ws-title">{{ $t('portal.home.recentRequirements') }}</h2>
-          <NuxtLink to="/portal/leads" class="text-xs font-semibold ws-accent hover:opacity-80">
+          <NuxtLink :to="localized('/portal/leads')" class="text-xs font-semibold ws-accent hover:opacity-80">
             {{ $t('portal.home.viewAll') }} &rarr;
           </NuxtLink>
         </div>
@@ -69,7 +69,7 @@
           <NuxtLink
  v-for="lead in recentLeads"
             :key="lead.id"
-            :to="`/portal/leads/${lead.id}`"
+            :to="localized(`/portal/leads/${lead.id}`)"
  class="group flex items-center justify-between rounded-xl border ws-hairline p-3 transition hover:border-[color:var(--accent)] hover:bg-blue-50/40"
           >
             <div class="min-w-0">
@@ -89,7 +89,7 @@
         <div v-else class="py-8 text-center">
           <div class="mb-2 text-3xl">📋</div>
           <p class="mb-3 text-sm ws-faint">{{ $t('portal.home.noRequirements') }}</p>
-          <NuxtLink to="/submit-requirement" class="inline-flex items-center text-sm font-semibold ws-accent hover:opacity-80">
+          <NuxtLink :to="localized('/submit-requirement')" class="inline-flex items-center text-sm font-semibold ws-accent hover:opacity-80">
             {{ $t('portal.home.submitFirst') }} &rarr;
           </NuxtLink>
         </div>
@@ -100,7 +100,7 @@
         <div class="portal-card">
           <div class="mb-4 flex items-center justify-between">
             <h2 class="text-sm font-bold ws-title">{{ $t('portal.home.inDelivery') }}</h2>
-            <NuxtLink to="/portal/projects" class="text-xs font-semibold ws-accent hover:opacity-80">
+            <NuxtLink :to="localized('/portal/projects')" class="text-xs font-semibold ws-accent hover:opacity-80">
               {{ $t('portal.home.viewAll') }} &rarr;
             </NuxtLink>
           </div>
@@ -108,7 +108,7 @@
             <NuxtLink
  v-for="project in recentProjects"
               :key="project.id"
-              :to="`/portal/projects/${project.id}`"
+              :to="localized(`/portal/projects/${project.id}`)"
  class="group block rounded-xl border ws-hairline p-3 transition hover:border-[color:var(--accent)] hover:bg-blue-50/40"
             >
               <div class="flex items-center justify-between gap-2">
@@ -130,7 +130,7 @@
         <div class="portal-card">
           <div class="mb-4 flex items-center justify-between">
             <h2 class="text-sm font-bold ws-title">{{ $t('portal.home.support') }}</h2>
-            <NuxtLink to="/portal/tickets" class="text-xs font-semibold ws-accent hover:opacity-80">
+            <NuxtLink :to="localized('/portal/tickets')" class="text-xs font-semibold ws-accent hover:opacity-80">
               {{ $t('portal.home.viewAll') }} &rarr;
             </NuxtLink>
           </div>
@@ -155,7 +155,7 @@
         <NuxtLink
  v-for="action in quickActions"
           :key="action.to"
-          :to="action.to"
+          :to="localized(action.to)"
  class="group flex items-center gap-3 rounded-xl border ws-hairline p-3.5 transition hover:border-[color:var(--accent)] hover:bg-blue-50/50"
         >
           <span class="text-xl">{{ action.emoji }}</span>
@@ -170,6 +170,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
 const { t } = useI18n()

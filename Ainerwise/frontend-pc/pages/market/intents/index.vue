@@ -23,7 +23,7 @@
       <NuxtLink
         v-for="item in items"
         :key="item.id"
-        :to="`/market/intents/${item.id}`"
+        :to="localized(`/market/intents/${item.id}`)"
         class="pc-card block hover:border-white/20 transition"
       >
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -61,6 +61,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const { bootstrap } = useCebuPortalShell()

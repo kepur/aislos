@@ -12,7 +12,7 @@
         </div>
         <div class="flex items-center gap-3">
           <LanguageSwitcher class="portal-lang-switch" />
-          <NuxtLink to="/submit-requirement" class="hidden rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 px-4 py-2 text-sm font-medium text-white sm:inline-flex">
+          <NuxtLink :to="localized('/submit-requirement')" class="hidden rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 px-4 py-2 text-sm font-medium text-white sm:inline-flex">
             {{ $t('nav.submitRequirement') }}
           </NuxtLink>
           <button class="rounded-lg p-2 text-sm text-slate-400 hover:bg-red-50 hover:text-red-500" @click="logout">{{ $t('nav.logout') }}</button>
@@ -24,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { logout } = useAuth()
 </script>
 

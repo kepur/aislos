@@ -9,7 +9,7 @@
       <nav class="hidden md:flex items-center gap-6">
         <template v-for="item in navItems" :key="item.label">
           <a v-if="item.external" :href="item.to" class="text-sm font-medium text-slate-300 hover:text-white transition">{{ item.label }}</a>
-          <NuxtLink v-else :to="item.to" class="text-sm font-medium text-slate-300 hover:text-white transition">{{ item.label }}</NuxtLink>
+          <NuxtLink v-else :to="localized(item.to)" class="text-sm font-medium text-slate-300 hover:text-white transition">{{ item.label }}</NuxtLink>
         </template>
       </nav>
 
@@ -32,14 +32,14 @@
         </div>
         <LanguageSwitcher />
         <template v-if="isLoggedIn">
-          <a :href="dashboardUrl" class="text-sm font-medium text-primary-400 hover:text-primary-300">
+          <a :href="localized(dashboardUrl)" class="text-sm font-medium text-primary-400 hover:text-primary-300">
             {{ $t('nav.dashboard') }}
           </a>
           <button @click="logout" class="text-sm text-slate-400 hover:text-red-400">{{ $t('nav.logout') }}</button>
         </template>
         <template v-else>
-          <NuxtLink to="/login" class="text-sm font-medium text-slate-300 hover:text-white">{{ $t('nav.login') }}</NuxtLink>
-          <NuxtLink v-if="mode === 'aislos'" to="/submit-requirement" class="bg-primary-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-primary-500 transition shadow-[0_0_10px_rgba(14,165,233,0.3)]">{{ $t('nav.submitRequirement') }}</NuxtLink>
+          <NuxtLink :to="localized('/login')" class="text-sm font-medium text-slate-300 hover:text-white">{{ $t('nav.login') }}</NuxtLink>
+          <NuxtLink v-if="mode === 'aislos'" :to="localized('/submit-requirement')" class="bg-primary-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-primary-500 transition shadow-[0_0_10px_rgba(14,165,233,0.3)]">{{ $t('nav.submitRequirement') }}</NuxtLink>
         </template>
 
         <!-- Mobile menu button -->
@@ -55,14 +55,15 @@
     <div v-if="mobileMenuOpen" class="md:hidden border-t border-white/10 bg-slate-900/95 backdrop-blur-md px-4 py-4 space-y-3">
       <template v-for="item in navItems" :key="item.label">
         <a v-if="item.external" :href="item.to" class="block text-sm text-slate-300" @click="mobileMenuOpen = false">{{ item.label }}</a>
-        <NuxtLink v-else :to="item.to" class="block text-sm text-slate-300" @click="mobileMenuOpen = false">{{ item.label }}</NuxtLink>
+        <NuxtLink v-else :to="localized(item.to)" class="block text-sm text-slate-300" @click="mobileMenuOpen = false">{{ item.label }}</NuxtLink>
       </template>
-      <NuxtLink v-if="mode === 'aislos'" to="/submit-requirement" class="block text-sm font-medium text-primary-400" @click="mobileMenuOpen = false">{{ $t('nav.submitRequirement') }}</NuxtLink>
+      <NuxtLink v-if="mode === 'aislos'" :to="localized('/submit-requirement')" class="block text-sm font-medium text-primary-400" @click="mobileMenuOpen = false">{{ $t('nav.submitRequirement') }}</NuxtLink>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 import { prefixForLocale, withLocalePrefix } from '~/utils/localeRoutes'
 
 const { theme, set: setTheme } = useTheme()

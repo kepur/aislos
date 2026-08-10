@@ -1,7 +1,7 @@
 <template>
   <section class="space-y-6">
     <div class="flex items-center gap-3">
-      <NuxtLink to="/supplier/orders" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回订单</NuxtLink>
+      <NuxtLink :to="localized('/supplier/orders')" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回订单</NuxtLink>
     </div>
 
     <div v-if="order">
@@ -13,7 +13,7 @@
           </div>
           <p class="mt-1 text-sm text-slate-400">{{ order.created_at ? `授标于 ${new Date(order.created_at).toLocaleDateString()}` : '' }}</p>
         </div>
-        <NuxtLink :to="`/supplier/messages?order_id=${order.id}`" class="btn-secondary">联系买家</NuxtLink>
+        <NuxtLink :to="localized(`/supplier/messages?order_id=${order.id}`)" class="btn-secondary">联系买家</NuxtLink>
       </div>
 
       <!-- Settlement (ledger/PSP, not custody) -->
@@ -81,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const route = useRoute()

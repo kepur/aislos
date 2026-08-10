@@ -28,14 +28,15 @@
       </div>
 
       <div class="mt-12 text-center flex flex-col sm:flex-row gap-4 justify-center">
-        <NuxtLink to="/submit-requirement" class="btn-primary text-lg shadow-[0_0_15px_rgba(14,165,233,0.3)]">{{ $t('rec.cta1') }}</NuxtLink>
-        <NuxtLink to="/services/amc" class="glass-panel text-white px-6 py-3 font-semibold hover:bg-white/10 transition">{{ $t('rec.cta2') }} &rarr;</NuxtLink>
+        <NuxtLink :to="localized('/submit-requirement')" class="btn-primary text-lg shadow-[0_0_15px_rgba(14,165,233,0.3)]">{{ $t('rec.cta1') }}</NuxtLink>
+        <NuxtLink :to="localized('/services/amc')" class="glass-panel text-white px-6 py-3 font-semibold hover:bg-white/10 transition">{{ $t('rec.cta2') }} &rarr;</NuxtLink>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const why = [
   { t: 'rec.why1_t', x: 'rec.why1_x' },
   { t: 'rec.why2_t', x: 'rec.why2_x' },

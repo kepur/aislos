@@ -9,8 +9,8 @@
             {{ $t('developersPortal.subtitle') }}
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <NuxtLink to="/developers/listings" class="btn-primary">{{ $t('developersPortal.submitAgent') }}</NuxtLink>
-            <NuxtLink to="/marketplace" class="btn-secondary">{{ $t('developersPortal.browseMarketplace') }}</NuxtLink>
+            <NuxtLink :to="localized('/developers/listings')" class="btn-primary">{{ $t('developersPortal.submitAgent') }}</NuxtLink>
+            <NuxtLink :to="localized('/marketplace')" class="btn-secondary">{{ $t('developersPortal.browseMarketplace') }}</NuxtLink>
           </div>
         </div>
         <div class="glass-panel p-6">
@@ -41,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { apiFetch } = useApi()
 const manifest = ref<any>({})
 onMounted(async () => {

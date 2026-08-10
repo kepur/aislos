@@ -24,7 +24,7 @@
             <p class="mt-3 text-xs font-semibold text-red-300/80">{{ $t('amcp.excludesLabel') }}</p>
             <p class="text-xs text-slate-400">{{ $t(`amcp.${tier.k}_exc`) }}</p>
           </div>
-          <NuxtLink to="/submit-requirement" class="mt-4 text-sm text-primary-400 font-medium hover:text-primary-300">{{ $t('amcp.requestTier') }} {{ $t(`amcp.${tier.k}_name`) }} &rarr;</NuxtLink>
+          <NuxtLink :to="localized('/submit-requirement')" class="mt-4 text-sm text-primary-400 font-medium hover:text-primary-300">{{ $t('amcp.requestTier') }} {{ $t(`amcp.${tier.k}_name`) }} &rarr;</NuxtLink>
         </div>
       </div>
 
@@ -40,12 +40,13 @@
       </div>
 
       <div class="mt-10 text-center">
-        <NuxtLink to="/submit-requirement" class="btn-primary text-lg">{{ $t('rec.cta1') }}</NuxtLink>
+        <NuxtLink :to="localized('/submit-requirement')" class="btn-primary text-lg">{{ $t('rec.cta1') }}</NuxtLink>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const tiers = [{ k: 't1' }, { k: 't2' }, { k: 't3' }, { k: 't4' }]
 </script>

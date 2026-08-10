@@ -129,7 +129,7 @@
 
           <div v-else-if="items.length" class="grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-4">
             <article v-for="item in items" :key="item.id" class="catalog-card group">
-              <NuxtLink :to="item.detail_path" class="block">
+              <NuxtLink :to="localized(item.detail_path)" class="block">
                 <div class="catalog-card__media">
                   <img v-if="item.image" :src="item.image" :alt="item.title" />
                   <AppIcon v-else name="i-heroicons-cube" class="h-10 w-10 ws-faint" />
@@ -157,7 +157,7 @@
                     {{ $t('catalog.reference') }}
                   </span>
                 </div>
-                <NuxtLink :to="ctaTarget(item)" class="catalog-cta">{{ ctaLabel(item) }}</NuxtLink>
+                <NuxtLink :to="localized(ctaTarget(item))" class="catalog-cta">{{ ctaLabel(item) }}</NuxtLink>
               </div>
             </article>
           </div>
@@ -176,6 +176,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 type CatalogItem = {
   id: string
   source: 'official' | 'supplier' | 'secondhand'

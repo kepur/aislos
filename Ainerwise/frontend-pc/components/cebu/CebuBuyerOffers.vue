@@ -2,7 +2,7 @@
   <section class="space-y-6">
     <div class="flex flex-wrap items-start justify-between gap-4">
       <div>
-        <NuxtLink :to="`/market/buyer/requests/${id}`" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回需求详情</NuxtLink>
+        <NuxtLink :to="localized(`/market/buyer/requests/${id}`)" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回需求详情</NuxtLink>
         <p class="mt-4 text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Live offers</p>
         <h1 class="mt-2 text-3xl font-bold tracking-tight text-white">{{ request?.title || 'Compare supplier offers' }}</h1>
         <p class="mt-3 text-sm text-slate-400">
@@ -12,8 +12,8 @@
         </p>
       </div>
       <div class="flex flex-wrap gap-2">
-        <NuxtLink to="/market/marketplace" class="btn-secondary">继续找供应商</NuxtLink>
-        <NuxtLink :to="`/market/buyer/requests/${id}`" class="btn-primary">查看候选</NuxtLink>
+        <NuxtLink :to="localized('/market/marketplace')" class="btn-secondary">继续找供应商</NuxtLink>
+        <NuxtLink :to="localized(`/market/buyer/requests/${id}`)" class="btn-primary">查看候选</NuxtLink>
       </div>
     </div>
 
@@ -88,7 +88,7 @@
               <td class="py-4 pr-4"><span :class="['rounded-full px-2 py-0.5 text-xs font-semibold', statusTone(offer.status)]">{{ offer.status }}</span></td>
               <td class="py-4">
                 <div class="flex justify-end gap-2">
-                  <NuxtLink :to="`/market/buyer/offers/${offer.id}`" class="btn-secondary">详情</NuxtLink>
+                  <NuxtLink :to="localized(`/market/buyer/offers/${offer.id}`)" class="btn-secondary">详情</NuxtLink>
                   <button
                     v-if="canAward(offer)"
                     class="btn-primary"
@@ -112,6 +112,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const props = defineProps<{ id: string }>()
 const api = useCommerce()
 

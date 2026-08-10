@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-6">
-    <NuxtLink to="/portal/leads" class="text-sm font-semibold ws-accent">&larr; Requirements</NuxtLink>
+    <NuxtLink :to="localized('/portal/leads')" class="text-sm font-semibold ws-accent">&larr; Requirements</NuxtLink>
     <section v-if="lead" class="portal-card">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
@@ -38,6 +38,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 const route = useRoute()
 const { apiFetch } = useApi()

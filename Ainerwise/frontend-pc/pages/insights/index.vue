@@ -6,7 +6,7 @@
       <NuxtLink
         v-for="p in pages"
         :key="p.slug"
-        :to="`/insights/${p.slug}`"
+        :to="localized(`/insights/${p.slug}`)"
         class="block border border-gray-200 rounded-2xl p-6 hover:border-gray-400 hover:shadow-sm transition"
       >
         <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ p.title }}</h2>
@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { apiFetch } = useApi()
 const { locale } = useI18n()
 const pages = ref<any[]>([])

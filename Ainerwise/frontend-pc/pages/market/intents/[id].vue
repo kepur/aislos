@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-6">
-    <NuxtLink to="/market/intents" :class="['text-sm hover:underline', brand.accentText]">← 需求列表</NuxtLink>
+    <NuxtLink :to="localized('/market/intents')" :class="['text-sm hover:underline', brand.accentText]">← 需求列表</NuxtLink>
     <p v-if="loading" class="pc-card text-sm text-slate-400">加载中…</p>
     <p v-else-if="error" class="text-sm text-red-400">{{ error }}</p>
     <template v-else-if="intent">
@@ -35,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const route = useRoute()

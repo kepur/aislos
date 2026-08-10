@@ -5,7 +5,7 @@
     <template v-else-if="order">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <NuxtLink to="/market/buyer/orders" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回订单列表</NuxtLink>
+          <NuxtLink :to="localized('/market/buyer/orders')" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回订单列表</NuxtLink>
           <div class="mt-4 flex flex-wrap items-center gap-3">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Order {{ shortId(order.id) }}</p>
             <span :class="['rounded-full px-3 py-1 text-xs font-semibold', statusTone(order.status)]">{{ order.status }}</span>
@@ -14,8 +14,8 @@
           <p class="mt-3 text-sm text-slate-400">由报价授标生成，继续跟踪交付、验收、争议和记账状态。</p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <NuxtLink :to="`/market/buyer/requests/${order.procurement_request_id}/offers`" class="btn-secondary">查看授标报价</NuxtLink>
-          <NuxtLink :to="`/market/buyer/messages?order_id=${order.id}`" class="btn-secondary">订单会话</NuxtLink>
+          <NuxtLink :to="localized(`/market/buyer/requests/${order.procurement_request_id}/offers`)" class="btn-secondary">查看授标报价</NuxtLink>
+          <NuxtLink :to="localized(`/market/buyer/messages?order_id=${order.id}`)" class="btn-secondary">订单会话</NuxtLink>
           <button v-if="canCompleteOrder" class="btn-primary" :disabled="completing" @click="complete">
             {{ completing ? '完成中...' : '确认完成' }}
           </button>
@@ -36,8 +36,8 @@
               当前阶段不做真实在线钱包或平台托管资金。订单金额、支付意图、结算记录和交付状态先进入 Core ledger，后续接 PSP 时只替换收款入口，不重构业务流程。
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
-              <NuxtLink to="/market/buyer/wallet" class="btn-secondary">查看支付/结算台账</NuxtLink>
-              <NuxtLink :to="`/market/buyer/disputes/new?order_id=${order.id}`" class="btn-secondary">发起争议</NuxtLink>
+              <NuxtLink :to="localized('/market/buyer/wallet')" class="btn-secondary">查看支付/结算台账</NuxtLink>
+              <NuxtLink :to="localized(`/market/buyer/disputes/new?order_id=${order.id}`)" class="btn-secondary">发起争议</NuxtLink>
             </div>
           </div>
           <div class="border-t border-white/10 bg-indigo-500/[0.06] p-6 lg:border-l lg:border-t-0 lg:p-8">
@@ -139,7 +139,7 @@
               <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Delivery records</p>
               <h2 class="mt-2 text-xl font-semibold text-white">交付与验收</h2>
             </div>
-            <NuxtLink :to="`/market/buyer/messages?order_id=${order.id}`" class="text-sm text-indigo-300 hover:text-indigo-200">联系供应商 →</NuxtLink>
+            <NuxtLink :to="localized(`/market/buyer/messages?order_id=${order.id}`)" class="text-sm text-indigo-300 hover:text-indigo-200">联系供应商 →</NuxtLink>
           </div>
 
           <div v-if="deliveries.length" class="mt-6 space-y-4">
@@ -180,7 +180,7 @@
                 <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Disputes</p>
                 <h2 class="mt-2 text-xl font-semibold text-white">争议</h2>
               </div>
-              <NuxtLink :to="`/market/buyer/disputes/new?order_id=${order.id}`" class="btn-secondary">发起</NuxtLink>
+              <NuxtLink :to="localized(`/market/buyer/disputes/new?order_id=${order.id}`)" class="btn-secondary">发起</NuxtLink>
             </div>
             <div v-if="disputes.length" class="mt-5 space-y-3">
               <div v-for="item in disputes" :key="item.id" class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
@@ -200,7 +200,7 @@
                 <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Payment ledger</p>
                 <h2 class="mt-2 text-xl font-semibold text-white">支付/结算台账</h2>
               </div>
-              <NuxtLink to="/market/buyer/wallet" class="text-sm text-indigo-300 hover:text-indigo-200">全部 →</NuxtLink>
+              <NuxtLink :to="localized('/market/buyer/wallet')" class="text-sm text-indigo-300 hover:text-indigo-200">全部 →</NuxtLink>
             </div>
             <div v-if="ledgerRows.length" class="mt-5 space-y-3">
               <div v-for="item in ledgerRows" :key="item.id" class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
@@ -227,6 +227,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const props = defineProps<{ id: string }>()
 const api = useCommerce()
 

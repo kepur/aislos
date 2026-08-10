@@ -4,7 +4,7 @@
       :is="item.to ? resolveLink : 'div'"
       v-for="item in items"
       :key="item.key || item.label"
-      :to="item.to"
+      :to="localized(item.to)"
       class="knx-tile group"
     >
       <span
@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 import { resolveComponent } from 'vue'
 
 interface GridItem {

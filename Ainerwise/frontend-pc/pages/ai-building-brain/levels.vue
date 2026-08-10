@@ -11,8 +11,8 @@
       ]"
     >
       <template #actions>
-        <NuxtLink to="/submit-requirement" class="btn-primary">{{ $t('brain.startAssessment') }}</NuxtLink>
-        <NuxtLink to="/ai-building-brain/process" class="btn-secondary">{{ $t('brain.processNav') }}</NuxtLink>
+        <NuxtLink :to="localized('/submit-requirement')" class="btn-primary">{{ $t('brain.startAssessment') }}</NuxtLink>
+        <NuxtLink :to="localized('/ai-building-brain/process')" class="btn-secondary">{{ $t('brain.processNav') }}</NuxtLink>
       </template>
     </KnxPageHero>
 
@@ -101,6 +101,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { t } = useI18n()
 const { levels, proposalTiers, featureTags } = useBuildingBrain()
 

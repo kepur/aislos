@@ -71,7 +71,7 @@
             <NuxtLink
               v-for="product in filteredProducts"
               :key="product.id"
-              :to="`/products/${product.slug}`"
+              :to="localized(`/products/${product.slug}`)"
               class="glass-panel overflow-hidden transition hover:border-primary-500/50 hover:shadow-[0_0_15px_rgba(14,165,233,0.2)]"
             >
               <div class="aspect-video bg-black/20 flex items-center justify-center border-b border-white/10">
@@ -125,6 +125,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 import {
   absoluteSeoUrl,
   firstProductImage,

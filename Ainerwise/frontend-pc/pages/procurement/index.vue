@@ -24,7 +24,7 @@
       <NuxtLink
         v-for="project in projects"
         :key="project.id"
-        :to="`/procurement/projects/${project.id}`"
+        :to="localized(`/procurement/projects/${project.id}`)"
         class="pc-card block hover:border-white/20 transition"
       >
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -72,6 +72,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 import type { PortalPolicy, ProcurementProject } from '~/composables/useProcurement'
 
 definePageMeta({

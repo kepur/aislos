@@ -2,7 +2,7 @@
   <div class="space-y-6">
     <div class="flex flex-wrap items-end justify-between gap-3">
       <div><h1 class="text-xl font-bold ws-title">Procurement</h1><p class="mt-1 text-sm ws-faint">Your sourcing requests and awarded orders.</p></div>
-      <NuxtLink to="/procurement" class="rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white">Open AI Procurement Workspace</NuxtLink>
+      <NuxtLink :to="localized('/procurement')" class="rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white">Open AI Procurement Workspace</NuxtLink>
     </div>
     <div class="grid gap-6 xl:grid-cols-2">
       <section class="portal-card">
@@ -30,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 const commerce = useCommerce()
 const requests = ref<any[]>([])

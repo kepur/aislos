@@ -42,7 +42,7 @@
               <a :href="marketUrl" class="rounded-full bg-emerald-400 px-5 py-3 text-sm font-black text-slate-950 shadow-lg shadow-emerald-950/40 transition hover:bg-emerald-300">
                 {{ marketHomeCopy.primary }}
               </a>
-              <NuxtLink to="/products" class="rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-black text-white transition hover:bg-white/10">
+              <NuxtLink :to="localized('/products')" class="rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-black text-white transition hover:bg-white/10">
                 {{ marketHomeCopy.secondary }}
               </NuxtLink>
             </div>
@@ -148,7 +148,7 @@
           <NuxtLink
             v-for="solution in solutions"
             :key="solution.slug"
-            :to="`/solutions/${solution.slug}`"
+            :to="localized(`/solutions/${solution.slug}`)"
             class="group glass-panel p-6 hover:border-primary-400 hover:shadow-lg hover:shadow-primary-500/20 transition-all duration-300"
           >
             <div class="w-12 h-12 bg-primary-900/50 rounded-lg flex items-center justify-center mb-4 border border-primary-500/30">
@@ -169,7 +169,7 @@
             <p class="text-sm font-semibold uppercase tracking-wider text-primary-400">{{ $t('home.intelligenceKicker') }}</p>
             <h2 class="mt-2 text-2xl sm:text-3xl font-bold text-white">{{ $t('home.intelligenceTitle') }}</h2>
           </div>
-          <NuxtLink to="/ai-building-brain" class="text-sm font-semibold text-primary-400 hover:text-primary-300">
+          <NuxtLink :to="localized('/ai-building-brain')" class="text-sm font-semibold text-primary-400 hover:text-primary-300">
             {{ $t('home.intelligenceExplore') }} &rarr;
           </NuxtLink>
         </div>
@@ -210,7 +210,7 @@
             <h3 class="font-semibold text-white">{{ packageName(pkg) }}</h3>
             <p class="text-sm text-primary-300 mt-1">{{ packageTerm(pkg) }}</p>
             <p class="text-xs text-slate-300 mt-2 line-clamp-3">{{ packageDescription(pkg) }}</p>
-            <NuxtLink to="/services" class="mt-3 inline-block text-xs text-primary-400 font-medium">{{ $t('common.viewDetails') }}</NuxtLink>
+            <NuxtLink :to="localized('/services')" class="mt-3 inline-block text-xs text-primary-400 font-medium">{{ $t('common.viewDetails') }}</NuxtLink>
           </div>
         </div>
       </div>
@@ -255,10 +255,10 @@
           <h2 class="text-2xl sm:text-3xl font-bold text-white">{{ $t('home.ctaTitle') }}</h2>
           <p class="mt-3 text-primary-200 max-w-2xl mx-auto">{{ $t('home.ctaSubtitle') }}</p>
           <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <NuxtLink to="/submit-requirement" class="bg-primary-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-400 transition shadow-[0_0_20px_rgba(14,165,233,0.4)]">
+            <NuxtLink :to="localized('/submit-requirement')" class="bg-primary-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-400 transition shadow-[0_0_20px_rgba(14,165,233,0.4)]">
               {{ $t('nav.submitRequirement') }}
             </NuxtLink>
-            <NuxtLink to="/supplier-application" class="glass-panel text-white px-8 py-3 font-semibold hover:bg-white/10 transition">
+            <NuxtLink :to="localized('/supplier-application')" class="glass-panel text-white px-8 py-3 font-semibold hover:bg-white/10 transition">
               {{ $t('nav.supplierApplication') }}
             </NuxtLink>
           </div>
@@ -269,6 +269,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { t, te, locale } = useI18n()
 const { apiFetch } = useApi()
 const publicConfig = useRuntimeConfig().public

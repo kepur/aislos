@@ -20,7 +20,7 @@
 
         <div class="flex items-center gap-3">
           <LanguageSwitcher class="portal-lang-switch" />
-          <NuxtLink to="/submit-requirement"
+          <NuxtLink :to="localized('/submit-requirement')"
             class="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-500 px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-blue-500/20 transition-all">
             + New Requirement
           </NuxtLink>
@@ -40,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { logout } = useAuth()
 const mobileOpen = ref(false)
 </script>

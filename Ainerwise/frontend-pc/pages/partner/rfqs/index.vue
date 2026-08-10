@@ -3,7 +3,7 @@
     <div><p class="text-xs font-bold uppercase tracking-wider text-blue-300">Commercial pipeline</p><h1 class="mt-1 text-3xl font-bold text-white">RFQs and bids</h1></div>
     <div class="flex flex-wrap gap-2"><button v-for="tab in tabs" :key="tab.key" class="rounded-lg border px-4 py-2 text-sm" :class="active===tab.key?'border-blue-400/40 bg-blue-500/15 text-blue-200':'border-white/10 text-slate-400'" @click="active=tab.key">{{ tab.label }}</button></div>
     <p v-if="error" class="pc-card text-red-300">{{ error }}</p>
-    <NuxtLink v-for="item in filtered" :key="item.id" :to="`/partner/rfqs/${item.id}`" class="pc-card grid gap-4 lg:grid-cols-[1fr_auto]">
+    <NuxtLink v-for="item in filtered" :key="item.id" :to="localized(`/partner/rfqs/${item.id}`)" class="pc-card grid gap-4 lg:grid-cols-[1fr_auto]">
       <div><div class="flex flex-wrap items-center gap-3"><h2 class="font-semibold text-white">{{ item.title }}</h2><span class="rounded-full bg-blue-500/10 px-2 py-1 text-xs uppercase text-blue-300">{{ item.trade }}</span></div><p class="mt-3 line-clamp-2 text-sm text-slate-400">{{ item.scope_json?.summary||'No scope summary supplied.' }}</p><p class="mt-3 text-xs text-slate-500">{{ location(item) }} · deadline {{ date(item.bid_deadline) }}</p></div>
       <div class="text-right"><p class="text-xs uppercase text-slate-500">{{ label(item.invitation_status) }}</p><p v-if="item.bid" class="mt-2 text-lg font-bold text-emerald-300">{{ item.bid.currency }} {{ Number(item.bid.amount).toLocaleString() }}</p><p v-else class="mt-2 text-sm text-blue-300">Respond to request</p></div>
     </NuxtLink>
@@ -12,6 +12,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({layout:'partner-workspace',middleware:['auth']})
 const {apiFetch}=useApi();const items=ref<any[]>([]);const active=ref('open');const error=ref('')
 const tabs=[{key:'open',label:'Open'},{key:'all',label:'All'},{key:'bid_submitted',label:'Bid submitted'},{key:'declined',label:'Declined'}]

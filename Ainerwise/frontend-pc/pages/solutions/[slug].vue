@@ -12,10 +12,10 @@
       :badges="heroBadges"
     >
       <template #actions>
-        <NuxtLink :to="`/submit-requirement?solution=${solution.slug}`" class="btn-primary">
+        <NuxtLink :to="localized(`/submit-requirement?solution=${solution.slug}`)" class="btn-primary">
           {{ $t('solutions.submitCta') }}
         </NuxtLink>
-        <NuxtLink to="/ai-building-brain" class="btn-secondary">{{ $t('home.intelligenceExplore') }}</NuxtLink>
+        <NuxtLink :to="localized('/ai-building-brain')" class="btn-secondary">{{ $t('home.intelligenceExplore') }}</NuxtLink>
       </template>
 
       <!-- Scenarios read best as the hero aside: they answer "is this for me?" -->
@@ -179,7 +179,7 @@
         <NuxtLink
           v-for="rel in relatedLines"
           :key="rel.key"
-          :to="`/solutions/${rel.slug}`"
+          :to="localized(`/solutions/${rel.slug}`)"
           class="knx-tile group"
         >
           <span class="flex h-11 w-11 items-center justify-center rounded-xl" :style="{ backgroundColor: 'var(--brand-soft, rgba(14,165,233,.12))' }">
@@ -210,13 +210,14 @@
       </div>
       <div v-else class="glass-panel p-8 text-center text-sm text-slate-400">
         {{ $t('solutions.empty') }}
-        <div class="mt-4"><NuxtLink to="/solutions" class="btn-secondary">{{ $t('solutions.title') }}</NuxtLink></div>
+        <div class="mt-4"><NuxtLink :to="localized('/solutions')" class="btn-secondary">{{ $t('solutions.title') }}</NuxtLink></div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const route = useRoute()
 const { t } = useI18n()
 const { apiFetch } = useApi()

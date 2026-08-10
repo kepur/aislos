@@ -38,7 +38,7 @@
               <td class="py-3 pr-4 font-semibold text-white">{{ money(o.total_minor ?? o.total_amount_minor, o.currency) }}</td>
               <td class="py-3 pr-4"><span :class="['rounded-full px-2 py-0.5 text-xs', statusTone(o.status)]">{{ statusLabel(o.status) }}</span></td>
               <td class="py-3 pr-4 text-xs text-slate-500">{{ o.created_at ? new Date(o.created_at).toLocaleDateString() : '—' }}</td>
-              <td class="py-3"><NuxtLink :to="`/supplier/orders/${o.id}`" class="text-xs text-indigo-300 hover:text-indigo-200">管理交付</NuxtLink></td>
+              <td class="py-3"><NuxtLink :to="localized(`/supplier/orders/${o.id}`)" class="text-xs text-indigo-300 hover:text-indigo-200">管理交付</NuxtLink></td>
             </tr>
             <tr v-if="!loading && !filtered.length">
               <td colspan="6" class="py-8 text-center text-slate-500">该状态下暂无订单</td>
@@ -53,6 +53,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const { listOrders } = useCommerce()

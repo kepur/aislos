@@ -33,14 +33,15 @@
             <span>{{ p.created_at ? timeAgo(p.created_at) : (p.status || '') }}</span>
           </div>
         </div>
-        <NuxtLink :to="`/supplier/offers/new?request_id=${requestId(p)}`" class="btn-primary shrink-0">{{ p.already_offered ? '更新报价' : '立即报价' }}</NuxtLink>
+        <NuxtLink :to="localized(`/supplier/offers/new?request_id=${requestId(p)}`)" class="btn-primary shrink-0">{{ p.already_offered ? '更新报价' : '立即报价' }}</NuxtLink>
       </div>
-      <p v-if="!loading && !filtered.length" class="pc-card py-12 text-center text-sm text-slate-400">暂无匹配需求。完善 <NuxtLink to="/supplier/catalog" class="text-indigo-300">产品目录</NuxtLink> 可获得更多匹配。</p>
+      <p v-if="!loading && !filtered.length" class="pc-card py-12 text-center text-sm text-slate-400">暂无匹配需求。完善 <NuxtLink :to="localized('/supplier/catalog')" class="text-indigo-300">产品目录</NuxtLink> 可获得更多匹配。</p>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const { listSupplierPings } = useCommerce()

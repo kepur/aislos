@@ -33,7 +33,7 @@
         <NuxtLink
           v-for="line in lines"
           :key="line.key"
-          :to="`/solutions/${line.slug}`"
+          :to="localized(`/solutions/${line.slug}`)"
           class="glass-panel group flex flex-col p-6 transition"
         >
           <div class="flex items-start justify-between gap-3">
@@ -106,7 +106,7 @@
         <NuxtLink
           v-for="solution in catalogue"
           :key="solution.slug"
-          :to="`/solutions/${solution.slug}`"
+          :to="localized(`/solutions/${solution.slug}`)"
           class="glass-panel p-6 transition"
         >
           <h3 class="text-lg font-semibold text-white">{{ solution.title }}</h3>
@@ -133,6 +133,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 const { t } = useI18n()
 const { apiFetch } = useApi()
 const { lines } = useSolutionLines()

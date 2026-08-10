@@ -1,6 +1,6 @@
 <template>
   <section class="space-y-5">
-    <NuxtLink to="/partner/rfqs" class="text-sm text-blue-300">&larr; Back to RFQs</NuxtLink>
+    <NuxtLink :to="localized('/partner/rfqs')" class="text-sm text-blue-300">&larr; Back to RFQs</NuxtLink>
     <p v-if="error" class="pc-card text-red-300">{{ error }}</p>
     <template v-if="rfq">
       <div class="pc-card"><div class="flex flex-wrap justify-between gap-4"><div><p class="text-xs uppercase tracking-wider text-blue-300">{{ rfq.trade }}</p><h1 class="mt-2 text-3xl font-bold text-white">{{ rfq.title }}</h1></div><div class="text-right"><p class="text-xs uppercase text-slate-500">{{ label(rfq.invitation_status) }}</p><p class="mt-2 text-sm text-slate-300">Deadline {{ date(rfq.bid_deadline) }}</p></div></div><p class="mt-5 whitespace-pre-line text-sm leading-7 text-slate-300">{{ rfq.scope_json?.summary||'No scope summary supplied.' }}</p></div>
@@ -14,6 +14,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({layout:'partner-workspace',middleware:['auth']})
 const route=useRoute();const {apiFetch}=useApi();const rfq=ref<any>();const error=ref('');const saving=ref(false);const form=reactive({amount:null as number|null,currency:'EUR',lead_time_days:null as number|null,notes:''})
 const label=(v:string)=>v?.replaceAll('_',' ')||'unknown';const date=(v:string)=>v?new Date(v).toLocaleDateString():'not set';const canRespond=computed(()=>rfq.value&&['sent','viewed'].includes(rfq.value.invitation_status)&&!['awarded','cancelled'].includes(rfq.value.status));const scope=computed(()=>Object.entries(rfq.value?.scope_json||{}).filter(([k,v])=>k!=='summary'&&v!==null&&v!=='').map(([key,value])=>({key,value:typeof value==='object'?JSON.stringify(value):String(value)})))

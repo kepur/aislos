@@ -5,7 +5,7 @@
         <h1 class="text-2xl font-bold ws-title">{{ $t('siteVisit.title') }}</h1>
         <p class="mt-1 text-sm ws-muted">{{ $t('siteVisit.subtitle') }}</p>
       </div>
-      <NuxtLink to="/portal/installations" class="text-sm ws-accent hover:opacity-80">
+      <NuxtLink :to="localized('/portal/installations')" class="text-sm ws-accent hover:opacity-80">
         {{ $t('siteVisit.viewInstallations') }} →
       </NuxtLink>
     </div>
@@ -83,7 +83,7 @@
       <div class="pc-card">
         <div class="mb-4 flex items-center justify-between">
           <h2 class="text-lg font-medium ws-title">{{ $t('siteVisit.existing') }}</h2>
-          <NuxtLink to="/portal/tickets" class="text-xs ws-accent hover:opacity-80">
+          <NuxtLink :to="localized('/portal/tickets')" class="text-xs ws-accent hover:opacity-80">
             {{ $t('siteVisit.allTickets') }} →
           </NuxtLink>
         </div>
@@ -107,6 +107,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
 const { t } = useI18n()

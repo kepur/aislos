@@ -38,7 +38,7 @@
         </button>
         <p class="text-center text-sm text-slate-400">
           {{ $t('auth.hasAccount') }}
-          <NuxtLink to="/login" class="text-primary-400 font-medium hover:underline">{{ $t('auth.login') }}</NuxtLink>
+          <NuxtLink :to="localized('/login')" class="text-primary-400 font-medium hover:underline">{{ $t('auth.login') }}</NuxtLink>
         </p>
       </form>
     </div>
@@ -46,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ middleware: 'guest' })
 
 const { register, isAdmin } = useAuth()

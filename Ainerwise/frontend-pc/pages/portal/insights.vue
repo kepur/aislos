@@ -62,7 +62,7 @@
       <div class="pc-card">
         <div class="mb-4 flex items-center justify-between">
           <h2 class="text-lg font-medium ws-title">{{ $t('insightsPage.pipeline') }}</h2>
-          <NuxtLink to="/portal/projects" class="text-sm ws-accent hover:opacity-80">
+          <NuxtLink :to="localized('/portal/projects')" class="text-sm ws-accent hover:opacity-80">
             {{ $t('insightsPage.viewProjects') }} →
           </NuxtLink>
         </div>
@@ -81,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+const { localized } = useLocalizedLink()
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
 const { t } = useI18n()
