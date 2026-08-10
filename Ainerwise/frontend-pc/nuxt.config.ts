@@ -80,12 +80,12 @@ export default defineNuxtConfig({
     lazy: true,
     langDir: '.',
     strategy: 'no_prefix',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_locale',
-      alwaysRedirect: false,
-      fallbackLocale: 'en',
-    },
+    // Locale is owned by middleware/locale.global.ts, which derives it from
+    // the URL prefix and keeps the cookies in sync. nuxt-i18n's own cookie
+    // detection was a second writer: it flipped the locale back on client
+    // hydration, leaving the interface in one language on a URL of another —
+    // and the next click dragged the visitor to whichever side won.
+    detectBrowserLanguage: false,
   },
 
   build: {
