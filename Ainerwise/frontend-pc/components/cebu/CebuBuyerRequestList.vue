@@ -2,17 +2,17 @@
   <section class="space-y-5">
     <div class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Buyer</p>
-        <h1 class="mt-1 text-2xl font-bold text-white">我的采购需求</h1>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">{{ $t('reqList.eyebrow') }}</p>
+        <h1 class="mt-1 text-2xl font-bold text-white">{{ $t('reqList.title') }}</h1>
       </div>
-      <NuxtLink :to="localized('/market/post-request')" class="btn-primary">+ 发布采购需求</NuxtLink>
+      <NuxtLink :to="localized('/market/post-request')" class="btn-primary">{{ $t('reqList.new') }}</NuxtLink>
     </div>
 
     <div class="pc-card">
       <div class="mb-4 flex flex-wrap items-center gap-3">
-        <input v-model.trim="keyword" class="input-field max-w-xs" placeholder="搜索需求标题…" />
+        <input v-model.trim="keyword" class="input-field max-w-xs" :placeholder="$t('reqList.searchPh')" />
         <select v-model="statusFilter" class="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-400/60">
-          <option value="">全部状态</option>
+          <option value="">{{ $t('ui.allStatus') }}</option>
           <option v-for="s in statuses" :key="s" :value="s">{{ statusLabel(s) }}</option>
         </select>
       </div>
@@ -24,37 +24,37 @@
           <thead class="text-slate-400">
             <tr class="border-b border-white/10">
               <th class="py-2 pr-4 font-medium">ID</th>
-              <th class="py-2 pr-4 font-medium">需求标题</th>
-              <th class="py-2 pr-4 font-medium">预算</th>
-              <th class="py-2 pr-4 font-medium">发布日期</th>
-              <th class="py-2 pr-4 font-medium">状态</th>
-              <th class="py-2 pr-4 font-medium">报价</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('reqList.colTitle') }}</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('reqList.colBudget') }}</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('reqList.colCreated') }}</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('common.status') }}</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('reqList.colOffers') }}</th>
               <th class="py-2 font-medium"></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="r in paged" :key="r.id" class="border-b border-white/5">
               <td class="py-3 pr-4 font-mono text-xs text-slate-400">{{ r.id.slice(0, 8) }}</td>
-              <td class="py-3 pr-4 text-white">{{ r.title || '未命名需求' }}</td>
+              <td class="py-3 pr-4 text-white">{{ r.title || $t('reqList.untitled') }}</td>
               <td class="py-3 pr-4 text-slate-300">{{ budgetLabel(r) }}</td>
               <td class="py-3 pr-4 text-xs text-slate-500">{{ r.created_at ? new Date(r.created_at).toLocaleDateString() : '—' }}</td>
               <td class="py-3 pr-4"><span :class="['rounded-full px-2 py-0.5 text-xs', statusTone(r.status)]">{{ statusLabel(r.status) }}</span></td>
               <td class="py-3 pr-4 font-medium text-indigo-300">{{ offerCount(r) }}</td>
               <td class="py-3">
                 <div class="flex gap-3">
-                  <NuxtLink :to="localized(`/market/buyer/requests/${r.id}`)" class="text-xs text-slate-300 hover:text-white">查看</NuxtLink>
-                  <NuxtLink v-if="offerCount(r) > 0" :to="localized(`/market/buyer/requests/${r.id}/offers`)" class="text-xs text-indigo-300 hover:text-indigo-200">对比报价</NuxtLink>
+                  <NuxtLink :to="localized(`/market/buyer/requests/${r.id}`)" class="text-xs text-slate-300 hover:text-white">{{ $t('reqList.view') }}</NuxtLink>
+                  <NuxtLink v-if="offerCount(r) > 0" :to="localized(`/market/buyer/requests/${r.id}/offers`)" class="text-xs text-indigo-300 hover:text-indigo-200">{{ $t('reqList.compare') }}</NuxtLink>
                 </div>
               </td>
             </tr>
             <tr v-if="!loading && !filtered.length">
-              <td colspan="7" class="py-8 text-center text-slate-500">还没有采购需求，<NuxtLink :to="localized('/market/post-request')" class="text-indigo-300">去发布</NuxtLink></td>
+              <td colspan="7" class="py-8 text-center text-slate-500">{{ $t('reqList.emptyPre') }}<NuxtLink :to="localized('/market/post-request')" class="text-indigo-300">{{ $t('reqList.emptyLink') }}</NuxtLink></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <p class="mt-4 text-sm text-slate-500">共 {{ filtered.length }} 条需求</p>
+      <p class="mt-4 text-sm text-slate-500">{{ $t('reqList.count', { n: filtered.length }) }}</p>
       <WorkspacePagination v-model:page="page" :page-size="pageSize" :total="filtered.length" />
 
     </div>
@@ -63,7 +63,7 @@
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
-
+const { t } = useI18n()
 const { listProcurementRequests } = useCommerce()
 const items = ref<any[]>([])
 const error = ref('')
@@ -111,7 +111,7 @@ function budgetLabel(r: any) {
   if (min != null && max != null) return `${fmt(min, currency)} - ${fmt(max, currency)}`
   if (max != null) return `≤ ${fmt(max, currency)}`
   if (min != null) return `≥ ${fmt(min, currency)}`
-  return 'Open'
+  return t('reqList.budgetOpen')
 }
 
 function fmt(minor: number, currency = 'EUR') {
@@ -123,13 +123,9 @@ function fmt(minor: number, currency = 'EUR') {
 }
 
 function statusLabel(s?: string) {
-  return {
-    draft: '草稿',
-    published: '招标中',
-    closed: '已关闭',
-    awarded: '已授标',
-    cancelled: '已取消',
-  }[String(s || '').toLowerCase()] || s || '—'
+  const known = ['draft', 'published', 'closed', 'awarded', 'cancelled']
+  const key = String(s || '').toLowerCase()
+  return known.includes(key) ? t(`reqStatus.${key}`) : (s || '—')
 }
 
 function statusTone(s?: string) {
@@ -146,7 +142,7 @@ onMounted(async () => {
   try {
     items.value = (await listProcurementRequests()).items.filter((item: any) => item.portal_key === 'cebu')
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '加载需求失败'
+    error.value = e?.data?.detail || e?.message || t('reqList.loadFailed')
   } finally {
     loading.value = false
   }
