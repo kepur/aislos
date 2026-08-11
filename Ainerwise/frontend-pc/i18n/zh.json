@@ -1104,7 +1104,28 @@
     "productCategories": "产品类别",
     "country": "国家",
     "submit": "提交申请",
-    "success": "您的申请已提交，我们会审核后联系您。"
+    "success": "您的申请已提交，我们会审核后联系您。",
+    "workspace": "供应商工作台",
+    "browseMarket": "浏览市场",
+    "viewMatches": "查看匹配需求",
+    "kpiPings": "匹配需求",
+    "kpiOffers": "已提交报价",
+    "kpiListings": "有效目录",
+    "kpiOrders": "进行中订单",
+    "recentMatches": "最近匹配需求",
+    "viewAll": "查看全部",
+    "reqFallback": "采购需求",
+    "prefunded": "已预付",
+    "budgetLabel": "预算：{v}",
+    "quoteNow": "立即报价",
+    "noMatches": "暂无匹配需求",
+    "todoOrders": "待办订单",
+    "orderNum": "订单",
+    "noTodoOrders": "暂无需处理的订单",
+    "budgetOpen": "开放",
+    "minAgo": "{n} 分钟前",
+    "hourAgo": "{n} 小时前",
+    "dayAgo": "{n} 天前"
   },
   "auth": {
     "login": "登录",
@@ -2704,5 +2725,17 @@
     "bindFailed": "绑定候选失败",
     "loadFailed": "加载采购需求失败",
     "candLoadFailed": "加载候选供应商失败"
+  },
+  "supNav": {
+    "dashboard": "工作台",
+    "pings": "匹配需求",
+    "catalog": "目录",
+    "offers": "报价",
+    "orders": "订单",
+    "messages": "消息",
+    "ads": "广告",
+    "payouts": "结算",
+    "team": "团队",
+    "settings": "设置"
   }
 }

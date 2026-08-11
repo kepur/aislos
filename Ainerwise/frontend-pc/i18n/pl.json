@@ -1102,7 +1102,28 @@
     "productCategories": "Product Categories",
     "country": "Country",
     "submit": "Submit Application",
-    "success": "Your application has been submitted. We will review and contact you."
+    "success": "Your application has been submitted. We will review and contact you.",
+    "workspace": "Panel dostawcy",
+    "browseMarket": "Przeglądaj rynek",
+    "viewMatches": "Zobacz dopasowane zapytania",
+    "kpiPings": "Dopasowane zapytania",
+    "kpiOffers": "Wysłane oferty",
+    "kpiListings": "Aktywne oferty",
+    "kpiOrders": "Aktywne zamówienia",
+    "recentMatches": "Ostatnio dopasowane zapytania",
+    "viewAll": "Zobacz wszystkie",
+    "reqFallback": "Zapytanie zakupowe",
+    "prefunded": "Opłacone z góry",
+    "budgetLabel": "Budżet: {v}",
+    "quoteNow": "Wyślij ofertę",
+    "noMatches": "Brak dopasowanych zapytań",
+    "todoOrders": "Zamówienia do obsługi",
+    "orderNum": "Zamówienie",
+    "noTodoOrders": "Brak zamówień do obsługi",
+    "budgetOpen": "Otwarty",
+    "minAgo": "{n} min temu",
+    "hourAgo": "{n} godz. temu",
+    "dayAgo": "{n} dni temu"
   },
   "auth": {
     "login": "Login",
@@ -2408,5 +2429,17 @@
     "bindFailed": "Nie udało się powiązać kandydata.",
     "loadFailed": "Nie udało się wczytać zapytania zakupowego.",
     "candLoadFailed": "Nie udało się wczytać kandydatów dostawcy."
+  },
+  "supNav": {
+    "dashboard": "Panel",
+    "pings": "Dopasowane zapytania",
+    "catalog": "Katalog",
+    "offers": "Oferty",
+    "orders": "Zamówienia",
+    "messages": "Wiadomości",
+    "ads": "Reklamy",
+    "payouts": "Wypłaty",
+    "team": "Zespół",
+    "settings": "Ustawienia"
   }
 }

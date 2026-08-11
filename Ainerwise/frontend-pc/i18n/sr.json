@@ -1271,7 +1271,28 @@
     "productCategories": "Kategorije proizvoda",
     "country": "Država",
     "submit": "Pošalji prijavu",
-    "success": "Vaša prijava je poslata. Pregledaćemo je i kontaktirati vas."
+    "success": "Vaša prijava je poslata. Pregledaćemo je i kontaktirati vas.",
+    "workspace": "Radni prostor dobavljača",
+    "browseMarket": "Pregledaj tržište",
+    "viewMatches": "Prikaži usklađene zahteve",
+    "kpiPings": "Usklađeni zahtevi",
+    "kpiOffers": "Poslate ponude",
+    "kpiListings": "Aktivni oglasi",
+    "kpiOrders": "Aktivne narudžbine",
+    "recentMatches": "Nedavno usklađeni zahtevi",
+    "viewAll": "Prikaži sve",
+    "reqFallback": "Zahtev za nabavku",
+    "prefunded": "Unapred plaćeno",
+    "budgetLabel": "Budžet: {v}",
+    "quoteNow": "Pošalji ponudu",
+    "noMatches": "Nema usklađenih zahteva",
+    "todoOrders": "Narudžbine za obradu",
+    "orderNum": "Narudžbina",
+    "noTodoOrders": "Nema narudžbina za obradu",
+    "budgetOpen": "Otvoreno",
+    "minAgo": "pre {n} min",
+    "hourAgo": "pre {n} h",
+    "dayAgo": "pre {n} d"
   },
   "auth": {
     "login": "Prijava",
@@ -2704,5 +2725,17 @@
     "bindFailed": "Povezivanje kandidata nije uspelo.",
     "loadFailed": "Učitavanje zahteva za nabavku nije uspelo.",
     "candLoadFailed": "Učitavanje kandidata dobavljača nije uspelo."
+  },
+  "supNav": {
+    "dashboard": "Radni prostor",
+    "pings": "Usklađeni zahtevi",
+    "catalog": "Katalog",
+    "offers": "Ponude",
+    "orders": "Narudžbine",
+    "messages": "Poruke",
+    "ads": "Oglasi",
+    "payouts": "Isplate",
+    "team": "Tim",
+    "settings": "Podešavanja"
   }
 }

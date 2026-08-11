@@ -1104,7 +1104,28 @@
     "productCategories": "Product Categories",
     "country": "Country",
     "submit": "Submit Application",
-    "success": "Your application has been submitted. We will review and contact you."
+    "success": "Your application has been submitted. We will review and contact you.",
+    "workspace": "Supplier workspace",
+    "browseMarket": "Browse market",
+    "viewMatches": "View matched requests",
+    "kpiPings": "Matched requests",
+    "kpiOffers": "Offers submitted",
+    "kpiListings": "Active listings",
+    "kpiOrders": "Active orders",
+    "recentMatches": "Recent matched requests",
+    "viewAll": "View all",
+    "reqFallback": "Procurement request",
+    "prefunded": "Pre-funded",
+    "budgetLabel": "Budget: {v}",
+    "quoteNow": "Quote now",
+    "noMatches": "No matched requests",
+    "todoOrders": "Orders to action",
+    "orderNum": "Order",
+    "noTodoOrders": "No orders need action",
+    "budgetOpen": "Open",
+    "minAgo": "{n} min ago",
+    "hourAgo": "{n} h ago",
+    "dayAgo": "{n} d ago"
   },
   "auth": {
     "login": "Login",
@@ -2704,5 +2725,17 @@
     "bindFailed": "Failed to bind the candidate.",
     "loadFailed": "Failed to load the procurement request.",
     "candLoadFailed": "Failed to load supplier candidates."
+  },
+  "supNav": {
+    "dashboard": "Workspace",
+    "pings": "Matched requests",
+    "catalog": "Catalog",
+    "offers": "Offers",
+    "orders": "Orders",
+    "messages": "Messages",
+    "ads": "Ads",
+    "payouts": "Payouts",
+    "team": "Team",
+    "settings": "Settings"
   }
 }

@@ -198,18 +198,18 @@ const cebuNav = computed(() => [
   { to: '/portal/insights', label: t('procurement.nav.insights') },
   { to: '/market/buyer/settings', label: t('procurement.nav.settings') },
 ])
-const supplierNav = [
-  { to: '/supplier/dashboard', label: '工作台' },
-  { to: '/supplier/pings', label: '匹配需求' },
-  { to: '/supplier/catalog', label: '目录' },
-  { to: '/supplier/offers', label: '报价' },
-  { to: '/supplier/orders', label: '订单' },
-  { to: '/supplier/messages', label: '消息' },
-  { to: '/supplier/ads', label: '广告' },
-  { to: '/supplier/payouts', label: '结算' },
-  { to: '/supplier/team', label: '团队' },
-  { to: '/supplier/settings', label: '设置' },
-]
+const supplierNav = computed(() => [
+  { to: '/supplier/dashboard', label: t('supNav.dashboard') },
+  { to: '/supplier/pings', label: t('supNav.pings') },
+  { to: '/supplier/catalog', label: t('supNav.catalog') },
+  { to: '/supplier/offers', label: t('supNav.offers') },
+  { to: '/supplier/orders', label: t('supNav.orders') },
+  { to: '/supplier/messages', label: t('supNav.messages') },
+  { to: '/supplier/ads', label: t('supNav.ads') },
+  { to: '/supplier/payouts', label: t('supNav.payouts') },
+  { to: '/supplier/team', label: t('supNav.team') },
+  { to: '/supplier/settings', label: t('supNav.settings') },
+])
 
 // Menu contents, grouped by what the entry is for rather than listed flat.
 const menuGroups = computed(() => {
@@ -245,7 +245,7 @@ const menuGroups = computed(() => {
 })
 
 const NAV_BAR_SLOTS = 8
-const activeNav = computed(() => (isSupplier.value ? supplierNav : cebuNav.value))
+const activeNav = computed(() => (isSupplier.value ? supplierNav.value : cebuNav.value))
 const primaryNav = computed(() => activeNav.value.slice(0, NAV_BAR_SLOTS))
 const overflowNav = computed(() => activeNav.value.slice(NAV_BAR_SLOTS))
 
