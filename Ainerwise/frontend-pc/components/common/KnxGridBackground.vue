@@ -33,11 +33,11 @@ onMounted(() => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.setSize(window.innerWidth, window.innerHeight)
 
-  const EMERALD = new THREE.Color('#0f9d6b')
-  const TEAL = new THREE.Color('#0891b2')
+  const EMERALD = new THREE.Color('#0a8f5f')
+  const TEAL = new THREE.Color('#0e7490')
 
   // --- Drifting field -------------------------------------------------------
-  const COUNT = 170
+  const COUNT = 210
   const SPREAD = { x: 720, y: 420, z: 320 }
   const positions = new Float32Array(COUNT * 3)
   const velocities: THREE.Vector3[] = []
@@ -55,11 +55,15 @@ onMounted(() => {
   }
   const pointsGeo = new THREE.BufferGeometry()
   pointsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+  // On a light ground you can't glow dots the way the dark theme does with
+  // additive blending — bright dots on white just wash out. So these are dark,
+  // saturated emerald specks at high opacity: a constellation you can actually
+  // see against near-white, rather than the near-invisible one that shipped.
   const pointsMat = new THREE.PointsMaterial({
     color: EMERALD,
-    size: 3.2,
+    size: 3.8,
     transparent: true,
-    opacity: 0.42,
+    opacity: 0.9,
     sizeAttenuation: true,
     depthWrite: false,
   })
@@ -77,9 +81,9 @@ onMounted(() => {
   nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePos, 3))
   const nodeMat = new THREE.PointsMaterial({
     color: TEAL,
-    size: 7,
+    size: 8,
     transparent: true,
-    opacity: 0.55,
+    opacity: 0.85,
     sizeAttenuation: true,
     depthWrite: false,
   })
@@ -94,7 +98,7 @@ onMounted(() => {
   const lineMat = new THREE.LineBasicMaterial({
     color: EMERALD,
     transparent: true,
-    opacity: 0.14,
+    opacity: 0.34,
     depthWrite: false,
   })
   const lines = new THREE.LineSegments(lineGeo, lineMat)
@@ -166,7 +170,7 @@ onMounted(() => {
       nodePos.set(positions.subarray(nodeIdx[i] * 3, nodeIdx[i] * 3 + 3), i * 3)
     }
     nodeGeo.attributes.position.needsUpdate = true
-    nodeMat.opacity = 0.4 + Math.sin(elapsed * 1.6) * 0.18
+    nodeMat.opacity = 0.72 + Math.sin(elapsed * 1.6) * 0.18
 
     // Sparks interpolate between their two endpoints.
     for (let i = 0; i < SPARKS; i += 1) {
@@ -234,8 +238,8 @@ onMounted(() => {
 <style scoped>
 .knx-bg {
   background:
-    radial-gradient(ellipse 65% 50% at 15% 10%, rgba(15, 157, 107, 0.08), transparent 60%),
-    radial-gradient(ellipse 55% 45% at 88% 85%, rgba(8, 145, 178, 0.06), transparent 55%),
-    linear-gradient(180deg, #ffffff 0%, #f7fbf8 55%, #f2f8f4 100%);
+    radial-gradient(ellipse 65% 50% at 15% 10%, rgba(10, 143, 95, 0.12), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 88% 85%, rgba(14, 116, 144, 0.10), transparent 55%),
+    linear-gradient(180deg, #f4faf7 0%, #eaf5ef 55%, #e3f1ea 100%);
 }
 </style>

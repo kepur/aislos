@@ -1,12 +1,15 @@
 export type ThemeKey = 'knx' | 'light' | 'dark'
 
 export const THEME_OPTIONS: Array<{ key: ThemeKey; labelKey: string; swatch: string }> = [
-  // Default: the industry look buyers in this market already recognise —
-  // white surfaces, one strong accent, generous whitespace.
-  { key: 'knx', labelKey: 'theme.knx', swatch: '#00b451' },
+  // Order the picker light -> dark -> knx so the emerald theme sits last, as
+  // requested. `knx` is still the default (see the cookie below); default and
+  // display order are independent.
   { key: 'light', labelKey: 'theme.light', swatch: '#2563eb' },
   // The original identity: sky-blue 3D particle background on near-black.
   { key: 'dark', labelKey: 'theme.dark', swatch: '#0ea5e9' },
+  // The industry look buyers in this market recognise — white surfaces, one
+  // strong emerald accent, generous whitespace.
+  { key: 'knx', labelKey: 'theme.knx', swatch: '#0f9d6b' },
 ]
 
 /**

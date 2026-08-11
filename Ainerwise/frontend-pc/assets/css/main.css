@@ -539,7 +539,13 @@ html.light pre[class*="bg-black"] .text-primary-200 { color: #cbd5e1; }
    CSS so it wins over Tailwind utilities by specificity, the same technique
    the light-theme retrofit already uses below.
    =========================================================================== */
-html.theme-knx body { background-color: var(--surface-alt); color: var(--ink); }
+/* Ground colour goes on the root, not body: an opaque body background paints
+   over the fixed z-[-1] emerald scene (the `.relative` app wrapper isn't a
+   stacking context, so the canvas escapes to the root and body covers it).
+   The root sits below negative-z children, so it still hides the pre-mount
+   flash while letting the constellation show. Mirrors the html.light fix. */
+html.theme-knx { background-color: var(--surface-alt); }
+html.theme-knx body { color: var(--ink); }
 
 /* Page shell ------------------------------------------------------------- */
 html.theme-knx .section-padding { @apply px-4 sm:px-6 lg:px-8 py-16 lg:py-24; }
