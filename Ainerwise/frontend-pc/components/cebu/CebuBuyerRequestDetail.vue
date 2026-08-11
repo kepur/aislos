@@ -1,20 +1,20 @@
 <template>
   <section class="space-y-6">
-    <div v-if="loading" class="pc-card text-sm text-slate-400">正在加载采购需求...</div>
+    <div v-if="loading" class="pc-card text-sm text-slate-400">{{ $t('reqDetail.loading') }}</div>
 
     <template v-else-if="request">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div class="min-w-0 flex-1">
-          <NuxtLink :to="localized('/market/buyer/requests')" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回需求列表</NuxtLink>
+          <NuxtLink :to="localized('/market/buyer/requests')" class="text-sm text-indigo-300 hover:text-indigo-200">← {{ $t('reqDetail.back') }}</NuxtLink>
           <div class="mt-4 flex flex-wrap items-center gap-3">
-            <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Request {{ shortId(request.id) }}</p>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">{{ $t('reqDetail.requestLabel') }} {{ shortId(request.id) }}</p>
             <span :class="['rounded-full px-3 py-1 text-xs font-semibold', statusTone(request.status)]">{{ request.status }}</span>
           </div>
-          <h1 class="mt-2 text-3xl font-bold tracking-tight text-white">{{ request.title || '未命名采购需求' }}</h1>
-          <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-400">{{ request.description || '暂无详细描述，建议补充规格、数量、预算和交付约束。' }}</p>
+          <h1 class="mt-2 text-3xl font-bold tracking-tight text-white">{{ request.title || $t('reqList.untitled') }}</h1>
+          <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-400">{{ request.description || $t('reqDetail.noDesc') }}</p>
           <p class="mt-3 text-xs text-slate-500">
-            创建于 {{ formatDate(request.created_at) }}
-            <span v-if="request.published_at"> · 发布于 {{ formatDate(request.published_at) }}</span>
+            {{ $t('reqDetail.createdOn', { date: formatDate(request.created_at) }) }}
+            <span v-if="request.published_at"> · {{ $t('reqDetail.publishedOn', { date: formatDate(request.published_at) }) }}</span>
           </p>
         </div>
         <div class="flex flex-wrap gap-2">
@@ -24,10 +24,10 @@
             :disabled="publishing"
             @click="publish"
           >
-            {{ publishing ? '发布中...' : '发布需求' }}
+            {{ publishing ? $t('reqDetail.publishing') : $t('reqDetail.publish') }}
           </button>
-          <NuxtLink :to="localized(`/market/buyer/requests/${request.id}/offers`)" class="btn-secondary">对比报价</NuxtLink>
-          <NuxtLink :to="localized('/market/marketplace')" class="btn-secondary">浏览匹配挂牌</NuxtLink>
+          <NuxtLink :to="localized(`/market/buyer/requests/${request.id}/offers`)" class="btn-secondary">{{ $t('reqList.compare') }}</NuxtLink>
+          <NuxtLink :to="localized('/market/marketplace')" class="btn-secondary">{{ $t('reqDetail.browseMatches') }}</NuxtLink>
         </div>
       </div>
 
@@ -47,10 +47,10 @@
         <div class="pc-card">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Request specifications</p>
-              <h2 class="mt-2 text-xl font-semibold text-white">采购规格</h2>
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('reqDetail.specEyebrow') }}</p>
+              <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('reqDetail.specTitle') }}</h2>
             </div>
-            <NuxtLink :to="localized('/market/post-request')" class="text-sm text-indigo-300 hover:text-indigo-200">发布新需求 →</NuxtLink>
+            <NuxtLink :to="localized('/market/post-request')" class="text-sm text-indigo-300 hover:text-indigo-200">{{ $t('reqDetail.postNew') }} →</NuxtLink>
           </div>
 
           <dl class="mt-6 grid gap-4 sm:grid-cols-2">
@@ -61,14 +61,14 @@
           </dl>
 
           <div class="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Detailed description</p>
-            <p class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-300">{{ request.description || requirements.description || '暂无描述' }}</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ $t('reqDetail.detailedDesc') }}</p>
+            <p class="mt-3 whitespace-pre-line text-sm leading-6 text-slate-300">{{ request.description || requirements.description || $t('portal.procure.noDescription') }}</p>
           </div>
 
           <div class="mt-6">
             <div class="flex items-center justify-between gap-3">
-              <h3 class="text-sm font-semibold text-white">附件</h3>
-              <span class="text-xs text-slate-500">{{ attachments.length }} 个文件</span>
+              <h3 class="text-sm font-semibold text-white">{{ $t('reqDetail.attachments') }}</h3>
+              <span class="text-xs text-slate-500">{{ $t('reqDetail.fileCount', { n: attachments.length }) }}</span>
             </div>
             <div v-if="attachments.length" class="mt-3 grid gap-3 sm:grid-cols-2">
               <a
@@ -79,40 +79,40 @@
                 target="_blank"
               >
                 <p class="font-medium">{{ file.name || file.filename || 'Attachment' }}</p>
-                <p class="mt-1 text-xs text-slate-500">{{ file.type || file.mime || '采购文件' }}</p>
+                <p class="mt-1 text-xs text-slate-500">{{ file.type || file.mime || $t('reqDetail.procFile') }}</p>
               </a>
             </div>
-            <p v-else class="mt-3 rounded-2xl border border-dashed border-white/10 p-4 text-sm text-slate-500">当前 Core 记录没有附件；后续 Document Center 接入后这里会直接展示图纸、规格书和照片。</p>
+            <p v-else class="mt-3 rounded-2xl border border-dashed border-white/10 p-4 text-sm text-slate-500">{{ $t('reqDetail.noAttachments') }}</p>
           </div>
         </div>
 
         <div class="space-y-6">
           <div class="pc-card">
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Logistics</p>
-            <h2 class="mt-2 text-xl font-semibold text-white">交付与区域</h2>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('reqDetail.logisticsEyebrow') }}</p>
+            <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('reqDetail.logisticsTitle') }}</h2>
             <dl class="mt-5 space-y-4 text-sm">
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Region ID</dt>
-                <dd class="text-right text-slate-200">{{ shortId(request.region_id) || '未指定' }}</dd>
+                <dt class="text-slate-500">{{ $t('reqDetail.regionId') }}</dt>
+                <dd class="text-right text-slate-200">{{ shortId(request.region_id) || $t('reqDetail.notSpecified') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Delivery area</dt>
+                <dt class="text-slate-500">{{ $t('reqDetail.deliveryArea') }}</dt>
                 <dd class="text-right text-slate-200">{{ deliveryArea }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Search radius</dt>
-                <dd class="text-right text-slate-200">{{ requirements.radius_km || attrs.radius_km || 'Core 默认匹配' }}</dd>
+                <dt class="text-slate-500">{{ $t('reqDetail.searchRadius') }}</dt>
+                <dd class="text-right text-slate-200">{{ requirements.radius_km || attrs.radius_km || $t('reqDetail.coreDefaultMatch') }}</dd>
               </div>
               <div class="flex justify-between gap-4">
-                <dt class="text-slate-500">Bound listings</dt>
+                <dt class="text-slate-500">{{ $t('reqDetail.boundListings') }}</dt>
                 <dd class="text-right text-slate-200">{{ boundListingIds.length }}</dd>
               </div>
             </dl>
           </div>
 
           <div class="pc-card">
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Commercial flow</p>
-            <h2 class="mt-2 text-xl font-semibold text-white">商业状态</h2>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('reqDetail.flowEyebrow') }}</p>
+            <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('reqDetail.flowTitle') }}</h2>
             <div class="mt-5 space-y-3">
               <div v-for="step in flowSteps" :key="step.label" class="flex items-start gap-3">
                 <div :class="['mt-0.5 h-3 w-3 rounded-full', step.done ? 'bg-indigo-300' : 'bg-white/15']" />
@@ -129,24 +129,24 @@
       <div class="pc-card">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Supplier candidates</p>
-            <h2 class="mt-2 text-xl font-semibold text-white">AI 匹配供应商候选</h2>
-            <p class="mt-1 text-sm text-slate-400">来自 Core 的真实挂牌匹配；可绑定到本需求，后续供应商报价会进入同一商业记录。</p>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('reqDetail.candEyebrow') }}</p>
+            <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('reqDetail.candTitle') }}</h2>
+            <p class="mt-1 text-sm text-slate-400">{{ $t('reqDetail.candDesc') }}</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <select v-model="candidateSort" class="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-400/60">
-              <option value="comprehensive">综合排序</option>
-              <option value="cost">价格优先</option>
-              <option value="newest">最新挂牌</option>
-              <option value="bound">已绑定优先</option>
+              <option value="comprehensive">{{ $t('reqDetail.sortComprehensive') }}</option>
+              <option value="cost">{{ $t('reqDetail.sortCost') }}</option>
+              <option value="newest">{{ $t('reqDetail.sortNewest') }}</option>
+              <option value="bound">{{ $t('reqDetail.sortBound') }}</option>
             </select>
             <button class="btn-secondary" :disabled="candidatesLoading" @click="loadCandidates">
-              {{ candidatesLoading ? '刷新中...' : '刷新候选' }}
+              {{ candidatesLoading ? $t('reqDetail.refreshing') : $t('reqDetail.refreshCandidates') }}
             </button>
           </div>
         </div>
 
-        <div v-if="candidatesLoading" class="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-400">正在匹配候选...</div>
+        <div v-if="candidatesLoading" class="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-400">{{ $t('reqDetail.matching') }}</div>
 
         <div v-else-if="sortedCandidates.length" class="mt-6 grid gap-4">
           <div
@@ -158,10 +158,10 @@
               <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="rounded-full bg-indigo-500/15 px-2 py-0.5 text-xs font-semibold text-indigo-200">#{{ index + 1 }}</span>
-                  <span v-if="isBound(item)" class="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-semibold text-emerald-300">已绑定</span>
+                  <span v-if="isBound(item)" class="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-semibold text-emerald-300">{{ $t('reqDetail.bound') }}</span>
                   <span class="rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-300">{{ item.status || 'active' }}</span>
                 </div>
-                <h3 class="mt-3 text-lg font-semibold text-white">{{ item.title || '供应商挂牌' }}</h3>
+                <h3 class="mt-3 text-lg font-semibold text-white">{{ item.title || $t('reqDetail.candListingFallback') }}</h3>
                 <p class="mt-1 text-sm text-slate-400">{{ candidateCompany(item) }}</p>
                 <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-400">{{ candidateWhy(item) }}</p>
                 <div class="mt-4 flex flex-wrap gap-2">
@@ -169,17 +169,17 @@
                 </div>
               </div>
               <div class="min-w-[180px] text-left sm:text-right">
-                <p class="text-xs uppercase tracking-[0.14em] text-slate-500">挂牌价格</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-slate-500">{{ $t('reqDetail.listingPrice') }}</p>
                 <p class="mt-1 text-2xl font-bold text-indigo-200">{{ formatMinor(candidatePriceMinor(item), item.currency || request.currency || 'EUR') }}</p>
                 <div class="mt-4 flex flex-wrap justify-start gap-2 sm:justify-end">
-                  <button class="btn-secondary" @click="selectedCandidate = item">详情</button>
-                  <NuxtLink :to="localized(`/market/marketplace/${candidateId(item)}`)" class="btn-secondary">挂牌</NuxtLink>
+                  <button class="btn-secondary" @click="selectedCandidate = item">{{ $t('offers.details') }}</button>
+                  <NuxtLink :to="localized(`/market/marketplace/${candidateId(item)}`)" class="btn-secondary">{{ $t('reqDetail.listing') }}</NuxtLink>
                   <button
                     class="btn-primary"
                     :disabled="isBound(item) || bindingId === candidateId(item)"
                     @click="bind(candidateId(item))"
                   >
-                    {{ isBound(item) ? '已绑定' : bindingId === candidateId(item) ? '绑定中...' : '绑定' }}
+                    {{ isBound(item) ? $t('reqDetail.bound') : bindingId === candidateId(item) ? $t('reqDetail.binding') : $t('reqDetail.bind') }}
                   </button>
                 </div>
               </div>
@@ -188,41 +188,41 @@
         </div>
 
         <div v-else class="mt-6 rounded-2xl border border-dashed border-white/10 p-6 text-sm text-slate-500">
-          当前没有候选。若需求仍是 draft，请先发布；若类目或区域过窄，可以去市场浏览后手动绑定挂牌。
+          {{ $t('reqDetail.noCandidates') }}
         </div>
       </div>
     </template>
 
-    <p v-else class="pc-card text-sm text-red-300">{{ error || '采购需求不存在或当前账号无权访问。' }}</p>
+    <p v-else class="pc-card text-sm text-red-300">{{ error || $t('reqDetail.notFound') }}</p>
 
     <div v-if="selectedCandidate" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur">
       <div class="w-full max-w-2xl rounded-3xl border border-white/10 bg-slate-950 p-6 shadow-2xl">
         <div class="flex items-start justify-between gap-4">
           <div>
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Candidate detail</p>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('reqDetail.candDetailEyebrow') }}</p>
             <h3 class="mt-2 text-2xl font-bold text-white">{{ selectedCandidate.title }}</h3>
             <p class="mt-1 text-sm text-slate-400">{{ candidateCompany(selectedCandidate) }}</p>
           </div>
-          <button class="rounded-full border border-white/10 px-3 py-1 text-sm text-slate-300 hover:border-indigo-400/40" @click="selectedCandidate = null">关闭</button>
+          <button class="rounded-full border border-white/10 px-3 py-1 text-sm text-slate-300 hover:border-indigo-400/40" @click="selectedCandidate = null">{{ $t('reqDetail.close') }}</button>
         </div>
         <div class="mt-6 grid gap-3 sm:grid-cols-3">
           <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p class="text-xs text-slate-500">挂牌价格</p>
+            <p class="text-xs text-slate-500">{{ $t('reqDetail.listingPrice') }}</p>
             <p class="mt-2 text-lg font-semibold text-white">{{ formatMinor(candidatePriceMinor(selectedCandidate), selectedCandidate.currency || 'EUR') }}</p>
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p class="text-xs text-slate-500">类目</p>
+            <p class="text-xs text-slate-500">{{ $t('reqDetail.category') }}</p>
             <p class="mt-2 text-lg font-semibold text-white">{{ shortId(selectedCandidate.category_schema_id) || '—' }}</p>
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p class="text-xs text-slate-500">区域</p>
-            <p class="mt-2 text-lg font-semibold text-white">{{ shortId(selectedCandidate.region_id) || '不限' }}</p>
+            <p class="text-xs text-slate-500">{{ $t('reqDetail.region') }}</p>
+            <p class="mt-2 text-lg font-semibold text-white">{{ shortId(selectedCandidate.region_id) || $t('reqDetail.unlimited') }}</p>
           </div>
         </div>
         <p class="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-slate-300">{{ candidateWhy(selectedCandidate) }}</p>
         <div class="mt-5 flex flex-wrap justify-end gap-2">
-          <NuxtLink :to="localized(`/market/marketplace/${candidateId(selectedCandidate)}`)" class="btn-secondary">查看挂牌</NuxtLink>
-          <button class="btn-primary" :disabled="isBound(selectedCandidate)" @click="bind(candidateId(selectedCandidate))">{{ isBound(selectedCandidate) ? '已绑定' : '绑定到需求' }}</button>
+          <NuxtLink :to="localized(`/market/marketplace/${candidateId(selectedCandidate)}`)" class="btn-secondary">{{ $t('reqDetail.viewListing') }}</NuxtLink>
+          <button class="btn-primary" :disabled="isBound(selectedCandidate)" @click="bind(candidateId(selectedCandidate))">{{ isBound(selectedCandidate) ? $t('reqDetail.bound') : $t('reqDetail.bindToReq') }}</button>
         </div>
       </div>
     </div>
@@ -231,6 +231,7 @@
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
+const { t } = useI18n()
 const props = defineProps<{ id: string }>()
 const api = useCommerce()
 
@@ -261,7 +262,7 @@ const budgetLabel = computed(() => {
   if (min != null && max != null) return `${formatMinor(min, currency)} - ${formatMinor(max, currency)}`
   if (max != null) return `≤ ${formatMinor(max, currency)}`
   if (min != null) return `≥ ${formatMinor(min, currency)}`
-  return '待供应商报价'
+  return t('reqDetail.budgetPending')
 })
 
 const deliveryArea = computed(() => {
@@ -269,7 +270,7 @@ const deliveryArea = computed(() => {
     || requirements.value.location
     || attrs.value.delivery_area
     || attrs.value.location
-    || '按区域匹配'
+    || t('reqDetail.deliveryByRegion')
 })
 
 const deliveryWindow = computed(() => {
@@ -277,36 +278,36 @@ const deliveryWindow = computed(() => {
     || requirements.value.required_by
     || attrs.value.delivery_window
     || attrs.value.required_by
-    || '供应商报价时确认'
+    || t('reqDetail.confirmAtQuote')
 })
 
 const quantityLabel = computed(() => {
   const qty = requirements.value.quantity || attrs.value.quantity
   const unit = requirements.value.unit || attrs.value.unit || ''
-  return qty ? `${qty} ${unit}`.trim() : '报价时确认'
+  return qty ? `${qty} ${unit}`.trim() : t('reqDetail.qtyAtQuote')
 })
 
 const specRows = computed(() => [
-  { label: 'Category ID', value: shortId(request.value.category_schema_id) || '未指定' },
-  { label: 'Budget range', value: budgetLabel.value },
-  { label: 'Quantity', value: quantityLabel.value },
-  { label: 'Delivery window', value: deliveryWindow.value },
+  { label: t('reqDetail.specCategoryId'), value: shortId(request.value.category_schema_id) || t('reqDetail.notSpecified') },
+  { label: t('reqDetail.specBudget'), value: budgetLabel.value },
+  { label: t('reqDetail.specQuantity'), value: quantityLabel.value },
+  { label: t('reqDetail.specDeliveryWindow'), value: deliveryWindow.value },
 ])
 
 const kpis = computed(() => [
-  { label: '收到报价', value: offers.value.length, hint: '来自供应商的真实报价' },
-  { label: '绑定候选', value: boundListingIds.value.length, hint: '已关联到本需求的挂牌' },
-  { label: '推荐候选', value: candidates.value.length, hint: 'Core 按类目/区域匹配' },
-  { label: '当前状态', value: request.value.status || '—', hint: 'draft → published → awarded' },
+  { label: t('reqDetail.kpiOffers'), value: offers.value.length, hint: t('reqDetail.kpiOffersHint') },
+  { label: t('reqDetail.kpiBound'), value: boundListingIds.value.length, hint: t('reqDetail.kpiBoundHint') },
+  { label: t('reqDetail.kpiRecommended'), value: candidates.value.length, hint: t('reqDetail.kpiRecommendedHint') },
+  { label: t('reqDetail.kpiStatus'), value: request.value.status || '—', hint: 'draft → published → awarded' },
 ])
 
 const flowSteps = computed(() => {
   const status = String(request.value?.status || '').toLowerCase()
   return [
-    { label: '需求创建', hint: 'Buyer 提交或 AI 顾问生成', done: true },
-    { label: '公开寻源', hint: '发布后可匹配挂牌与供应商', done: !['draft'].includes(status) },
-    { label: '收到报价', hint: '供应商报价进入对比页', done: offers.value.length > 0 || ['offer_received', 'awarded', 'closed'].includes(status) },
-    { label: '人工授标', hint: 'Buyer/Admin 确认后创建订单', done: ['awarded', 'closed'].includes(status) },
+    { label: t('reqDetail.flowCreated'), hint: t('reqDetail.flowCreatedHint'), done: true },
+    { label: t('reqDetail.flowPublic'), hint: t('reqDetail.flowPublicHint'), done: !['draft'].includes(status) },
+    { label: t('reqDetail.flowOffers'), hint: t('reqDetail.flowOffersHint'), done: offers.value.length > 0 || ['offer_received', 'awarded', 'closed'].includes(status) },
+    { label: t('reqDetail.flowAward'), hint: t('reqDetail.flowAwardHint'), done: ['awarded', 'closed'].includes(status) },
   ]
 })
 
@@ -337,7 +338,7 @@ async function load() {
     if (offerRes.status === 'fulfilled') offers.value = offerRes.value.items || []
     await loadCandidates(false)
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '加载采购需求失败'
+    error.value = e?.data?.detail || e?.message || t('reqDetail.loadFailed')
   } finally {
     loading.value = false
   }
@@ -350,7 +351,7 @@ async function loadCandidates(showSpinner = true) {
     candidates.value = res.items || []
   } catch (e: any) {
     if (!['draft'].includes(String(request.value?.status || '').toLowerCase())) {
-      error.value = e?.data?.detail || e?.message || '加载候选供应商失败'
+      error.value = e?.data?.detail || e?.message || t('reqDetail.candLoadFailed')
     }
     candidates.value = []
   } finally {
@@ -365,7 +366,7 @@ async function publish() {
     request.value = await api.publishRequest(props.id)
     await Promise.all([loadCandidates(), refreshOffers()])
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '发布失败'
+    error.value = e?.data?.detail || e?.message || t('reqDetail.publishFailed')
   } finally {
     publishing.value = false
   }
@@ -388,7 +389,7 @@ async function bind(id: string) {
     request.value = await api.bindCandidate(props.id, id)
     selectedCandidate.value = null
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '绑定候选失败'
+    error.value = e?.data?.detail || e?.message || t('reqDetail.bindFailed')
   } finally {
     bindingId.value = ''
   }
@@ -399,7 +400,7 @@ function candidateId(item: any) {
 }
 
 function candidateCompany(item: any) {
-  return item?.company_name || item?.supplier_name || item?.attributes_json?.company_name || `Company ${shortId(item?.company_id) || '—'}`
+  return item?.company_name || item?.supplier_name || item?.attributes_json?.company_name || `${t('reqDetail.companyFallback')} ${shortId(item?.company_id) || '—'}`
 }
 
 function candidatePriceMinor(item: any) {
@@ -413,15 +414,15 @@ function candidateScore(item: any) {
 function candidateWhy(item: any) {
   return item?.why_recommended
     || item?.attributes_json?.why_recommended
-    || 'Core 根据需求类目、区域和可用挂牌匹配该供应商；更细的 AI 评分会在 Phase C/D 接入。'
+    || t('reqDetail.whyFallback')
 }
 
 function candidateChips(item: any) {
   const chips = [
-    item?.category_schema_id ? `类目 ${shortId(item.category_schema_id)}` : '',
-    item?.region_id ? `区域 ${shortId(item.region_id)}` : '跨区域',
+    item?.category_schema_id ? t('reqDetail.chipCategory', { id: shortId(item.category_schema_id) }) : '',
+    item?.region_id ? t('reqDetail.chipRegion', { id: shortId(item.region_id) }) : t('reqDetail.chipCrossRegion'),
     item?.legacy_catalog_item_id ? `Legacy ${item.legacy_catalog_item_id}` : '',
-    item?.created_at ? `上架 ${formatDate(item.created_at)}` : '',
+    item?.created_at ? t('reqDetail.chipListed', { date: formatDate(item.created_at) }) : '',
   ]
   return chips.filter(Boolean)
 }
@@ -449,7 +450,7 @@ function statusTone(status?: string) {
 }
 
 function formatMinor(minor?: number | null, currency = 'EUR') {
-  if (minor == null) return '待报价'
+  if (minor == null) return t('reqDetail.priceTbd')
   try {
     return new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 0 }).format(minor / 100)
   } catch {
