@@ -35,9 +35,9 @@ onMounted(() => {
   // Three depth bands. Nearer shapes are larger, fainter and drift faster, so
   // the field reads as having volume rather than being a flat pattern.
   const BANDS = [
-    { count: 5, z: [-140, -90], scale: [16, 26], opacity: 0.10, speed: 0.055 },
-    { count: 6, z: [-80, -30], scale: [9, 16], opacity: 0.16, speed: 0.085 },
-    { count: 5, z: [-20, 30], scale: [5, 10], opacity: 0.22, speed: 0.12 },
+    { count: 5, z: [-140, -90], scale: [16, 26], opacity: 0.16, speed: 0.055 },
+    { count: 6, z: [-80, -30], scale: [9, 16], opacity: 0.24, speed: 0.085 },
+    { count: 5, z: [-20, 30], scale: [5, 10], opacity: 0.34, speed: 0.12 },
   ]
 
   const SHAPES = [
@@ -64,7 +64,7 @@ onMounted(() => {
       const geo = SHAPES[Math.floor(Math.random() * SHAPES.length)]()
       const wire = new THREE.WireframeGeometry(geo)
       const material = new THREE.LineBasicMaterial({
-        color: new THREE.Color('#2563eb'),
+        color: new THREE.Color('#3b82f6'),
         transparent: true,
         opacity: band.opacity,
       })
@@ -144,8 +144,9 @@ onMounted(() => {
 <style scoped>
 .light-bg {
   background:
-    radial-gradient(ellipse 70% 55% at 18% 8%, #eef4ff 0%, transparent 58%),
-    radial-gradient(ellipse 60% 50% at 88% 92%, #eaf1fb 0%, transparent 55%),
-    linear-gradient(180deg, #fbfcfe 0%, #f5f8fc 60%, #eef2f8 100%);
+    radial-gradient(ellipse 70% 55% at 18% 8%, rgba(96, 165, 250, 0.14) 0%, transparent 58%),
+    radial-gradient(ellipse 60% 50% at 88% 92%, rgba(56, 189, 248, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 40% at 60% 40%, rgba(129, 140, 248, 0.07) 0%, transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #fafcff 60%, #f4f8fd 100%);
 }
 </style>

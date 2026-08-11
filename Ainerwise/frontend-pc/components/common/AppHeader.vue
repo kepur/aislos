@@ -1,8 +1,14 @@
 <template>
   <header class="bg-slate-900/60 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
     <div class="container-main flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-      <NuxtLink :to="portal.home" class="flex items-center gap-2">
-        <span class="text-xl font-bold text-primary-400 drop-shadow-[0_0_8px_rgba(14,165,233,0.5)]">{{ portal.name }}</span>
+      <NuxtLink :to="portal.home" class="aw-brand group flex items-center gap-2.5">
+        <span class="aw-brand__mark" aria-hidden="true">
+          <span class="aw-brand__glyph">A</span>
+        </span>
+        <span class="aw-brand__text">
+          <span class="aw-brand__name">{{ portalBrand.name }}</span>
+          <span v-if="portalBrand.tag" class="aw-brand__tag">{{ portalBrand.tag }}</span>
+        </span>
       </NuxtLink>
 
       <!-- Desktop Nav -->
@@ -82,6 +88,18 @@ const portal = computed(() => {
     home: localPath(manifest.value?.home_route || legacyPortal.home),
   }
 })
+// Split the portal name into a brand mark and a descriptor so the lockup reads
+// as identity + role rather than one flat run of text: "AinerWise" stays the
+// brand, whatever follows (消费平台 / Consumer Platform / …) becomes the tag.
+const portalBrand = computed(() => {
+  const full = portal.value.name || 'AinerWise'
+  const parts = full.trim().split(/\s+/)
+  if (parts[0]?.toLowerCase() === 'ainerwise' && parts.length > 1) {
+    return { name: parts[0], tag: parts.slice(1).join(' ') }
+  }
+  return { name: full, tag: '' }
+})
+
 const mobileMenuOpen = ref(false)
 
 function localPath(path: string) {
@@ -135,3 +153,54 @@ const dashboardUrl = computed(() => {
   return '/portal'
 })
 </script>
+
+<style scoped>
+/* Brand lockup: a rounded gradient mark carrying the "A", then the name over a
+   smaller descriptor. Replaces a single flat text run with a glow. Everything
+   keys off --accent so it recolours per theme. */
+.aw-brand__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  flex: none;
+  border-radius: 0.7rem;
+  background: linear-gradient(135deg, var(--accent, #38bdf8), var(--accent-strong, #0ea5e9));
+  box-shadow: 0 6px 16px -4px color-mix(in srgb, var(--accent, #38bdf8) 60%, transparent);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.aw-brand:hover .aw-brand__mark {
+  transform: translateY(-1px) rotate(-3deg);
+  box-shadow: 0 9px 22px -4px color-mix(in srgb, var(--accent, #38bdf8) 70%, transparent);
+}
+.aw-brand__glyph {
+  font-weight: 900;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--accent-contrast, #ffffff);
+  letter-spacing: -0.02em;
+}
+.aw-brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+.aw-brand__name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--page-text, #e2e8f0);
+}
+.aw-brand__tag {
+  margin-top: 0.1rem;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent, #38bdf8);
+}
+@supports not (color: color-mix(in srgb, red 50%, transparent)) {
+  .aw-brand__mark { box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.3); }
+}
+</style>

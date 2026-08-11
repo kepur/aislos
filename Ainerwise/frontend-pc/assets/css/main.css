@@ -48,15 +48,15 @@
      confident accent, hairline borders and a lot of whitespace. Layered
      on top of the light baseline so the other two themes are untouched. */
   .theme-knx {
-    --brand: #00b451;
-    --brand-strong: #009444;
-    --brand-soft: #e8f7ee;
+    --brand: #0f9d6b;
+    --brand-strong: #0a7d55;
+    --brand-soft: #e6f6ef;
     --brand-contrast: #ffffff;
-    --ink: #0d1b16;
-    --ink-muted: #5b6b64;
+    --ink: #0b1f18;
+    --ink-muted: #566b62;
     --surface: #ffffff;
-    --surface-alt: #f4f7f5;
-    --hairline: #e2e8e5;
+    --surface-alt: #f3f8f5;
+    --hairline: #e4ede8;
 
     --page-text: var(--ink);
     --card-bg: var(--surface);
@@ -427,7 +427,11 @@
    per-page edits. Default dark mode is untouched. Unlayered so it wins over
    Tailwind utilities by specificity (html.light .x).
    =========================================================================== */
-html.light body { background-color: #f8fafc; }
+/* On the root element, not body: body's opaque background painted over
+   the fixed z-[-1] theme scenes, which is why the light and knx canvases
+   never showed. The root background sits below negative-z children, so it
+   still covers the pre-mount flash. */
+html.light { background-color: #f8fafc; }
 
 /* Text — dark-on-light */
 html.light .text-white { color: #0f172a; }

@@ -33,8 +33,8 @@ onMounted(() => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.setSize(window.innerWidth, window.innerHeight)
 
-  const EMERALD = new THREE.Color('#00b451')
-  const TEAL = new THREE.Color('#0ea5a5')
+  const EMERALD = new THREE.Color('#0f9d6b')
+  const TEAL = new THREE.Color('#0891b2')
 
   // --- Drifting field -------------------------------------------------------
   const COUNT = 170
@@ -234,8 +234,8 @@ onMounted(() => {
 <style scoped>
 .knx-bg {
   background:
-    radial-gradient(ellipse 65% 50% at 15% 10%, rgba(0, 180, 81, 0.07), transparent 60%),
-    radial-gradient(ellipse 55% 45% at 88% 85%, rgba(14, 165, 165, 0.06), transparent 55%),
+    radial-gradient(ellipse 65% 50% at 15% 10%, rgba(15, 157, 107, 0.08), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 88% 85%, rgba(8, 145, 178, 0.06), transparent 55%),
     linear-gradient(180deg, #ffffff 0%, #f7fbf8 55%, #f2f8f4 100%);
 }
 </style>
