@@ -229,6 +229,7 @@
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
 const { t } = useI18n()
+const { formatDate } = useLocaleFormat()
 const props = defineProps<{ id: string }>()
 const api = useCommerce()
 
@@ -363,15 +364,6 @@ function formatMinor(minor?: number | null, currency = 'EUR') {
     return new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 0 }).format(minor / 100)
   } catch {
     return `${(minor / 100).toLocaleString()} ${currency}`
-  }
-}
-
-function formatDate(value?: string) {
-  if (!value) return '—'
-  try {
-    return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(value))
-  } catch {
-    return value
   }
 }
 

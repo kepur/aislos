@@ -49,7 +49,7 @@
               <td class="py-3 pr-4 text-white">{{ d.reason_code || '—' }}</td>
               <td class="py-3 pr-4 max-w-[280px] truncate text-slate-300">{{ d.description || '—' }}</td>
               <td class="py-3 pr-4"><span :class="['rounded-full px-2 py-0.5 text-xs', statusTone(d.status)]">{{ statusLabel(d.status) }}</span></td>
-              <td class="py-3 pr-4 text-xs text-slate-500">{{ d.created_at ? new Date(d.created_at).toLocaleDateString() : '—' }}</td>
+              <td class="py-3 pr-4 text-xs text-slate-500">{{ formatDay(d.created_at) }}</td>
               <td class="py-3"><NuxtLink v-if="orderId(d)" :to="localized(`/market/buyer/orders/${orderId(d)}`)" class="text-xs text-indigo-300 hover:text-indigo-200">{{ $t('disputes.viewOrder') }}</NuxtLink></td>
             </tr>
             <tr v-if="!loading && !filtered.length">
@@ -65,6 +65,7 @@
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
 const { t } = useI18n()
+const { formatDay } = useLocaleFormat()
 const { listDisputes } = useCommerce()
 const items = ref<any[]>([])
 const error = ref('')

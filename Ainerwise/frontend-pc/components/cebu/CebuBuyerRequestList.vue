@@ -37,7 +37,7 @@
               <td class="py-3 pr-4 font-mono text-xs text-slate-400">{{ r.id.slice(0, 8) }}</td>
               <td class="py-3 pr-4 text-white">{{ r.title || $t('reqList.untitled') }}</td>
               <td class="py-3 pr-4 text-slate-300">{{ budgetLabel(r) }}</td>
-              <td class="py-3 pr-4 text-xs text-slate-500">{{ r.created_at ? new Date(r.created_at).toLocaleDateString() : '—' }}</td>
+              <td class="py-3 pr-4 text-xs text-slate-500">{{ formatDay(r.created_at) }}</td>
               <td class="py-3 pr-4"><span :class="['rounded-full px-2 py-0.5 text-xs', statusTone(r.status)]">{{ statusLabel(r.status) }}</span></td>
               <td class="py-3 pr-4 font-medium text-indigo-300">{{ offerCount(r) }}</td>
               <td class="py-3">
@@ -64,6 +64,7 @@
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
 const { t } = useI18n()
+const { formatDay } = useLocaleFormat()
 const { listProcurementRequests } = useCommerce()
 const items = ref<any[]>([])
 const error = ref('')

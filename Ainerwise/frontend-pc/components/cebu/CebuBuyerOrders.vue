@@ -41,7 +41,7 @@
               <td class="py-3 pr-4 text-white">{{ o.supplier_company_name || o.supplier_name || '—' }}</td>
               <td class="py-3 pr-4 font-semibold text-white">{{ formatMinor(totalMinor(o), o.currency) }}</td>
               <td class="py-3 pr-4"><span :class="['rounded-full px-2 py-0.5 text-xs', statusTone(o.status)]">{{ statusLabel(o.status) }}</span></td>
-              <td class="py-3 pr-4 text-xs text-slate-500">{{ o.created_at ? new Date(o.created_at).toLocaleDateString() : '—' }}</td>
+              <td class="py-3 pr-4 text-xs text-slate-500">{{ formatDay(o.created_at) }}</td>
               <td class="py-3"><NuxtLink :to="localized(`/market/buyer/orders/${o.id}`)" class="text-xs text-indigo-300 hover:text-indigo-200">{{ $t('common.viewDetails') }}</NuxtLink></td>
             </tr>
             <tr v-if="!loading && !filtered.length">
@@ -61,6 +61,7 @@
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
 const { t } = useI18n()
+const { formatDay } = useLocaleFormat()
 const { listOrders } = useCommerce()
 const items = ref<any[]>([])
 const error = ref('')

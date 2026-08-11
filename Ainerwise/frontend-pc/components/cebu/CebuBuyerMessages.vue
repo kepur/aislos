@@ -71,6 +71,7 @@
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
 const { t } = useI18n()
+const { formatTime } = useLocaleFormat()
 const route = useRoute()
 const api = useCommerce()
 const auth = useAuth() as any
@@ -102,7 +103,7 @@ function isSelf(m: any) {
   return /buyer|customer|me/i.test(String(m?.sender_role || ''))
 }
 function timeOf(m: any) {
-  return m?.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''
+  return m?.created_at ? formatTime(m.created_at) : ''
 }
 
 async function scrollDown() {
