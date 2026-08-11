@@ -1120,7 +1120,16 @@
     "companyName": "Company Name",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
-    "forgotPassword": "Forgot Password?"
+    "forgotPassword": "Forgot Password?",
+    "demo": {
+      "modeOn": "Demo Mode On",
+      "desc": "Use the demo customer account to view portal features without registration.",
+      "customer": "Customer",
+      "emailLabel": "Email:",
+      "passwordLabel": "Password:",
+      "use": "Use Demo Customer",
+      "loginAs": "Login as Demo Customer"
+    }
   },
   "portal": {
     "dashboard": "Dashboard",
@@ -1185,6 +1194,105 @@
       "promoTitle": "One customer experience",
       "promoBody": "Track sourcing, delivery, installation, assets, and after-sales in one place.",
       "openSupport": "Open support"
+    },
+    "approvals": {
+      "title": "Approvals",
+      "subtitle": "Only customer decisions that are waiting for you.",
+      "quotesTitle": "Quotes awaiting response",
+      "deliveriesTitle": "Deliveries awaiting acceptance",
+      "validUntil": "Valid until {date}",
+      "accept": "Accept",
+      "decline": "Decline",
+      "askQuestions": "Ask questions",
+      "noQuotes": "No quote approvals pending.",
+      "noDeliveries": "No delivery acceptance pending.",
+      "carrierPending": "Carrier pending",
+      "noTracking": "No tracking number",
+      "acceptDelivery": "Accept delivery",
+      "quoteAccepted": "Quote accepted.",
+      "quoteDeclined": "Quote declined.",
+      "quoteQuestions": "Questions sent to supplier.",
+      "deliveryAccepted": "Delivery accepted."
+    },
+    "company": {
+      "account": "Buyer account",
+      "title": "Company profile",
+      "name": "Company name",
+      "website": "Website",
+      "country": "Country",
+      "city": "City",
+      "address": "Address",
+      "description": "Description",
+      "ownerOnly": "Only the customer company owner can edit this profile.",
+      "save": "Save company profile",
+      "saved": "Company profile saved."
+    },
+    "account": {
+      "manage": "Manage your account information",
+      "personalInfo": "Personal Information",
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "country": "Country",
+      "language": "Language",
+      "saving": "Saving...",
+      "saveChanges": "Save Changes",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "changing": "Changing...",
+      "pwChanged": "Password changed successfully.",
+      "pwFailed": "Failed to change password.",
+      "privacyTitle": "Privacy & Data",
+      "privacyDesc": "Export your account data or request account deletion. Financial, audit, order and project evidence may be retained after personal details are anonymized.",
+      "createExport": "Create data export",
+      "deletionRequested": "Deletion requested",
+      "requestDeletion": "Request account deletion",
+      "download": "Download",
+      "cancel": "Cancel",
+      "exportReady": "Your export is ready for download for seven days.",
+      "exportFailed": "Export could not be created.",
+      "confirmDeletion": "Request account deletion? An administrator will verify the request before personal details are anonymized."
+    },
+    "procure": {
+      "title": "Procurement",
+      "subtitle": "Your sourcing requests and awarded orders.",
+      "openWorkspace": "Open AI Procurement Workspace",
+      "requests": "Requests",
+      "orders": "Orders",
+      "noDescription": "No description",
+      "noRequests": "No procurement requests yet.",
+      "noOrders": "No awarded orders yet."
+    },
+    "assets": {
+      "title": "Installed Assets",
+      "subtitle": "Customer-visible installed device registry.",
+      "colAsset": "Asset",
+      "colProject": "Project / Site",
+      "colLocation": "Location",
+      "colSerial": "Serial",
+      "colInstalled": "Installed",
+      "colStatus": "Status",
+      "empty": "Assets appear here after installation and commissioning."
+    },
+    "ideal": {
+      "watch": "Price watch",
+      "title": "Ideal list",
+      "browse": "Browse marketplace",
+      "current": "Current",
+      "target": "Target",
+      "remove": "Remove",
+      "empty": "No watched listings yet. Add one from the public marketplace."
+    },
+    "notif": {
+      "title": "Notifications",
+      "markAll": "Mark all read"
+    },
+    "team": {
+      "membership": "Workspace membership",
+      "roleOwner": "Owner",
+      "roleManager": "Manager",
+      "roleMember": "Member"
     }
   },
   "admin": {

@@ -1118,7 +1118,16 @@
     "companyName": "Company Name",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
-    "forgotPassword": "Forgot Password?"
+    "forgotPassword": "Forgot Password?",
+    "demo": {
+      "modeOn": "Tryb demo włączony",
+      "desc": "Użyj konta demo klienta, aby zobaczyć funkcje portalu bez rejestracji.",
+      "customer": "Klient",
+      "emailLabel": "Email:",
+      "passwordLabel": "Hasło:",
+      "use": "Użyj konta demo klienta",
+      "loginAs": "Zaloguj jako demo klient"
+    }
   },
   "portal": {
     "dashboard": "Dashboard",
@@ -1126,7 +1135,106 @@
     "myQuotes": "My Quotes",
     "myProjects": "My Projects",
     "myTickets": "Support Tickets",
-    "profile": "Profile"
+    "profile": "Profile",
+    "approvals": {
+      "title": "Zatwierdzenia",
+      "subtitle": "Tylko decyzje klienta, które na Ciebie czekają.",
+      "quotesTitle": "Oferty oczekujące na odpowiedź",
+      "deliveriesTitle": "Dostawy oczekujące na odbiór",
+      "validUntil": "Ważne do {date}",
+      "accept": "Akceptuj",
+      "decline": "Odrzuć",
+      "askQuestions": "Zadaj pytania",
+      "noQuotes": "Brak ofert oczekujących.",
+      "noDeliveries": "Brak dostaw do odbioru.",
+      "carrierPending": "Przewoźnik oczekuje",
+      "noTracking": "Brak numeru śledzenia",
+      "acceptDelivery": "Odbierz dostawę",
+      "quoteAccepted": "Oferta zaakceptowana.",
+      "quoteDeclined": "Oferta odrzucona.",
+      "quoteQuestions": "Pytania wysłane do dostawcy.",
+      "deliveryAccepted": "Dostawa odebrana."
+    },
+    "company": {
+      "account": "Konto kupującego",
+      "title": "Profil firmy",
+      "name": "Nazwa firmy",
+      "website": "Strona internetowa",
+      "country": "Kraj",
+      "city": "Miasto",
+      "address": "Adres",
+      "description": "Opis",
+      "ownerOnly": "Tylko właściciel firmy może edytować ten profil.",
+      "save": "Zapisz profil firmy",
+      "saved": "Profil firmy zapisany."
+    },
+    "account": {
+      "manage": "Zarządzaj danymi konta",
+      "personalInfo": "Dane osobowe",
+      "fullName": "Imię i nazwisko",
+      "email": "Email",
+      "phone": "Telefon",
+      "country": "Kraj",
+      "language": "Język",
+      "saving": "Zapisywanie...",
+      "saveChanges": "Zapisz zmiany",
+      "changePassword": "Zmień hasło",
+      "currentPassword": "Obecne hasło",
+      "newPassword": "Nowe hasło",
+      "changing": "Zmienianie...",
+      "pwChanged": "Hasło zostało zmienione.",
+      "pwFailed": "Nie udało się zmienić hasła.",
+      "privacyTitle": "Prywatność i dane",
+      "privacyDesc": "Wyeksportuj dane konta lub poproś o jego usunięcie. Dane finansowe, audytowe oraz dowody zamówień i projektów mogą zostać zachowane po anonimizacji danych osobowych.",
+      "createExport": "Utwórz eksport danych",
+      "deletionRequested": "Zażądano usunięcia",
+      "requestDeletion": "Poproś o usunięcie konta",
+      "download": "Pobierz",
+      "cancel": "Anuluj",
+      "exportReady": "Twój eksport jest gotowy do pobrania przez siedem dni.",
+      "exportFailed": "Nie udało się utworzyć eksportu.",
+      "confirmDeletion": "Poprosić o usunięcie konta? Administrator zweryfikuje żądanie przed anonimizacją danych osobowych."
+    },
+    "procure": {
+      "title": "Zakupy",
+      "subtitle": "Twoje zapytania zakupowe i przyznane zamówienia.",
+      "openWorkspace": "Otwórz panel zakupów AI",
+      "requests": "Zapytania",
+      "orders": "Zamówienia",
+      "noDescription": "Brak opisu",
+      "noRequests": "Brak zapytań zakupowych.",
+      "noOrders": "Brak przyznanych zamówień."
+    },
+    "assets": {
+      "title": "Zainstalowane zasoby",
+      "subtitle": "Rejestr zainstalowanych urządzeń widoczny dla klienta.",
+      "colAsset": "Zasób",
+      "colProject": "Projekt / Lokalizacja",
+      "colLocation": "Lokalizacja",
+      "colSerial": "Numer seryjny",
+      "colInstalled": "Zainstalowano",
+      "colStatus": "Status",
+      "empty": "Zasoby pojawią się tutaj po instalacji i uruchomieniu."
+    },
+    "ideal": {
+      "watch": "Obserwacja cen",
+      "title": "Lista życzeń",
+      "browse": "Przeglądaj rynek",
+      "current": "Obecna",
+      "target": "Docelowa",
+      "remove": "Usuń",
+      "empty": "Brak obserwowanych ofert. Dodaj je z publicznego rynku."
+    },
+    "notif": {
+      "title": "Powiadomienia",
+      "markAll": "Oznacz wszystkie jako przeczytane"
+    },
+    "team": {
+      "membership": "Członkostwo w przestrzeni roboczej",
+      "roleOwner": "Właściciel",
+      "roleManager": "Menedżer",
+      "roleMember": "Członek"
+    }
   },
   "admin": {
     "dashboard": "Dashboard",

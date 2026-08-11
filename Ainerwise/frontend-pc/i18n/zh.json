@@ -1120,7 +1120,16 @@
     "companyName": "公司名称",
     "noAccount": "还没有账号？",
     "hasAccount": "已有账号？",
-    "forgotPassword": "忘记密码？"
+    "forgotPassword": "忘记密码？",
+    "demo": {
+      "modeOn": "演示模式已开启",
+      "desc": "使用演示买家账户，无需注册即可体验门户功能。",
+      "customer": "买家",
+      "emailLabel": "邮箱：",
+      "passwordLabel": "密码：",
+      "use": "填入演示买家账户",
+      "loginAs": "以演示买家身份登录"
+    }
   },
   "portal": {
     "dashboard": "控制台",
@@ -1185,6 +1194,105 @@
       "promoTitle": "一个客户体验",
       "promoBody": "寻源、交付、安装、资产和售后，都在同一个地方跟进。",
       "openSupport": "联系支持"
+    },
+    "approvals": {
+      "title": "审批",
+      "subtitle": "仅显示等待你处理的买家决策。",
+      "quotesTitle": "待回应的报价",
+      "deliveriesTitle": "待验收的交付",
+      "validUntil": "有效期至 {date}",
+      "accept": "接受",
+      "decline": "拒绝",
+      "askQuestions": "提出疑问",
+      "noQuotes": "暂无待审批的报价。",
+      "noDeliveries": "暂无待验收的交付。",
+      "carrierPending": "承运商待定",
+      "noTracking": "暂无物流单号",
+      "acceptDelivery": "确认验收",
+      "quoteAccepted": "报价已接受。",
+      "quoteDeclined": "报价已拒绝。",
+      "quoteQuestions": "疑问已发送给供应商。",
+      "deliveryAccepted": "交付已验收。"
+    },
+    "company": {
+      "account": "买家账户",
+      "title": "公司档案",
+      "name": "公司名称",
+      "website": "官网",
+      "country": "国家 / 地区",
+      "city": "城市",
+      "address": "地址",
+      "description": "简介",
+      "ownerOnly": "仅公司账户 Owner 可编辑此档案。",
+      "save": "保存公司档案",
+      "saved": "公司档案已保存。"
+    },
+    "account": {
+      "manage": "管理你的账户信息",
+      "personalInfo": "个人信息",
+      "fullName": "姓名",
+      "email": "邮箱",
+      "phone": "手机号",
+      "country": "国家 / 地区",
+      "language": "界面语言",
+      "saving": "保存中…",
+      "saveChanges": "保存更改",
+      "changePassword": "修改密码",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "changing": "修改中…",
+      "pwChanged": "密码修改成功。",
+      "pwFailed": "密码修改失败。",
+      "privacyTitle": "隐私与数据",
+      "privacyDesc": "导出你的账户数据，或申请注销账户。个人信息匿名化后，财务、审计、订单与项目凭证可能仍会保留。",
+      "createExport": "创建数据导出",
+      "deletionRequested": "已申请注销",
+      "requestDeletion": "申请注销账户",
+      "download": "下载",
+      "cancel": "取消",
+      "exportReady": "导出已生成，可在七天内下载。",
+      "exportFailed": "无法创建导出。",
+      "confirmDeletion": "确定申请注销账户吗？管理员会先核实申请，然后再对个人信息进行匿名化。"
+    },
+    "procure": {
+      "title": "采购",
+      "subtitle": "你的寻源需求与已成交订单。",
+      "openWorkspace": "打开 AI 采购工作台",
+      "requests": "需求",
+      "orders": "订单",
+      "noDescription": "暂无描述",
+      "noRequests": "暂无采购需求。",
+      "noOrders": "暂无成交订单。"
+    },
+    "assets": {
+      "title": "已装设备",
+      "subtitle": "面向买家的已装设备台账。",
+      "colAsset": "设备",
+      "colProject": "项目 / 现场",
+      "colLocation": "位置",
+      "colSerial": "序列号",
+      "colInstalled": "安装日期",
+      "colStatus": "状态",
+      "empty": "设备在安装与调试完成后会显示在这里。"
+    },
+    "ideal": {
+      "watch": "价格关注",
+      "title": "心愿清单",
+      "browse": "浏览市场",
+      "current": "当前价",
+      "target": "目标价",
+      "remove": "移除",
+      "empty": "还没有关注的商品。可在公开市场中添加。"
+    },
+    "notif": {
+      "title": "通知",
+      "markAll": "全部标为已读"
+    },
+    "team": {
+      "membership": "工作台成员",
+      "roleOwner": "Owner",
+      "roleManager": "Manager",
+      "roleMember": "Member"
     }
   },
   "admin": {

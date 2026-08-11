@@ -2,7 +2,7 @@
   <section class="mx-auto max-w-3xl space-y-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Workspace membership</p>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">{{ $t('portal.team.membership') }}</p>
         <h1 class="mt-1 text-2xl font-bold text-white">买家团队</h1>
         <p class="mt-1 text-sm text-slate-400">可代表你公司账户访问与操作的成员。</p>
       </div>
@@ -14,7 +14,7 @@
     <div class="grid grid-cols-3 gap-4">
       <div class="pc-card"><p class="text-sm text-slate-400">成员总数</p><p class="mt-1 text-2xl font-bold text-white">{{ items.length }}</p></div>
       <div class="pc-card"><p class="text-sm text-slate-400">活跃</p><p class="mt-1 text-2xl font-bold text-emerald-300">{{ activeCount }}</p></div>
-      <div class="pc-card"><p class="text-sm text-slate-400">Owner</p><p class="mt-1 text-2xl font-bold text-indigo-300">{{ ownerCount }}</p></div>
+      <div class="pc-card"><p class="text-sm text-slate-400">{{ $t('portal.team.roleOwner') }}</p><p class="mt-1 text-2xl font-bold text-indigo-300">{{ ownerCount }}</p></div>
     </div>
 
     <div class="pc-card !p-0">
@@ -58,12 +58,13 @@ const ownerCount = computed(() => items.value.filter(isOwner).length)
 function isOwner(m: any) {
   return /owner/i.test(String(m.role || ''))
 }
+const { t } = useI18n()
 function roleLabel(role?: string) {
   const r = String(role || '').toLowerCase()
-  if (r.includes('owner')) return 'Owner'
-  if (r.includes('manager')) return 'Manager'
-  if (r.includes('member')) return 'Member'
-  return role || 'Member'
+  if (r.includes('owner')) return t('portal.team.roleOwner')
+  if (r.includes('manager')) return t('portal.team.roleManager')
+  if (r.includes('member')) return t('portal.team.roleMember')
+  return role || t('portal.team.roleMember')
 }
 function initials(m: any) {
   const n = String(m.full_name || m.display_name || m.email || '?').trim()

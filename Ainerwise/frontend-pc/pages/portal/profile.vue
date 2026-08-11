@@ -2,30 +2,30 @@
   <div class="space-y-6 max-w-2xl">
     <div>
       <h1 class="text-xl font-bold ws-title">{{ $t('portal.profile') }}</h1>
-      <p class="text-sm ws-faint mt-1">Manage your account information</p>
+      <p class="text-sm ws-faint mt-1">{{ $t('portal.account.manage') }}</p>
     </div>
 
     <form class="portal-card space-y-5" @submit.prevent="handleSaveProfile">
-      <h2 class="text-sm font-bold ws-title">Personal Information</h2>
+      <h2 class="text-sm font-bold ws-title">{{ $t('portal.account.personalInfo') }}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">Full Name</label>
+          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">{{ $t('portal.account.fullName') }}</label>
           <input v-model="form.full_name" type="text" class="portal-input" />
         </div>
         <div>
-          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">Email</label>
+          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">{{ $t('portal.account.email') }}</label>
           <input :value="user?.email" type="email" disabled class="portal-input !ws-soft cursor-not-allowed opacity-60" />
         </div>
         <div>
-          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">Phone</label>
+          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">{{ $t('portal.account.phone') }}</label>
           <input v-model="form.phone" type="text" class="portal-input" />
         </div>
         <div>
-          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">Country</label>
+          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">{{ $t('portal.account.country') }}</label>
           <input v-model="form.country" type="text" class="portal-input" />
         </div>
         <div>
-          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">Language</label>
+          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">{{ $t('portal.account.language') }}</label>
           <select v-model="form.language" class="portal-input">
             <option value="en">English</option>
             <option value="zh">中文</option>
@@ -35,41 +35,41 @@
       </div>
       <button type="submit" :disabled="saving"
  class="text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-2.5 rounded-xl hover:shadow-lg hover:shadow-blue-500/20 transition-all disabled:opacity-50">
-        {{ saving ? 'Saving...' : 'Save Changes' }}
+        {{ saving ? $t('portal.account.saving') : $t('portal.account.saveChanges') }}
       </button>
     </form>
 
     <form class="portal-card space-y-5" @submit.prevent="handleChangePassword">
-      <h2 class="text-sm font-bold ws-title">Change Password</h2>
+      <h2 class="text-sm font-bold ws-title">{{ $t('portal.account.changePassword') }}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">Current Password</label>
+          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">{{ $t('portal.account.currentPassword') }}</label>
           <input v-model="pwForm.current_password" type="password" required class="portal-input" />
         </div>
         <div>
-          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">New Password</label>
+          <label class="block text-xs font-semibold ws-muted mb-1.5 uppercase tracking-wider">{{ $t('portal.account.newPassword') }}</label>
           <input v-model="pwForm.new_password" type="password" required class="portal-input" minlength="8" />
         </div>
       </div>
       <p v-if="pwMessage" :class="pwError ? 'text-red-500' : 'text-emerald-600'" class="text-sm font-medium">{{ pwMessage }}</p>
       <button type="submit" :disabled="changingPw"
  class="text-sm font-medium ws-title ws-soft px-6 py-2.5 rounded-xl hover:bg-slate-200 transition disabled:opacity-50">
-        {{ changingPw ? 'Changing...' : 'Change Password' }}
+        {{ changingPw ? $t('portal.account.changing') : $t('portal.account.changePassword') }}
       </button>
     </form>
 
     <section class="portal-card space-y-5">
       <div>
-        <h2 class="text-sm font-bold ws-title">Privacy & Data</h2>
-        <p class="mt-1 text-sm ws-muted">Export your account data or request account deletion. Financial, audit, order and project evidence may be retained after personal details are anonymized.</p>
+        <h2 class="text-sm font-bold ws-title">{{ $t('portal.account.privacyTitle') }}</h2>
+        <p class="mt-1 text-sm ws-muted">{{ $t('portal.account.privacyDesc') }}</p>
       </div>
       <p v-if="privacyMessage" class="rounded-xl bg-blue-50 p-3 text-sm text-blue-700">{{ privacyMessage }}</p>
       <div class="flex flex-wrap gap-3">
         <button type="button" :disabled="privacyBusy" class="text-sm font-medium text-white bg-blue-600 px-5 py-2.5 rounded-xl disabled:opacity-50" @click="createExport">
-          Create data export
+          {{ $t('portal.account.createExport') }}
         </button>
         <button type="button" :disabled="privacyBusy || pendingDeletion" class="text-sm font-medium text-red-700 bg-red-50 px-5 py-2.5 rounded-xl disabled:opacity-50" @click="requestDeletion">
-          {{ pendingDeletion ? 'Deletion requested' : 'Request account deletion' }}
+          {{ pendingDeletion ? $t('portal.account.deletionRequested') : $t('portal.account.requestDeletion') }}
         </button>
       </div>
       <div v-if="privacyRequests.length" class="space-y-2">
@@ -77,8 +77,8 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div><span class="font-semibold capitalize">{{ item.request_type }}</span> · {{ item.status }}</div>
             <div class="flex gap-2">
-              <button v-if="item.request_type === 'export' && item.status === 'ready'" type="button" class="ws-accent hover:underline" @click="downloadExport(item.id)">Download</button>
-              <button v-if="item.status === 'requested'" type="button" class="text-red-600 hover:underline" @click="cancelPrivacy(item.id)">Cancel</button>
+              <button v-if="item.request_type === 'export' && item.status === 'ready'" type="button" class="ws-accent hover:underline" @click="downloadExport(item.id)">{{ $t('portal.account.download') }}</button>
+              <button v-if="item.status === 'requested'" type="button" class="text-red-600 hover:underline" @click="cancelPrivacy(item.id)">{{ $t('portal.account.cancel') }}</button>
             </div>
           </div>
           <p v-if="item.review_reason" class="mt-1 text-xs ws-muted">{{ item.review_reason }}</p>
@@ -92,6 +92,7 @@
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
 const { user, fetchUser } = useAuth()
+const { t } = useI18n()
 const { apiFetch } = useApi()
 const saving = ref(false)
 const changingPw = ref(false)
@@ -140,11 +141,11 @@ async function handleChangePassword() {
  pwError.value = false
  try {
  await apiFetch('/auth/change-password', { method: 'PUT', body: pwForm })
- pwMessage.value = 'Password changed successfully.'
+ pwMessage.value = t('portal.account.pwChanged')
     Object.assign(pwForm, { current_password: '', new_password: '' })
   } catch (e: any) {
  pwError.value = true
- pwMessage.value = e?.data?.detail || 'Failed to change password.'
+ pwMessage.value = e?.data?.detail || t('portal.account.pwFailed')
   } finally {
  changingPw.value = false
   }
@@ -159,9 +160,9 @@ async function createExport() {
  privacyMessage.value = ''
  try {
  await apiFetch('/privacy/export', { method: 'POST' })
- privacyMessage.value = 'Your export is ready for download for seven days.'
+ privacyMessage.value = t('portal.account.exportReady')
  await loadPrivacy()
-  } catch (e: any) { privacyMessage.value = e?.data?.detail || 'Export could not be created.' }
+  } catch (e: any) { privacyMessage.value = e?.data?.detail || t('portal.account.exportFailed') }
  finally { privacyBusy.value = false }
 }
 
@@ -176,7 +177,7 @@ async function downloadExport(id: string) {
 }
 
 async function requestDeletion() {
- if (!confirm('Request account deletion? An administrator will verify the request before personal details are anonymized.')) return
+ if (!confirm(t('portal.account.confirmDeletion'))) return
  privacyBusy.value = true
  try {
  await apiFetch('/privacy/delete-request', { method: 'POST' })

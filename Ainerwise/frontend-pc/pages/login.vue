@@ -10,17 +10,17 @@
         <div v-if="demoMode.enabled && demoMode.buyer" class="border border-emerald-400/30 bg-emerald-400/10 p-4">
           <div class="flex items-start justify-between gap-3">
             <div>
-              <p class="text-xs font-bold uppercase tracking-wider text-emerald-300">Demo Mode On</p>
-              <p class="mt-1 text-sm text-slate-300">Use the demo customer account to view portal features without registration.</p>
+              <p class="text-xs font-bold uppercase tracking-wider text-emerald-300">{{ $t('auth.demo.modeOn') }}</p>
+              <p class="mt-1 text-sm text-slate-300">{{ $t('auth.demo.desc') }}</p>
             </div>
-            <span class="shrink-0 text-xs font-semibold text-emerald-200 border border-emerald-400/30 px-2 py-1">Customer</span>
+            <span class="shrink-0 text-xs font-semibold text-emerald-200 border border-emerald-400/30 px-2 py-1">{{ $t('auth.demo.customer') }}</span>
           </div>
           <div class="mt-3 grid grid-cols-1 gap-2 text-xs text-slate-300">
-            <div><span class="text-slate-500">Email:</span> {{ demoMode.buyer.email }}</div>
-            <div><span class="text-slate-500">Password:</span> {{ demoMode.buyer.password }}</div>
+            <div><span class="text-slate-500">{{ $t('auth.demo.emailLabel') }}</span> {{ demoMode.buyer.email }}</div>
+            <div><span class="text-slate-500">{{ $t('auth.demo.passwordLabel') }}</span> {{ demoMode.buyer.password }}</div>
           </div>
           <button type="button" class="mt-3 w-full border border-emerald-400/40 px-4 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-400/10" @click="useDemoBuyer">
-            Use Demo Customer
+            {{ $t('auth.demo.use') }}
           </button>
         </div>
         <div>
@@ -30,14 +30,14 @@
         <div>
           <label class="block text-sm font-medium text-slate-300 mb-1">{{ $t('auth.password') }}</label>
           <input v-model="form.password" type="password" required class="input-field" />
-          <NuxtLink :to="localized('/forgot-password')" class="mt-2 block text-right text-xs font-semibold text-primary-400 hover:underline">Forgot password?</NuxtLink>
+          <NuxtLink :to="localized('/forgot-password')" class="mt-2 block text-right text-xs font-semibold text-primary-400 hover:underline">{{ $t('auth.forgotPassword') }}</NuxtLink>
         </div>
         <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
         <button type="submit" :disabled="loading" class="btn-primary w-full shadow-[0_0_15px_rgba(14,165,233,0.3)]">
           {{ loading ? $t('common.loading') : $t('auth.login') }}
         </button>
         <button v-if="demoMode.enabled && demoMode.buyer" type="button" :disabled="loading" class="w-full border border-primary-500/40 text-primary-200 px-6 py-3 rounded-lg font-medium hover:bg-primary-500/10 transition" @click="loginDemoBuyer">
-          {{ loading ? $t('common.loading') : 'Login as Demo Customer' }}
+          {{ loading ? $t('common.loading') : $t('auth.demo.loginAs') }}
         </button>
         <p class="text-center text-sm text-slate-400">
           {{ $t('auth.noAccount') }}

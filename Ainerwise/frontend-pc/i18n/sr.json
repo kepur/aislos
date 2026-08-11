@@ -1287,7 +1287,16 @@
     "companyName": "Naziv kompanije",
     "noAccount": "Nemate nalog?",
     "hasAccount": "Već imate nalog?",
-    "forgotPassword": "Zaboravili ste lozinku?"
+    "forgotPassword": "Zaboravili ste lozinku?",
+    "demo": {
+      "modeOn": "Demo režim uključen",
+      "desc": "Koristite demo nalog kupca da vidite funkcije portala bez registracije.",
+      "customer": "Kupac",
+      "emailLabel": "Email:",
+      "passwordLabel": "Lozinka:",
+      "use": "Koristi demo kupca",
+      "loginAs": "Prijava kao demo kupac"
+    }
   },
   "portal": {
     "dashboard": "Kontrolna tabla",
@@ -1352,6 +1361,105 @@
       "promoTitle": "Jedno korisnicko iskustvo",
       "promoBody": "Nabavka, isporuka, instalacija, oprema i podrska — sve na jednom mestu.",
       "openSupport": "Otvori podrsku"
+    },
+    "approvals": {
+      "title": "Odobrenja",
+      "subtitle": "Samo odluke kupca koje čekaju na vas.",
+      "quotesTitle": "Ponude koje čekaju odgovor",
+      "deliveriesTitle": "Isporuke koje čekaju prijem",
+      "validUntil": "Važi do {date}",
+      "accept": "Prihvati",
+      "decline": "Odbij",
+      "askQuestions": "Postavi pitanja",
+      "noQuotes": "Nema ponuda na čekanju.",
+      "noDeliveries": "Nema isporuka za prijem.",
+      "carrierPending": "Prevoznik na čekanju",
+      "noTracking": "Bez broja za praćenje",
+      "acceptDelivery": "Prihvati isporuku",
+      "quoteAccepted": "Ponuda prihvaćena.",
+      "quoteDeclined": "Ponuda odbijena.",
+      "quoteQuestions": "Pitanja poslata dobavljaču.",
+      "deliveryAccepted": "Isporuka prihvaćena."
+    },
+    "company": {
+      "account": "Nalog kupca",
+      "title": "Profil kompanije",
+      "name": "Naziv kompanije",
+      "website": "Veb-sajt",
+      "country": "Zemlja",
+      "city": "Grad",
+      "address": "Adresa",
+      "description": "Opis",
+      "ownerOnly": "Samo vlasnik kompanije može uređivati ovaj profil.",
+      "save": "Sačuvaj profil kompanije",
+      "saved": "Profil kompanije sačuvan."
+    },
+    "account": {
+      "manage": "Upravljajte podacima naloga",
+      "personalInfo": "Lični podaci",
+      "fullName": "Ime i prezime",
+      "email": "Email",
+      "phone": "Telefon",
+      "country": "Zemlja",
+      "language": "Jezik",
+      "saving": "Čuvanje...",
+      "saveChanges": "Sačuvaj izmene",
+      "changePassword": "Promeni lozinku",
+      "currentPassword": "Trenutna lozinka",
+      "newPassword": "Nova lozinka",
+      "changing": "Menjanje...",
+      "pwChanged": "Lozinka je uspešno promenjena.",
+      "pwFailed": "Promena lozinke nije uspela.",
+      "privacyTitle": "Privatnost i podaci",
+      "privacyDesc": "Izvezite podatke naloga ili zatražite brisanje naloga. Finansijski i revizorski dokazi, kao i dokazi o narudžbinama i projektima, mogu biti zadržani nakon anonimizacije ličnih podataka.",
+      "createExport": "Napravi izvoz podataka",
+      "deletionRequested": "Brisanje zatraženo",
+      "requestDeletion": "Zatraži brisanje naloga",
+      "download": "Preuzmi",
+      "cancel": "Otkaži",
+      "exportReady": "Vaš izvoz je spreman za preuzimanje sedam dana.",
+      "exportFailed": "Izvoz nije mogao biti kreiran.",
+      "confirmDeletion": "Zatražiti brisanje naloga? Administrator će proveriti zahtev pre anonimizacije ličnih podataka."
+    },
+    "procure": {
+      "title": "Nabavka",
+      "subtitle": "Vaši zahtevi za nabavku i dodeljene narudžbine.",
+      "openWorkspace": "Otvori AI radni prostor za nabavku",
+      "requests": "Zahtevi",
+      "orders": "Narudžbine",
+      "noDescription": "Bez opisa",
+      "noRequests": "Još nema zahteva za nabavku.",
+      "noOrders": "Još nema dodeljenih narudžbina."
+    },
+    "assets": {
+      "title": "Instalirana oprema",
+      "subtitle": "Registar instaliranih uređaja vidljiv kupcu.",
+      "colAsset": "Oprema",
+      "colProject": "Projekat / Lokacija",
+      "colLocation": "Lokacija",
+      "colSerial": "Serijski broj",
+      "colInstalled": "Instalirano",
+      "colStatus": "Status",
+      "empty": "Oprema se pojavljuje ovde nakon instalacije i puštanja u rad."
+    },
+    "ideal": {
+      "watch": "Praćenje cena",
+      "title": "Lista želja",
+      "browse": "Pregledaj tržište",
+      "current": "Trenutno",
+      "target": "Cilj",
+      "remove": "Ukloni",
+      "empty": "Još nema praćenih oglasa. Dodajte ih sa javnog tržišta."
+    },
+    "notif": {
+      "title": "Obaveštenja",
+      "markAll": "Označi sve kao pročitano"
+    },
+    "team": {
+      "membership": "Članovi radnog prostora",
+      "roleOwner": "Vlasnik",
+      "roleManager": "Menadžer",
+      "roleMember": "Član"
     }
   },
   "admin": {
