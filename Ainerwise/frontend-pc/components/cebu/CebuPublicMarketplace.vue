@@ -4,43 +4,43 @@
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div>
         <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">AinerWise Market</p>
-        <h1 class="mt-2 text-3xl font-bold text-white">选品 · 浏览认证供应商挂牌</h1>
-        <p class="mt-2 text-sm text-slate-400">公开商品目录，由共享的 AinerWise Commerce API 提供；挑中即可一键转成采购需求。</p>
+        <h1 class="mt-2 text-3xl font-bold text-white">{{ $t('mkt.title') }}</h1>
+        <p class="mt-2 text-sm text-slate-400">{{ $t('mkt.subtitle') }}</p>
       </div>
-      <NuxtLink :to="localized('/market/post-request')" class="btn-primary">发布采购需求</NuxtLink>
+      <NuxtLink :to="localized('/market/post-request')" class="btn-primary">{{ $t('mkt.postRequest') }}</NuxtLink>
     </div>
 
     <!-- Sticky filter bar -->
     <div class="pc-card sticky top-16 z-20 flex flex-wrap items-center gap-3">
       <div class="min-w-0 flex-1">
-        <p class="truncate text-sm font-semibold text-white">{{ activeCategoryName || '全部商品' }}</p>
-        <p class="text-xs text-slate-500">{{ loading ? '加载中…' : `${items.length} 件商品` }}</p>
+        <p class="truncate text-sm font-semibold text-white">{{ activeCategoryName || $t('mkt.allItems') }}</p>
+        <p class="text-xs text-slate-500">{{ loading ? $t('common.loading') : $t('mkt.countItems', { n: items.length }) }}</p>
       </div>
-      <input v-model.trim="filters.q" class="input-field w-44" placeholder="搜索商品 / 服务" @keyup.enter="load" />
+      <input v-model.trim="filters.q" class="input-field w-44" :placeholder="$t('mkt.searchPh')" @keyup.enter="load" />
       <select v-model="marketMode" class="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-400/60">
-        <option value="">全部 (B2B + B2C)</option>
-        <option value="B2B">仅 B2B</option>
-        <option value="B2C">仅 B2C</option>
+        <option value="">{{ $t('mkt.modeAll') }}</option>
+        <option value="B2B">{{ $t('mkt.modeB2B') }}</option>
+        <option value="B2C">{{ $t('mkt.modeB2C') }}</option>
       </select>
       <select v-model="sort" class="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-400/60">
-        <option value="newest">最新</option>
-        <option value="price_asc">价格 ↑</option>
-        <option value="price_desc">价格 ↓</option>
-        <option value="title">名称</option>
+        <option value="newest">{{ $t('mkt.sortNewest') }}</option>
+        <option value="price_asc">{{ $t('mkt.sortPriceAsc') }}</option>
+        <option value="price_desc">{{ $t('mkt.sortPriceDesc') }}</option>
+        <option value="title">{{ $t('mkt.sortTitle') }}</option>
       </select>
-      <button class="btn-primary" @click="load">搜索</button>
+      <button class="btn-primary" @click="load">{{ $t('common.search') }}</button>
     </div>
 
     <div class="flex gap-6">
       <!-- Sidebar -->
       <aside class="hidden w-56 shrink-0 lg:block">
         <div class="pc-card sticky top-40">
-          <h3 class="mb-3 text-sm font-semibold text-slate-200">类目</h3>
+          <h3 class="mb-3 text-sm font-semibold text-slate-200">{{ $t('mkt.categories') }}</h3>
           <div class="space-y-1">
             <button
               :class="['w-full rounded-lg px-3 py-2 text-left text-sm transition', !filters.category_schema_id ? 'bg-indigo-500/15 font-medium text-indigo-200' : 'text-slate-400 hover:bg-white/5']"
               @click="setCategory('', '')"
-            >全部类目</button>
+            >{{ $t('mkt.allCats') }}</button>
             <button
               v-for="c in categories"
               :key="c.id"
@@ -53,11 +53,11 @@
           </div>
           <p v-if="categoryError" class="mt-3 text-xs text-amber-300">
             {{ categoryError }}
-            <button class="ml-1 underline" @click="loadCategories">重试</button>
+            <button class="ml-1 underline" @click="loadCategories">{{ $t('common.retry') }}</button>
           </p>
           <label class="mt-4 flex items-center gap-2 border-t border-white/10 pt-4 text-sm text-slate-300">
             <input v-model="verifiedOnly" type="checkbox" class="accent-indigo-400" />
-            仅看已认证供应商
+            {{ $t('mkt.verifiedOnly') }}
           </label>
         </div>
       </aside>
@@ -76,8 +76,8 @@
 
         <div v-else-if="!visibleItems.length" class="pc-card py-16 text-center text-slate-400">
           <div class="text-4xl">🔍</div>
-          <p class="mt-3 text-lg font-medium text-slate-300">没有匹配的商品</p>
-          <p class="mt-1 text-sm">调整筛选，或 <NuxtLink :to="localized('/market/post-request')" class="text-indigo-300 hover:underline">直接发布采购需求</NuxtLink></p>
+          <p class="mt-3 text-lg font-medium text-slate-300">{{ $t('mkt.noMatch') }}</p>
+          <p class="mt-1 text-sm">{{ $t('mkt.adjustFilters') }}<NuxtLink :to="localized('/market/post-request')" class="text-indigo-300 hover:underline">{{ $t('mkt.postDirectly') }}</NuxtLink></p>
         </div>
 
         <div v-else class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
@@ -102,14 +102,14 @@
                 <span v-if="trustOf(item)" class="text-[10px] text-amber-300">★ {{ trustOf(item) }}</span>
               </div>
               <span class="mt-3 block rounded-xl bg-indigo-600 py-2 text-center text-xs font-semibold text-white transition group-hover:bg-indigo-500">
-                {{ marketModeOf(item) === 'B2C' ? '立即购买' : '请求报价' }}
+                {{ marketModeOf(item) === 'B2C' ? $t('mkt.buyNow') : $t('mkt.requestQuote') }}
               </span>
             </div>
           </NuxtLink>
         </div>
 
         <div v-if="visibleItems.length < sortedItems.length" class="mt-8 text-center">
-          <button class="btn-secondary" @click="limit += 12">加载更多</button>
+          <button class="btn-secondary" @click="limit += 12">{{ $t('mkt.loadMore') }}</button>
         </div>
       </main>
     </div>
@@ -118,6 +118,7 @@
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
+const { t } = useI18n()
 const { listPublicCategories, listPublicListings } = useCommerce()
 const categories = ref<any[]>([])
 const items = ref<any[]>([])
@@ -156,7 +157,7 @@ function marketModeOf(it: any) {
   return it.market_mode || attrs(it).market_mode || 'B2B'
 }
 function supplierOf(it: any) {
-  return it.company_name || it.supplier_name || attrs(it).supplier_name || '认证供应商'
+  return it.company_name || it.supplier_name || attrs(it).supplier_name || t('mkt.verifiedSupplier')
 }
 function originOf(it: any) {
   return it.origin_country || attrs(it).origin_country || ''
@@ -180,7 +181,7 @@ function categoryEmoji(it: any) {
 }
 
 function money(value?: number, currency = 'EUR') {
-  return value == null ? '询价' : new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 0 }).format(value / 100)
+  return value == null ? t('mkt.inquire') : new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 0 }).format(value / 100)
 }
 
 function setCategory(id: string, name: string) {
@@ -196,7 +197,7 @@ async function load() {
   try {
     items.value = (await listPublicListings({ q: filters.q || undefined, category_schema_id: filters.category_schema_id || undefined })).items || []
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '无法加载市场'
+    error.value = e?.data?.detail || e?.message || t('mkt.loadFailed')
   } finally {
     loading.value = false
   }
@@ -208,7 +209,7 @@ async function loadCategories() {
     categories.value = (await listPublicCategories()).items || []
   } catch (e: any) {
     categories.value = []
-    categoryError.value = e?.data?.detail || e?.message || '无法加载类目'
+    categoryError.value = e?.data?.detail || e?.message || t('mkt.catLoadFailed')
   }
 }
 

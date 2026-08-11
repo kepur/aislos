@@ -1,23 +1,23 @@
 <template>
   <section class="space-y-6">
-    <div v-if="loading" class="pc-card text-sm text-slate-400">正在加载订单交付...</div>
+    <div v-if="loading" class="pc-card text-sm text-slate-400">{{ $t('orderDetail.loadingDelivery') }}</div>
 
     <template v-else-if="order">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <NuxtLink :to="localized('/market/buyer/orders')" class="text-sm text-indigo-300 hover:text-indigo-200">← 返回订单列表</NuxtLink>
+          <NuxtLink :to="localized('/market/buyer/orders')" class="text-sm text-indigo-300 hover:text-indigo-200">← {{ $t('orderDetail.back') }}</NuxtLink>
           <div class="mt-4 flex flex-wrap items-center gap-3">
-            <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Order {{ shortId(order.id) }}</p>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">{{ $t('orderDetail.orderLabel') }} {{ shortId(order.id) }}</p>
             <span :class="['rounded-full px-3 py-1 text-xs font-semibold', statusTone(order.status)]">{{ order.status }}</span>
           </div>
           <h1 class="mt-2 text-3xl font-bold tracking-tight text-white">{{ formatMinor(order.total_minor, order.currency) }}</h1>
-          <p class="mt-3 text-sm text-slate-400">由报价授标生成，继续跟踪交付、验收、争议和记账状态。</p>
+          <p class="mt-3 text-sm text-slate-400">{{ $t('orderDetail.fromAward') }}</p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <NuxtLink :to="localized(`/market/buyer/requests/${order.procurement_request_id}/offers`)" class="btn-secondary">查看授标报价</NuxtLink>
-          <NuxtLink :to="localized(`/market/buyer/messages?order_id=${order.id}`)" class="btn-secondary">订单会话</NuxtLink>
+          <NuxtLink :to="localized(`/market/buyer/requests/${order.procurement_request_id}/offers`)" class="btn-secondary">{{ $t('orderDetail.viewAwarded') }}</NuxtLink>
+          <NuxtLink :to="localized(`/market/buyer/messages?order_id=${order.id}`)" class="btn-secondary">{{ $t('orderDetail.orderThread') }}</NuxtLink>
           <button v-if="canCompleteOrder" class="btn-primary" :disabled="completing" @click="complete">
-            {{ completing ? '完成中...' : '确认完成' }}
+            {{ completing ? $t('orderDetail.completing') : $t('orderDetail.confirmComplete') }}
           </button>
         </div>
       </div>
@@ -30,28 +30,28 @@
       <div class="pc-card overflow-hidden !p-0">
         <div class="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
           <div class="p-6 lg:p-8">
-            <p class="text-sm font-semibold text-indigo-300">Ledger-first delivery</p>
-            <h2 class="mt-3 text-2xl font-bold text-white">线下收款 + 交付验收 + 记账留痕</h2>
+            <p class="text-sm font-semibold text-indigo-300">{{ $t('orderDetail.ledgerFirstEyebrow') }}</p>
+            <h2 class="mt-3 text-2xl font-bold text-white">{{ $t('orderDetail.ledgerFirstTitle') }}</h2>
             <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
-              当前阶段不做真实在线钱包或平台托管资金。订单金额、支付意图、结算记录和交付状态先进入 Core ledger，后续接 PSP 时只替换收款入口，不重构业务流程。
+              {{ $t('orderDetail.ledgerFirstDesc') }}
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
-              <NuxtLink :to="localized('/market/buyer/wallet')" class="btn-secondary">查看支付/结算台账</NuxtLink>
-              <NuxtLink :to="localized(`/market/buyer/disputes/new?order_id=${order.id}`)" class="btn-secondary">发起争议</NuxtLink>
+              <NuxtLink :to="localized('/market/buyer/wallet')" class="btn-secondary">{{ $t('orderDetail.viewLedger') }}</NuxtLink>
+              <NuxtLink :to="localized(`/market/buyer/disputes/new?order_id=${order.id}`)" class="btn-secondary">{{ $t('disputes.new') }}</NuxtLink>
             </div>
           </div>
           <div class="border-t border-white/10 bg-indigo-500/[0.06] p-6 lg:border-l lg:border-t-0 lg:p-8">
             <dl class="grid gap-4 text-sm">
               <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Winning offer</dt>
+                <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ $t('orderDetail.winningOffer') }}</dt>
                 <dd class="mt-2 font-medium text-slate-100">{{ shortId(order.winning_offer_id) || '—' }}</dd>
               </div>
               <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Supplier</dt>
+                <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ $t('orders.colSupplier') }}</dt>
                 <dd class="mt-2 font-medium text-slate-100">{{ supplierLabel }}</dd>
               </div>
               <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Completed at</dt>
+                <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ $t('orderDetail.completedAt') }}</dt>
                 <dd class="mt-2 font-medium text-slate-100">{{ formatDate(order.completed_at) }}</dd>
               </div>
             </dl>
@@ -62,8 +62,8 @@
       <div class="pc-card">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Order progress</p>
-            <h2 class="mt-2 text-xl font-semibold text-white">订单进度</h2>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('orderDetail.progressEyebrow') }}</p>
+            <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('orderDetail.progressTitle') }}</h2>
           </div>
           <span class="text-sm text-slate-500">{{ progressPercent }}%</span>
         </div>
@@ -86,46 +86,46 @@
 
       <div class="grid gap-6 lg:grid-cols-2">
         <div class="pc-card">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Order details</p>
-          <h2 class="mt-2 text-xl font-semibold text-white">订单摘要</h2>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('orderDetail.detailsEyebrow') }}</p>
+          <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('orderDetail.summaryTitle') }}</h2>
           <dl class="mt-5 space-y-4 text-sm">
             <div class="flex justify-between gap-4">
-              <dt class="text-slate-500">采购需求</dt>
+              <dt class="text-slate-500">{{ $t('orderDetail.procRequest') }}</dt>
               <dd class="text-right text-slate-200">{{ request?.title || shortId(order.procurement_request_id) }}</dd>
             </div>
             <div class="flex justify-between gap-4">
-              <dt class="text-slate-500">需求状态</dt>
+              <dt class="text-slate-500">{{ $t('orderDetail.reqStatus') }}</dt>
               <dd class="text-right text-slate-200">{{ request?.status || '—' }}</dd>
             </div>
             <div class="flex justify-between gap-4">
-              <dt class="text-slate-500">报价金额</dt>
+              <dt class="text-slate-500">{{ $t('orderDetail.offerAmount') }}</dt>
               <dd class="text-right font-semibold text-indigo-200">{{ offer ? formatMinor(offer.price_minor, offer.currency) : '—' }}</dd>
             </div>
             <div class="flex justify-between gap-4 border-t border-white/10 pt-4">
-              <dt class="font-semibold text-white">订单总额</dt>
+              <dt class="font-semibold text-white">{{ $t('orderDetail.orderTotal') }}</dt>
               <dd class="text-right font-bold text-emerald-300">{{ formatMinor(order.total_minor, order.currency) }}</dd>
             </div>
           </dl>
         </div>
 
         <div class="pc-card">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Supplier & logistics</p>
-          <h2 class="mt-2 text-xl font-semibold text-white">供应商与物流</h2>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('orderDetail.supplierLogisticsEyebrow') }}</p>
+          <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('orderDetail.supplierLogisticsTitle') }}</h2>
           <div class="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <p class="font-semibold text-white">{{ supplierLabel }}</p>
-            <p class="mt-1 text-xs text-slate-500">Supplier company {{ shortId(order.supplier_company_id) || '—' }}</p>
+            <p class="mt-1 text-xs text-slate-500">{{ $t('orderDetail.supplierCompany') }} {{ shortId(order.supplier_company_id) || '—' }}</p>
           </div>
           <dl class="mt-5 space-y-4 text-sm">
             <div class="flex justify-between gap-4">
-              <dt class="text-slate-500">交付记录</dt>
+              <dt class="text-slate-500">{{ $t('orderDetail.deliveryRecords') }}</dt>
               <dd class="text-right text-slate-200">{{ deliveries.length }}</dd>
             </div>
             <div class="flex justify-between gap-4">
-              <dt class="text-slate-500">最近交付状态</dt>
-              <dd class="text-right text-slate-200">{{ latestDelivery?.status || '供应商尚未派送' }}</dd>
+              <dt class="text-slate-500">{{ $t('orderDetail.latestDeliveryStatus') }}</dt>
+              <dd class="text-right text-slate-200">{{ latestDelivery?.status || $t('orderDetail.notShipped') }}</dd>
             </div>
             <div class="flex justify-between gap-4">
-              <dt class="text-slate-500">预计时间</dt>
+              <dt class="text-slate-500">{{ $t('orderDetail.eta') }}</dt>
               <dd class="text-right text-slate-200">{{ formatDate(latestDelivery?.estimated_at) }}</dd>
             </div>
           </dl>
@@ -136,10 +136,10 @@
         <div class="pc-card">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Delivery records</p>
-              <h2 class="mt-2 text-xl font-semibold text-white">交付与验收</h2>
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('orderDetail.deliveryRecords') }}</p>
+              <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('orderDetail.deliveryTitle') }}</h2>
             </div>
-            <NuxtLink :to="localized(`/market/buyer/messages?order_id=${order.id}`)" class="text-sm text-indigo-300 hover:text-indigo-200">联系供应商 →</NuxtLink>
+            <NuxtLink :to="localized(`/market/buyer/messages?order_id=${order.id}`)" class="text-sm text-indigo-300 hover:text-indigo-200">{{ $t('orderDetail.contactSupplier') }} →</NuxtLink>
           </div>
 
           <div v-if="deliveries.length" class="mt-6 space-y-4">
@@ -148,10 +148,10 @@
                 <div>
                   <div class="flex flex-wrap items-center gap-2">
                     <span :class="['rounded-full px-2 py-0.5 text-xs font-semibold', deliveryTone(item.status)]">{{ item.status }}</span>
-                    <span class="text-xs text-slate-500">Delivery {{ shortId(item.id) }}</span>
+                    <span class="text-xs text-slate-500">{{ $t('orderDetail.deliveryLabel') }} {{ shortId(item.id) }}</span>
                   </div>
-                  <p class="mt-3 font-semibold text-white">{{ item.carrier || 'Supplier delivery' }} <span v-if="item.tracking_number" class="text-slate-400">· {{ item.tracking_number }}</span></p>
-                  <p class="mt-1 text-sm text-slate-500">预计 {{ formatDate(item.estimated_at) }} · 发出 {{ formatDate(item.shipped_at) }} · 送达 {{ formatDate(item.delivered_at) }}</p>
+                  <p class="mt-3 font-semibold text-white">{{ item.carrier || $t('orderDetail.supplierDelivery') }} <span v-if="item.tracking_number" class="text-slate-400">· {{ item.tracking_number }}</span></p>
+                  <p class="mt-1 text-sm text-slate-500">{{ $t('orderDetail.estLabel') }} {{ formatDate(item.estimated_at) }} · {{ $t('orderDetail.shipLabel') }} {{ formatDate(item.shipped_at) }} · {{ $t('orderDetail.delLabel') }} {{ formatDate(item.delivered_at) }}</p>
                 </div>
                 <button
                   v-if="item.status === 'delivered'"
@@ -159,7 +159,7 @@
                   :disabled="acceptingId === item.id"
                   @click="accept(item.id)"
                 >
-                  {{ acceptingId === item.id ? '验收中...' : '确认收货' }}
+                  {{ acceptingId === item.id ? $t('orderDetail.accepting') : $t('orderDetail.confirmReceipt') }}
                 </button>
               </div>
               <div v-if="item.proof_json" class="mt-4 rounded-xl border border-white/10 bg-slate-950/60 p-3 text-xs text-slate-400">
@@ -169,7 +169,7 @@
           </div>
 
           <p v-else class="mt-6 rounded-2xl border border-dashed border-white/10 p-6 text-sm text-slate-500">
-            供应商还没有创建交付记录。Partner/Supplier 端排期后，这里会显示承运方、追踪号、照片证据和验收按钮。
+            {{ $t('orderDetail.noDeliveryRecords') }}
           </p>
         </div>
 
@@ -177,10 +177,10 @@
           <div class="pc-card">
             <div class="flex items-center justify-between gap-3">
               <div>
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Disputes</p>
-                <h2 class="mt-2 text-xl font-semibold text-white">争议</h2>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('orderDetail.disputes') }}</p>
+                <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('orderDetail.disputes') }}</h2>
               </div>
-              <NuxtLink :to="localized(`/market/buyer/disputes/new?order_id=${order.id}`)" class="btn-secondary">发起</NuxtLink>
+              <NuxtLink :to="localized(`/market/buyer/disputes/new?order_id=${order.id}`)" class="btn-secondary">{{ $t('orderDetail.disputeOpen') }}</NuxtLink>
             </div>
             <div v-if="disputes.length" class="mt-5 space-y-3">
               <div v-for="item in disputes" :key="item.id" class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
@@ -188,19 +188,19 @@
                   <p class="font-semibold text-white">{{ item.reason_code }}</p>
                   <span :class="['rounded-full px-2 py-0.5 text-xs font-semibold', statusTone(item.status)]">{{ item.status }}</span>
                 </div>
-                <p class="mt-2 text-sm text-slate-500">{{ item.description || '暂无描述' }}</p>
+                <p class="mt-2 text-sm text-slate-500">{{ item.description || $t('portal.procure.noDescription') }}</p>
               </div>
             </div>
-            <p v-else class="mt-5 text-sm text-slate-500">暂无争议。</p>
+            <p v-else class="mt-5 text-sm text-slate-500">{{ $t('orderDetail.noDisputes') }}</p>
           </div>
 
           <div class="pc-card">
             <div class="flex items-center justify-between gap-3">
               <div>
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Payment ledger</p>
-                <h2 class="mt-2 text-xl font-semibold text-white">支付/结算台账</h2>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">{{ $t('orderDetail.ledgerTitle') }}</p>
+                <h2 class="mt-2 text-xl font-semibold text-white">{{ $t('orderDetail.ledgerTitle') }}</h2>
               </div>
-              <NuxtLink :to="localized('/market/buyer/wallet')" class="text-sm text-indigo-300 hover:text-indigo-200">全部 →</NuxtLink>
+              <NuxtLink :to="localized('/market/buyer/wallet')" class="text-sm text-indigo-300 hover:text-indigo-200">{{ $t('orderDetail.viewAll') }} →</NuxtLink>
             </div>
             <div v-if="ledgerRows.length" class="mt-5 space-y-3">
               <div v-for="item in ledgerRows" :key="item.id" class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
@@ -216,18 +216,19 @@
                 </div>
               </div>
             </div>
-            <p v-else class="mt-5 text-sm text-slate-500">当前订单还没有 payment intent / settlement 记录。</p>
+            <p v-else class="mt-5 text-sm text-slate-500">{{ $t('orderDetail.noLedger') }}</p>
           </div>
         </div>
       </div>
     </template>
 
-    <p v-else class="pc-card text-sm text-red-300">{{ error || '订单不存在或当前账号无权访问。' }}</p>
+    <p v-else class="pc-card text-sm text-red-300">{{ error || $t('orderDetail.notFound') }}</p>
   </section>
 </template>
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
+const { t } = useI18n()
 const props = defineProps<{ id: string }>()
 const api = useCommerce()
 
@@ -263,10 +264,10 @@ const orderSteps = computed(() => {
   const delivered = deliveryStatuses.some(s => ['delivered', 'accepted'].includes(s))
   const completed = ['completed'].includes(orderStatus)
   return [
-    { key: 'confirmed', label: '授标成单', hint: '报价已授标', done: true, active: orderStatus === 'confirmed' && !hasDelivery },
-    { key: 'scheduled', label: '安排交付', hint: '供应商创建交付', done: hasDelivery || delivered || completed, active: hasDelivery && !delivered && !completed },
-    { key: 'delivered', label: '送达验收', hint: '买家确认收货', done: delivered || completed, active: delivered && !completed },
-    { key: 'completed', label: '订单完成', hint: '进入资产/维保', done: completed, active: completed },
+    { key: 'confirmed', label: t('orderDetail.stepConfirmed'), hint: t('orderDetail.stepConfirmedHint'), done: true, active: orderStatus === 'confirmed' && !hasDelivery },
+    { key: 'scheduled', label: t('orderDetail.stepScheduled'), hint: t('orderDetail.stepScheduledHint'), done: hasDelivery || delivered || completed, active: hasDelivery && !delivered && !completed },
+    { key: 'delivered', label: t('orderDetail.stepDelivered'), hint: t('orderDetail.stepDeliveredHint'), done: delivered || completed, active: delivered && !completed },
+    { key: 'completed', label: t('orderDetail.stepCompleted'), hint: t('orderDetail.stepCompletedHint'), done: completed, active: completed },
   ]
 })
 
@@ -292,7 +293,7 @@ async function load() {
     if (ledgerRes.status === 'fulfilled') ledgerRows.value = (ledgerRes.value.items || []).filter((item: any) => item.order_id === props.id)
     await loadLinkedRecords()
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '加载订单失败'
+    error.value = e?.data?.detail || e?.message || t('orderDetail.loadFailed')
   } finally {
     loading.value = false
   }
@@ -313,10 +314,10 @@ async function complete() {
   message.value = ''
   try {
     order.value = await api.completeOrder(props.id)
-    message.value = '订单已确认完成。'
+    message.value = t('orderDetail.completeSuccess')
     await load()
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '确认完成失败'
+    error.value = e?.data?.detail || e?.message || t('orderDetail.completeFailed')
   } finally {
     completing.value = false
   }
@@ -328,10 +329,10 @@ async function accept(id: string) {
   message.value = ''
   try {
     await api.acceptDelivery(id)
-    message.value = '交付已验收。'
+    message.value = t('portal.approvals.deliveryAccepted')
     await load()
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '确认收货失败'
+    error.value = e?.data?.detail || e?.message || t('orderDetail.acceptFailed')
   } finally {
     acceptingId.value = ''
   }
@@ -351,9 +352,9 @@ function deliveryTone(status?: string) {
 }
 
 function proofLabel(proof: any) {
-  if (!proof || typeof proof !== 'object') return '交付证据已记录'
+  if (!proof || typeof proof !== 'object') return t('orderDetail.proofRecorded')
   const keys = Object.keys(proof)
-  return keys.length ? `交付证据：${keys.join(', ')}` : '交付证据已记录'
+  return keys.length ? t('orderDetail.proofWithKeys', { keys: keys.join(', ') }) : t('orderDetail.proofRecorded')
 }
 
 function formatMinor(minor?: number | null, currency = 'EUR') {
