@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen procurement-layout text-slate-100">
     <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur-md">
-      <div class="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto flex min-h-[4.5rem] max-w-7xl items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
         <div class="flex items-center gap-3 min-w-0">
           <NuxtLink :to="localized(brand.homePath)" class="text-2xl font-bold text-white shrink-0">
             {{ brandLabel }}
@@ -9,12 +9,16 @@
           <span :class="['rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider shrink-0', brand.badge]">
             {{ $t('procurement.workspace') }}
           </span>
-          <nav v-if="isCebu || isSupplier" class="hidden md:flex items-center gap-1 ml-5 text-[0.95rem] text-slate-300">
+          <!-- Long-language labels (Serbian/Bosnian) overrun a single row and used
+               to collide with the language + account controls. The bar now wraps
+               to at most two lines and shrinks its type, and the right-hand
+               controls are pinned (shrink-0) so they never get pushed. -->
+          <nav v-if="isCebu || isSupplier" class="hidden md:flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1 ml-4 text-[0.82rem] leading-none text-slate-300">
             <NuxtLink
               v-for="link in primaryNav"
               :key="link.to"
               :to="localized(link.to)"
-              class="ws-ripple rounded-md px-2.5 py-1.5 font-medium transition hover:text-white hover:bg-white/5"
+              class="ws-ripple whitespace-nowrap rounded-md px-2 py-1.5 font-medium transition hover:text-white hover:bg-white/5"
               active-class="ws-nav-on"
               @click="ripple"
             >
@@ -22,7 +26,7 @@
             </NuxtLink>
           </nav>
         </div>
-        <div class="flex items-center gap-3 text-sm">
+        <div class="flex shrink-0 items-center gap-3 text-sm">
           <LanguageSwitcher class="procurement-lang" />
           <!-- Account menu. The overflow destinations used to hang off a
                hover-triggered "more" item mid-bar, which opened by accident and
