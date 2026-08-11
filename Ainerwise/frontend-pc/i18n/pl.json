@@ -2441,5 +2441,20 @@
     "payouts": "Wypłaty",
     "team": "Zespół",
     "settings": "Ustawienia"
+  },
+  "sup": {
+    "payoutsTitle": "Wypłaty i rozliczenia",
+    "noPayouts": "Brak zapisów wypłat",
+    "order": "Zamówienie",
+    "reviewsTitle": "Recenzje klientów",
+    "noReviews": "Brak recenzji",
+    "noComment": "Brak komentarza",
+    "msgTitle": "Wiadomości dostawcy",
+    "adsTitle": "Kampanie reklamowe",
+    "createAd": "Utwórz reklamę",
+    "pause": "Wstrzymaj",
+    "submit": "Prześlij",
+    "clicks": "kliknięć",
+    "impressions": "wyświetleń"
   }
 }

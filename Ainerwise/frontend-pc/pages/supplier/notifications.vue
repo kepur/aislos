@@ -1,8 +1,8 @@
 <template>
   <section class="space-y-5">
     <div class="flex justify-between">
-      <h1 class="text-2xl font-bold text-white">通知</h1>
-      <button class="text-primary-300" @click="readAll">全部已读</button>
+      <h1 class="text-2xl font-bold text-white">{{ $t('portal.notif.title') }}</h1>
+      <button class="text-primary-300" @click="readAll">{{ $t('portal.notif.markAll') }}</button>
     </div>
     <button
       v-for="item in items"

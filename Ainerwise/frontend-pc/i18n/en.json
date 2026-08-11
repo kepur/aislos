@@ -2737,5 +2737,20 @@
     "payouts": "Payouts",
     "team": "Team",
     "settings": "Settings"
+  },
+  "sup": {
+    "payoutsTitle": "Payouts & settlements",
+    "noPayouts": "No payout records",
+    "order": "Order",
+    "reviewsTitle": "Customer reviews",
+    "noReviews": "No reviews yet",
+    "noComment": "No comment",
+    "msgTitle": "Supplier messages",
+    "adsTitle": "Ad campaigns",
+    "createAd": "Create ad",
+    "pause": "Pause",
+    "submit": "Submit",
+    "clicks": "clicks",
+    "impressions": "impressions"
   }
 }

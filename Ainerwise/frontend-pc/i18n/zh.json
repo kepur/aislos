@@ -2737,5 +2737,20 @@
     "payouts": "结算",
     "team": "团队",
     "settings": "设置"
+  },
+  "sup": {
+    "payoutsTitle": "结算与打款",
+    "noPayouts": "暂无打款记录",
+    "order": "订单",
+    "reviewsTitle": "客户评价",
+    "noReviews": "暂无评价",
+    "noComment": "暂无评论",
+    "msgTitle": "供应商消息",
+    "adsTitle": "广告活动",
+    "createAd": "创建广告",
+    "pause": "暂停",
+    "submit": "提交",
+    "clicks": "次点击",
+    "impressions": "次展示"
   }
 }

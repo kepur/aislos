@@ -2737,5 +2737,20 @@
     "payouts": "Isplate",
     "team": "Tim",
     "settings": "Podešavanja"
+  },
+  "sup": {
+    "payoutsTitle": "Isplate i poravnanja",
+    "noPayouts": "Nema evidencije isplata",
+    "order": "Narudžbina",
+    "reviewsTitle": "Recenzije kupaca",
+    "noReviews": "Još nema recenzija",
+    "noComment": "Bez komentara",
+    "msgTitle": "Poruke dobavljača",
+    "adsTitle": "Reklamne kampanje",
+    "createAd": "Kreiraj oglas",
+    "pause": "Pauziraj",
+    "submit": "Pošalji",
+    "clicks": "klikova",
+    "impressions": "prikaza"
   }
 }
