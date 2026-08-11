@@ -2,17 +2,17 @@
   <section class="space-y-5">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Commerce</p>
-        <h1 class="mt-1 text-2xl font-bold text-white">订单与交付</h1>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">{{ $t('orders.eyebrow') }}</p>
+        <h1 class="mt-1 text-2xl font-bold text-white">{{ $t('orders.title') }}</h1>
       </div>
-      <button class="btn-secondary" :disabled="loading" @click="load()">{{ loading ? '加载中…' : '刷新' }}</button>
+      <button class="btn-secondary" :disabled="loading" @click="load()">{{ loading ? $t('common.loading') : $t('ui.refresh') }}</button>
     </div>
 
     <div class="pc-card">
       <div class="mb-4 flex flex-wrap items-center gap-3">
-        <input v-model.trim="keyword" class="input-field max-w-xs" placeholder="按订单号 / 买家搜索…" />
+        <input v-model.trim="keyword" class="input-field max-w-xs" :placeholder="$t('sup.searchOrderBuyer')" />
         <select v-model="status" class="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-400/60" @change="load()">
-          <option value="">全部状态</option>
+          <option value="">{{ $t('ui.allStatus') }}</option>
           <option v-for="s in statuses" :key="s" :value="s">{{ statusLabel(s) }}</option>
         </select>
       </div>
@@ -23,11 +23,11 @@
         <table class="w-full min-w-[760px] text-left text-sm">
           <thead class="text-slate-400">
             <tr class="border-b border-white/10">
-              <th class="py-2 pr-4 font-medium">订单号</th>
-              <th class="py-2 pr-4 font-medium">买家</th>
-              <th class="py-2 pr-4 font-medium">金额</th>
-              <th class="py-2 pr-4 font-medium">状态</th>
-              <th class="py-2 pr-4 font-medium">日期</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('orders.colOrder') }}</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('sup.colBuyer') }}</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('sup.colAmount') }}</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('common.status') }}</th>
+              <th class="py-2 pr-4 font-medium">{{ $t('orders.colDate') }}</th>
               <th class="py-2 font-medium"></th>
             </tr>
           </thead>
@@ -37,23 +37,25 @@
               <td class="py-3 pr-4 text-white">{{ o.buyer_company_name || o.buyer_name || '—' }}</td>
               <td class="py-3 pr-4 font-semibold text-white">{{ money(o.total_minor ?? o.total_amount_minor, o.currency) }}</td>
               <td class="py-3 pr-4"><span :class="['rounded-full px-2 py-0.5 text-xs', statusTone(o.status)]">{{ statusLabel(o.status) }}</span></td>
-              <td class="py-3 pr-4 text-xs text-slate-500">{{ o.created_at ? new Date(o.created_at).toLocaleDateString() : '—' }}</td>
-              <td class="py-3"><NuxtLink :to="localized(`/supplier/orders/${o.id}`)" class="text-xs text-indigo-300 hover:text-indigo-200">管理交付</NuxtLink></td>
+              <td class="py-3 pr-4 text-xs text-slate-500">{{ formatDay(o.created_at) }}</td>
+              <td class="py-3"><NuxtLink :to="localized(`/supplier/orders/${o.id}`)" class="text-xs text-indigo-300 hover:text-indigo-200">{{ $t('sup.manageDelivery') }}</NuxtLink></td>
             </tr>
             <tr v-if="!loading && !filtered.length">
-              <td colspan="6" class="py-8 text-center text-slate-500">该状态下暂无订单</td>
+              <td colspan="6" class="py-8 text-center text-slate-500">{{ $t('orders.empty') }}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <p class="mt-4 text-sm text-slate-500">共 {{ filtered.length }} 笔订单</p>
+      <p class="mt-4 text-sm text-slate-500">{{ $t('orders.count', { n: filtered.length }) }}</p>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
+const { t } = useI18n()
+const { formatDay } = useLocaleFormat()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const { listOrders } = useCommerce()
@@ -74,7 +76,9 @@ const filtered = computed(() => {
 })
 
 function statusLabel(s?: string) {
-  return { confirmed: '已确认', in_delivery: '配送中', delivered: '已送达', completed: '已完成', disputed: '争议中', cancelled: '已取消' }[String(s || '')] || s || '—'
+  const known = ['confirmed', 'in_delivery', 'delivered', 'completed', 'disputed', 'cancelled']
+  const key = String(s || '')
+  return known.includes(key) ? t(`orderStatus.${key}`) : (s || '—')
 }
 function statusTone(s?: string) {
   const v = String(s || '').toLowerCase()
@@ -94,7 +98,7 @@ async function load() {
   try {
     items.value = (await listOrders(status.value || undefined)).items || []
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '加载订单失败'
+    error.value = e?.data?.detail || e?.message || t('orders.loadFailed')
   } finally {
     loading.value = false
   }

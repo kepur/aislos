@@ -2,16 +2,16 @@
   <section class="space-y-5">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Opportunities</p>
-        <h1 class="mt-1 text-2xl font-bold text-white">匹配采购需求</h1>
-        <p class="mt-1 text-sm text-slate-400">系统按你的目录与区域匹配到的买家需求，越快报价越有优势。</p>
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">{{ $t('sup.pingsEyebrow') }}</p>
+        <h1 class="mt-1 text-2xl font-bold text-white">{{ $t('sup.pingsTitle') }}</h1>
+        <p class="mt-1 text-sm text-slate-400">{{ $t('sup.pingsSubtitle') }}</p>
       </div>
-      <button class="btn-secondary" :disabled="loading" @click="load()">{{ loading ? '加载中…' : '刷新' }}</button>
+      <button class="btn-secondary" :disabled="loading" @click="load()">{{ loading ? $t('common.loading') : $t('ui.refresh') }}</button>
     </div>
 
     <div class="pc-card flex flex-wrap items-center gap-3">
-      <input v-model.trim="keyword" class="input-field max-w-xs" placeholder="搜索需求标题…" />
-      <span class="text-sm text-slate-500">共 {{ filtered.length }} 条匹配</span>
+      <input v-model.trim="keyword" class="input-field max-w-xs" :placeholder="$t('reqList.searchPh')" />
+      <span class="text-sm text-slate-500">{{ $t('sup.matchCount', { n: filtered.length }) }}</span>
     </div>
 
     <p v-if="error" class="pc-card text-sm text-red-300">{{ error }}</p>
@@ -20,28 +20,29 @@
       <div v-for="p in filtered" :key="p.id" class="pc-card flex flex-wrap items-start justify-between gap-4 transition hover:border-indigo-400/40">
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
-            <h2 class="truncate font-semibold text-white">{{ p.title || '采购需求' }}</h2>
-            <span v-if="p.pre_funded || p.is_pre_funded" class="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs text-emerald-300">已预付</span>
-            <span v-if="p.already_offered" class="rounded-full bg-blue-500/15 px-2 py-0.5 text-xs text-blue-300">已报价</span>
+            <h2 class="truncate font-semibold text-white">{{ p.title || $t('supplier.reqFallback') }}</h2>
+            <span v-if="p.pre_funded || p.is_pre_funded" class="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs text-emerald-300">{{ $t('supplier.prefunded') }}</span>
+            <span v-if="p.already_offered" class="rounded-full bg-blue-500/15 px-2 py-0.5 text-xs text-blue-300">{{ $t('sup.alreadyOffered') }}</span>
           </div>
-          <p class="mt-1 line-clamp-2 text-sm text-slate-400">{{ p.description || '无描述' }}</p>
+          <p class="mt-1 line-clamp-2 text-sm text-slate-400">{{ p.description || $t('portal.procure.noDescription') }}</p>
           <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
-            <span>预算：{{ budgetOf(p) }}</span>
+            <span>{{ $t('supplier.budgetLabel', { v: budgetOf(p) }) }}</span>
             <span>·</span>
-            <span>{{ matchCount(p) }} 个匹配挂牌</span>
+            <span>{{ $t('sup.matchListings', { n: matchCount(p) }) }}</span>
             <span>·</span>
             <span>{{ p.created_at ? timeAgo(p.created_at) : (p.status || '') }}</span>
           </div>
         </div>
-        <NuxtLink :to="localized(`/supplier/offers/new?request_id=${requestId(p)}`)" class="btn-primary shrink-0">{{ p.already_offered ? '更新报价' : '立即报价' }}</NuxtLink>
+        <NuxtLink :to="localized(`/supplier/offers/new?request_id=${requestId(p)}`)" class="btn-primary shrink-0">{{ p.already_offered ? $t('sup.updateQuote') : $t('supplier.quoteNow') }}</NuxtLink>
       </div>
-      <p v-if="!loading && !filtered.length" class="pc-card py-12 text-center text-sm text-slate-400">暂无匹配需求。完善 <NuxtLink :to="localized('/supplier/catalog')" class="text-indigo-300">产品目录</NuxtLink> 可获得更多匹配。</p>
+      <p v-if="!loading && !filtered.length" class="pc-card py-12 text-center text-sm text-slate-400">{{ $t('sup.noPingsPre') }}<NuxtLink :to="localized('/supplier/catalog')" class="text-indigo-300">{{ $t('sup.catalogLink') }}</NuxtLink>{{ $t('sup.noPingsPost') }}</p>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
+const { t } = useI18n()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const { listSupplierPings } = useCommerce()
@@ -68,14 +69,14 @@ function budgetOf(p: any) {
   const f = (v: any) => (v == null ? null : new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(v / 100))
   if (min != null && max != null) return `${f(min)} - ${f(max)}`
   if (max != null) return `≤ ${f(max)}`
-  return '开放'
+  return t('supplier.budgetOpen')
 }
 function timeAgo(iso: string) {
   const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000)
-  if (m < 60) return `${m} 分钟前`
+  if (m < 60) return t('supplier.minAgo', { n: m })
   const h = Math.floor(m / 60)
-  if (h < 24) return `${h} 小时前`
-  return `${Math.floor(h / 24)} 天前`
+  if (h < 24) return t('supplier.hourAgo', { n: h })
+  return t('supplier.dayAgo', { n: Math.floor(h / 24) })
 }
 
 async function load() {
@@ -84,7 +85,7 @@ async function load() {
   try {
     items.value = (await listSupplierPings()).items || []
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '加载匹配需求失败'
+    error.value = e?.data?.detail || e?.message || t('sup.loadPingsFailed')
   } finally {
     loading.value = false
   }
