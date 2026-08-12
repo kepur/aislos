@@ -7,7 +7,7 @@
       aria-label="Active workspace"
       @change="onWorkspaceChange"
     >
-      <option value="" disabled>Select workspace</option>
+      <option value="" disabled>{{ $t('comp.selectWorkspace') }}</option>
       <option v-for="membership in memberships" :key="membership.id" :value="membership.workspace_id">
         {{ membership.membership_type }}
       </option>

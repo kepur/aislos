@@ -13,13 +13,13 @@
         <p class="mt-4 text-sm font-medium text-amber-300">{{ $t('services.onSiteNotice') }}</p>
       </div>
 
-      <div v-if="loading" class="glass-panel p-8 text-center text-sm text-slate-400">Loading service plans...</div>
+      <div v-if="loading" class="glass-panel p-8 text-center text-sm text-slate-400">{{ $t('mktP.loadingPlans') }}</div>
       <div v-else-if="error" class="glass-panel border-red-500/30 p-6 text-center text-sm text-red-300">
         <p>{{ error }}</p>
-        <button class="btn-primary mt-4" @click="loadPackages">Retry</button>
+        <button class="btn-primary mt-4" @click="loadPackages">{{ $t('common.retry') }}</button>
       </div>
       <div v-else-if="!packages.length" class="glass-panel p-8 text-center text-sm text-slate-400">
-        No service plans are currently published.
+        {{ $t('mktP.noPlans') }}
       </div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div v-for="pkg in packages" :key="pkg.id" class="glass-panel p-6 transition border-primary-500/30 hover:border-primary-500/50 hover:shadow-[0_0_15px_rgba(14,165,233,0.3)]">

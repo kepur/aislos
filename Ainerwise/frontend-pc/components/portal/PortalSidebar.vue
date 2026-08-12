@@ -7,7 +7,7 @@
         </div>
         <div>
           <span class="text-base font-bold text-slate-800 tracking-tight">AinerWise</span>
-          <span class="block text-[10px] text-blue-500 font-semibold tracking-wider uppercase">Client Portal</span>
+          <span class="block text-[10px] text-blue-500 font-semibold tracking-wider uppercase">{{ $t('comp.clientPortal') }}</span>
         </div>
       </NuxtLink>
     </div>
@@ -39,8 +39,8 @@
 
     <div class="px-4 pb-4">
       <div class="rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 p-4">
-        <p class="text-xs font-semibold text-blue-700 mb-1">Need Help?</p>
-        <p class="text-xs text-blue-500/80 leading-relaxed">Contact our team for smart building consultation.</p>
+        <p class="text-xs font-semibold text-blue-700 mb-1">{{ $t('comp.needHelp') }}</p>
+        <p class="text-xs text-blue-500/80 leading-relaxed">{{ $t('comp.helpDesc') }}</p>
         <NuxtLink :to="localized('/contact')" class="inline-block mt-2 text-xs font-semibold text-blue-600 hover:text-blue-700">
           Get Support &rarr;
         </NuxtLink>

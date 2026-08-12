@@ -19,8 +19,8 @@
       @focus="activeKey = 'core'"
     >
       <span class="core-kicker">AinerWise</span>
-      <strong>AI Brain</strong>
-      <span>KNX + Energy + Security + Service</span>
+      <strong>{{ $t('comp.aiBrain') }}</strong>
+      <span>{{ $t('comp.brainTagline') }}</span>
     </button>
 
     <button

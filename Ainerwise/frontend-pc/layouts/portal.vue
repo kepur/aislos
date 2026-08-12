@@ -22,7 +22,7 @@
           <LanguageSwitcher class="portal-lang-switch" />
           <NuxtLink :to="localized('/submit-requirement')"
             class="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-500 px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-blue-500/20 transition-all">
-            + New Requirement
+            {{ $t('pLeads.newReq') }}
           </NuxtLink>
           <button @click="logout" class="text-sm text-slate-400 hover:text-red-500 transition p-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

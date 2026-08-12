@@ -12,7 +12,7 @@
           </div>
           <div>
             <h3 class="font-semibold text-white">{{ $t('contact.location') }}</h3>
-            <p class="text-slate-400 mt-1">Belgrade, Serbia</p>
+            <p class="text-slate-400 mt-1">{{ $t('mktP.belgrade') }}</p>
           </div>
           <div>
             <h3 class="font-semibold text-white">{{ $t('contact.telegram') }}</h3>

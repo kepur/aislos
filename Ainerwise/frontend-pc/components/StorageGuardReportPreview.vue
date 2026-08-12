@@ -6,7 +6,7 @@
         <p class="mt-1 text-xs text-cyan-100">{{ report.period }}</p>
       </div>
       <span v-if="report.sample" class="rounded-full bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
-        Sample
+        {{ $t('pProjD.sample') }}
       </span>
     </div>
 
@@ -39,24 +39,23 @@
       <div class="grid gap-3 sm:grid-cols-3">
         <div class="rounded-xl bg-slate-50 p-4 text-center">
           <p class="text-xl font-bold text-slate-800">{{ report.door_events ?? 0 }}</p>
-          <p class="mt-1 text-xs font-medium text-slate-400">Door events</p>
+          <p class="mt-1 text-xs font-medium text-slate-400">{{ $t('pProjD.metricDoorEvents') }}</p>
         </div>
         <div class="rounded-xl bg-slate-50 p-4 text-center">
           <p class="text-xl font-bold text-slate-800">{{ report.outage_events ?? 0 }}</p>
-          <p class="mt-1 text-xs font-medium text-slate-400">Outages</p>
+          <p class="mt-1 text-xs font-medium text-slate-400">{{ $t('comp.outages') }}</p>
         </div>
         <div class="rounded-xl bg-slate-50 p-4 text-center">
           <p class="text-xl font-bold text-slate-800">{{ report.alerts_sent ?? 0 }}</p>
-          <p class="mt-1 text-xs font-medium text-slate-400">Alerts sent</p>
+          <p class="mt-1 text-xs font-medium text-slate-400">{{ $t('comp.alertsSent') }}</p>
         </div>
       </div>
 
       <p v-if="report.calibration_status" class="text-xs text-slate-500">
-        <span class="font-semibold text-slate-700">Calibration:</span> {{ report.calibration_status }}
+        <span class="font-semibold text-slate-700">{{ $t('comp.calibrationLabel') }}</span> {{ report.calibration_status }}
       </p>
       <p class="rounded-xl bg-amber-50 p-4 text-xs leading-relaxed text-amber-700">
-        Sample report for demonstration. Customer-specific compliance reporting is configured during onboarding;
-        figures here are illustrative only.
+        {{ $t('comp.sampleNote') }}
       </p>
     </div>
   </section>

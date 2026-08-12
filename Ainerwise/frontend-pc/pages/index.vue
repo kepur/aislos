@@ -136,13 +136,13 @@
           <h2 class="text-2xl sm:text-3xl font-bold text-white">{{ $t('mtx.explore') }}</h2>
           <p class="mt-3 text-slate-300 max-w-2xl mx-auto">{{ $t('mtx.exploreDesc') }}</p>
         </div>
-        <div v-if="contentLoading" class="glass-panel p-8 text-center text-sm text-slate-400">Loading published solutions...</div>
+        <div v-if="contentLoading" class="glass-panel p-8 text-center text-sm text-slate-400">{{ $t('mktP.loadingSolutions') }}</div>
         <div v-else-if="solutionsError" class="glass-panel border-red-500/30 p-6 text-center text-sm text-red-300">
           <p>{{ solutionsError }}</p>
-          <button class="btn-primary mt-4" @click="loadPublicContent">Retry</button>
+          <button class="btn-primary mt-4" @click="loadPublicContent">{{ $t('common.retry') }}</button>
         </div>
         <div v-else-if="!solutions.length" class="glass-panel p-8 text-center text-sm text-slate-400">
-          No solutions are currently published.
+          {{ $t('mktP.noSolutions') }}
         </div>
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <NuxtLink
@@ -193,13 +193,13 @@
           <h2 class="text-2xl sm:text-3xl font-bold text-white">{{ $t('home.servicesTitle') }}</h2>
           <p class="mt-3 text-slate-300 max-w-2xl mx-auto">{{ $t('home.servicesSubtitle') }}</p>
         </div>
-        <div v-if="contentLoading" class="glass-panel p-8 text-center text-sm text-slate-400">Loading service plans...</div>
+        <div v-if="contentLoading" class="glass-panel p-8 text-center text-sm text-slate-400">{{ $t('mktP.loadingPlans') }}</div>
         <div v-else-if="servicesError" class="glass-panel border-red-500/30 p-6 text-center text-sm text-red-300">
           <p>{{ servicesError }}</p>
-          <button class="btn-primary mt-4" @click="loadPublicContent">Retry</button>
+          <button class="btn-primary mt-4" @click="loadPublicContent">{{ $t('common.retry') }}</button>
         </div>
         <div v-else-if="!servicePackages.length" class="glass-panel p-8 text-center text-sm text-slate-400">
-          No service plans are currently published.
+          {{ $t('mktP.noPlans') }}
         </div>
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           <div

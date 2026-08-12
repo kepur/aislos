@@ -27,7 +27,7 @@
         <div>
           <h3 class="text-sm font-semibold text-white uppercase tracking-wider">{{ $t('footer.contact') }}</h3>
           <ul class="mt-3 space-y-2">
-            <li class="text-sm">Belgrade, Serbia</li>
+            <li class="text-sm">{{ $t('mktP.belgrade') }}</li>
             <li class="text-sm">info@ainerwise.com</li>
           </ul>
         </div>

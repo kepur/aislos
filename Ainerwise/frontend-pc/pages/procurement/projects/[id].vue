@@ -167,7 +167,7 @@
         <p class="text-xs text-slate-500">{{ pkg.trade }} / {{ pkg.commercial_type }} · {{ pkg.items.length }} items</p>
         <div class="flex flex-wrap gap-2">
           <select v-model="packageEdits[pkg.id].mode" class="input-field max-w-xs text-sm">
-            <option value="managed">managed</option>
+            <option value="managed">{{ $t('comp.statusManaged') }}</option>
             <option value="self_service">self_service</option>
           </select>
           <button
