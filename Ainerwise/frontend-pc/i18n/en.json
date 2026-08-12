@@ -3288,5 +3288,40 @@
     "websitePh": "Website",
     "onboardDescPh": "Products, services, certifications and delivery coverage",
     "finishOnboarding": "Finish onboarding"
+  },
+  "store": {
+    "redirecting": "Redirecting to Product Catalog…",
+    "eyebrow": "AISLOS Product Catalog",
+    "ordersTitle": "My reviewed requests",
+    "ordersSubtitle": "Reference baskets become formal quotes only after an Ainerwise review.",
+    "backCatalog": "Back to Product Catalog",
+    "request": "Request",
+    "noPayment": "No payment taken",
+    "noOrders": "You have no product catalog requests yet."
+  },
+  "prod": {
+    "loading": "Loading product…",
+    "loadFailed": "Product could not be loaded.",
+    "tryAgain": "Please try again.",
+    "supplyPositioning": "Supply chain positioning",
+    "supplyNote": "AinerWise prioritizes China first-tier, project-grade suppliers and verified ecosystem partners instead of low-cost generic hardware.",
+    "deviceRef": "Device reference",
+    "days": "days",
+    "years": "years",
+    "serviceTerms": "Service terms",
+    "pricingMode": "Pricing mode",
+    "lifecycleMaint": "Lifecycle maintenance",
+    "perYr": "/yr",
+    "inquireTitle": "Inquire About Product",
+    "productLabel": "Product:",
+    "name": "Name",
+    "phoneOptional": "Phone (Optional)",
+    "estQuantity": "Estimated Quantity",
+    "messageReq": "Message / Requirements",
+    "submitInquiry": "Submit Inquiry",
+    "inquirySent": "Inquiry Sent!",
+    "thankYou": "Thank you for your interest. Our vendor or support team will contact you shortly.",
+    "notFound": "Product not found.",
+    "submitFailed": "Failed to submit inquiry. Please try again."
   }
 }

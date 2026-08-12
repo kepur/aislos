@@ -1,12 +1,12 @@
 <template>
   <div v-if="loading" class="section-padding">
-    <div class="container-main glass-panel p-8 text-center text-sm text-slate-400">Loading product...</div>
+    <div class="container-main glass-panel p-8 text-center text-sm text-slate-400">{{ $t('prod.loading') }}</div>
   </div>
   <div v-else-if="error" class="section-padding">
     <div class="container-main glass-panel border-red-400/30 p-8 text-center">
-      <p class="font-semibold text-red-300">Product could not be loaded.</p>
+      <p class="font-semibold text-red-300">{{ $t('prod.loadFailed') }}</p>
       <p class="mt-2 text-sm text-red-200/70">{{ error }}</p>
-      <button type="button" class="btn-primary mt-4" @click="loadProduct">Retry</button>
+      <button type="button" class="btn-primary mt-4" @click="loadProduct">{{ $t('common.retry') }}</button>
     </div>
   </div>
   <div v-else-if="product" class="section-padding">
@@ -30,25 +30,25 @@
           <p v-if="product.brand" class="text-slate-400 mt-1">{{ product.brand }}</p>
           <p class="mt-4 text-slate-300">{{ product.description }}</p>
           <div v-if="product.supply_tier" class="mt-4 border border-emerald-400/20 bg-emerald-400/10 p-3">
-            <p class="text-xs font-semibold uppercase tracking-wider text-emerald-300">Supply chain positioning</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-emerald-300">{{ $t('prod.supplyPositioning') }}</p>
             <p class="mt-1 text-sm text-slate-200">{{ product.supply_tier }}</p>
             <p class="mt-1 text-xs text-slate-400">
-              AinerWise prioritizes China first-tier, project-grade suppliers and verified ecosystem partners instead of low-cost generic hardware.
+              {{ $t('prod.supplyNote') }}
             </p>
           </div>
 
           <div class="mt-6 space-y-3 text-sm border-t border-b border-white/10 py-4">
-            <div v-if="product.list_price" class="flex justify-between"><span class="text-slate-400">Device reference</span><span class="font-bold text-primary-400">&euro;{{ product.list_price }}</span></div>
+            <div v-if="product.list_price" class="flex justify-between"><span class="text-slate-400">{{ $t('prod.deviceRef') }}</span><span class="font-bold text-primary-400">&euro;{{ product.list_price }}</span></div>
             <div class="flex justify-between"><span class="text-slate-400">{{ $t('products.moq') }}</span><span class="text-white">{{ product.moq }}</span></div>
-            <div v-if="product.lead_time_days" class="flex justify-between"><span class="text-slate-400">{{ $t('products.leadTime') }}</span><span class="text-white">{{ product.lead_time_days }} days</span></div>
-            <div v-if="product.warranty_years" class="flex justify-between"><span class="text-slate-400">{{ $t('products.warranty') }}</span><span class="text-white">{{ product.warranty_years }} years</span></div>
-            <div v-if="product.service_term_years?.length" class="flex justify-between"><span class="text-slate-400">Service terms</span><span class="text-white">{{ product.service_term_years.join(' / ') }} years</span></div>
-            <div class="flex justify-between"><span class="text-slate-400">Currency</span><span class="text-white">{{ product.currency }}</span></div>
+            <div v-if="product.lead_time_days" class="flex justify-between"><span class="text-slate-400">{{ $t('products.leadTime') }}</span><span class="text-white">{{ product.lead_time_days }} {{ $t('prod.days') }}</span></div>
+            <div v-if="product.warranty_years" class="flex justify-between"><span class="text-slate-400">{{ $t('products.warranty') }}</span><span class="text-white">{{ product.warranty_years }} {{ $t('prod.years') }}</span></div>
+            <div v-if="product.service_term_years?.length" class="flex justify-between"><span class="text-slate-400">{{ $t('prod.serviceTerms') }}</span><span class="text-white">{{ product.service_term_years.join(' / ') }} {{ $t('prod.years') }}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">{{ $t('reqForm.currency') }}</span><span class="text-white">{{ product.currency }}</span></div>
           </div>
 
           <div v-if="product.price_options_json?.length || product.lifecycle_pricing_json?.length" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div v-if="product.price_options_json?.length" class="border border-white/10 bg-white/5 p-4">
-              <h3 class="font-semibold text-white mb-3">Pricing mode</h3>
+              <h3 class="font-semibold text-white mb-3">{{ $t('prod.pricingMode') }}</h3>
               <div class="space-y-3">
                 <div v-for="option in product.price_options_json" :key="option.label">
                   <div class="flex items-center justify-between gap-3">
@@ -60,12 +60,12 @@
               </div>
             </div>
             <div v-if="product.lifecycle_pricing_json?.length" class="border border-white/10 bg-white/5 p-4">
-              <h3 class="font-semibold text-white mb-3">Lifecycle maintenance</h3>
+              <h3 class="font-semibold text-white mb-3">{{ $t('prod.lifecycleMaint') }}</h3>
               <div class="space-y-3">
                 <div v-for="term in product.lifecycle_pricing_json" :key="term.label">
                   <div class="flex items-center justify-between gap-3">
                     <span class="text-sm text-slate-300">{{ term.label }}</span>
-                    <span v-if="term.annual_fee" class="text-sm font-semibold text-emerald-300">&euro;{{ term.annual_fee }}/yr</span>
+                    <span v-if="term.annual_fee" class="text-sm font-semibold text-emerald-300">&euro;{{ term.annual_fee }}{{ $t('prod.perYr') }}</span>
                   </div>
                   <p v-if="term.note" class="mt-1 text-xs text-slate-500">{{ term.note }}</p>
                 </div>
@@ -99,59 +99,60 @@
     <div v-if="showInquiryModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="showInquiryModal = false">
       <div class="glass-panel max-w-md w-full p-6 border-primary-500/30 shadow-[0_0_20px_rgba(14,165,233,0.2)]">
         <div class="flex items-start justify-between mb-4">
-          <h2 class="text-lg font-bold text-white">Inquire About Product</h2>
+          <h2 class="text-lg font-bold text-white">{{ $t('prod.inquireTitle') }}</h2>
           <button @click="showInquiryModal = false" class="text-slate-400 hover:text-white text-xl">&times;</button>
         </div>
         
         <form v-if="!inquirySuccess" @submit.prevent="submitInquiry" class="space-y-4">
-          <p class="text-sm text-slate-300">Product: <span class="font-bold">{{ product.name }}</span></p>
+          <p class="text-sm text-slate-300">{{ $t('prod.productLabel') }} <span class="font-bold">{{ product.name }}</span></p>
           
           <div v-if="!isLoggedIn">
-            <label class="block text-xs font-medium text-slate-400 mb-1">Name</label>
+            <label class="block text-xs font-medium text-slate-400 mb-1">{{ $t('prod.name') }}</label>
             <input v-model="inquiryForm.contact_name" type="text" class="input-field bg-white/5 border-white/10 text-white placeholder-slate-500" required>
           </div>
           
           <div v-if="!isLoggedIn">
-            <label class="block text-xs font-medium text-slate-400 mb-1">Email</label>
+            <label class="block text-xs font-medium text-slate-400 mb-1">{{ $t('auth.email') }}</label>
             <input v-model="inquiryForm.contact_email" type="email" class="input-field bg-white/5 border-white/10 text-white placeholder-slate-500" required>
           </div>
           
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Phone (Optional)</label>
+            <label class="block text-xs font-medium text-slate-400 mb-1">{{ $t('prod.phoneOptional') }}</label>
             <input v-model="inquiryForm.contact_phone" type="text" class="input-field bg-white/5 border-white/10 text-white placeholder-slate-500">
           </div>
           
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Estimated Quantity</label>
+            <label class="block text-xs font-medium text-slate-400 mb-1">{{ $t('prod.estQuantity') }}</label>
             <input v-model="inquiryForm.quantity" type="number" min="1" class="input-field bg-white/5 border-white/10 text-white placeholder-slate-500" required>
           </div>
           
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Message / Requirements</label>
+            <label class="block text-xs font-medium text-slate-400 mb-1">{{ $t('prod.messageReq') }}</label>
             <textarea v-model="inquiryForm.message" rows="3" class="input-field bg-white/5 border-white/10 text-white placeholder-slate-500" required></textarea>
           </div>
           
           <button type="submit" class="w-full bg-primary-600 text-white py-2 rounded font-medium hover:bg-primary-500 transition shadow-[0_0_10px_rgba(14,165,233,0.3)]">
-            Submit Inquiry
+            {{ $t('prod.submitInquiry') }}
           </button>
         </form>
         
         <div v-else class="text-center py-8">
           <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">✓</div>
-          <h3 class="text-xl font-bold text-white mb-2">Inquiry Sent!</h3>
-          <p class="text-slate-300 text-sm">Thank you for your interest. Our vendor or support team will contact you shortly.</p>
-          <button @click="showInquiryModal = false" class="mt-6 border border-white/20 text-white px-6 py-2 rounded hover:bg-white/10 transition">Close</button>
+          <h3 class="text-xl font-bold text-white mb-2">{{ $t('prod.inquirySent') }}</h3>
+          <p class="text-slate-300 text-sm">{{ $t('prod.thankYou') }}</p>
+          <button @click="showInquiryModal = false" class="mt-6 border border-white/20 text-white px-6 py-2 rounded hover:bg-white/10 transition">{{ $t('reqDetail.close') }}</button>
         </div>
       </div>
     </div>
   </div>
   <div v-else class="section-padding">
-    <div class="container-main glass-panel p-8 text-center text-slate-400">Product not found.</div>
+    <div class="container-main glass-panel p-8 text-center text-slate-400">{{ $t('prod.notFound') }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
+const { t } = useI18n()
 import {
   absoluteSeoUrl,
   firstProductImage,
@@ -177,7 +178,7 @@ const { data: product, pending: loading, error: loadError, refresh: refreshProdu
 )
 
 const error = computed(() => loadError.value
-  ? (loadError.value as any)?.data?.detail || (loadError.value as any)?.message || 'Please try again.'
+  ? (loadError.value as any)?.data?.detail || (loadError.value as any)?.message || t('prod.tryAgain')
   : '')
 
 const inquiryForm = ref({
@@ -259,7 +260,7 @@ async function submitInquiry() {
     inquirySuccess.value = true
   } catch (e: any) {
     console.error('Inquiry failed:', e)
-    alert('Failed to submit inquiry. Please try again.')
+    alert(t('prod.submitFailed'))
   }
 }
 

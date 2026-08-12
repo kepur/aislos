@@ -2992,5 +2992,40 @@
     "websitePh": "Strona internetowa",
     "onboardDescPh": "Produkty, usługi, certyfikaty i zasięg dostaw",
     "finishOnboarding": "Zakończ wdrożenie"
+  },
+  "store": {
+    "redirecting": "Przekierowanie do katalogu produktów…",
+    "eyebrow": "Katalog produktów AISLOS",
+    "ordersTitle": "Moje sprawdzone zapytania",
+    "ordersSubtitle": "Koszyki referencyjne stają się formalnymi ofertami dopiero po weryfikacji AinerWise.",
+    "backCatalog": "Powrót do katalogu produktów",
+    "request": "Zapytanie",
+    "noPayment": "Nie pobrano płatności",
+    "noOrders": "Nie masz jeszcze zapytań z katalogu produktów."
+  },
+  "prod": {
+    "loading": "Wczytywanie produktu…",
+    "loadFailed": "Nie udało się wczytać produktu.",
+    "tryAgain": "Spróbuj ponownie.",
+    "supplyPositioning": "Pozycjonowanie łańcucha dostaw",
+    "supplyNote": "AinerWise stawia na chińskich dostawców pierwszej klasy, klasy projektowej i zweryfikowanych partnerów, zamiast taniego, generycznego sprzętu.",
+    "deviceRef": "Cena referencyjna urządzenia",
+    "days": "dni",
+    "years": "lat",
+    "serviceTerms": "Warunki serwisu",
+    "pricingMode": "Tryb wyceny",
+    "lifecycleMaint": "Konserwacja cyklu życia",
+    "perYr": "/rok",
+    "inquireTitle": "Zapytanie o produkt",
+    "productLabel": "Produkt:",
+    "name": "Imię",
+    "phoneOptional": "Telefon (opcjonalnie)",
+    "estQuantity": "Szacowana ilość",
+    "messageReq": "Wiadomość / wymagania",
+    "submitInquiry": "Wyślij zapytanie",
+    "inquirySent": "Zapytanie wysłane!",
+    "thankYou": "Dziękujemy za zainteresowanie. Nasz dostawca lub zespół wsparcia wkrótce się skontaktuje.",
+    "notFound": "Nie znaleziono produktu.",
+    "submitFailed": "Nie udało się wysłać zapytania. Spróbuj ponownie."
   }
 }

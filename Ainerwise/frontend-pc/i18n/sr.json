@@ -3288,5 +3288,40 @@
     "websitePh": "Veb-sajt",
     "onboardDescPh": "Proizvodi, usluge, sertifikati i pokrivenost isporuke",
     "finishOnboarding": "Završi uvođenje"
+  },
+  "store": {
+    "redirecting": "Preusmeravanje na katalog proizvoda…",
+    "eyebrow": "AISLOS katalog proizvoda",
+    "ordersTitle": "Moji pregledani zahtevi",
+    "ordersSubtitle": "Referentne korpe postaju zvanične ponude tek nakon AinerWise pregleda.",
+    "backCatalog": "Nazad na katalog proizvoda",
+    "request": "Zahtev",
+    "noPayment": "Nije naplaćeno",
+    "noOrders": "Još nemate zahteve iz kataloga proizvoda."
+  },
+  "prod": {
+    "loading": "Učitavanje proizvoda…",
+    "loadFailed": "Proizvod nije mogao biti učitan.",
+    "tryAgain": "Pokušajte ponovo.",
+    "supplyPositioning": "Pozicioniranje lanca snabdevanja",
+    "supplyNote": "AinerWise daje prednost kineskim dobavljačima prvog reda, projektnog nivoa i verifikovanim partnerima, umesto jeftinog generičkog hardvera.",
+    "deviceRef": "Referentna cena uređaja",
+    "days": "dana",
+    "years": "godina",
+    "serviceTerms": "Uslovi usluge",
+    "pricingMode": "Način određivanja cene",
+    "lifecycleMaint": "Održavanje životnog ciklusa",
+    "perYr": "/god.",
+    "inquireTitle": "Upit o proizvodu",
+    "productLabel": "Proizvod:",
+    "name": "Ime",
+    "phoneOptional": "Telefon (opciono)",
+    "estQuantity": "Procenjena količina",
+    "messageReq": "Poruka / zahtevi",
+    "submitInquiry": "Pošalji upit",
+    "inquirySent": "Upit poslat!",
+    "thankYou": "Hvala na interesovanju. Naš dobavljač ili tim podrške će vas uskoro kontaktirati.",
+    "notFound": "Proizvod nije pronađen.",
+    "submitFailed": "Slanje upita nije uspelo. Pokušajte ponovo."
   }
 }

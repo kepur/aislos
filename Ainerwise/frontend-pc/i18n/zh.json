@@ -3288,5 +3288,40 @@
     "websitePh": "官网",
     "onboardDescPh": "产品、服务、认证与交付覆盖范围",
     "finishOnboarding": "完成入驻"
+  },
+  "store": {
+    "redirecting": "正在跳转到产品目录…",
+    "eyebrow": "AISLOS 产品目录",
+    "ordersTitle": "我的已审核请求",
+    "ordersSubtitle": "参考购物篮需经 AinerWise 审核后才会成为正式报价。",
+    "backCatalog": "返回产品目录",
+    "request": "请求",
+    "noPayment": "未收取任何款项",
+    "noOrders": "你还没有产品目录请求。"
+  },
+  "prod": {
+    "loading": "正在加载产品…",
+    "loadFailed": "无法加载产品。",
+    "tryAgain": "请重试。",
+    "supplyPositioning": "供应链定位",
+    "supplyNote": "AinerWise 优先选择中国一线、项目级供应商和已认证生态伙伴，而非低价通用硬件。",
+    "deviceRef": "设备参考价",
+    "days": "天",
+    "years": "年",
+    "serviceTerms": "服务期限",
+    "pricingMode": "定价模式",
+    "lifecycleMaint": "全生命周期维护",
+    "perYr": "/年",
+    "inquireTitle": "产品询价",
+    "productLabel": "产品：",
+    "name": "姓名",
+    "phoneOptional": "电话（选填）",
+    "estQuantity": "预计数量",
+    "messageReq": "留言 / 需求",
+    "submitInquiry": "提交询价",
+    "inquirySent": "询价已发送！",
+    "thankYou": "感谢你的关注。供应商或支持团队会尽快与你联系。",
+    "notFound": "未找到产品。",
+    "submitFailed": "提交询价失败，请重试。"
   }
 }

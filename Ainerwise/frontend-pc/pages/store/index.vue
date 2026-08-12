@@ -1,7 +1,7 @@
 <template>
   <div class="section-padding">
     <div class="container-main glass-panel p-8 text-center text-slate-300">
-      Redirecting to Product Catalog...
+      {{ $t('store.redirecting') }}
     </div>
   </div>
 </template>
