@@ -2695,5 +2695,73 @@
     "saveFailed": "Nie udało się zapisać.",
     "delistFailed": "Wycofanie nie powiodło się.",
     "loadFailed": "Nie udało się wczytać katalogu."
+  },
+  "pTickets": {
+    "subtitle": "Uzyskaj pomoc od naszego zespołu wsparcia",
+    "create": "+ Utwórz zgłoszenie",
+    "colTitle": "Tytuł",
+    "colType": "Typ",
+    "colPriority": "Priorytet",
+    "colCreated": "Utworzono",
+    "loading": "Wczytywanie zgłoszeń…",
+    "modalTitle": "Utwórz zgłoszenie do wsparcia",
+    "titleLabel": "Tytuł *",
+    "titlePh": "Krótki opis problemu",
+    "issueType": "Typ problemu",
+    "selectType": "Wybierz typ",
+    "typeTechnical": "Problem techniczny",
+    "typeBilling": "Rozliczenia",
+    "typeProduct": "Zapytanie o produkt",
+    "typeService": "Prośba o usługę",
+    "typeOther": "Inne",
+    "prioLow": "Niski",
+    "prioMedium": "Średni",
+    "prioHigh": "Wysoki",
+    "prioCritical": "Krytyczny",
+    "description": "Opis",
+    "descPh": "Szczegółowy opis…",
+    "creating": "Tworzenie…",
+    "loadFailed": "Nie udało się wczytać zgłoszeń.",
+    "createFailed": "Nie udało się utworzyć zgłoszenia."
+  },
+  "pLeads": {
+    "subtitle": "Śledź zgłoszone wymagania",
+    "newReq": "+ Nowe wymaganie",
+    "colProjectType": "Typ projektu",
+    "colCountry": "Kraj",
+    "colBudget": "Budżet",
+    "colSubmitted": "Wysłano",
+    "loading": "Wczytywanie wymagań…",
+    "submitFirst": "Zgłoś pierwsze wymaganie →",
+    "loadFailed": "Nie udało się wczytać wymagań."
+  },
+  "pQuotes": {
+    "subtitle": "Przeglądaj i odpowiadaj na oferty",
+    "colQuote": "Oferta",
+    "colTotal": "Razem",
+    "colValidUntil": "Ważne do",
+    "loading": "Wczytywanie ofert…",
+    "loadFailed": "Nie udało się wczytać ofert.",
+    "updateFailed": "Nie udało się zaktualizować oferty."
+  },
+  "pInst": {
+    "title": "Instalacje",
+    "subtitle": "Śledź pakiety prac, daty na miejscu, postęp w terenie i dowody.",
+    "generalInstall": "Instalacja ogólna",
+    "start": "Start",
+    "end": "Koniec",
+    "empty": "Pakiety instalacyjne pojawią się po wysłaniu projektu."
+  },
+  "pProj": {
+    "subtitle": "Śledź swoje projekty inteligentnych budynków",
+    "planning": "Planowanie",
+    "delivery": "Dostawa",
+    "closed": "Zamknięte",
+    "start": "Start",
+    "deliveryLabel": "Dostawa",
+    "created": "Utworzono",
+    "loading": "Wczytywanie projektów…",
+    "noProjects": "Brak aktywnych projektów",
+    "projectsHint": "Projekty pojawią się tutaj po zaakceptowaniu oferty"
   }
 }

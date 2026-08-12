@@ -2,19 +2,19 @@
   <div class="space-y-6">
     <div>
       <h1 class="text-xl font-bold ws-title">{{ $t('portal.myQuotes') }}</h1>
-      <p class="text-sm ws-faint mt-1">Review and respond to your quotes</p>
+      <p class="text-sm ws-faint mt-1">{{ $t('pQuotes.subtitle') }}</p>
     </div>
 
     <div v-if="error" class="portal-card border-red-200 bg-red-50 text-sm text-red-700">
-      {{ error }} <button class="ml-2 font-semibold underline" @click="loadData">Retry</button>
+      {{ error }} <button class="ml-2 font-semibold underline" @click="loadData">{{ $t('common.retry') }}</button>
     </div>
     <div class="portal-card p-0 overflow-hidden">
       <table class="w-full text-sm">
         <thead>
           <tr class="ws-sunken/80 border-b ws-hairline">
-            <th class="text-left px-4 py-3 text-xs font-semibold ws-faint uppercase tracking-wider">Quote</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold ws-faint uppercase tracking-wider">Total</th>
-            <th class="text-left px-4 py-3 text-xs font-semibold ws-faint uppercase tracking-wider">Valid Until</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold ws-faint uppercase tracking-wider">{{ $t('pQuotes.colQuote') }}</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold ws-faint uppercase tracking-wider">{{ $t('pQuotes.colTotal') }}</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold ws-faint uppercase tracking-wider">{{ $t('pQuotes.colValidUntil') }}</th>
             <th class="text-left px-4 py-3 text-xs font-semibold ws-faint uppercase tracking-wider">{{ $t('common.status') }}</th>
             <th class="text-left px-4 py-3 text-xs font-semibold ws-faint uppercase tracking-wider">{{ $t('common.actions') }}</th>
           </tr>
@@ -30,14 +30,14 @@
             <td class="px-4 py-3">
               <div class="flex gap-2">
                 <button v-if="quote.status === 'sent'" @click="respondToQuote(quote.id, 'accepted')"
- class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg transition">Accept</button>
+ class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg transition">{{ $t('portal.approvals.accept') }}</button>
                 <button v-if="quote.status === 'sent'" @click="respondToQuote(quote.id, 'rejected')"
- class="text-xs font-semibold text-red-500 hover:text-red-600 bg-red-50 px-3 py-1 rounded-lg transition">Decline</button>
+ class="text-xs font-semibold text-red-500 hover:text-red-600 bg-red-50 px-3 py-1 rounded-lg transition">{{ $t('portal.approvals.decline') }}</button>
               </div>
             </td>
           </tr>
           <tr v-if="loading && !quotes.length">
-            <td colspan="5" class="px-4 py-12 text-center text-sm ws-faint">Loading quotes...</td>
+            <td colspan="5" class="px-4 py-12 text-center text-sm ws-faint">{{ $t('pQuotes.loading') }}</td>
           </tr>
           <tr v-else-if="!quotes.length">
             <td colspan="5" class="px-4 py-12 text-center">
@@ -54,6 +54,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
+const { t } = useI18n()
 const { apiFetch } = useApi()
 const quotes = ref<any[]>([])
 const loading = ref(true)
@@ -79,7 +80,7 @@ async function loadData() {
  quotes.value = res.items || []
   } catch (e: any) {
  quotes.value = []
- error.value = e?.data?.detail || e?.message || 'Unable to load quotes.'
+ error.value = e?.data?.detail || e?.message || t('pQuotes.loadFailed')
   } finally {
  loading.value = false
   }
@@ -91,7 +92,7 @@ async function respondToQuote(id: string, status: string) {
  await apiFetch(`/quotes/${id}/status`, { method: 'PATCH', body: { status } })
  await loadData()
   } catch (e: any) {
- error.value = e?.data?.detail || e?.message || 'Unable to update quote.'
+ error.value = e?.data?.detail || e?.message || t('pQuotes.updateFailed')
   }
 }
 </script>

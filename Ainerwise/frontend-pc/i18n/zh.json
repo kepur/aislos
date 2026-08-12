@@ -2991,5 +2991,73 @@
     "saveFailed": "保存失败",
     "delistFailed": "下架失败",
     "loadFailed": "加载目录失败"
+  },
+  "pTickets": {
+    "subtitle": "获取支持团队的帮助",
+    "create": "+ 新建工单",
+    "colTitle": "标题",
+    "colType": "类型",
+    "colPriority": "优先级",
+    "colCreated": "创建时间",
+    "loading": "正在加载工单…",
+    "modalTitle": "创建支持工单",
+    "titleLabel": "标题 *",
+    "titlePh": "简要描述问题",
+    "issueType": "问题类型",
+    "selectType": "选择类型",
+    "typeTechnical": "技术问题",
+    "typeBilling": "账单",
+    "typeProduct": "产品咨询",
+    "typeService": "服务请求",
+    "typeOther": "其他",
+    "prioLow": "低",
+    "prioMedium": "中",
+    "prioHigh": "高",
+    "prioCritical": "紧急",
+    "description": "描述",
+    "descPh": "详细描述…",
+    "creating": "创建中…",
+    "loadFailed": "无法加载工单。",
+    "createFailed": "无法创建工单。"
+  },
+  "pLeads": {
+    "subtitle": "跟踪你提交的需求",
+    "newReq": "+ 新建需求",
+    "colProjectType": "项目类型",
+    "colCountry": "国家",
+    "colBudget": "预算",
+    "colSubmitted": "提交时间",
+    "loading": "正在加载需求…",
+    "submitFirst": "提交你的第一个需求 →",
+    "loadFailed": "无法加载需求。"
+  },
+  "pQuotes": {
+    "subtitle": "查看并回应你的报价",
+    "colQuote": "报价",
+    "colTotal": "总额",
+    "colValidUntil": "有效期至",
+    "loading": "正在加载报价…",
+    "loadFailed": "无法加载报价。",
+    "updateFailed": "无法更新报价。"
+  },
+  "pInst": {
+    "title": "安装",
+    "subtitle": "跟踪工作包、现场日期、施工进度与证据。",
+    "generalInstall": "通用安装",
+    "start": "开始",
+    "end": "结束",
+    "empty": "项目派工后会显示安装工作包。"
+  },
+  "pProj": {
+    "subtitle": "跟踪你的智能建筑项目",
+    "planning": "规划",
+    "delivery": "交付",
+    "closed": "关闭",
+    "start": "开始",
+    "deliveryLabel": "交付",
+    "created": "创建",
+    "loading": "正在加载项目…",
+    "noProjects": "暂无进行中的项目",
+    "projectsHint": "报价被接受后，项目会显示在这里"
   }
 }

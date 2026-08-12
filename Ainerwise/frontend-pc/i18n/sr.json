@@ -2991,5 +2991,73 @@
     "saveFailed": "Čuvanje nije uspelo.",
     "delistFailed": "Povlačenje nije uspelo.",
     "loadFailed": "Učitavanje kataloga nije uspelo."
+  },
+  "pTickets": {
+    "subtitle": "Zatražite pomoć od našeg tima za podršku",
+    "create": "+ Kreiraj tiket",
+    "colTitle": "Naslov",
+    "colType": "Tip",
+    "colPriority": "Prioritet",
+    "colCreated": "Kreirano",
+    "loading": "Učitavanje tiketa…",
+    "modalTitle": "Kreiraj tiket podrške",
+    "titleLabel": "Naslov *",
+    "titlePh": "Kratak opis problema",
+    "issueType": "Tip problema",
+    "selectType": "Izaberite tip",
+    "typeTechnical": "Tehnički problem",
+    "typeBilling": "Naplata",
+    "typeProduct": "Upit o proizvodu",
+    "typeService": "Zahtev za uslugu",
+    "typeOther": "Ostalo",
+    "prioLow": "Nizak",
+    "prioMedium": "Srednji",
+    "prioHigh": "Visok",
+    "prioCritical": "Kritičan",
+    "description": "Opis",
+    "descPh": "Detaljan opis…",
+    "creating": "Kreiranje…",
+    "loadFailed": "Učitavanje tiketa nije uspelo.",
+    "createFailed": "Kreiranje tiketa nije uspelo."
+  },
+  "pLeads": {
+    "subtitle": "Pratite podnete zahteve",
+    "newReq": "+ Novi zahtev",
+    "colProjectType": "Tip projekta",
+    "colCountry": "Zemlja",
+    "colBudget": "Budžet",
+    "colSubmitted": "Podneto",
+    "loading": "Učitavanje zahteva…",
+    "submitFirst": "Podnesite prvi zahtev →",
+    "loadFailed": "Učitavanje zahteva nije uspelo."
+  },
+  "pQuotes": {
+    "subtitle": "Pregledajte i odgovorite na ponude",
+    "colQuote": "Ponuda",
+    "colTotal": "Ukupno",
+    "colValidUntil": "Važi do",
+    "loading": "Učitavanje ponuda…",
+    "loadFailed": "Učitavanje ponuda nije uspelo.",
+    "updateFailed": "Ažuriranje ponude nije uspelo."
+  },
+  "pInst": {
+    "title": "Instalacije",
+    "subtitle": "Pratite radne pakete, datume na lokaciji, napredak na terenu i dokaze.",
+    "generalInstall": "Opšta instalacija",
+    "start": "Početak",
+    "end": "Kraj",
+    "empty": "Instalacioni paketi se pojavljuju nakon otpreme projekta."
+  },
+  "pProj": {
+    "subtitle": "Pratite svoje projekte pametnih zgrada",
+    "planning": "Planiranje",
+    "delivery": "Isporuka",
+    "closed": "Zatvoreno",
+    "start": "Početak",
+    "deliveryLabel": "Isporuka",
+    "created": "Kreirano",
+    "loading": "Učitavanje projekata…",
+    "noProjects": "Još nema aktivnih projekata",
+    "projectsHint": "Projekti se pojavljuju ovde kada se ponuda prihvati"
   }
 }

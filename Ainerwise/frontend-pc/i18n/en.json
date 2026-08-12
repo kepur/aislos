@@ -2991,5 +2991,73 @@
     "saveFailed": "Failed to save.",
     "delistFailed": "Failed to delist.",
     "loadFailed": "Failed to load the catalog."
+  },
+  "pTickets": {
+    "subtitle": "Get help from our support team",
+    "create": "+ Create Ticket",
+    "colTitle": "Title",
+    "colType": "Type",
+    "colPriority": "Priority",
+    "colCreated": "Created",
+    "loading": "Loading tickets…",
+    "modalTitle": "Create Support Ticket",
+    "titleLabel": "Title *",
+    "titlePh": "Brief description of the issue",
+    "issueType": "Issue Type",
+    "selectType": "Select type",
+    "typeTechnical": "Technical Issue",
+    "typeBilling": "Billing",
+    "typeProduct": "Product Inquiry",
+    "typeService": "Service Request",
+    "typeOther": "Other",
+    "prioLow": "Low",
+    "prioMedium": "Medium",
+    "prioHigh": "High",
+    "prioCritical": "Critical",
+    "description": "Description",
+    "descPh": "Detailed description…",
+    "creating": "Creating…",
+    "loadFailed": "Unable to load tickets.",
+    "createFailed": "Unable to create ticket."
+  },
+  "pLeads": {
+    "subtitle": "Track your submitted requirements",
+    "newReq": "+ New Requirement",
+    "colProjectType": "Project Type",
+    "colCountry": "Country",
+    "colBudget": "Budget",
+    "colSubmitted": "Submitted",
+    "loading": "Loading requirements…",
+    "submitFirst": "Submit your first requirement →",
+    "loadFailed": "Unable to load requirements."
+  },
+  "pQuotes": {
+    "subtitle": "Review and respond to your quotes",
+    "colQuote": "Quote",
+    "colTotal": "Total",
+    "colValidUntil": "Valid Until",
+    "loading": "Loading quotes…",
+    "loadFailed": "Unable to load quotes.",
+    "updateFailed": "Unable to update quote."
+  },
+  "pInst": {
+    "title": "Installations",
+    "subtitle": "Track work packages, site dates, field progress, and evidence.",
+    "generalInstall": "General installation",
+    "start": "Start",
+    "end": "End",
+    "empty": "Installation packages appear after project dispatch."
+  },
+  "pProj": {
+    "subtitle": "Track your smart building projects",
+    "planning": "Planning",
+    "delivery": "Delivery",
+    "closed": "Closed",
+    "start": "Start",
+    "deliveryLabel": "Delivery",
+    "created": "Created",
+    "loading": "Loading projects…",
+    "noProjects": "No active projects yet",
+    "projectsHint": "Projects appear here once a quote is accepted"
   }
 }

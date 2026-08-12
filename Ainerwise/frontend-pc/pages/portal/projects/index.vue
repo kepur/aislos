@@ -2,7 +2,7 @@
   <div class="space-y-6">
     <div>
       <h1 class="text-xl font-bold ws-title">{{ $t('portal.myProjects') }}</h1>
-      <p class="text-sm ws-faint mt-1">Track your smart building projects</p>
+      <p class="text-sm ws-faint mt-1">{{ $t('pProj.subtitle') }}</p>
     </div>
 
     <div v-if="projects.length" class="space-y-4">
@@ -32,24 +32,24 @@
             />
           </div>
           <div class="flex justify-between mt-1.5 text-[10px] ws-faint font-medium uppercase tracking-wider">
-            <span>Planning</span>
-            <span>Delivery</span>
-            <span>Closed</span>
+            <span>{{ $t('pProj.planning') }}</span>
+            <span>{{ $t('pProj.delivery') }}</span>
+            <span>{{ $t('pProj.closed') }}</span>
           </div>
         </div>
 
         <div class="mt-3 flex flex-wrap items-center gap-4 text-xs ws-faint">
-          <span v-if="project.start_date">Start: {{ project.start_date }}</span>
-          <span v-if="project.expected_delivery_date">Delivery: {{ project.expected_delivery_date }}</span>
-          <span>Created: {{ new Date(project.created_at).toLocaleDateString() }}</span>
+          <span v-if="project.start_date">{{ $t('pProj.start') }}: {{ project.start_date }}</span>
+          <span v-if="project.expected_delivery_date">{{ $t('pProj.deliveryLabel') }}: {{ project.expected_delivery_date }}</span>
+          <span>{{ $t('pProj.created') }}: {{ formatDay(project.created_at) }}</span>
         </div>
       </div>
     </div>
 
     <div v-else class="portal-card text-center py-12">
       <div class="text-4xl mb-3">🏗️</div>
-      <p class="text-sm ws-faint">{{ loading ? 'Loading projects...' : 'No active projects yet' }}</p>
-      <p v-if="!loading" class="text-xs ws-faint mt-1">Projects appear here once a quote is accepted</p>
+      <p class="text-sm ws-faint">{{ loading ? $t('pProj.loading') : $t('pProj.noProjects') }}</p>
+      <p v-if="!loading" class="text-xs ws-faint mt-1">{{ $t('pProj.projectsHint') }}</p>
     </div>
       <WorkspacePagination v-model:page="page" :page-size="pageSize" :total="projects.length" />
 
@@ -60,6 +60,8 @@
 
 definePageMeta({ layout: 'procurement', middleware: 'auth' })
 
+const { t } = useI18n()
+const { formatDay } = useLocaleFormat()
 const { apiFetch } = useApi()
 const projects = ref<any[]>([])
 
