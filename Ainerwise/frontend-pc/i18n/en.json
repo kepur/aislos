@@ -3059,5 +3059,35 @@
     "loading": "Loading projects…",
     "noProjects": "No active projects yet",
     "projectsHint": "Projects appear here once a quote is accepted"
+  },
+  "pLeadD": {
+    "back": "Requirements",
+    "eyebrow": "Customer requirement",
+    "titleFallback": "Solution request",
+    "noLocation": "Location not provided",
+    "budget": "Budget",
+    "budgetTbd": "To be assessed",
+    "solutionLine": "Solution line",
+    "underAnalysis": "Under analysis",
+    "submitted": "Submitted",
+    "description": "Description",
+    "noDesc": "No description supplied.",
+    "requestedSystems": "Requested systems",
+    "aiWillIdentify": "AI analysis will identify the systems.",
+    "aiAnalysis": "AI analysis",
+    "loading": "Loading requirement…",
+    "notFound": "Requirement not found",
+    "loadFailed": "Unable to load requirement"
+  },
+  "pInstD": {
+    "plannedStart": "Planned start",
+    "plannedEnd": "Planned end",
+    "site": "Site",
+    "projectSite": "Project site",
+    "fieldTasks": "Field tasks and evidence",
+    "evidenceRecords": "{n} evidence records",
+    "evidenceCaptured": "Evidence captured on site",
+    "noTasks": "No field tasks published yet.",
+    "loading": "Loading installation…"
   }
 }

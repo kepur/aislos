@@ -3059,5 +3059,35 @@
     "loading": "正在加载项目…",
     "noProjects": "暂无进行中的项目",
     "projectsHint": "报价被接受后，项目会显示在这里"
+  },
+  "pLeadD": {
+    "back": "需求",
+    "eyebrow": "客户需求",
+    "titleFallback": "方案需求",
+    "noLocation": "未提供位置",
+    "budget": "预算",
+    "budgetTbd": "待评估",
+    "solutionLine": "方案产品线",
+    "underAnalysis": "分析中",
+    "submitted": "提交时间",
+    "description": "描述",
+    "noDesc": "未提供描述。",
+    "requestedSystems": "所需系统",
+    "aiWillIdentify": "AI 分析会识别所需系统。",
+    "aiAnalysis": "AI 分析",
+    "loading": "正在加载需求…",
+    "notFound": "未找到需求",
+    "loadFailed": "无法加载需求"
+  },
+  "pInstD": {
+    "plannedStart": "计划开始",
+    "plannedEnd": "计划结束",
+    "site": "现场",
+    "projectSite": "项目现场",
+    "fieldTasks": "现场任务与证据",
+    "evidenceRecords": "{n} 条证据记录",
+    "evidenceCaptured": "现场采集的证据",
+    "noTasks": "尚未发布现场任务。",
+    "loading": "正在加载安装…"
   }
 }

@@ -2763,5 +2763,35 @@
     "loading": "Wczytywanie projektów…",
     "noProjects": "Brak aktywnych projektów",
     "projectsHint": "Projekty pojawią się tutaj po zaakceptowaniu oferty"
+  },
+  "pLeadD": {
+    "back": "Wymagania",
+    "eyebrow": "Wymaganie klienta",
+    "titleFallback": "Zapytanie o rozwiązanie",
+    "noLocation": "Nie podano lokalizacji",
+    "budget": "Budżet",
+    "budgetTbd": "Do oceny",
+    "solutionLine": "Linia rozwiązań",
+    "underAnalysis": "W analizie",
+    "submitted": "Wysłano",
+    "description": "Opis",
+    "noDesc": "Nie podano opisu.",
+    "requestedSystems": "Wymagane systemy",
+    "aiWillIdentify": "Analiza AI zidentyfikuje systemy.",
+    "aiAnalysis": "Analiza AI",
+    "loading": "Wczytywanie wymagania…",
+    "notFound": "Nie znaleziono wymagania",
+    "loadFailed": "Nie udało się wczytać wymagania"
+  },
+  "pInstD": {
+    "plannedStart": "Planowany start",
+    "plannedEnd": "Planowany koniec",
+    "site": "Miejsce",
+    "projectSite": "Miejsce projektu",
+    "fieldTasks": "Zadania terenowe i dowody",
+    "evidenceRecords": "{n} zapisów dowodów",
+    "evidenceCaptured": "Dowód zebrany na miejscu",
+    "noTasks": "Brak opublikowanych zadań terenowych.",
+    "loading": "Wczytywanie instalacji…"
   }
 }

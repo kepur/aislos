@@ -3059,5 +3059,35 @@
     "loading": "Učitavanje projekata…",
     "noProjects": "Još nema aktivnih projekata",
     "projectsHint": "Projekti se pojavljuju ovde kada se ponuda prihvati"
+  },
+  "pLeadD": {
+    "back": "Zahtevi",
+    "eyebrow": "Zahtev kupca",
+    "titleFallback": "Zahtev za rešenje",
+    "noLocation": "Lokacija nije navedena",
+    "budget": "Budžet",
+    "budgetTbd": "Biće procenjeno",
+    "solutionLine": "Linija rešenja",
+    "underAnalysis": "U analizi",
+    "submitted": "Podneto",
+    "description": "Opis",
+    "noDesc": "Opis nije naveden.",
+    "requestedSystems": "Traženi sistemi",
+    "aiWillIdentify": "AI analiza će identifikovati sisteme.",
+    "aiAnalysis": "AI analiza",
+    "loading": "Učitavanje zahteva…",
+    "notFound": "Zahtev nije pronađen",
+    "loadFailed": "Učitavanje zahteva nije uspelo"
+  },
+  "pInstD": {
+    "plannedStart": "Planirani početak",
+    "plannedEnd": "Planirani kraj",
+    "site": "Lokacija",
+    "projectSite": "Lokacija projekta",
+    "fieldTasks": "Terenski zadaci i dokazi",
+    "evidenceRecords": "{n} zapisa dokaza",
+    "evidenceCaptured": "Dokaz prikupljen na lokaciji",
+    "noTasks": "Još nema objavljenih terenskih zadataka.",
+    "loading": "Učitavanje instalacije…"
   }
 }
