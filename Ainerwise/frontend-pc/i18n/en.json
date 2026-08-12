@@ -3089,5 +3089,19 @@
     "evidenceCaptured": "Evidence captured on site",
     "noTasks": "No field tasks published yet.",
     "loading": "Loading installation…"
+  },
+  "intents": {
+    "title": "Procurement requests",
+    "newReq": "New request",
+    "empty": "No requests yet — click “New request” to create one.",
+    "createTitle": "New procurement request",
+    "descLabel": "Description",
+    "loadFailed": "Failed to load.",
+    "createFailed": "Failed to create.",
+    "backList": "Request list",
+    "statusPrefix": "Status: {status}",
+    "matchSuppliers": "Matched suppliers",
+    "loadingCandidates": "Loading candidates…",
+    "noSuppliers": "No matched suppliers"
   }
 }

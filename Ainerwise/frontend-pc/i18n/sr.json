@@ -3089,5 +3089,19 @@
     "evidenceCaptured": "Dokaz prikupljen na lokaciji",
     "noTasks": "Još nema objavljenih terenskih zadataka.",
     "loading": "Učitavanje instalacije…"
+  },
+  "intents": {
+    "title": "Zahtevi za nabavku",
+    "newReq": "Novi zahtev",
+    "empty": "Još nema zahteva — kliknite „Novi zahtev“ da kreirate.",
+    "createTitle": "Novi zahtev za nabavku",
+    "descLabel": "Opis",
+    "loadFailed": "Učitavanje nije uspelo.",
+    "createFailed": "Kreiranje nije uspelo.",
+    "backList": "Lista zahteva",
+    "statusPrefix": "Status: {status}",
+    "matchSuppliers": "Usklađeni dobavljači",
+    "loadingCandidates": "Učitavanje kandidata…",
+    "noSuppliers": "Nema usklađenih dobavljača"
   }
 }

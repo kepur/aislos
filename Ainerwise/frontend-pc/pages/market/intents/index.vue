@@ -3,7 +3,7 @@
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div>
         <p :class="['text-xs font-bold uppercase tracking-wider', brand.accentText]">Intents</p>
-        <h1 class="mt-1 text-2xl font-bold text-white">采购需求</h1>
+        <h1 class="mt-1 text-2xl font-bold text-white">{{ $t('intents.title') }}</h1>
         <p class="text-sm text-slate-500">Core API · portal_key=cebu</p>
       </div>
       <button
@@ -12,12 +12,12 @@
         :class="brand.accent"
         @click="showCreate = true"
       >
-        新建需求
+        {{ $t('intents.newReq') }}
       </button>
     </div>
 
     <p v-if="error" class="text-sm text-red-400">{{ error }}</p>
-    <p v-if="loading" class="pc-card text-sm text-slate-400">加载中…</p>
+    <p v-if="loading" class="pc-card text-sm text-slate-400">{{ $t('common.loading') }}</p>
 
     <div v-else class="space-y-3">
       <NuxtLink
@@ -36,24 +36,24 @@
           </span>
         </div>
       </NuxtLink>
-      <p v-if="!items.length" class="pc-card text-sm text-slate-400">暂无需求，点击「新建需求」创建。</p>
+      <p v-if="!items.length" class="pc-card text-sm text-slate-400">{{ $t('intents.empty') }}</p>
     </div>
 
     <div v-if="showCreate" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <form class="pc-card w-full max-w-lg space-y-4" @submit.prevent="createIntent">
-        <h2 class="text-lg font-bold text-white">新建采购需求</h2>
+        <h2 class="text-lg font-bold text-white">{{ $t('intents.createTitle') }}</h2>
         <div>
-          <label class="mb-1 block text-sm text-slate-400">标题</label>
+          <label class="mb-1 block text-sm text-slate-400">{{ $t('reqForm.rTitle') }}</label>
           <input v-model="form.title" required class="input-field" />
         </div>
         <div>
-          <label class="mb-1 block text-sm text-slate-400">说明</label>
+          <label class="mb-1 block text-sm text-slate-400">{{ $t('intents.descLabel') }}</label>
           <textarea v-model="form.description" class="input-field" rows="3" />
         </div>
         <p v-if="createError" class="text-sm text-red-400">{{ createError }}</p>
         <div class="flex justify-end gap-2">
-          <button type="button" class="btn-secondary" @click="showCreate = false">取消</button>
-          <button type="submit" class="btn-primary" :disabled="creating">{{ creating ? '提交中…' : '创建' }}</button>
+          <button type="button" class="btn-secondary" @click="showCreate = false">{{ $t('common.cancel') }}</button>
+          <button type="submit" class="btn-primary" :disabled="creating">{{ creating ? $t('reqForm.submitting') : $t('common.create') }}</button>
         </div>
       </form>
     </div>
@@ -62,6 +62,7 @@
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
+const { t } = useI18n()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const { bootstrap } = useCebuPortalShell()
@@ -83,7 +84,7 @@ async function load() {
     const res = await listProcurementRequests()
     items.value = res.items.filter((i: any) => (i.portal_key || 'cebu') === 'cebu')
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '加载失败'
+    error.value = e?.data?.detail || e?.message || t('intents.loadFailed')
   } finally {
     loading.value = false
   }
@@ -102,7 +103,7 @@ async function createIntent() {
     form.description = ''
     await navigateTo(`/market/intents/${(row as any).id}`)
   } catch (e: any) {
-    createError.value = e?.data?.detail || e?.message || '创建失败'
+    createError.value = e?.data?.detail || e?.message || t('intents.createFailed')
   } finally {
     creating.value = false
   }

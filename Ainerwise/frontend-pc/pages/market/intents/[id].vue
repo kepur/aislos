@@ -1,12 +1,12 @@
 <template>
   <div class="space-y-6">
-    <NuxtLink :to="localized('/market/intents')" :class="['text-sm hover:underline', brand.accentText]">← 需求列表</NuxtLink>
-    <p v-if="loading" class="pc-card text-sm text-slate-400">加载中…</p>
+    <NuxtLink :to="localized('/market/intents')" :class="['text-sm hover:underline', brand.accentText]">← {{ $t('intents.backList') }}</NuxtLink>
+    <p v-if="loading" class="pc-card text-sm text-slate-400">{{ $t('common.loading') }}</p>
     <p v-else-if="error" class="text-sm text-red-400">{{ error }}</p>
     <template v-else-if="intent">
       <div class="pc-card space-y-2">
         <h1 class="text-2xl font-bold text-white">{{ intent.title }}</h1>
-        <p class="text-sm text-slate-500">状态: {{ intent.status }}</p>
+        <p class="text-sm text-slate-500">{{ $t('intents.statusPrefix', { status: intent.status }) }}</p>
         <p v-if="intent.description" class="text-slate-300">{{ intent.description }}</p>
         <button
           v-if="intent.status === 'draft'"
@@ -16,18 +16,18 @@
           :disabled="publishing"
           @click="publish"
         >
-          {{ publishing ? '发布中…' : '发布需求' }}
+          {{ publishing ? $t('reqDetail.publishing') : $t('reqDetail.publish') }}
         </button>
       </div>
 
       <div v-if="intent.status !== 'draft'" class="pc-card">
-        <h2 class="font-semibold text-white mb-3">匹配供应商</h2>
-        <p v-if="candidatesLoading" class="text-sm text-slate-400">加载候选…</p>
+        <h2 class="font-semibold text-white mb-3">{{ $t('intents.matchSuppliers') }}</h2>
+        <p v-if="candidatesLoading" class="text-sm text-slate-400">{{ $t('intents.loadingCandidates') }}</p>
         <ul v-else class="space-y-2 text-sm">
           <li v-for="c in candidates" :key="c.id" class="rounded-lg border border-white/10 p-3 text-slate-300">
             {{ c.title }} · {{ c.price_minor ? (c.price_minor / 100).toFixed(2) : '—' }} {{ c.currency }}
           </li>
-          <li v-if="!candidates.length" class="text-slate-500">暂无匹配供应商</li>
+          <li v-if="!candidates.length" class="text-slate-500">{{ $t('intents.noSuppliers') }}</li>
         </ul>
       </div>
     </template>
@@ -36,6 +36,7 @@
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
+const { t } = useI18n()
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const route = useRoute()
@@ -69,7 +70,7 @@ async function publish() {
     intent.value = await publishRequest(id)
     await loadCandidates()
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '发布失败'
+    error.value = e?.data?.detail || e?.message || t('reqDetail.publishFailed')
   } finally {
     publishing.value = false
   }
@@ -81,7 +82,7 @@ onMounted(async () => {
     intent.value = await getProcurementRequest(id)
     if (intent.value?.status !== 'draft') await loadCandidates()
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || '加载失败'
+    error.value = e?.data?.detail || e?.message || t('intents.loadFailed')
   } finally {
     loading.value = false
   }

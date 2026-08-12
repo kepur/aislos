@@ -2793,5 +2793,19 @@
     "evidenceCaptured": "Dowód zebrany na miejscu",
     "noTasks": "Brak opublikowanych zadań terenowych.",
     "loading": "Wczytywanie instalacji…"
+  },
+  "intents": {
+    "title": "Zapytania zakupowe",
+    "newReq": "Nowe zapytanie",
+    "empty": "Brak zapytań — kliknij „Nowe zapytanie”, aby utworzyć.",
+    "createTitle": "Nowe zapytanie zakupowe",
+    "descLabel": "Opis",
+    "loadFailed": "Wczytywanie nie powiodło się.",
+    "createFailed": "Utworzenie nie powiodło się.",
+    "backList": "Lista zapytań",
+    "statusPrefix": "Status: {status}",
+    "matchSuppliers": "Dopasowani dostawcy",
+    "loadingCandidates": "Wczytywanie kandydatów…",
+    "noSuppliers": "Brak dopasowanych dostawców"
   }
 }

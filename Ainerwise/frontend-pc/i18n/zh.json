@@ -3089,5 +3089,19 @@
     "evidenceCaptured": "现场采集的证据",
     "noTasks": "尚未发布现场任务。",
     "loading": "正在加载安装…"
+  },
+  "intents": {
+    "title": "采购需求",
+    "newReq": "新建需求",
+    "empty": "暂无需求，点击「新建需求」创建。",
+    "createTitle": "新建采购需求",
+    "descLabel": "说明",
+    "loadFailed": "加载失败",
+    "createFailed": "创建失败",
+    "backList": "需求列表",
+    "statusPrefix": "状态: {status}",
+    "matchSuppliers": "匹配供应商",
+    "loadingCandidates": "加载候选…",
+    "noSuppliers": "暂无匹配供应商"
   }
 }
