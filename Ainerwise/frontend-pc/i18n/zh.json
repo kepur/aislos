@@ -3103,5 +3103,24 @@
     "matchSuppliers": "匹配供应商",
     "loadingCandidates": "加载候选…",
     "noSuppliers": "暂无匹配供应商"
+  },
+  "procPages": {
+    "postEyebrow": "AI 采购",
+    "postTitle": "发布采购需求",
+    "postSubtitle": "你的需求会成为真实的 Core Commerce 记录，并可发布给已认证供应商。",
+    "newReqTitle": "新建采购需求",
+    "supplierOffer": "供应商报价",
+    "disputeTitle": "发起订单争议",
+    "selectOrder": "选择订单",
+    "reasonPh": "原因代码，例如 damaged_goods",
+    "descPh": "描述问题与期望的解决方案",
+    "openDispute": "发起争议",
+    "verifiedListing": "已认证供应商挂牌",
+    "listingId": "挂牌 ID {id}",
+    "supplierPrice": "供应商价格",
+    "requestSolution": "申请该方案",
+    "addIdeal": "加入心愿清单",
+    "addedIdeal": "已加入心愿清单。",
+    "requestPrice": "询价"
   }
 }

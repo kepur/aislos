@@ -2807,5 +2807,24 @@
     "matchSuppliers": "Dopasowani dostawcy",
     "loadingCandidates": "Wczytywanie kandydatów…",
     "noSuppliers": "Brak dopasowanych dostawców"
+  },
+  "procPages": {
+    "postEyebrow": "Zakupy AI",
+    "postTitle": "Opublikuj zapytanie zakupowe",
+    "postSubtitle": "Twoje zapytanie staje się rzeczywistym rekordem Core Commerce i może zostać opublikowane zweryfikowanym dostawcom.",
+    "newReqTitle": "Nowe zapytanie zakupowe",
+    "supplierOffer": "Oferta dostawcy",
+    "disputeTitle": "Otwórz spór dotyczący zamówienia",
+    "selectOrder": "Wybierz zamówienie",
+    "reasonPh": "Kod powodu, np. damaged_goods",
+    "descPh": "Opisz problem i oczekiwane rozwiązanie",
+    "openDispute": "Otwórz spór",
+    "verifiedListing": "Oferta zweryfikowanego dostawcy",
+    "listingId": "ID oferty {id}",
+    "supplierPrice": "Cena dostawcy",
+    "requestSolution": "Poproś o to rozwiązanie",
+    "addIdeal": "Dodaj do listy życzeń",
+    "addedIdeal": "Dodano do listy życzeń.",
+    "requestPrice": "Zapytaj o cenę"
   }
 }

@@ -3103,5 +3103,24 @@
     "matchSuppliers": "Matched suppliers",
     "loadingCandidates": "Loading candidates…",
     "noSuppliers": "No matched suppliers"
+  },
+  "procPages": {
+    "postEyebrow": "AI procurement",
+    "postTitle": "Post a procurement request",
+    "postSubtitle": "Your request becomes a real Core Commerce record and can be published to verified suppliers.",
+    "newReqTitle": "New procurement request",
+    "supplierOffer": "Supplier offer",
+    "disputeTitle": "Open an order dispute",
+    "selectOrder": "Select order",
+    "reasonPh": "Reason code, e.g. damaged_goods",
+    "descPh": "Describe the issue and requested resolution",
+    "openDispute": "Open dispute",
+    "verifiedListing": "Verified supplier listing",
+    "listingId": "Listing ID {id}",
+    "supplierPrice": "Supplier price",
+    "requestSolution": "Request this solution",
+    "addIdeal": "Add to ideal list",
+    "addedIdeal": "Added to ideal list.",
+    "requestPrice": "Request price"
   }
 }

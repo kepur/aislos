@@ -3103,5 +3103,24 @@
     "matchSuppliers": "Usklađeni dobavljači",
     "loadingCandidates": "Učitavanje kandidata…",
     "noSuppliers": "Nema usklađenih dobavljača"
+  },
+  "procPages": {
+    "postEyebrow": "AI nabavka",
+    "postTitle": "Objavi zahtev za nabavku",
+    "postSubtitle": "Vaš zahtev postaje stvarni Core Commerce zapis i može se objaviti verifikovanim dobavljačima.",
+    "newReqTitle": "Novi zahtev za nabavku",
+    "supplierOffer": "Ponuda dobavljača",
+    "disputeTitle": "Pokreni spor o narudžbini",
+    "selectOrder": "Izaberite narudžbinu",
+    "reasonPh": "Kod razloga, npr. damaged_goods",
+    "descPh": "Opišite problem i traženo rešenje",
+    "openDispute": "Pokreni spor",
+    "verifiedListing": "Oglas verifikovanog dobavljača",
+    "listingId": "ID oglasa {id}",
+    "supplierPrice": "Cena dobavljača",
+    "requestSolution": "Zatraži ovo rešenje",
+    "addIdeal": "Dodaj u listu želja",
+    "addedIdeal": "Dodato u listu želja.",
+    "requestPrice": "Zatraži cenu"
   }
 }
