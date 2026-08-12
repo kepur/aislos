@@ -24,12 +24,12 @@
           <input v-model="form.company_name" type="text" class="input-field" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-300 mb-1">Account type</label>
+          <label class="block text-sm font-medium text-slate-300 mb-1">{{ $t('authP.accountType') }}</label>
           <select v-model="form.role" class="input-field">
-            <option value="buyer">Solution customer</option>
-            <option value="developer">Agent developer</option>
-            <option value="vendor">Product vendor</option>
-            <option value="service_partner">Service partner</option>
+            <option value="buyer">{{ $t('authP.roleBuyer') }}</option>
+            <option value="developer">{{ $t('authP.roleDeveloper') }}</option>
+            <option value="vendor">{{ $t('authP.roleVendor') }}</option>
+            <option value="service_partner">{{ $t('authP.roleServicePartner') }}</option>
           </select>
         </div>
         <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
@@ -47,6 +47,7 @@
 
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
+const { t } = useI18n()
 definePageMeta({ middleware: 'guest' })
 
 const { register, isAdmin } = useAuth()
@@ -73,7 +74,7 @@ async function handleRegister() {
     await register(form)
     navigateTo(form.role === 'developer' ? '/developers/listings' : form.role === 'vendor' ? '/supplier-onboarding' : '/portal')
   } catch (e: any) {
-    error.value = e?.data?.detail || 'Registration failed'
+    error.value = e?.data?.detail || t('authP.registerFailed')
   } finally {
     loading.value = false
   }

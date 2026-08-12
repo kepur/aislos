@@ -3,8 +3,8 @@
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
         <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">{{ $t('supplier.workspace') }}</p>
-        <h1 class="mt-1 text-2xl font-bold text-white">{{ $t('supplier.title') }}</h1>
-        <p class="mt-1 text-sm text-slate-400">{{ $t('supplier.subtitle') }}</p>
+        <h1 class="mt-1 text-2xl font-bold text-white">{{ $t('supplier.dashTitle') }}</h1>
+        <p class="mt-1 text-sm text-slate-400">{{ $t('supplier.dashSubtitle') }}</p>
       </div>
       <div class="flex flex-wrap gap-2">
         <NuxtLink :to="localized('/market/marketplace')" class="btn-secondary">{{ $t('supplier.browseMarket') }}</NuxtLink>

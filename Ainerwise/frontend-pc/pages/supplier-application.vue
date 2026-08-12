@@ -25,26 +25,26 @@
           <div>
             <label class="block text-sm font-medium text-slate-300 mb-1">{{ $t('supplier.companyType') }}</label>
             <select v-model="form.company_type" class="input-field">
-              <option value="manufacturer" class="bg-slate-900 text-white">Manufacturer</option>
-              <option value="distributor" class="bg-slate-900 text-white">Distributor / Agent</option>
-              <option value="installer" class="bg-slate-900 text-white">Installer / Service Provider</option>
+              <option value="manufacturer" class="bg-slate-900 text-white">{{ $t('authP.typeManufacturer') }}</option>
+              <option value="distributor" class="bg-slate-900 text-white">{{ $t('authP.typeDistributor') }}</option>
+              <option value="installer" class="bg-slate-900 text-white">{{ $t('authP.typeInstaller') }}</option>
             </select>
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-300 mb-1">Contact Email</label>
+          <label class="block text-sm font-medium text-slate-300 mb-1">{{ $t('authP.contactEmail') }}</label>
           <input v-model="form.email" type="email" required class="input-field" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-300 mb-1">Contact Phone / Telegram / WhatsApp</label>
+          <label class="block text-sm font-medium text-slate-300 mb-1">{{ $t('authP.contactPhone') }}</label>
           <input v-model="form.phone" type="text" class="input-field" />
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-300 mb-1">{{ $t('supplier.productCategories') }}</label>
-          <textarea v-model="form.categories" rows="3" class="input-field" placeholder="e.g. KNX actuators, sensors, CCTV cameras..."></textarea>
+          <textarea v-model="form.categories" rows="3" class="input-field" :placeholder="$t('authP.categoriesPh')"></textarea>
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-300 mb-1">Additional Notes</label>
+          <label class="block text-sm font-medium text-slate-300 mb-1">{{ $t('authP.additionalNotes') }}</label>
           <textarea v-model="form.notes" rows="3" class="input-field"></textarea>
         </div>
         <button type="submit" :disabled="loading" class="btn-primary w-full shadow-[0_0_15px_rgba(14,165,233,0.3)]">
@@ -56,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
 const { apiFetch } = useApi()
 const submitted = ref(false)
 const loading = ref(false)
@@ -88,7 +89,7 @@ async function handleSubmit() {
     })
     submitted.value = true
   } catch (e: any) {
-    error.value = e?.data?.detail || e?.message || 'Unable to submit supplier application.'
+    error.value = e?.data?.detail || e?.message || t('authP.appSubmitFailed')
   } finally {
     loading.value = false
   }
