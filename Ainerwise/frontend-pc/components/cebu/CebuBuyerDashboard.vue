@@ -203,7 +203,7 @@
               :key="c.id"
               :to="localized(`/catalog?category_id=${c.id}`)"
               class="ws-chip"
-            >{{ c.name || c.title }}</NuxtLink>
+            >{{ categoryLabel(c) }}</NuxtLink>
             <span v-if="!categories.length" class="text-sm ws-faint">{{ $t('procurement.buyerHome.noCats') }}</span>
           </div>
         </div>
@@ -279,6 +279,7 @@ const { localized } = useLocalizedLink()
 import type { AccountContext, TrustProfile } from '~/composables/useCommerce'
 
 const { t } = useI18n()
+const { categoryLabel } = useCategoryLabel()
 const api = useCommerce()
 const error = ref('')
 const loading = ref(true)

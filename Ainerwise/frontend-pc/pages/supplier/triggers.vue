@@ -12,7 +12,7 @@
       <div>
         <label class="mb-2 block text-sm font-semibold text-white">{{ $t('supTrig.categories') }}</label>
         <select v-model="form.supplier_category_ids_json" class="input-field min-h-32" multiple>
-          <option v-for="item in categories" :key="item.id" :value="item.id">{{ item.name }}</option>
+          <option v-for="item in categories" :key="item.id" :value="item.id">{{ categoryLabel(item) }}</option>
         </select>
         <p class="mt-1 text-xs text-slate-400">{{ $t('supTrig.catHint') }}</p>
       </div>
@@ -34,6 +34,7 @@
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const { t } = useI18n()
+const { categoryLabel } = useCategoryLabel()
 const { apiFetch } = useApi()
 const { listPublicCategories } = useCommerce()
 const loaded = ref(false)

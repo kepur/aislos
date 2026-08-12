@@ -67,7 +67,7 @@
                 class="catalog-cat"
                 :class="{ 'catalog-cat--on': activeCategory === cat.id }"
                 @click="selectCategory(cat.id)"
-              >{{ cat.name }}</button>
+              >{{ categoryLabel(cat) }}</button>
             </div>
 
             <div class="mt-4 space-y-3 border-t ws-hairline pt-4">
@@ -194,12 +194,13 @@ type CatalogItem = {
 }
 
 const { t } = useI18n()
+const { categoryLabel } = useCategoryLabel()
 const { apiFetch } = useApi()
 const route = useRoute()
 const router = useRouter()
 
 const items = ref<CatalogItem[]>([])
-const categories = ref<Array<{ id: string; name: string }>>([])
+const categories = ref<Array<{ id: string; name: string; slug?: string }>>([])
 const facets = ref<Record<string, number>>({})
 const total = ref(0)
 const page = ref(Number(route.query.page) || 1)
@@ -227,9 +228,10 @@ const modeTabs = computed(() => [
   { key: 'B2B', label: 'B2B' },
   { key: 'B2C', label: 'B2C' },
 ])
-const activeCategoryName = computed(
-  () => categories.value.find(c => c.id === activeCategory.value)?.name || '',
-)
+const activeCategoryName = computed(() => {
+  const cat = categories.value.find(c => c.id === activeCategory.value)
+  return cat ? categoryLabel(cat) : ''
+})
 
 function formatPrice(item: CatalogItem) {
   if (item.price_minor == null) return t('catalog.onRequest')

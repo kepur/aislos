@@ -45,9 +45,9 @@
               v-for="c in categories"
               :key="c.id"
               :class="['flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition', filters.category_schema_id === c.id ? 'bg-indigo-500/15 font-medium text-indigo-200' : 'text-slate-400 hover:bg-white/5']"
-              @click="setCategory(c.id, c.name || c.title)"
+              @click="setCategory(c.id, categoryLabel(c))"
             >
-              <span class="truncate">{{ c.name || c.title }}</span>
+              <span class="truncate">{{ categoryLabel(c) }}</span>
               <span v-if="c.item_count != null" class="ml-2 rounded-full bg-white/10 px-1.5 text-xs text-slate-500">{{ c.item_count }}</span>
             </button>
           </div>
@@ -119,6 +119,7 @@
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
 const { t } = useI18n()
+const { categoryLabel } = useCategoryLabel()
 const { listPublicCategories, listPublicListings } = useCommerce()
 const categories = ref<any[]>([])
 const items = ref<any[]>([])

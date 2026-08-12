@@ -31,10 +31,10 @@
             :key="c.id"
             type="button"
             :class="['rounded-xl border p-4 text-center text-sm transition', form.category_schema_id === c.id ? 'border-indigo-400 bg-indigo-500/10 text-indigo-200' : 'border-white/10 text-slate-300 hover:border-indigo-400/50']"
-            @click="pickCategory(c.id, c.name || c.title)"
+            @click="pickCategory(c.id, categoryLabel(c))"
           >
             <div class="text-2xl">📦</div>
-            <div class="mt-1 font-medium">{{ c.name || c.title }}</div>
+            <div class="mt-1 font-medium">{{ categoryLabel(c) }}</div>
           </button>
         </div>
         <p v-if="categoryError" class="text-sm text-amber-300">{{ categoryError }} <button type="button" class="underline" @click="loadCategories">{{ $t('common.retry') }}</button></p>
@@ -135,6 +135,7 @@
 const props = withDefaults(defineProps<{ redirectPrefix?: string }>(), { redirectPrefix: '/market/buyer/requests' })
 const { token } = useAuth()
 const { t } = useI18n()
+const { categoryLabel } = useCategoryLabel()
 const { apiFetch } = useApi()
 const { listPublicCategories, createProcurementRequest, publishRequest } = useCommerce()
 

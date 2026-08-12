@@ -20,7 +20,7 @@
       <h2 class="text-lg font-medium text-white md:col-span-2">{{ form.id ? $t('supCat.editItem') : $t('supCat.newItemTitle') }}</h2>
       <div><label class="mb-1 block text-sm text-slate-400">{{ $t('supCat.titleLabel') }}</label><input v-model.trim="form.title" required class="input-field" /></div>
       <div><label class="mb-1 block text-sm text-slate-400">{{ $t('supCat.category') }}</label>
-        <select v-model="form.category_schema_id" class="input-field"><option value="">{{ $t('supCat.uncategorized') }}</option><option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name || c.title }}</option></select>
+        <select v-model="form.category_schema_id" class="input-field"><option value="">{{ $t('supCat.uncategorized') }}</option><option v-for="c in categories" :key="c.id" :value="c.id">{{ categoryLabel(c) }}</option></select>
       </div>
       <div><label class="mb-1 block text-sm text-slate-400">{{ $t('supCat.unitPrice') }}</label><input v-model.number="price" type="number" min="0" step="0.01" class="input-field" /></div>
       <div><label class="mb-1 block text-sm text-slate-400">{{ $t('reqForm.currency') }}</label>
@@ -82,6 +82,7 @@
 definePageMeta({ layout: 'procurement', middleware: ['auth'] })
 
 const { t } = useI18n()
+const { categoryLabel } = useCategoryLabel()
 const api = useCommerce()
 const items = ref<any[]>([])
 const categories = ref<any[]>([])
