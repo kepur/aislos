@@ -5,7 +5,7 @@
         <div class="flex min-w-0 items-center gap-4">
           <NuxtLink :to="localized('/partner')" class="shrink-0">
             <span class="block text-sm font-bold text-white">AinerWise Partner</span>
-            <span class="block text-[10px] uppercase tracking-[0.2em] text-blue-300">Company workspace</span>
+            <span class="block text-[10px] uppercase tracking-[0.2em] text-blue-300">{{ $t('partner.companyWorkspace') }}</span>
           </NuxtLink>
           <nav class="hidden items-center gap-1 lg:flex">
             <NuxtLink v-for="item in nav" :key="item.to" :to="localized(item.to)" class="rounded-lg px-3 py-2 text-xs font-semibold text-slate-400 hover:bg-white/5 hover:text-white" active-class="!bg-blue-500/15 !text-blue-200">
@@ -15,7 +15,7 @@
         </div>
         <div class="flex items-center gap-3">
           <span class="hidden text-xs text-slate-500 sm:inline">{{ user?.email }}</span>
-          <button class="rounded-lg border border-white/10 px-3 py-2 text-xs text-slate-400 hover:border-red-400/30 hover:text-red-300" @click="logout">Log out</button>
+          <button class="rounded-lg border border-white/10 px-3 py-2 text-xs text-slate-400 hover:border-red-400/30 hover:text-red-300" @click="logout">{{ $t('partner.logout') }}</button>
         </div>
       </div>
       <nav class="flex gap-1 overflow-x-auto border-t border-white/5 px-4 py-2 lg:hidden">
@@ -31,14 +31,15 @@
 <script setup lang="ts">
 const { localized } = useLocalizedLink()
 const { user, logout } = useAuth()
-const nav = [
-  { to: '/partner', label: 'Overview' },
-  { to: '/partner/rfqs', label: 'RFQs and bids' },
-  { to: '/partner/work-packages', label: 'Delivery packages' },
-  { to: '/partner/crews', label: 'Crews' },
-  { to: '/partner/workers', label: 'Workers' },
-  { to: '/partner/tasks', label: 'Service / AMC tasks' },
-  { to: '/partner/calendar', label: 'Schedule' },
-  { to: '/partner/performance', label: 'Performance' },
-]
+const { t } = useI18n()
+const nav = computed(() => [
+  { to: '/partner', label: t('partner.navOverview') },
+  { to: '/partner/rfqs', label: t('partner.navRfqs') },
+  { to: '/partner/work-packages', label: t('partner.navPackages') },
+  { to: '/partner/crews', label: t('partner.navCrews') },
+  { to: '/partner/workers', label: t('partner.navWorkers') },
+  { to: '/partner/tasks', label: t('partner.navTasks') },
+  { to: '/partner/calendar', label: t('partner.navSchedule') },
+  { to: '/partner/performance', label: t('partner.navPerformance') },
+])
 </script>
