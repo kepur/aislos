@@ -102,7 +102,7 @@ backend/app/modules/growth/
 ## 8. 分期落地
 
 - **P0（地基，本次已起头）**：`contracts.py` 契约 + `compute_sell_price` ✅；`models.py`（`SourcedListing`/`PriceRule`）+ alembic 迁移；`IntegrationSetting` 增 `source`/`pricing`；后台加 `admin_growth` grant。
-- **P1（能跑通一条链）**：1 个采集 adapter（先用官方/第三方数据 API，别硬爬）+ `translate_llm`（复用现有 LLM）+ `reprice_default` + 一个"采集→翻译→定价→建 MarketingAsset(草稿)"的 service，后台可见结果。
+- **P1（能跑通一条链）✅**：`source_manual`（合规安全的归一化 adapter，不爬取）+ `translate_llm`（复用现有 LLM，未配置时安全 passthrough）+ `reprice_default` + `service.run_pipeline`（采集→翻译→定价→建 `MarketingAsset` 草稿）+ `/api/v1/growth/*` 后台接口（`admin.growth.read` 守卫）。已 E2E 验证：1688 样品 SKU → 定价 €19.00/毛利31.58% → 生成 instagram 草稿。真实采集源（官方 API/持牌第三方）后续作为另一个 `SourceAdapter` 直接替换 `source_manual`。
 - **P2（生成+发布）**：接 `gen_image`/`gen_video`（走现有 `MarketingMediaRequest` 认领队列）→ 复用 `PublishJob` 定时发 IG/FB。
 - **P3（自动化）**：`PriceRule` 定时重算 + LLM 端到端编排 + 套利看板/指标。
 

@@ -36,6 +36,7 @@ from app.api.v1.endpoints import (
     payments,
     partner_portal,
     rfqs,
+    growth,
     lifecycle,
     lifecycle_ops,
     marketing,
@@ -105,6 +106,7 @@ api_router.include_router(lifecycle.router)
 api_router.include_router(lifecycle_ops.router)
 api_router.include_router(finance.router)
 api_router.include_router(crm.router)
+api_router.include_router(growth.router)
 api_router.include_router(marketing.router)
 api_router.include_router(marketing.admin_brief_router)
 api_router.include_router(media_integration.router)
