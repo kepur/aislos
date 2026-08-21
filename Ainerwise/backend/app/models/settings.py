@@ -6,7 +6,9 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.models.base_model import Base, TimestampMixin, UUIDMixin
 
 # Categories + which config keys are secret (masked on read).
-INTEGRATION_CATEGORIES = ("smtp", "telegram", "whatsapp", "ai", "voice")
+INTEGRATION_CATEGORIES = (
+    "smtp", "telegram", "whatsapp", "ai", "voice", "social", "stripe", "source", "pricing"
+)
 SECRET_KEYS = {
     "smtp": ("password", "inbound_webhook_secret"),
     "telegram": ("bot_token",),
@@ -15,6 +17,10 @@ SECRET_KEYS = {
     "social": ("api_key",),
     "stripe": ("secret_key", "webhook_secret"),
     "voice": ("api_key",),
+    # Growth sourcing: source cookies / third-party data API keys.
+    "source": ("api_key", "cookie", "access_token"),
+    # Growth pricing: default markup/freight config (no secrets, listed for completeness).
+    "pricing": (),
 }
 
 

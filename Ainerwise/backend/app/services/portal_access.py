@@ -113,6 +113,7 @@ ROLE_ACCESS_PROFILES: dict[str, dict[str, object]] = {
             ("admin_finance", "admin.finance.read"),
             ("admin_audit", "admin.audit.read"),
             ("admin_cebu", "admin.cebu.read"),
+            ("admin_growth", "admin.growth.read"),
         ],
     },
     "super_admin": {
@@ -136,6 +137,7 @@ ROLE_ACCESS_PROFILES: dict[str, dict[str, object]] = {
             ("admin_finance", "admin.finance.read"),
             ("admin_audit", "admin.audit.read"),
             ("admin_cebu", "admin.cebu.read"),
+            ("admin_growth", "admin.growth.read"),
         ],
     },
     "developer": {

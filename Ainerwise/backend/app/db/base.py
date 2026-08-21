@@ -119,5 +119,6 @@ from app.modules.buyer_project.models import (  # noqa: F401
     ProjectReportRow,
     ProjectReportChangeLog,
 )
+from app.modules.growth.models import SourcedListing, PriceRule  # noqa: F401
 
 __all__ = ["Base"]
