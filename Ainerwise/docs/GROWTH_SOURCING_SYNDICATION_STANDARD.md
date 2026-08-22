@@ -103,8 +103,9 @@ backend/app/modules/growth/
 
 - **P0（地基，本次已起头）**：`contracts.py` 契约 + `compute_sell_price` ✅；`models.py`（`SourcedListing`/`PriceRule`）+ alembic 迁移；`IntegrationSetting` 增 `source`/`pricing`；后台加 `admin_growth` grant。
 - **P1（能跑通一条链）✅**：`source_manual`（合规安全的归一化 adapter，不爬取）+ `translate_llm`（复用现有 LLM，未配置时安全 passthrough）+ `reprice_default` + `service.run_pipeline`（采集→翻译→定价→建 `MarketingAsset` 草稿）+ `/api/v1/growth/*` 后台接口（`admin.growth.read` 守卫）。已 E2E 验证：1688 样品 SKU → 定价 €19.00/毛利31.58% → 生成 instagram 草稿。真实采集源（官方 API/持牌第三方）后续作为另一个 `SourceAdapter` 直接替换 `source_manual`。
-- **P2（生成+发布）**：接 `gen_image`/`gen_video`（走现有 `MarketingMediaRequest` 认领队列）→ 复用 `PublishJob` 定时发 IG/FB。
-- **P3（自动化）**：`PriceRule` 定时重算 + LLM 端到端编排 + 套利看板/指标。
+- **P2（发布+看板）✅（发布链路）**：`service.schedule_publish` 复用现有 `PublishJob` 定时发 IG/FB（草稿自动 draft→scheduled，交给现有 `dispatch_publish_jobs`）+ `service.reprice_rule` 定时/手动重算（超阈值才改价）+ frontend-admin `/growth` 页面（Import&Pipeline / Price Rules / 套利看板三标签，已接全部接口，浏览器 E2E 通过）。`gen_image`/`gen_video` 待接（需 CreativeBrief 版本流 + 真实 provider，见下 P2b）。
+- **P2b（生成，待做）**：`gen_image`/`gen_video` 走现有 `MarketingMediaRequest` 认领队列（需 `brief_version_id`）+ 真实图像/视频 provider 凭证。
+- **P3（自动化，待做）**：`PriceRule` 定时重算接 celery beat（`reprice_rule` 已就绪，只差 beat 注册）+ LLM 端到端编排（`TOOL_SIGNATURES` → `agent_team` 挂工具）。
 
 ## 9. 合规红线（必须先明确）
 

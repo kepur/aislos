@@ -28,8 +28,11 @@ from app.modules.growth.schemas import (
     PriceIn,
     PriceRuleIn,
     PriceRuleOut,
+    PublishIn,
+    RepriceIn,
     TranslateIn,
 )
+from app.models.marketing import MarketingAsset
 from app.services.portal_access import user_has_grant_in_any_workspace
 
 router = APIRouter(prefix="/growth", tags=["growth"])
@@ -169,6 +172,32 @@ async def draft_listing(listing_id: uuid.UUID, body: DraftIn, db: DB, _: GrowthU
     asset = await service.draft_listing(db, listing, channel=body.channel, lang=body.lang)
     await db.commit()
     return {"marketing_asset_id": str(asset.id), "listing_status": listing.status}
+
+
+@router.post("/publish")
+async def schedule_publish(body: PublishIn, db: DB, _: GrowthUser) -> dict:
+    asset = (
+        await db.execute(select(MarketingAsset).where(MarketingAsset.id == body.asset_id))
+    ).scalar_one_or_none()
+    if asset is None:
+        raise HTTPException(status_code=404, detail="Marketing asset not found")
+    jobs = await service.schedule_publish(
+        db, asset, platforms=body.platforms, scheduled_at=body.scheduled_at, account_ref=body.account_ref
+    )
+    await db.commit()
+    return {
+        "asset_id": str(asset.id),
+        "asset_status": asset.status,
+        "jobs": [{"id": str(j.id), "platform": j.platform, "status": j.status} for j in jobs],
+    }
+
+
+@router.post("/price-rules/{rule_id}/reprice")
+async def reprice_rule(rule_id: uuid.UUID, body: RepriceIn, db: DB, _: GrowthUser) -> dict:
+    rule = await _get_rule(db, rule_id)
+    summary = await service.reprice_rule(db, rule, fx_rate=body.fx_rate)
+    await db.commit()
+    return summary
 
 
 @router.post("/pipeline")

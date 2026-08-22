@@ -7,11 +7,13 @@ so the rest of the marketing/publishing backbone can pick it up unchanged.
 from __future__ import annotations
 
 import uuid
+from datetime import datetime, timezone
 from decimal import Decimal
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.content import PublishJob
 from app.models.costing import ExchangeRate
 from app.models.marketing import MarketingAsset
 
@@ -204,6 +206,75 @@ async def draft_listing(
     listing.status = "drafted"
     await db.flush()
     return asset
+
+
+# --------------------------------------------------------------------------- #
+# Publish (schedule PublishJob rows the existing dispatcher picks up)
+# --------------------------------------------------------------------------- #
+async def schedule_publish(
+    db: AsyncSession,
+    asset: MarketingAsset,
+    *,
+    platforms: list[str],
+    scheduled_at: datetime | None = None,
+    account_ref: str | None = None,
+) -> list[PublishJob]:
+    when = scheduled_at or datetime.now(timezone.utc)
+    jobs: list[PublishJob] = []
+    for platform in platforms:
+        job = PublishJob(
+            workspace_id=asset.workspace_id,
+            asset_id=asset.id,
+            platform=platform,
+            account_ref=account_ref,
+            scheduled_at=when,
+            status="scheduled",
+        )
+        db.add(job)
+        jobs.append(job)
+    # The dispatcher only publishes assets in approved/scheduled/published state.
+    if asset.status == "draft":
+        asset.status = "scheduled"
+    await db.flush()
+    return jobs
+
+
+# --------------------------------------------------------------------------- #
+# Reprice (re-run compute_sell_price for a rule's listings; used by beat/manual)
+# --------------------------------------------------------------------------- #
+async def reprice_rule(
+    db: AsyncSession,
+    rule: PriceRule,
+    *,
+    fx_rate: Decimal | None = None,
+) -> dict:
+    """Re-price every listing bound to ``rule``. Only writes a new sell price
+    when the relative change exceeds ``rule.reprice_threshold_pct`` (avoids
+    churn). Returns a small summary."""
+    listings = (
+        await db.execute(select(SourcedListing).where(SourcedListing.price_rule_id == rule.id))
+    ).scalars().all()
+    changed = 0
+    skipped = 0
+    for listing in listings:
+        rate = fx_rate or await resolve_fx(db, listing.source_currency or "", rule.sell_currency)
+        if rate is None or not listing.source_price_minor:
+            skipped += 1
+            continue
+        quote = DefaultRepricer().price(price_inputs_from(listing, rule, Decimal(rate)))
+        old = listing.sell_price_minor
+        new = quote.sell.minor
+        if old and old > 0:
+            delta = abs(new - old) / old
+            if Decimal(delta) < Decimal(rule.reprice_threshold_pct):
+                skipped += 1
+                continue
+        listing.sell_price_minor = new
+        listing.sell_currency = quote.sell.currency
+        listing.price_quote_json = quote.model_dump(mode="json")
+        changed += 1
+    await db.flush()
+    return {"rule_id": str(rule.id), "listings": len(listings), "changed": changed, "skipped": skipped}
 
 
 # --------------------------------------------------------------------------- #

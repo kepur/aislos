@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
@@ -62,6 +63,17 @@ class PriceIn(BaseModel):
 class DraftIn(BaseModel):
     channel: str = "instagram"
     lang: str | None = None
+
+
+class PublishIn(BaseModel):
+    asset_id: uuid.UUID
+    platforms: list[str] = Field(min_length=1)
+    scheduled_at: datetime | None = None
+    account_ref: str | None = None
+
+
+class RepriceIn(BaseModel):
+    fx_rate: Decimal | None = None
 
 
 class PipelineIn(ImportListingIn):
