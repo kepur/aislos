@@ -32,6 +32,7 @@ from app.modules.growth.schemas import (
     RepriceIn,
     TranslateIn,
 )
+from app.models.content import PublishJob
 from app.models.marketing import MarketingAsset
 from app.services.portal_access import user_has_grant_in_any_workspace
 
@@ -115,6 +116,29 @@ async def list_price_rules(db: DB, _: GrowthUser) -> list[PriceRule]:
     return list(rows)
 
 
+@router.put("/price-rules/{rule_id}", response_model=PriceRuleOut)
+async def update_price_rule(rule_id: uuid.UUID, body: PriceRuleIn, db: DB, _: GrowthUser) -> PriceRule:
+    rule = await _get_rule(db, rule_id)
+    for field, value in body.model_dump().items():
+        setattr(rule, field, value)
+    await db.commit()
+    await db.refresh(rule)
+    return rule
+
+
+@router.delete("/price-rules/{rule_id}", status_code=204)
+async def delete_price_rule(rule_id: uuid.UUID, db: DB, _: GrowthUser) -> None:
+    rule = await _get_rule(db, rule_id)
+    # Detach any listings still pointing at this rule so we don't orphan the FK.
+    listings = (
+        await db.execute(select(SourcedListing).where(SourcedListing.price_rule_id == rule.id))
+    ).scalars().all()
+    for listing in listings:
+        listing.price_rule_id = None
+    await db.delete(rule)
+    await db.commit()
+
+
 # --------------------------------------------------------------------------- #
 # Listings
 # --------------------------------------------------------------------------- #
@@ -140,6 +164,22 @@ async def list_listings(db: DB, _: GrowthUser, status_filter: str | None = None)
 @router.get("/listings/{listing_id}", response_model=ListingOut)
 async def get_listing(listing_id: uuid.UUID, db: DB, _: GrowthUser) -> SourcedListing:
     return await _get_listing(db, listing_id)
+
+
+@router.post("/listings/{listing_id}/archive", response_model=ListingOut)
+async def archive_listing(listing_id: uuid.UUID, db: DB, _: GrowthUser) -> SourcedListing:
+    listing = await _get_listing(db, listing_id)
+    listing.status = "archived"
+    await db.commit()
+    await db.refresh(listing)
+    return listing
+
+
+@router.delete("/listings/{listing_id}", status_code=204)
+async def delete_listing(listing_id: uuid.UUID, db: DB, _: GrowthUser) -> None:
+    listing = await _get_listing(db, listing_id)
+    await db.delete(listing)
+    await db.commit()
 
 
 @router.post("/listings/{listing_id}/translate", response_model=ListingOut)
@@ -189,6 +229,36 @@ async def schedule_publish(body: PublishIn, db: DB, _: GrowthUser) -> dict:
         "asset_id": str(asset.id),
         "asset_status": asset.status,
         "jobs": [{"id": str(j.id), "platform": j.platform, "status": j.status} for j in jobs],
+    }
+
+
+@router.get("/publish-jobs")
+async def list_publish_jobs(db: DB, _: GrowthUser) -> dict:
+    """Publish queue for growth-originated assets (joined to their MarketingAsset)."""
+    rows = (
+        await db.execute(
+            select(PublishJob, MarketingAsset)
+            .join(MarketingAsset, MarketingAsset.id == PublishJob.asset_id)
+            .where(MarketingAsset.source_metadata_json.has_key("growth_sourced_listing_id"))
+            .order_by(PublishJob.scheduled_at.desc())
+            .limit(200)
+        )
+    ).all()
+    return {
+        "jobs": [
+            {
+                "id": str(job.id),
+                "platform": job.platform,
+                "status": job.status,
+                "scheduled_at": job.scheduled_at.isoformat() if job.scheduled_at else None,
+                "published_at": job.published_at.isoformat() if job.published_at else None,
+                "external_post_id": job.external_post_id,
+                "error_message": job.error_message,
+                "asset_title": asset.title,
+                "asset_status": asset.status,
+            }
+            for job, asset in rows
+        ]
     }
 
 

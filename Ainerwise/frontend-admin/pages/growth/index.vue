@@ -95,8 +95,8 @@
     <!-- ── Price Rules ── -->
     <div v-show="tab === 'rules'" class="space-y-5">
       <div class="admin-panel p-5">
-        <h2 class="text-base font-semibold mb-4">New price rule</h2>
-        <form @submit.prevent="createRule" class="grid grid-cols-3 gap-4">
+        <h2 class="text-base font-semibold mb-4">{{ editingRuleId ? 'Edit price rule' : 'New price rule' }}</h2>
+        <form @submit.prevent="saveRule" class="grid grid-cols-3 gap-4">
           <div class="col-span-3"><label class="lbl">Name *</label><input v-model="rf.name" required class="input-field" /></div>
           <div><label class="lbl">Sell currency</label><input v-model="rf.sell_currency" class="input-field" /></div>
           <div><label class="lbl">Freight %</label><input v-model.number="rf.freight_pct" type="number" step="0.01" class="input-field" /></div>
@@ -109,7 +109,10 @@
             <select v-model="rf.reprice_cadence" class="input-field"><option>manual</option><option>daily</option><option>weekly</option></select>
           </div>
           <div><label class="lbl">Reprice threshold %</label><input v-model.number="rf.reprice_threshold_pct" type="number" step="0.01" class="input-field" /></div>
-          <div class="col-span-3"><button type="submit" :disabled="busy" class="btn-primary text-sm">{{ busy ? 'Saving…' : 'Create rule' }}</button></div>
+          <div class="col-span-3 flex gap-3">
+            <button type="submit" :disabled="busy" class="btn-primary text-sm">{{ busy ? 'Saving…' : (editingRuleId ? 'Save changes' : 'Create rule') }}</button>
+            <button v-if="editingRuleId" type="button" @click="cancelEditRule" class="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+          </div>
         </form>
       </div>
       <div class="admin-panel">
@@ -128,7 +131,13 @@
               <td class="td">{{ pct(r.platform_fee_pct) }}</td>
               <td class="td">{{ r.round_to_minor || '-' }}</td>
               <td class="td">{{ r.reprice_cadence }} / {{ pct(r.reprice_threshold_pct) }}</td>
-              <td class="td"><button @click="repriceRule(r)" class="text-primary-600 hover:underline text-xs">Reprice now</button></td>
+              <td class="td">
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <button @click="repriceRule(r)" class="text-primary-600 hover:underline">Reprice</button>
+                  <button @click="startEditRule(r)" class="text-primary-600 hover:underline">Edit</button>
+                  <button @click="deleteRule(r)" class="text-red-600 hover:underline">Delete</button>
+                </div>
+              </td>
             </tr>
             <tr v-if="!rules.length"><td colspan="9" class="px-4 py-8 text-center text-gray-500">No price rules yet.</td></tr>
           </tbody>
@@ -166,12 +175,45 @@
               <div class="flex flex-wrap gap-2 text-xs">
                 <button @click="translateOne(l)" class="text-primary-600 hover:underline">Translate</button>
                 <button @click="draftAndPublish(l)" class="text-primary-600 hover:underline">Draft→Publish</button>
+                <button @click="archiveOne(l)" class="text-gray-500 hover:underline">Archive</button>
+                <button @click="deleteListing(l)" class="text-red-600 hover:underline">Delete</button>
               </div>
             </td>
           </tr>
           <tr v-if="!listings.length"><td colspan="7" class="px-4 py-8 text-center text-gray-500">No listings yet — run a pipeline.</td></tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- ── Publish Queue ── -->
+    <div v-show="tab === 'queue'" class="admin-panel">
+      <div class="flex items-center justify-between p-4">
+        <h2 class="text-base font-semibold">Publish queue — growth-originated posts</h2>
+        <button @click="loadPublishJobs" class="text-xs text-primary-600 hover:underline">Refresh</button>
+      </div>
+      <table class="admin-table w-full text-sm">
+        <thead><tr>
+          <th class="th">Asset</th><th class="th">Platform</th><th class="th">Scheduled</th>
+          <th class="th">Status</th><th class="th">External post</th>
+        </tr></thead>
+        <tbody>
+          <tr v-for="j in publishJobs" :key="j.id" class="border-b">
+            <td class="td">{{ j.asset_title || '-' }}</td>
+            <td class="td capitalize">{{ j.platform }}</td>
+            <td class="td text-xs text-gray-500">{{ fmtDate(j.scheduled_at) }}</td>
+            <td class="td">
+              <span :class="['rounded-full px-2 py-0.5 text-xs', statusClass(j.status)]">{{ j.status }}</span>
+              <div v-if="j.error_message" class="text-xs text-red-500 mt-1">{{ j.error_message }}</div>
+            </td>
+            <td class="td text-xs font-mono">{{ j.external_post_id || '-' }}</td>
+          </tr>
+          <tr v-if="!publishJobs.length"><td colspan="5" class="px-4 py-8 text-center text-gray-500">No publish jobs yet.</td></tr>
+        </tbody>
+      </table>
+      <p class="px-4 py-3 text-xs text-gray-400">
+        Jobs flip to <b>manual_required</b> until a social aggregator is configured
+        (Admin → Integrations → social). The scheduler picks up due jobs every 5&nbsp;min.
+      </p>
     </div>
   </div>
 </template>
@@ -188,11 +230,16 @@ const tabs = [
   { key: 'pipeline', label: 'Import & Pipeline' },
   { key: 'rules', label: 'Price Rules' },
   { key: 'listings', label: 'Arbitrage / Listings' },
+  { key: 'queue', label: 'Publish Queue' },
 ]
 
 const providers = ref<any[]>([])
 const rules = ref<any[]>([])
 const listings = ref<any[]>([])
+const publishJobs = ref<any[]>([])
+const editingRuleId = ref<string | null>(null)
+
+watch(tab, (t) => { if (t === 'queue') loadPublishJobs() })
 
 const pf = reactive<any>({
   source: '1688', external_id: '', title: '', description: '',
@@ -226,13 +273,49 @@ async function loadListings() {
   catch (e: any) { error.value = errText(e, 'load listings') }
 }
 
-async function createRule() {
+async function saveRule() {
   busy.value = true; error.value = ''; notice.value = ''
   try {
-    await apiFetch('/growth/price-rules', { method: 'POST', body: { ...rf } })
-    notice.value = 'Price rule created.'
+    if (editingRuleId.value) {
+      await apiFetch(`/growth/price-rules/${editingRuleId.value}`, { method: 'PUT', body: { ...rf } })
+      notice.value = 'Price rule updated.'
+    } else {
+      await apiFetch('/growth/price-rules', { method: 'POST', body: { ...rf } })
+      notice.value = 'Price rule created.'
+    }
+    cancelEditRule()
     await loadAll()
-  } catch (e: any) { error.value = errText(e, 'create rule') } finally { busy.value = false }
+  } catch (e: any) { error.value = errText(e, 'save rule') } finally { busy.value = false }
+}
+
+function startEditRule(r: any) {
+  editingRuleId.value = r.id
+  Object.assign(rf, {
+    name: r.name, sell_currency: r.sell_currency,
+    freight_pct: Number(r.freight_pct), freight_fixed_minor: r.freight_fixed_minor,
+    duties_pct: Number(r.duties_pct), target_margin_pct: Number(r.target_margin_pct),
+    platform_fee_pct: Number(r.platform_fee_pct), round_to_minor: r.round_to_minor,
+    reprice_cadence: r.reprice_cadence, reprice_threshold_pct: Number(r.reprice_threshold_pct),
+  })
+}
+
+function cancelEditRule() {
+  editingRuleId.value = null
+  Object.assign(rf, {
+    name: '', sell_currency: 'EUR', freight_pct: 0.15, freight_fixed_minor: null,
+    duties_pct: 0, target_margin_pct: 0.30, platform_fee_pct: 0.08,
+    round_to_minor: 100, reprice_cadence: 'manual', reprice_threshold_pct: 0.02,
+  })
+}
+
+async function deleteRule(r: any) {
+  if (!confirm(`Delete price rule "${r.name}"? Listings using it will be unlinked.`)) return
+  busy.value = true; error.value = ''; notice.value = ''
+  try {
+    await apiFetch(`/growth/price-rules/${r.id}`, { method: 'DELETE' })
+    notice.value = 'Price rule deleted.'
+    await loadAll()
+  } catch (e: any) { error.value = errText(e, 'delete rule') } finally { busy.value = false }
 }
 
 async function repriceRule(r: any) {
@@ -273,6 +356,43 @@ async function draftAndPublish(l: any) {
     notice.value = 'Draft created and scheduled to Instagram + Facebook.'
     await loadListings()
   } catch (e: any) { error.value = errText(e, 'draft/publish') } finally { busy.value = false }
+}
+
+async function archiveOne(l: any) {
+  busy.value = true; error.value = ''; notice.value = ''
+  try {
+    await apiFetch(`/growth/listings/${l.id}/archive`, { method: 'POST', body: {} })
+    notice.value = 'Listing archived.'
+    await loadListings()
+  } catch (e: any) { error.value = errText(e, 'archive') } finally { busy.value = false }
+}
+
+async function deleteListing(l: any) {
+  if (!confirm('Delete this sourced listing permanently?')) return
+  busy.value = true; error.value = ''; notice.value = ''
+  try {
+    await apiFetch(`/growth/listings/${l.id}`, { method: 'DELETE' })
+    notice.value = 'Listing deleted.'
+    await loadListings()
+  } catch (e: any) { error.value = errText(e, 'delete listing') } finally { busy.value = false }
+}
+
+async function loadPublishJobs() {
+  try {
+    const res = await apiFetch<any>('/growth/publish-jobs')
+    publishJobs.value = res.jobs || []
+  } catch (e: any) { error.value = errText(e, 'load publish queue') }
+}
+
+function fmtDate(iso: string | null): string {
+  if (!iso) return '-'
+  try { return new Date(iso).toLocaleString() } catch { return iso }
+}
+function statusClass(s: string): string {
+  if (s === 'published') return 'bg-emerald-100 text-emerald-700'
+  if (s === 'failed' || s === 'cancelled') return 'bg-red-100 text-red-700'
+  if (s === 'manual_required') return 'bg-amber-100 text-amber-700'
+  return 'bg-gray-100 text-gray-600'
 }
 
 function marginOf(l: any): number | null {
