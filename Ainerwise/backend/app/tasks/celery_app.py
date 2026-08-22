@@ -31,6 +31,7 @@ celery_app.conf.update(
         "app.tasks.publishing_tasks",
         "app.tasks.backup_tasks",
         "app.tasks.analytics_tasks",
+        "app.tasks.growth_tasks",
     ),
     # Queue split: `default` = user-facing latency (notifications, outbox relay),
     # `ai_ingestion` = heavy/backloggable embedding work,
@@ -47,6 +48,7 @@ celery_app.conf.update(
         "release_due_retentions": {"queue": "automation"},
         "send_daily_briefing": {"queue": "automation"},
         "dispatch_publish_jobs": {"queue": "automation"},
+        "reprice_due_growth_rules": {"queue": "automation"},
         "generate_weekly_marketing_report": {"queue": "automation"},
         "run_due_backup_schedules": {"queue": "automation"},
         "project_analytics_events": {"queue": "automation"},
@@ -76,6 +78,10 @@ celery_app.conf.update(
         "dispatch-publish-jobs": {
             "task": "dispatch_publish_jobs",
             "schedule": 300.0,  # scheduled social/SEO publishing
+        },
+        "reprice-due-growth-rules": {
+            "task": "reprice_due_growth_rules",
+            "schedule": crontab(hour=5, minute=15),  # daily auto-markup refresh
         },
         "recompute-partner-metrics-daily": {
             "task": "recompute_partner_metrics",
