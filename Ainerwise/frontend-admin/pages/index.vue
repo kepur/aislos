@@ -117,7 +117,7 @@ function formatDate(d: string) {
 async function loadDashboard() {
   loadError.value = ''
   try {
-    const data = await apiFetch<any>('dashboard')
+    const data = await apiFetch<any>('/admin/dashboard')
     if (data.stats) Object.assign(stats, data.stats)
     recentLeads.value = data.recent_leads || []
     recentVendors.value = data.recent_vendors || []
