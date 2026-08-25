@@ -108,6 +108,15 @@ const allMenuSections = computed(() => [
     ],
   },
   {
+    key: 'growth', title: 'Growth · Sourcing',
+    items: [
+      { to: '/growth?tab=pipeline', label: 'Import & Pipeline', icon: IconGlobe },
+      { to: '/growth?tab=rules', label: 'Price Rules', icon: IconGear },
+      { to: '/growth?tab=listings', label: 'Arbitrage / Listings', icon: IconPulse },
+      { to: '/growth?tab=queue', label: 'Publish Queue', icon: IconEvent },
+    ],
+  },
+  {
     key: 'business', title: t('admin.sectionBusiness'),
     items: [
       { to: '/leads', label: t('admin.leads'), icon: IconLeads },
@@ -246,7 +255,7 @@ function sectionForPath(path: string): string | null {
   let best: { key: string; len: number } | null = null
   for (const section of menuSections.value) {
     for (const item of section.items) {
-      const to = item.to as string
+      const to = (item.to as string).split('?')[0]
       const match = to === '/' ? path === '/' : (path === to || path.startsWith(to + '/'))
       if (match && (!best || to.length > best.len)) {
         best = { key: section.key, len: to.length }

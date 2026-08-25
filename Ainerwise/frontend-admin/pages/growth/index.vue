@@ -20,7 +20,7 @@
 
     <!-- Tabs -->
     <div class="mb-5 flex gap-1 border-b border-gray-200">
-      <button v-for="t in tabs" :key="t.key" @click="tab = t.key"
+      <button v-for="t in tabs" :key="t.key" @click="selectTab(t.key)"
         :class="['px-4 py-2 text-sm font-medium -mb-px border-b-2',
                  tab === t.key ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700']">
         {{ t.label }}
@@ -222,10 +222,23 @@
 definePageMeta({ layout: 'default' })
 
 const { apiFetch } = useApi()
+const route = useRoute()
+const router = useRouter()
 const error = ref('')
 const notice = ref('')
 const busy = ref(false)
-const tab = ref('pipeline')
+const validTabs = ['pipeline', 'rules', 'listings', 'queue']
+const tab = ref(validTabs.includes(String(route.query.tab)) ? String(route.query.tab) : 'pipeline')
+
+function selectTab(key: string) {
+  tab.value = key
+  router.replace({ path: '/growth', query: { tab: key } })
+}
+// Sidebar links change ?tab=…; keep the active tab in sync.
+watch(() => route.query.tab, (v) => {
+  const k = String(v || '')
+  if (validTabs.includes(k) && k !== tab.value) tab.value = k
+})
 const tabs = [
   { key: 'pipeline', label: 'Import & Pipeline' },
   { key: 'rules', label: 'Price Rules' },
