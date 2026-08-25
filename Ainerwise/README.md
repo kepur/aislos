@@ -20,6 +20,10 @@ platform. Customers buy outcomes — never software.
 - [Ainerwise Core V3](docs/AINERWISE_CORE_V3.md) — one Core, many Portals, Agent ecosystem (Phases G–I).
 - [v2 General Contractor](docs/AISLOS_V2_GENERAL_CONTRACTOR.md) and [v1 Infrastructure](docs/AISLOS_ENTERPRISE_ARCHITECTURE.md) — Core implementation records (Phases A–E, delivered).
 
+## Modules
+
+- [Growth · 使用手册与扩展标准](docs/GROWTH_README.md) — 采集→翻译→自动定价→分发；后台 http://localhost:4097/growth。接外部 API = 实现一个适配器。设计标准见 [GROWTH_SOURCING_SYNDICATION_STANDARD.md](docs/GROWTH_SOURCING_SYNDICATION_STANDARD.md)。
+
 Brand triple: **Ainerwise** (real business + data) · **AISLOS** (Enterprise AI OS
 with a governed Agent Marketplace) · **Ainerwise Agents** (official AI employees plus
 reviewed third-party listings). Real business → data → agents → platform → marketplace.
